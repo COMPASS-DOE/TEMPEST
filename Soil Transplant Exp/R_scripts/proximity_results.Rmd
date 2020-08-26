@@ -1,0 +1,502 @@
+---
+title: "proximity_results"
+author: "SP"
+output:
+  html_document: default
+---
+
+### `r Sys.Date()`
+
+```{r helper-functions, echo = FALSE, warning = FALSE, message = FALSE, results = 'hide'}
+
+library(MASS)
+library(nlme) # 3.1.137
+library(drake)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_bw())
+library(broom)
+library(lubridate)
+library(piecewiseSEM)
+library(cowplot)
+library(wesanderson)
+library(readr)
+library(ggmap)
+
+# Set color palette
+pal <- (wes_palette(name = "Zissou1", 3, type = "continuous"))
+
+# Define functions
+
+# Calcuate basal area (m2) from tree diameter (cm)
+calc_BA <- function(DBH) {
+  DBH_m <- DBH / 100 # cm to meters
+  radius <- DBH_m / 2 # we want the radius to compute the area
+  radius ^ 2 * pi # basal area area calculation
+}
+
+# Compute the sum of per-tree basal area within a certain distance (to respiration collars)
+basal_area_sum <- function(data, distance) {
+  data %>% 
+    filter(Distance_m <= distance) %>% 
+    group_by(Collar) %>% 
+    summarise(n_trees = n(), 
+              BA_m2 = round(sum(BA_sqm, na.rm = TRUE), digits = 3), 
+              dist = distance) %>% 
+    replace_na(list(n_trees = 0, BA_m2 = 0.0))  # if no trees within distance, zero
+}
+
+# Fit the main statistical model testing for effect of basal area (BA) on soil respiration
+run_model <- function(dat, model_type) {
+  
+  if(any(is.na(dat))) {
+    stop("Can't have any NAs in run_model data")
+  }
+  
+  if(model_type == "linear") {
+    mod_full <- lm(log(Flux) ~ T5 * BA_m2 + T20 * BA_m2 + SMoisture + I(SMoisture ^ 2),
+                   data = dat)
+    mod_no_BA <- lm(formula = log(Flux) ~ T5 + T20 + SMoisture + I(SMoisture ^ 2), data = dat)
+  } else if(model_type == "lme") {
+    mod_full <- nlme::lme(log(Flux) ~ T5 * BA_m2 + T20 * BA_m2 + SMoisture + I(SMoisture ^ 2),
+                          data = dat,
+                          # allow for random variation across sites
+                          random = ~ 1 | Site,
+                          method = "ML") # because we're doing stepAIC below
+    mod_no_BA <- nlme::lme(log(Flux) ~ T5 + T20 + SMoisture + I(SMoisture ^ 2),
+                           data = dat, random = ~ 1 | Site, method = "ML")
+  } else {
+    stop("Unknown model type ", model_type)
+  }
+  
+  # Remove non-significant variables and return
+  mod_reduced <- stepAIC(mod_full, direction = "both", trace = 0)
+  list(full_model = mod_full, reduced_model = mod_reduced, mod_no_BA = mod_no_BA)
+}
+
+# Produce summaries and plots for the run_model() objects
+model_stats <- function(mods, dat, which) {
+  
+  print(piecewiseSEM::rsquared(mods$full_model))
+  
+  # Plot correlation between BA and the residuals of the model
+  # WITHOUT basal area included
+  dat$no_BA_residuals <- residuals(mods$mod_no_BA)
+  p <- ggplot(dat, aes(x = BA_m2, y = no_BA_residuals, color = Site)) + 
+    scale_colour_manual(values = c("#3B9AB2", "#EBCC2A", "#F21A00")) +
+    geom_point(alpha = 0.75, na.rm = TRUE) + 
+    geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+    geom_smooth(stat="smooth", method = "lm", group = 1, color = "grey30") +
+    ylab(expression(Residual~(mol~m^-2~s^-1))) +
+    xlab(expression(Basal~area~(m^2))) +
+    ylim(c(-1,1))
+  print(p)
+  ggsave(paste0("proximity_figures/Figure4_", which, ".png"))
+  
+  m_reduced <- mods$reduced_model
+  
+  print(summary(m_reduced))
+  print(car::Anova(m_reduced, type = "III"))   # NOT stats::anova()!
+  plot(m_reduced)
+}
+
+# Print variable importance (contribution to total explained variance) as calculated
+# by relaimpo package (per Reviewer 2), and return data, invisibly
+var_importance <- function(m, print_it = TRUE) {
+  suppressMessages(library(relaimpo, quietly = TRUE))
+  imp <- relaimpo::calc.relimp(m, type = "lmg", rela = TRUE)
+  if(print_it) {
+    print(imp, show.coeffs = FALSE)
+    print(round(sort(imp$lmg, decreasing = TRUE), 2))
+  }
+  invisible(tibble(variable = names(imp$lmg), importance = imp$lmg))
+}
+
+# Helper function to calculate sample size
+# flux is a vector of fluxes; delta a fraction 0-1; power = 1-beta, also 0-1
+# This follows Davidson et al. (2002)
+sample_n <- function(flux, delta, power) {
+  (qt(1 - (1 - power) / 2, df = length(flux) - 1) * sd(flux) / (mean(flux) * delta)) ^ 2
+}
+```
+
+
+```{r setup, echo = FALSE}
+tree_data <- readd("tree_data")
+prox_data <- readd("prox_data")
+
+prox_data %>%
+  select(-Date) %>%
+  left_join(tree_data, by = c("Site", "Plot", "Tag"), na_matches = "never") %>%
+  # Replace DBH with recorded value for non-tagged trees
+  mutate(DBH_cm = if_else(is.na(Tag), No_tag_DBH, DBH),
+         Species_code = if_else(is.na(Tag), No_tag_species, Species_code),
+         BA_sqm = calc_BA(DBH)) -> # Compute basal area for each tree
+  tree_prox_data
+```
+
+
+### Prep work: compute cumulative basal area for each collar
+```{r fig-3, fig.width = 7, echo = FALSE}
+
+# Calculate cumulative basal area at each distance 
+BA_dat <- list()
+for (i in 1:max(tree_prox_data$Distance_m, na.rm = TRUE)) {
+  tree_prox_data %>% 
+    filter(Distance_m <= i) %>% 
+    group_by(Collar) %>% 
+    summarise(n_trees = n(), 
+              BA_m2 = sum(BA_sqm, na.rm = TRUE), 
+              DBH_cm = sum(DBH_cm),
+              dist = i) -> #%>%
+    #    complete(dist = i, Collar, fill = list(BA_m2 = 0, n_trees = 0))->
+    BA_dat[[i]]
+}
+
+# Combine and complete data (in particular, adding values for 0 m)
+bind_rows(BA_dat) %>% 
+  complete(Collar, dist = c(0:max(tree_prox_data$Distance_m, na.rm = TRUE)),
+           fill = list(BA_m2 = 0, n_trees = 0)) ->
+  BA_dat_complete
+
+# ...and plot
+
+p <- BA_dat_complete %>% 
+  ggplot(aes(x = dist, y = BA_m2, group = Collar, color = n_trees)) + 
+  scale_colour_gradientn(colours = pal) +
+    labs(x = "Radial distance from collar (m)", 
+       y = expression(Basal~area~(m^2)), 
+       color = "Number \nof trees")
+p_inset <- p + xlim(c(0, 5)) + ylim(c(0, 1.25)) +
+  geom_line(size = 0.5, na.rm = TRUE) +
+  scale_fill_gradientn(colours = pal) +
+  theme(legend.position = "none",
+        axis.title = element_blank())
+
+p + geom_line(size = 1, na.rm = TRUE) + 
+  theme(legend.position = c(0.3, 0.8), legend.key.size = unit(0.9, "cm"), legend.direction = "horizontal") -> p2
+
+save_plot("proximity_figures/Figure3.png", p2)
+print(p2)
+#fig2 <- ggdraw() +
+#  draw_plot(p + geom_line(size = 1, na.rm = TRUE)) +
+#  draw_plot(p_inset, 0.1, 0.65, width = 0.45, height = 0.3)
+#print(fig2)
+#save_plot("proximity_figures/Figure3.png", fig2)
+```
+
+``` {r fig-1, echo=FALSE, fig.width = 8}
+# SERC Site Map
+sites <- read_csv("../design/sites.csv")
+sites_bbox <- make_bbox(lon = sites$Longitude, lat = sites$Latitude, f = 0.8)
+sites_map <- get_map(location = sites_bbox, source = "stamen", maptype = "terrain", zoom = 15)
+
+map <- ggmap(sites_map) +
+  geom_point(data = sites, mapping = aes(x = Longitude, y = Latitude), color = "black", size = 1) +
+  geom_text(data = sites, 
+            aes(x = Longitude, y = Latitude, label = Plot), 
+            size = 3, vjust = 2) +
+  labs(x = "Longitude", y = "Latitude")
+
+print(map)
+ggsave("proximity_figures/Figure1.png")
+
+```
+
+## Table 1 - site info
+```{r site-info, echo = FALSE, warning = FALSE, message = FALSE}
+# BA by percentage
+tree_data %>%
+  group_by(Site, Salinity, Species) %>%
+  summarise(n = n(),
+            BA_species = sum(calc_BA(DBH), na.rm = TRUE)) %>%
+  mutate(BA_p = BA_species/sum(BA_species) * 100) ->
+  BA_p
+
+##SP TO ADD COMMENTS AND CONSTANTS FOR CLARITY
+tree_data %>% 
+  group_by(Salinity, Elevation) %>% 
+  summarise(n = n(), 
+            Plot_area_m2 = mean(Plot_area_m2), 
+            `BA (m2/ha)` = sum(calc_BA(DBH), na.rm = TRUE) / 
+              mean(Plot_area_m2) * 10000) %>% 
+  mutate(`Trees (/ha)` = n / Plot_area_m2 * 10000) %>% 
+  summarise(tree_mean = mean(`Trees (/ha)`) %>% round(1), 
+            tree_sd = sd(`Trees (/ha)`) %>% round(1), 
+            BA_mean = mean(`BA (m2/ha)`) %>% round(1), 
+            BA_sd = sd(`BA (m2/ha)`) %>% round(1)) ->
+  tabledata
+
+# Site info
+tabledata$Salinity <- sub("Salinity H", "GCReW", tabledata$Salinity)
+tabledata$Salinity <- sub("Salinity M", "Canoe Shed", tabledata$Salinity)
+tabledata$Salinity <- sub("Salinity L", "North Branch", tabledata$Salinity)
+
+tabledata %>% 
+  transmute(Salinity = Salinity,
+            `Trees (/ha)` = paste(tree_mean, tree_sd, sep = " ± "),
+            `BA (m2/ha)` = paste(BA_mean, BA_sd, sep = " ± ")) %>%
+  
+  knitr::kable(digits = 1, format = "html", 
+               col.names = c("Site", "Trees (/ha)", "BA (m2/ha)")) %>%
+  kableExtra::kable_styling(c("striped", "bordered"), full_width = FALSE)
+```
+
+
+## Flux over time figure for control collars
+
+```{r fig-2, echo = FALSE, warning = FALSE, fig.width = 8, fig.height = 5}
+licor_daily_data <- readd("licor_daily_data")
+t_controls <- c(89:108) 
+
+licor_daily_data %>% 
+  filter(Experiment == "Control", !Collar %in% t_controls) %>% 
+  # Filter out bad soil moisture and flux readings
+  rename(SMoisture = meanSM, Flux = meanFlux, T5 = meanT5, T20 = meanT20) %>% 
+  filter(SMoisture > 0, SMoisture < 1,
+         Flux > 0, 
+         Timestamp >= "2018-04-01 00:00:00", Timestamp < "2019-04-01 00:00:00" ) ->
+  control_cols
+
+licor_daily_data %>% 
+  filter(!is.na(meanFlux), !is.na(sdFlux), Experiment == "Control",
+         Timestamp >= "2018-04-01 00:00:00", Timestamp < "2019-04-01 00:00:00", !Collar %in% t_controls) %>%
+  ggplot(aes(x = Timestamp, y = meanFlux, group = Collar)) +
+  geom_point(size = 1.3, alpha = 0.75, pch = 20) +
+  geom_smooth(aes(group = Dest_Site), color = "#F21A00", se = FALSE) +
+  facet_grid(~Dest_Site) +
+  labs(x = "Date", 
+       y = expression(Flux~(μmol~CO[2]~m^-2~s^-1))) +
+  ylim(c(0, 20)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave("proximity_figures/Figure2.png")
+
+TEST_DISTANCE <- 5
+
+# Calculate basal area within 5 m
+BA5 <- basal_area_sum(tree_prox_data, distance = TEST_DISTANCE)
+
+filter_NAs <- function(x) {
+  x %>% filter(!is.na(Flux), !is.na(T5), !is.na(T20), !is.na(SMoisture), !is.na(BA_m2))
+}
+
+# Join the respiration data with the BA proximity data; this is main analysis dataset
+control_cols %>% 
+  left_join(BA5, by = "Collar") %>% 
+  mutate(Timestamp = ymd_hms(Timestamp)) %>% 
+  select(Collar, Timestamp, Flux, T5, T20, SMoisture, BA_m2, Site = Dest_Site) %>% 
+  na.omit -> 
+  control_cols_5m
+
+BA_CUTOFF <- median(control_cols_5m$BA_m2)
+
+control_cols_5m %>% 
+  filter(BA_m2 > BA_CUTOFF) %>% mutate(Type = "High BA") -> high_BA
+
+control_cols_5m %>% 
+  filter(BA_m2 <= BA_CUTOFF) %>% mutate(Type = "Low BA") -> low_BA
+
+rbind(high_BA, low_BA) -> BA
+```
+
+## Power calculation
+
+Calculate sampling requirements based on the standard deviation of Rs, the desired 
+power of the test, and the allowable delta (fraction difference from the true mean value):
+
+```{r power, echo=FALSE}
+results_list <- list()
+for(delta_fraction in c(0.05, 0.10, 0.25, 0.5)) {
+  for(power in c(seq(0.1, 0.9, by = 0.1), 0.95)) {
+    licor_daily_data %>%
+      filter(!is.na(meanFlux)) %>% 
+      group_by(Dest_Salinity, Dest_Elevation) %>%
+      summarise(n = sample_n(meanFlux, delta = delta_fraction, power = power)) %>% 
+      mutate(delta = delta_fraction, power = power) ->
+      results_list[[paste(delta_fraction, power)]]
+  }
+}
+bind_rows(results_list) %>% 
+  group_by(delta, power) %>% 
+  summarise(n_sd = ceiling(sd(n)), n = ceiling(mean(n))) %>% 
+  ungroup %>% 
+  mutate(delta_fac = as.factor(delta)) %>% 
+  filter(!is.na(n)) -> 
+  results
+
+ggplot(results, aes(power, n, color = factor(delta), group = delta)) +
+  geom_line() + 
+  geom_ribbon(aes(ymin = n - n_sd, ymax = n + n_sd, fill = factor(delta)),
+              alpha = 0.25, color = NA) +
+  scale_color_discrete("Delta") +
+  xlab(expression(Power~(1-beta))) + ylab("N required") +
+  guides(fill = FALSE) +
+  ggtitle("Power analysis")
+
+# Make a nice table
+results %>% 
+  filter(power >= 0.5) %>% 
+  mutate(N = paste0(floor(n), " (" ,floor(n_sd), ")")) %>% 
+  select(delta, power, N) %>% 
+  spread(power, N) %>% 
+  kableExtra::kable() %>%
+  kableExtra::kable_styling(c("striped", "bordered"), full_width = FALSE)
+```
+
+
+## Model Results {.tabset .tabset-fade .tabset-pills}
+
+### Hypothesis I - BA strong effect within 5 meters 
+```{r test-h1, echo = FALSE, warning = FALSE}
+# Filter Licor data for only true control collars and screen out bad SM data
+MODEL_TYPE <- "lme"
+
+# Run the main analysis
+h1 <- run_model(control_cols_5m, model_type = MODEL_TYPE)
+model_stats(h1, control_cols_5m, which = "H1")
+
+# Run it again as a linear model just for variable importance
+h1_lin <- run_model(control_cols_5m, model_type = "linear")
+var_importance(h1_lin$reduced_model)
+```
+
+### Hypothesis II - growing vs. dormant season
+```{r test-h2, echo = FALSE, warning = FALSE}
+# Filter true controls for growing season
+GS_MONTHS <- 4:10  # growing season months, i.e. April-October
+control_cols_5m$Growing_season <- month(control_cols_5m$Timestamp) %in% GS_MONTHS
+
+growing_flux <- filter(control_cols_5m, Growing_season)
+# Seems like calc.relimp can't handle a lme model so use linear instead
+h2g <- run_model(growing_flux, model_type = "linear")
+
+print("Growing Season")
+model_stats(h2g, growing_flux, which = "H2gs")
+var_importance(h2g$reduced_model)
+
+# Filter true controls for dormant season
+dormant_flux <- filter(control_cols_5m, !Growing_season)
+h2d <- run_model(dormant_flux, model_type = "linear")
+
+print("Dormant Season")
+model_stats(h2d, dormant_flux, which = "H2ds")
+var_importance(h2d$reduced_model)
+```
+
+### Hypothesis III - moisture-limited times
+```{r test-h3, echo = FALSE, warning = FALSE}
+
+## replace with actual variable name once drake is working
+control_cols_5m$SM_bin <- cut(control_cols_5m$SMoisture, breaks = 3, label = FALSE)
+
+low_i <- which(control_cols_5m$SM_bin == 1)
+
+## Filter true controls for the bottom and top 33% soil moisture values
+m_low <- control_cols_5m[low_i, ] %>% filter_NAs
+h3l <- run_model(m_low, model_type = "linear")
+
+print("Low Moisture")
+model_stats(h3l, m_low, which = "H3lm")
+var_importance(h3l$reduced_model)
+
+high_i <- which(control_cols_5m$SM_bin == 3)
+m_high <- control_cols_5m[high_i, ] %>% filter_NAs
+h3h <- run_model(m_high, model_type = "linear")
+
+print("High Moisture")
+model_stats(h3h, m_high, which = "H3hm")
+var_importance(h3h$reduced_model)
+```
+
+## Sensitivity test - BA significance with distance
+```{r fig-5, echo = FALSE, warning = FALSE, fig.width = 9}
+sens_output <- list()
+BA_output <- list()
+# Loop through the range of distances we measured and run 
+# our basal area/respiration test at each
+for (i in seq.int(2, max(tree_prox_data$Distance_m, na.rm = TRUE))) {
+  BA <- basal_area_sum(tree_prox_data, i)
+  control_cols %>% 
+    left_join(BA, by = "Collar") %>%
+    select(Timestamp, Flux, T5, T20, SMoisture, BA_m2, Site = Dest_Salinity) %>% 
+    na.omit ->
+    dat
+  mods <- run_model(dat, model_type = "linear")
+  imp <- var_importance(mods$reduced_model, print_it = FALSE)
+  
+  sens_output[[as.character(i)]] <- as_tibble(imp)
+}
+
+prettynames <- c("BA_m2" = "BA", "BA_m2:T20" = "BA:T20", "T5:BA_m2" = "BA:T5")
+
+bind_rows(sens_output, .id = "Distance") %>%
+  filter(grepl("BA_m2", variable)) %>%
+  mutate(Distance = as.integer(Distance),
+         Variable = prettynames[variable]) %>%
+  print %>%
+  ggplot(aes(Distance, importance, color = Variable)) + 
+  scale_colour_manual(values = c("#3B9AB2", "#EBCC2A", "#F21A00")) +
+  geom_line(size = 1) + 
+  geom_point(size = 2.5) +
+  geom_vline(xintercept = TEST_DISTANCE, linetype = 2) +
+  xlab("Radial distance from collar (m)") + 
+  ylab("Relative importance")
+ggsave("proximity_figures/Figure5.png")
+```
+
+```{r results, echo = FALSE}
+
+control_cols %>%
+  filter(T5 > 0, T5 < 30) -> flux_data
+
+control_cols %>% 
+  group_by(Destination_Plot, Collar) %>%
+  summarise(Flux = mean(Flux), n = n()) %>%
+  summarise(CV = (sd(Flux)/mean(Flux))*100) -> flux_CV
+
+BA_dat_complete %>% 
+  group_by(dist) %>% 
+  summarise(sum_trees = ceiling(mean(n_trees)), BA_mean = round(mean(BA_m2), digits = 2)) -> BA_stats
+
+BA_dat_complete %>%
+  filter(dist == 15) %>%
+  summarise(min_BA = round(min(BA_m2), digits = 2), max_BA = round(max(BA_m2), digits = 2)) -> BA_15m
+
+```
+
+```{r supp-fig, echo = FALSE, fig.width = 8, fig.height = 5}
+
+cutoff <- median(BA5$BA_m2)
+BA5 %>% mutate(low_BA = ifelse(BA_m2 <= cutoff, TRUE, FALSE)) -> BA_cutoff
+
+licor_daily_data %>% 
+  filter(!is.na(meanFlux), !is.na(sdFlux), Experiment == "Control",
+         Timestamp >= "2018-04-01 00:00:00", Timestamp < "2019-04-01 00:00:00", !Collar %in% t_controls) %>%
+  left_join(BA_cutoff, by = "Collar") %>% 
+  ggplot(aes(x = yday(Timestamp), y = meanFlux, color = low_BA)) +
+  geom_point(size = 1.3, alpha = 0.75, pch = 20) +
+  geom_smooth(se = FALSE) +
+  labs(x = "Day of Year", 
+       y = expression(Flux~(μmol~CO[2]~m^-2~s^-1))) +
+  ylim(c(0, 20)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(color = "Type") +
+  scale_colour_discrete(labels = c("High BA", "Low BA"))
+ggsave("proximity_figures/S1.png")
+
+```
+
+# Results
+
+### *Basic results*
+We measured Rs, soil temperature, and soil moisture on `r length(unique(control_cols$Date))` different days across the one-year period (Figure 2). Soil temperatures ranged from `r min(flux_data$T5)` to `r round(max(flux_data$T5), digits = 1)` (at 5 cm) and `r min(flux_data$T20, na.rm = TRUE)` to `r max(flux_data$T20, na.rm = TRUE)` (at 20 cm); volumetric soil moisture values were `r round(min(flux_data$SMoisture), digits = 2)`-`r round(max(flux_data$SMoisture), digits = 2)`. Fluxes ranged from `r round(min(flux_data$Flux), digits = 2)` µmol m-2 s-1 (in March 2019) to `r round(max(flux_data$Flux), digits = 2)` µmol m-2 s-1 (in July 2018). The coefficient of variability between collars within plots, a measure of spatial variability, ranged from `r round(min(flux_CV$CV))`% to `r round(max(flux_CV$CV))`%. This implied that a large number of samples was required to estimate Rs accurately (Table 2) .
+
+There was large variability in the basal area and number of trees close to the measurement collars (Figure 3). Mean values were `r BA_stats$sum_trees[which(BA_stats$dist == 1)]` trees (with a basal area of `r BA_stats$BA_mean[which(BA_stats$dist == 1)]` m2) within 1 m, `r BA_stats$sum_trees[which(BA_stats$dist == 5)]` trees (`r BA_stats$BA_mean[which(BA_stats$dist == 5)]` m2) within 5 m, and `r BA_stats$sum_trees[which(BA_stats$dist == 10)]` trees (`r BA_stats$BA_mean[which(BA_stats$dist == 10)]` m2) at 10 m. At our maximum radius of measurement, 15 m, there were on average `r BA_stats$sum_trees[which(BA_stats$dist == 15)]` trees and `r BA_stats$BA_mean[which(BA_stats$dist == 15)]` m2 of basal area, ranging from a minimum of `r BA_15m$min_BA` m2 to a maximum of `r BA_15m$max_BA` m2. The forest was thus highly spatially variable in its distribution of trees relative to the Rs measurement collars. 
+
+### *Effect of BA on Rs*
+The linear mixed-effects model using temperature, soil moisture, and basal area within 5 m (BA5) predicted almost three-quarters of the Rs variability (adjusted R2 = 0.37). BA5 was not significant in a Type III ANOVA using this model (χ2 = 0.081, P = 0.776, but exhibited strong and significant interactions with T5 and T20 (Table 3). In addition, the residuals of a model fit without BA5 had a significant trend with BA5 (Figure 4). In summary, collars with higher basal area within 5 m had significantly higher temperature sensitivity of soil respiration after controlling for temperature and moisture effects.
+
+Separating the data into growing- and dormant-season subsets provided contrasting results. In the growing season, model outputs were similar to those of the overall-year model, with BA5 having highly significant interactions with T5 and T20 (data not shown). The dormant season model, however, was quite different: only BA5 (P = 0.0070), T20 (P = <0.0000), and soil moisture (P = 0.0377) were significant terms. In addition, the dormant season model explained much less of the Rs variability (AIC = 119.80, marginal R2 = 0.48).
+
+Our third hypothesis was that any basal area effect on Rs would be strongest in the driest times of the year, when microbial respiration at the surface soil declines as the soil dries, but trees maintain access to deeper soil moisture. There were in fact strong differences between the driest and wettest thirds of the data. In the dry model ANOVA, BA5 and its interaction with T5 were both marginally significant (P = 0.096 and 0.054 respectively), and the dominant control was instead soil moisture (χ2 = 15.23, P < 0.001).

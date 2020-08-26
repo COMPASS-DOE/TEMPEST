@@ -1,0 +1,248 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r knitrsetup, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README_figures/README-",
+  fig.width = 9
+)
+options(tibble.print_min = 5, tibble.print_max = 5)
+PATH <- "./R_scripts/.drake/"
+```
+
+# PREMIS-ghg
+### Soil GHG experiment
+
+#### Motivation
+Disturbances such as sea level rise, increased extreme weather events, and climate change can have lasting impacts on terrestrial ecosystems. Monitoring greenhouse gas fluxes at the terrestrial-aquatic interface offers a way to quantify the stability and resilience of terrestrial soils in a stressed environment. 
+
+#### Design
+We are testing soil response to salt water intrusion by monitoring soil respiration rates along a creek transect at the [Smithsonian Environmental Research Center (SERC)](https://serc.si.edu/). We have transplanted soil cores (40 cm diameter, 20 cm depth) along a salinity and elevation gradient at three locations (~1 km between salinity plots, ~50 m between elevation plots). This design will also be replicated on the west coast at Beaver Creek. We hypothesize that an increase in salinity will *suppress* soil CO2 respiration, but not affect methane production.   
+
+More info [here!](https://osf.io/at9hr)
+
+![](https://github.com/PNNL-PREMIS/PREMIS-ghg/blob/master/photos/cores_in_cart.jpeg) ![](https://github.com/PNNL-PREMIS/PREMIS-ghg/blob/master/photos/BBL_SP_snow.jpeg) ![](https://github.com/PNNL-PREMIS/PREMIS-ghg/blob/master/photos/cores_in_ground.jpeg)
+
+# Real-time data diagnostics
+
+**Last run: `r date()`**
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(drake)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+```{r prep, echo = FALSE, warning = FALSE, message = FALSE, results = 'hide'}
+
+# Load the licor and weather data
+licor_data <- readd("licor_data", path = PATH)
+licor_daily_data <- readd("licor_daily_data", path = PATH)
+weather_data <- readd("weather_data", path = PATH)
+
+# Calculate treatments means and s.d.
+licor_daily_data %>% 
+  mutate(ControlGroup = if_else(Group == "Control", "Control (true)", "Transplant")) %>% 
+  group_by(Experiment, Origin_Plot, Dest_Salinity, Dest_Elevation, 
+           Destination_Plot, Date, Group, ControlGroup) %>%  
+  summarise(Timestamp = mean(Timestamp), 
+            sdFlux = sd(meanFlux), 
+            meanFlux = mean(meanFlux), 
+            meanSM = mean(meanSM)) %>% 
+  ungroup %>% 
+  mutate(Experiment = if_else(Origin_Plot == Destination_Plot, "Control", Experiment),
+         Dest_Elevation = paste(Dest_Elevation, "elevation"),
+         Dest_Salinity = paste(Dest_Salinity, "salinity"),
+         Dest_Elevation = factor(Dest_Elevation, levels = c("Low elevation", "Medium elevation", "High elevation")),
+         Dest_Salinity = factor(Dest_Salinity, levels = c("High salinity", "Medium salinity", "Low salinity"))) ->
+  daily_treatment_means
+```
+
+```{r sample_size_table, echo = FALSE, message = FALSE}
+# Auto-generate the sample size table
+readd("collar_data", path = PATH) %>% 
+  group_by(Site, Experiment) %>% 
+  summarise(N = n()) %>% 
+  knitr::kable()
+```
+
+
+## IRGA data
+
+### CO2 flux over time
+```{r co2_time, echo = FALSE, warning = FALSE}
+# Check of significant transplant effect by sampling date
+library(broom)
+library(lubridate)
+daily_treatment_means %>% 
+  # filter(Destination_Plot %in% c("HSLE", "MSLE", "LSLE"),
+  #        Origin_Plot %in% c("HSLE", "MSLE", "LSLE")) %>%
+  group_by(Dest_Elevation, Dest_Salinity, year(Date), month(Date)) %>% 
+  do(data.frame(Date = mean(.$Date),
+                transplant_effect = tryCatch(anova(lm(meanFlux ~ Origin_Plot, data = .))$`Pr(>F)`[1],
+                                             error = function(e) NA))) %>% 
+  ungroup() %>% 
+  filter(!is.na(transplant_effect)) %>% 
+  mutate(lbl = if_else(transplant_effect < 0.05, "*", "")) ->
+  salinity_signif
+
+p <- daily_treatment_means %>% 
+  filter(!is.na(meanFlux), !is.na(sdFlux), meanFlux > 0) %>% 
+  ggplot(aes(x = Timestamp, y = meanFlux, color = Experiment, group = Group)) +
+  geom_errorbar(aes(ymin = meanFlux - sdFlux, ymax = meanFlux + sdFlux)) +
+  geom_point() +
+  geom_line(aes(linetype = ControlGroup)) +
+  facet_grid(Dest_Elevation ~ Dest_Salinity) +
+  labs(x = "Date", y = expression(Flux~(µmol~CO[2]~m^-2~s^-1))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  geom_text(data = salinity_signif, color = "black", group = 1, size = 8,
+            aes(x = as.POSIXct(Date), y = 18, label = lbl))
+
+print(p)
+ggsave("~/Desktop/p.png", p)
+ggsave("~/Desktop/p.pdf", p)
+
+# True controls versus transplant controls
+daily_treatment_means %>% 
+  filter(Experiment=="Control", meanFlux > 0) %>% 
+  select(Date, Destination_Plot, ControlGroup, meanFlux) %>% 
+  mutate(Year = as.factor(year(Date))) %>% 
+  pivot_wider(names_from = ControlGroup, values_from = meanFlux) %>% 
+  ggplot(aes(`Control (true)`, Transplant, color = Year)) + 
+  geom_point() + 
+  geom_abline() + 
+  geom_smooth(method = "lm", linetype = 2, show.legend = FALSE) + 
+  xlab(expression(Undisturbed~control~flux~(µmol~CO[2]~m^-2~s^-1))) +
+  ylab(expression(Transplant~control~flux~(µmol~CO[2]~m^-2~s^-1)))
+```
+
+### Soil temperature versus CO2 flux for all cores
+```{r q10, echo = FALSE, warning = FALSE}
+licor_daily_data %>% 
+  filter(!is.na(meanT20), !is.na(meanFlux)) %>% 
+  ggplot(aes(x = meanT20, y = meanFlux, color = Dest_Elevation)) +
+  geom_point() + geom_smooth(method = "loess") +
+  labs(x = "Temperature (°C)", y = expression(Flux~(µmol~CO[2]~m^-2~s^-1)))
+```
+
+### Licor soil moisture over time
+```{r licor_sm, echo = FALSE, warning = FALSE}
+daily_treatment_means %>% 
+  filter(!is.na(meanSM)) %>% 
+  ggplot(aes(x = Timestamp, y = meanSM, color = Experiment, group = Group)) +
+  geom_point() +
+  geom_line(aes(linetype = ControlGroup)) +
+  ylim(c(0,0.6)) +
+  #coord_cartesian(ylim = c(0, 0.6)) +
+  facet_grid(Dest_Elevation ~ Dest_Salinity) +
+  labs(x = "Date") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+### Coefficient of variation between collars
+```{r collar_cv, echo = FALSE, warning = FALSE}
+licor_data %>% 
+  group_by(Date, Group, Collar) %>% 
+  summarise(CV = sd(Flux) / mean(Flux), 
+            n = n(), 
+            Timestamp = mean(Timestamp)) %>%
+  filter(!is.na(CV)) %>% 
+  ggplot(aes(x = Timestamp, y = CV, color = Group)) +
+  geom_point()
+```
+
+## Weather station data
+
+### Soil temperature at 20 cm and 2 cm depth
+```{r soil_temp, echo = FALSE}
+weather_data %>% 
+  filter(Sensor_Group == "Temp") %>% 
+  ggplot(aes(Timestamp, Value, color = Site, group = Sensor_SN)) + 
+  facet_wrap(~Sensor_Depth) + 
+  geom_line() +
+  labs(x = "Date", y = expression(degree()~C))
+```
+
+### Air temperature and Relative Humidity
+```{r air_temp, echo = FALSE}
+weather_data %>% 
+  filter(Sensor_Type == "TRH") %>% 
+  ggplot(aes(Timestamp, Value, color = Sensor_Group, group = Sensor_Group)) + 
+  geom_line() +
+  facet_wrap(~Site) +
+  ggtitle("Atmospheric Temperature (Celsius) and Relative Humidity (%)") +
+  labs(x = "Date")
+```
+
+### Soil moisture at 20 cm and 2 cm depth
+```{r soil_moisture, echo = FALSE}
+weather_data %>% 
+  filter(Sensor_Group == "Water Content") %>% 
+  ggplot(aes(Timestamp, Value, color = Site, group = Sensor_SN)) + 
+  facet_wrap(~Sensor_Depth) + 
+  geom_line() +
+  labs(x = "Date", y = expression(m^3/m^3))
+```
+
+### Stdev for each temperature and moisture probe
+```{r weather_var, echo = FALSE}
+weather_data %>%
+  group_by(Site, Sensor_Depth, Sensor_Group, Timestamp) %>%
+  summarize(n = n(), meanValue = mean(Value), sdValue = sd(Value))
+```
+
+## Wells
+
+### Well conductivity data
+```{r wells, echo = FALSE}
+readd("well_data", path = PATH) %>% 
+  gather(variable, value, Low_Range, High_Range) %>% 
+  ggplot(aes(x = Timestamp, y = value, color = variable)) +
+  geom_line() +
+  facet_grid(~Plot)
+```
+
+## Other
+
+### Histogram of trees by DBH
+```{r inventory, echo = FALSE, warning = FALSE}
+tree_data <- readd("tree_data", path = PATH)
+ggplot(tree_data, aes(DBH, fill = Species)) + 
+  geom_histogram(position = "stack", binwidth = 5) + 
+  facet_grid(Salinity ~ Elevation) +
+  labs(x = "DBH (cm)", y = "Count")
+```
+
+### Litter data
+```{r litter, echo = FALSE}
+litter_data <- readd('litter_data', path = PATH)
+litter_data %>% 
+  filter(Litter_Type == "M_leaf_oak" | Litter_Type == "M_leaf_beech" | 
+           Litter_Type == "M_leaf_other" | Litter_Type == "M_leaf_tulip") %>% 
+  group_by(Date_collected, Plot, Litter_Type) %>% 
+  summarise(Mass_g = mean(Mass_g)) %>% 
+  ungroup() -> litter_mean
+
+litter_mean %>% 
+  arrange(Plot, Litter_Type, Date_collected) %>% 
+  group_by(Plot, Litter_Type) %>% 
+  mutate(Mass_g_cumuluative = cumsum(Mass_g)) %>% 
+  ungroup %>% 
+  mutate(Plot = factor(Plot, levels = c("HSHE", "MSHE", "LSHE", "HSME", "MSME", "LSME", "HSLE", "MSLE", "LSLE"))) %>% 
+  ggplot(aes(x = Date_collected, y = Mass_g_cumuluative, group = Litter_Type, fill = Litter_Type)) + 
+  facet_wrap(~Plot) +
+  geom_area() +
+  labs(x = "Date Collected", y = "Mass (g)") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+

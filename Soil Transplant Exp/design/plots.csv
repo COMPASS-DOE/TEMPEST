@@ -1,0 +1,10 @@
+﻿Site,Plot,Salinity,Elevation,Longitude,Latitude,Plot_area_m2
+SERC,HSHE,High,High,,,800
+SERC,HSLE,High,Low,,,800
+SERC,HSME,High,Medium,,,800
+SERC,LSHE,Low,High,38.88834,-76.56173,800
+SERC,LSLE,Low,Low,38.88788,-76.56165,450
+SERC,LSME,Low,Medium,38.88824,-76.56186,800
+SERC,MSHE,Medium,High,,,800
+SERC,MSLE,Medium,Low,,,800
+SERC,MSME,Medium,Medium,,,800
