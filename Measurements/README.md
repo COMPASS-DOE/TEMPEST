@@ -7,6 +7,8 @@
   - TEMPEST_Concluded Measurement Summary
   - TEMPEST_New Measurement and Infrastructure Requests
 
+![](https://github.com/PNNL-SERC-COMPASS/TEMPEST/blob/master/Photos/Measurements_Compilation.png)
+
 **Ongoing Measurement Summary - Description:** This file provides an overview of the ecological variables currently measured at the TEMPEST site. Measurements are organized by ecosystem component (e.g. Application Water, Plant, Soil, Water). Variable-specific data stewards and availabilities are also indicated here. We encourage you to reach out to these personnel with measurement questions or to initiate collaborative projects. Column descriptions are below:
 
   - Ecosystem Component: Application water, plant, soil, soil-plant, or water
