@@ -44,3 +44,5 @@
   - Priority Level: 1 = Item is critical to the success of TEMPEST; 2 = Item would signigicantly improve science and/or infrastrucutre; 3 = Item would be improve science         and/or infrastructure
   - Status: Acknowledged = request has been documented and assigned priority level; Allocated = funds have been set aside for this item; Ordered = purchase order has been submitted; Received = intact item has been received 
   - Notes
+
+![](https://github.com/PNNL-SERC-COMPASS/TEMPEST/blob/master/Photos/Measurements_Compilation_2.png)
