@@ -24,7 +24,7 @@ We specifically hypothesize that:
 Soil functional responses will be used as our primary metric of ecosystem resilience. Specifically, we will determine changes in carbon storage and composition by measuring (1) soil surface CH4 and CO2 flux, (2) soil CH4 and CO2 porewater concentrations, and (3) soil carbon quantity and composition. We will also determine the effects of belowground biodiversity and inundation on soil physicochemical properties, including pH, water content, [O2], [NO3-], [SO42-], and [PO43-]. Additionally, we will investigate the underlying biotic mechanisms regulating these ecosystem functions by measuring (1) the dominant bacterial/archaeal and fungal oxidative and hydrolytic exo-enzyme concentrations and activities and (2) bacterial, archaeal, and fungal composition and abundance prior to and following flooding events.
 
 ![](https://github.com/PNNL-SERC-COMPASS/TEMPEST/blob/master/TEMPESTX/Photos/install_compilation.png)
-**Figure 3** Soil biotic exclusion installation.
+**Figure 3.** Soil biotic exclusion installation.
 
 **Impact on site:** Overall, our experimental design will have minimal impacts on other variables of interest in the context of TEMPEST experiment, such as hydrology or tree physiology. The TEMPEST plots encompass 2,000 m2. Here, we proposed the addition of eight 1-m2 exclusion sub-plots (we are not counting the control plots since they are not trenched). These sub-plots would cover only 0.4% of the TEMPEST plot surface area and, thus, will have minimal effects on other ecosystem measurements. Additionally, while the mesh is designed to exclude certain biotic organisms, it will allow for water and solute transfer under ambient and flooded conditions. 
 
