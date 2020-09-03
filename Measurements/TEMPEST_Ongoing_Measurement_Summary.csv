@@ -1,0 +1,92 @@
+Ecosystem Component,Variable,Measurement Type,Measurement Frequency ,Measurement Location,Replicates,Measurement Start Date,Data Storage,Indicator Of,Research Group,Data Steward,Data Steward Email,Notes,,,,
+Application water,pH,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Megonigal/Ward,Anya Hopple,anya.hopple@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Dissolved oxygen,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Megonigal/Ward,Anya Hopple,anya.hopple@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Electrical conductivity,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Megonigal/Ward,Anya Hopple,anya.hopple@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Turbidity,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Megonigal/Ward,Anya Hopple,anya.hopple@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Dissolved organic carbon,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Total dissolved nitrogen,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,Seawater and Freshwater,,,,
+Application water,Colored-dissolved organic matter,Periodic,Irregular,NA,1/source,Spring 2021,GitHub,Application water chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,Seawater and Freshwater,,,,
+Plant,Sapflow,Continuous,30 minute interval,NA,15-16/plot,May-18,,Tree water consumption,McDowell,Wenzhi/Stephanie,stephanie.pennington@pnnl.gov,,,,,
+Plant,Tree species,Periodic,Annual,NA,"All individuals with DBH > 1""",Mar-19,GitHub,Forest composition,Bond-Lamberty,Stephanie Pennington,stephanie.pennington@pnnl.gov,,,,,
+Plant,Tree DBH,Periodic,Annual,1.4 m above ground,"All individuals with DBH > 1""",Mar-19,GitHub,"Tree volume, biomass, and carbon storage",Bond-Lamberty,Stephanie Pennington,stephanie.pennington@pnnl.gov,,,,,
+Plant,Tree status,Periodic,Annual,NA,"All individuals with DBH > 1""",Mar-19,GitHub,Tree survival,Bond-Lamberty,Stephanie Pennington,stephanie.pennington@pnnl.gov,,,,,
+Plant,Litterfall,Periodic,"Irregular (weekly in fall, monthly otherwise)",NA,6/plot,Sep-18,GitHub,Net primary productivity,Bond-Lamberty,Ben/Stephanie,stephanie.pennington@pnnl.gov,,,,,
+Plant,Foliar gas exchange,Periodic,1 time befofe treatment; 1-3 times after treatment,NA,,,,Tree carbon fixation and water loss; tree physiology,McDowell,Weibin ,,,,,,
+Plant,Hydraulic traits,Periodic,1 times befofe treatment; 1-3 times after treatment,NA,,,,Tree morphology,McDowell, ,,,,,,
+Plant,Non-structural carbohydrates concentrations,Periodic,1 times befofe treatment; 1-3 times after treatment,NA,,,,Tree metabolism,McDowell,Weibin ,,,,,,
+Plant,Stem CH4 flux,Periodic,Monthly,1 m above soil surface,15/plot,Fall 2020,GitHub,Stem methanogen and methanotroph activity; ecosystem carbon balance,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Plant,Stem CO2 flux,Periodic,Monthly,1 m above soil surface,15/plot,Fall 2020,GitHub,Stem respiration; ecosystem carbon balance,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Plant,Stem Rn flux,Periodic,Monthly,1 m above soil surface,5/plot,Fall 2020,GitHub,Stem structure,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Plant,Stem water potential,Continuous,10 minute interval,1 m above soil surface,3/plot,Fall 2020,GitHub,"Tree water relations, growth potential, hydraulic conductivity",Megonigal,Anya Hopple,anya.hopple@pnnl.gov,Can also be used to measure leaf and woody tissue water potential,,,,
+Soil,Respiration/CO2 flux,Continuous,1 cycle/hour,Soil surface,1/plot,Apr-20,GitHub,Soil heterotrophic respiration,Bond-Lamberty/Megonigal,Anya Hopple,anya.hopple@pnnl.gov,Gaps in data due to power issues,,,,
+Soil,Respiration/CO2 flux,Periodic,1-2/month,Soil surface,1/plot,Apr-20,GitHub,Soil heterotrophic respiration,Bond-Lamberty/Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,CH4 flux,Periodic,1-2/month,Soil surface,4/plot,Apr-20,GitHub,Soil methanogen & methanotroph activity,Bond-Lamberty/Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Electrical conductivity,Continuous,5 minute interval,"3, 6, and 12 cm below soil surface",6/plot,Nov-18,GitHub; PREMIS shared drive,Soil chemistry,Stegen,Stephanie (Aditi whenever she visits SERC),stephanie.pennington@pnnl.gov,,,,,
+Soil,Water content,Continuous,5 minute interval,"3, 6, and 12 cm below soil surface",6/plot,Nov-18,GitHub; PREMIS shared drive,Soil chemistry,Stegen,Stephanie (Aditi whenever she visits SERC),stephanie.pennington@pnnl.gov,,,,,
+Soil,Temperature,Continuous,5 minute interval,"3, 6, and 12 cm below soil surface",6/plot,Nov-18,GitHub; PREMIS shared drive,Soil chemistry,Stegen,Stephanie (Aditi whenever she visits SERC),stephanie.pennington@pnnl.gov,,,,,
+Soil,Porewater pH,Periodic,Monthly,15 cm below soil surface,15/plot,Fall 2020,GitHub,Soil chemistry,Megonigal/Zheng,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Porewater cation concentrations,Periodic,Monthly,15 cm below soil surface,15/plot,Fall 2020,GitHub,Soil chemistry,Megonigal/Zheng,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Porewater anion concentrations,Periodic,Monthly,15 cm below soil surface,15/plot,Fall 2020,GitHub,Soil chemistry,Megonigal/Zheng,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Porewater dissolved CO2 concentrations,Periodic,Monthly,15 cm below soil surface,15/plot,Fall 2020,GitHub,Soil chemistry,Megonigal/Zheng,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Porewater dissolved CH4 concentrations,Periodic,Monthly,15 cm below soil surface,15/plot,Fall 2020,GitHub,Soil chemistry,Megonigal/Zheng,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Microbial RNA,Periodic,Irregular,,,,PREMIS shared drive,Bacteria and Archaea active community composition,Zheng,Jianqiu Zheng,jianqiu.zheng@pnnl.gov,,,,,
+Soil,Microbial DNA,Periodic,Irregular,,,,PREMIS shared drive,Bacteria and Archaea community composition,Zheng,Jianqiu Zheng,jianqiu.zheng@pnnl.gov,,,,,
+Soil,Air CO2 concentrations,Periodic,Monthly,"5-10, 15-20, 30-35, and 45-50 cm below soil surface",5 nests/plot,Summer 2020,GitHub,Soil biogeochemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Air CH4 concentrations,Periodic,Monthly,"5-10, 15-20, 30-35, and 45-50 cm below soil surface",5 nests/plot,Summer 2020,GitHub,Soil biogeochemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,"Ion concentrations (P, K, Ca, Mg, Zn, Mn, Na, Fe, Cu, Cr, Mo, Ni, Cd, Pb)",Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,pH,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Lime requirement,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry; soil acidity,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Cation exchange capacity ,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry; acidification buffering and essential nutrient capacities,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Percent base saturation ,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry; plant available cations,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Total carbon,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Total nitrogen,Periodic,Irregular,"0-5, 5-10, 10-15, 15-20, 20-25, 25-30, 30-40, and 40-50 cm below soil surface",5 profiles/plot,Aug-20,GitHub,Soil chemistry,Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Soil,Temperature,Continuous,10 minute interval,15 cm below soil surface,36/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil,Water content,Continuous,10 minute interval,15 cm below soil surface,36/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil,Electrical conductivity,Continuous,10 minute interval,15 cm below soil surface,36/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil,Temperature,Continuous,10 minute interval,5 and 30 cm below soil surface,5/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil,Water content,Continuous,10 minute interval,5 and 30 cm below soil surface,5/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil,Electrical conductivity,Continuous,10 minute interval,5 and 30 cm below soil surface,5/plot,Apr-20,GitHub,Soil chemistry,Megonigal,Anya Hopple/Stephanie Pennington,anya.hopple@pnnl.gov; stephanie.pennington@pnnl.gov,,,,,
+Soil-Plant,Respiration/CO2 flux,Continuous,1 cycle/hour,Soil surface,1/plot,Apr-20,GitHub,Root and soil respiration,Bond-Lamberty/Megonigal,Anya Hopple,anya.hopple@pnnl.gov,Gaps in data due to power issues,,,,
+Soil-Plant,Respiration/CO2 flux,Periodic,1-2/month,Soil surface,4/plot,Apr-20,GitHub,Root and soil respiration,Bond-Lamberty/Megonigal,Anya Hopple,anya.hopple@pnnl.gov,,,,,
+Water,Groundwater level,Continuous,"60 minute interval
+",NA,2/plot,"Dec-18
+",PREMIS shared drive,Environmenal conditions ,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater dissolved oxygen concentration,Continuous,"60 minute interval
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater pH,Continuous,"60 minute interval
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater salinity,Continuous,"60 minute interval
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater DOC,Periodic,"Seasonally at a minimum, monthly would be better
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater TDN,Periodic,"Seasonally at a minimum, monthly would be better
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+Water,Groundwater CDOM,Periodic,"Seasonally at a minimum, monthly would be better
+",NA,2/plot,Nov-19,PREMIS shared drive,Groundwater chemistry and quality,Ward,"Allison Myers-Pigg
+",allison.myers-pigg@pnnl.gov,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,

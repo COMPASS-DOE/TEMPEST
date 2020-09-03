@@ -1,0 +1,25 @@
+Infrastructure or Scientific,Component Category,Item,Part Number,Description,Link,Vendor,Quote Number,Contact Name,Contact Number,Unit Price,Quantity ,Total $,Priority Level,Status,Notes
+Infrastructure,Electrical,Power,,Expansion of power at the TEMPEST site,,,,,,,N/A,25000,1,Allocated,
+Infrastructure,Storage,Shed,,Shed for storing TEMPEST field supplies,,,,,,,1,5000,1,Allocated,What size were you thinking? Price?
+Scientific,Tree Physiology,Sap Flow Sensor,,continuous record of tree sap flow/water consumption,,,,,,180,35,6300,1,Allocated,
+Scientific,Water Chemistry,"Aqua TROLL 600, Non-Vented 0-9 m",74040,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",https://in-situ.com/us/aqua-troll-600-multiparameter-sonde?creative=452486676681&keyword=&matchtype=b&network=g&device=c&gclid=Cj0KCQjws536BRDTARIsANeUZ5_KeFM9yUF3dYrtPYhDFirbnxYNIONROVh2qWxmK950fao_wPxQvsIaAncbEALw_wcB,In-Situ,,,,3995,2,7990,1,Acknowledged,For monitoring water chemistry of sourced freshwater and seawater; Nick has handheld options available that could be used during simulation but not left out continuously
+Scientific,Water Chemistry,Aqua TROLL Wiper,63500,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,995,2,1990,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL Temperature/Conductivity Sensor,63460,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,795,2,1590,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL pH/ORP Sensor,6370,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,675,2,1350,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL RDO Sensor (includes RDO-X Cap),63450,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,995,2,1990,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL Turbidity Sensor,,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,,2,0,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL Sensor Port Plug,63510,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,39,2,78,1,Acknowledged,
+Scientific,Water Chemistry,Aqua TROLL Copper Guard,76100,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,750,2,1500,1,Acknowledged,
+Scientific,Water Chemistry,Logger Interface Cables,,"continuous record of source water pH, dissolved oxygen, conductivity, and turbidity",,In-Situ,,,,,,0,1,Acknowledged,
+Infrastructure,Storage,Pad cover,,Seawater pillow tank shelter/cover,,,,,,,1,5000,2,Acknowledged,Pillow tank footprint is 22' x 31'. Surrounded by trees. Damage/puncture to pillow tank would shut down seawater delivery system. $7-8K to replace.
+Infrastructure,Access/Working Environment,Boardwalk/bridge and ramp,,Completion of forest pathway - includes replacing and expanding NE bridge/boardwalk and easy access to CO2 Lab parking area,,,,,,,N/A,5000,2,Acknowledged,
+Infrastructure,Access/Working Environment,Mulch,,Forest path maintenance ,,,,,,,,,2,Acknowledged,SW sections of the forest path are particularly difficult to maneuver through - prone to flooding and can be very muddy
+Infrastructure,Water delivery,Freshwater tank pad truck turnaround,,Expanded pad space for freshwater delivery truck turnaround,,,,,,,,20000,2,Acknowledged,
+Infrastructure,Access/Working Environment,Outdoor work bench,,Outdoor work bench for construction projects,,,,,,,1,,3,Acknowledged,
+Infrastructure,Storage,Outdoor shelter,,Weather-resistant shelters/housing for LICOR units,,,,,,,3,,3,Acknowledged,
+Scientific,Porewater Chemistry,Nested Piezometers,,,,,,,,,,0,3,Acknowledged,
+Scientific,Geophysical System,,,,,,,,,,,,3,Acknowledged,James
+Scientific,Imaging,Drone and Associated Imaging Systems,,,,,,,,,,,3,Acknowledged,James
+Scientific,Porewater Chemistry,Portable Ion Chromatograph,,,,,,,,,,,3,Acknowledged,James
+Scientific,Gas Analysis,Soil Nitrous Oxide Flux,,,,,,,,,,,3,Acknowledged,James
+Scientific,Soil Chemistry,Redox Sensors,,,,,,,,,,,3,Acknowledged,James
