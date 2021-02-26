@@ -1,1 +1,0 @@
-2018-07-12 13:26:02: Measurement=SERC_20180712.81x: The measurement was restarted.

@@ -1,8 +1,0 @@
-# no figure files
-*.png
-
-# DataHub
-datahub/
-
-# RMarkdown cache
-*_cache/

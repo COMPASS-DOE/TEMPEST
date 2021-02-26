@@ -1,1 +1,0 @@
-2018-11-28 13:57:31: Measurement=SALT_20181120_LT.81x: The measurement was restarted.

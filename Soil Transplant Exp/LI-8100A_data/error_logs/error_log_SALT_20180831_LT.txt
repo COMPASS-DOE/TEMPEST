@@ -1,5 +1,0 @@
-2018-09-05 08:30:53: Measurement=SALT_20180831_LT.81x: The measurement was restarted.
-
-2018-09-05 08:31:44: Measurement=SALT_20180831_LT.81x: The measurement was restarted.
-
-2018-09-05 08:38:11: Measurement=SALT_20180831_LT.81x: The measurement was restarted.

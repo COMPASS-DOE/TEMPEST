@@ -1,1 +1,0 @@
-2019-03-10 12:21:49: Measurement=20190310_SERC.81x: The measurement was restarted.

@@ -1,1 +1,0 @@
-2018-10-29 23:51:01: Measurement=SALT_20181018_LT.81x: *** Almost out of diskspace.  Measurement terminated.***
