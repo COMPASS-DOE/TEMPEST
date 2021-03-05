@@ -1,0 +1,56 @@
+'CR1000
+'Stephanie Pennington and Roy Rich  v1.2 8-8-2019
+
+'Declare Variables and Units
+Public BattV
+Public PTemp_C
+Public DiffVolt(8)
+Public Mult(8)={1,1,1,1,1,1,1,1}
+Public Offs(8)={0,0,0,0,0,0,0,0}
+Public Statname As String ' logger name
+Public PB ' packbus number of logger
+
+Units BattV=Volts
+Units PTemp_C=Deg C
+Units DiffVolt=mV
+
+'Define Data Tables
+DataTable(sapflow,True,-1)
+	DataInterval(0,15,Min,10)
+	Sample(1, Statname, FP2 )
+	Average(1,BattV,FP2,False)
+	Average(1,DiffVolt(1),FP2,False)
+	Average(1,DiffVolt(2),FP2,False)
+	Average(1,DiffVolt(3),FP2,False)
+	Average(1,DiffVolt(4),FP2,False)
+	Average(1,DiffVolt(5),FP2,False)
+	Average(1,DiffVolt(6),FP2,False)
+	Average(1,DiffVolt(7),FP2,False)
+	Average(1,DiffVolt(8),FP2,False)
+  Sample(1,DiffVolt(1),FP2)
+  Sample(1,DiffVolt(2),FP2)
+  Sample(1,DiffVolt(3),FP2)
+  Sample(1,DiffVolt(4),FP2)
+  Sample(1,DiffVolt(5),FP2)
+  Sample(1,DiffVolt(6),FP2)
+  Sample(1,DiffVolt(7),FP2)
+  Sample(1,DiffVolt(8),FP2)
+	EndTable
+
+'Main Program
+BeginProg
+	'Main Scan
+	Scan(30,Sec,1,0)
+	  Statname=Status.StationName(1,1)
+	  PB = Status.PakbusAddress(1,1)
+	 
+		'Default CR1000 Datalogger Battery Voltage measurement 'BattV'
+		Battery(BattV)
+		'Default CR1000 Datalogger Wiring Panel Temperature measurement 'PTemp_C'
+		PanelTemp(PTemp_C,_60Hz)
+		'Generic Differential Voltage measurements 'DiffVolt()'
+		VoltDiff(DiffVolt(),8,mv2500,1,True,0,_60Hz,Mult(),Offs())
+		'Call Data Tables and Store Data
+		CallTable sapflow
+	NextScan
+EndProg
