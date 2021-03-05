@@ -1,5 +1,5 @@
 # Processing for Aditi's licor data
-# Created December 5, 2018 
+# Created December 5, 2018
 
 library(tidyr)
 library(lubridate)
@@ -9,18 +9,18 @@ library(ggplot2)
 
 #----- Function to parse a file and return data frame -----
 read_licor_data <- function(filename, debug = FALSE) {
-  
+
   # Read file into memory and find records
   filedata <- readLines(filename)
   record_starts <- grep(pattern = "^LI-8100", filedata)
   cat("Reading...", filename, " lines =", length(filedata), "observations =", length(record_starts), "\n")
-  
+
   # Helper function to pull out data from line w/ specific label prefix
   find_parse <- function(tabletext, lbl) {
     line <- tail(grep(lbl, tabletext), n = 1)
     if(length(line)) gsub(lbl, "", tabletext[line]) else ""
   }
-  
+
   results <- tibble(table = seq_along(record_starts),
                     Timestamp = as_datetime(NA),
                     Label = NA_character_,
@@ -32,10 +32,10 @@ read_licor_data <- function(filename, debug = FALSE) {
                     RH = NA_real_,
                     Cdry = NA_real_,
                     Comments = NA_character_)
-  
+
   for (i in seq_along(record_starts)) {
     if(i < length(record_starts)) {
-      record_end <- record_starts[i+1]-1 
+      record_end <- record_starts[i+1]-1
     } else {
       record_end <- length(filedata)
     }
@@ -43,14 +43,14 @@ read_licor_data <- function(filename, debug = FALSE) {
     record <- filedata[record_starts[i]:record_end]
     # ...and get rid of blank lines because that can screw up paste(collapse()) below
     record <- record[grep("^$", record, invert = TRUE)]
-    
+
     if(debug) cat("Record", i, "lines", record_starts[i], ":", record_end, "length", length(record), "\n")
-    
+
     # Find the data table start
     table_start <- tail(grep("^Type\t", record), n = 1)
     # Look for the next non-numeric line; this marks the end
     table_stop <-  head(grep("^[A-Z]", record[-(1:table_start)]), n = 1) + table_start - 1
-    
+
     # Sometimes the Licor aborts in the middle of a measurement. Handle gracefully
     if(length(table_stop) == 0) {
       message("Skipping table ", i, " ", record_starts[i], ":", record_end)
@@ -61,11 +61,11 @@ read_licor_data <- function(filename, debug = FALSE) {
     col_names <- strsplit(record[table_start], "\t", fixed = TRUE)[[1]]
     col_names <- col_names[!grepl("Annotation", col_names)]
     if(debug) cat("\tReading table at record lines", table_start, ":", table_stop, "...")
-    record[(table_start+1):table_stop] %>% 
-      paste(collapse = "\n") %>% 
+    record[(table_start+1):table_stop] %>%
+      paste(collapse = "\n") %>%
       readr::read_tsv(col_names = col_names) ->
       df
-    
+
     # Pull out the data we're interested in
     index <- which(df$Type == 1)
     results$Timestamp[i] <- mean(df$Date)
@@ -83,9 +83,9 @@ read_licor_data <- function(filename, debug = FALSE) {
     results$Comments[i] <- find_parse(record, "^Comments:\t")
     if(debug) cat(as.character(results$Timestamp[i]), results$Label[i], results$Port[i], results$Flux[i], results$Comments[i], "\n")
   }
-  
+
   # Clean up and return
-  results %>% 
+  results %>%
     mutate(Port = as.integer(Port),
            Flux = as.numeric(Flux),
            R2 = as.numeric(R2))
@@ -94,25 +94,25 @@ read_licor_data <- function(filename, debug = FALSE) {
 #----- Function to loop through directory and call function to read licor data -----
 read_licor_dir <- function(path) {
   files <- list.files(path, pattern = ".81x", full.names = TRUE)
-  lapply(files, read_licor_data) %>% 
+  lapply(files, read_licor_data) %>%
     bind_rows
 }
 
 #----- Data processing and plotting -----
 cat("Reading data...\n")
-read_licor_dir("../PREMIS-seawater/licor_data/")  %>%
-  rename(T5 = V4, 
-         SMoisture = V3, 
+read_licor_dir("../Data/licor/")  %>%
+  rename(T5 = V4,
+         SMoisture = V3,
          Collar = Label,      # we record Collar in the label field
          T20 = Comments) %>%  # we record T20 in the comments field
   mutate(T20 = as.numeric(T20)) ->
   rawDat
 
 cat("Joining data...\n")
-collarDat <- read_csv("../PREMIS-stormsurge/design/cores_collars.csv") %>%
+collarDat <- read_csv("../Design/cores_collars.csv") %>%
   mutate(Collar = as.character(Collar))
 
-left_join(rawDat, collarDat, by = "Collar") %>% 
+left_join(rawDat, collarDat, by = "Collar") %>%
   mutate(Date = paste(month(Timestamp), "/", day(Timestamp))) %>%
   select(- V1, -V2)-> licorDat
 
@@ -120,15 +120,15 @@ cat("Calculating daily averages, CVs, etc...\n")
 # this step averages the two measurements that the licor takes at a given collar
 daily_dat <- licorDat %>%
   group_by(Date, Plot) %>%
-  summarise(n = n(), 
+  summarise(n = n(),
             Timestamp = mean(Timestamp),
-            meanFlux = mean(Flux), sdFlux = sd(Flux), 
-            meanSM = mean(SMoisture), meanTemp = mean(T5)) %>% 
+            meanFlux = mean(Flux), sdFlux = sd(Flux),
+            meanSM = mean(SMoisture), meanTemp = mean(T5)) %>%
   drop_na()
 
 cat("Plotting data...\n")
 
-ggplot(daily_dat, aes(x = Timestamp, y = meanFlux, color = Plot)) + 
+ggplot(daily_dat, aes(x = Timestamp, y = meanFlux, color = Plot)) +
   geom_point() +
   geom_line() +
   theme_minimal() +

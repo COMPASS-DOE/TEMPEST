@@ -3,7 +3,7 @@ library(tidyr)
 library(dplyr)
 
 # Sample file
-fn <- "./Data/Soil VWC, T, and EC (TEROS12)/teros12_data/Raw_Data/PNNL11/TEROS11_11192020.txt"
+fn <- "../Data/TEROS12/teros12_data/Raw_Data/PNNL11/TEROS11_11192020.txt"
 
 # In the TEROS files, lines 1, 3, and 4 are various metadata we don't want
 # (Line 2 is the column headers)
