@@ -14,16 +14,20 @@ theme_set(theme_bw())
 fileread <- function(fn) {
     message("Reading ", basename(fn), "...")
     rawdata <- readLines(fn)[-c(1, 3, 4)]
-    read.csv(textConnection(rawdata), check.names = FALSE,
-             na.strings = "NAN", stringsAsFactors = FALSE) %>%
+    textConnection(rawdata) %>%
+        read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
         gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
         filter(!is.na(value))
 }
 
 # Create a list of all TEROS Network data files; recursive = TRUE includes sub-folders
-files <- list.files("Data/Soil VWC, T, and EC (TEROS12)/teros12_data/Raw_Data/",
+rawdata_dir <- "../Data/TEROS12/teros12_data/Raw_Data/"
+message("Raw data dir: ", rawdata_dir)
+files <- list.files(path = rawdata_dir,
                     pattern = "^TEROS[0-9]{2}_[0-9]{8}.txt$", all.files = FALSE,
                     full.names = TRUE, recursive = TRUE, ignore.case = FALSE)
+message(length(files), " files to parse")
+stopifnot(length(files) > 0)  # error if no files found
 
 # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
 # Read the data files into a string vector, remove those lines, and then pass to read.csv()
@@ -55,7 +59,7 @@ teros_data %>%
 
 # Read mapping file that includes location and sensor ID info
 message("Reading map file and merging...")
-read.csv("Data/Soil VWC, T, and EC (TEROS12)/teros12_data/Raw_Data/TEMPEST_TEROS_Network_Location&ID.csv",
+read.csv(file.path(rawdata_dir, "TEMPEST_TEROS_Network_Location&ID.csv"),
          stringsAsFactors = FALSE) %>%
     select(Plot, Grid_Square, ID, Depth, Data_Logger_ID, Data_Table_ID) ->
     map
@@ -83,3 +87,5 @@ print(p_vwc)
 
 p_ec <- ggplot(teros_data, aes(TIMESTAMP, VWC, color = Plot)) + geom_line()
 print(p_ec)
+
+message("All done.")
