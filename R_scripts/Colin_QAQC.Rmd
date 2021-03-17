@@ -2,16 +2,46 @@
 title: "QA/QC"
 author: "Colin Wu"
 date: "3/10/2021"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    code_folding: hide
 ---
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
+library(ggplot2)
 ```
 
-```{r}
+# Inventory
+```{r inventory}
 inventory <- read_csv("../Data/inventory/inventory.csv")
-print(inventory)
+
+#add column to indicate if a specific tree had significant growth fron 2019 to 2020
+inventory <- inventory %>%
+  mutate(Sig_growth_2020 = case_when(
+    DBH_2020 >= DBH_2019 + 0.5 ~ TRUE,
+    DBH_2020 <= DBH_2019 - 0.5 ~ TRUE,
+    TRUE ~ FALSE
+  ))
+
+print(inventory %>% select(DBH_2019,DBH_2020, Sig_growth_2020))
+summary(inventory)
+```
+
+# Summary Table
+```{r summary_table}
+#create summary table that displays the number of trees of each species in each plot
+summary_table <- inventory %>% 
+  group_by(Plot, Species_code) %>% 
+  summarize(num_trees = n())
+
+print(summary_table, n=100)
+```
+
+# Graphs
+```{r graphs}
+
 ```
 
