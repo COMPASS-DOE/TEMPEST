@@ -55,6 +55,7 @@ teros_data %>%
     mutate(variable = case_when(variable == 1 ~ "VWC",
                                 variable == 2 ~ "TSOIL",
                                 variable == 3 ~ "EC")) ->
+  
     teros_data
 
 # Read mapping file that includes location and sensor ID info
@@ -74,18 +75,79 @@ teros_data %>%
     spread(variable, value) ->
     teros_data
 
+# Applying calibration equation for mineral soil VWC
+teros_data$VWC <- 3.879E-4*(teros_data$VWC) - 0.6956
+
 # Initial inspection of each environmental variable over time, data set will need some cleaning
 message("Plotting...")
-p_tsoil <- ggplot(teros_data, aes(TIMESTAMP, TSOIL, color = Plot, group = ID)) + geom_line()
+p_tsoil <- ggplot(teros_data, aes(TIMESTAMP, TSOIL, color = Plot)) + 
+    geom_line() +
+    facet_grid(.~Plot)
 print(p_tsoil)
 
-p_vwc <- ggplot(teros_data, aes(TIMESTAMP, VWC, color = Plot, group = ID)) + geom_line() +
-    # There are some crazy values
-    coord_cartesian(ylim = c(0, 3000)) +
-    facet_grid(Plot~.)
+p_vwc <- ggplot(teros_data, aes(TIMESTAMP, VWC, color = Plot)) + 
+    geom_line() +
+    facet_grid(.~Plot)
 print(p_vwc)
 
-p_ec <- ggplot(teros_data, aes(TIMESTAMP, VWC, color = Plot)) + geom_line()
+p_ec <- ggplot(teros_data, aes(TIMESTAMP, EC, color = Plot)) + 
+    geom_line() +
+    facet_grid(.~Plot)
 print(p_ec)
 
-message("All done.")
+# Data QA/QC issues:
+# Why are there 71 NAs for Plot?
+# Handful of Control Plot sensors faulty in late summer 2020
+# Several Freshwater Plot sensors faulty in late fall 2020
+
+# BBL any idea why there are NAs for Plot? I could not figure it out. All the raw data files, mapping
+# document, and code look good to me. For now, I am removing them from the data set.
+
+teros_data %>%
+    filter(!is.na(Plot)) ->
+    teros_data2 # It looks like 71 rows with no Plot???
+
+# Cleaning data set by excluding nonsense values
+# BBL what are your thoughts on data cleaning? I'm hopeful that we won't have to deal with these
+# large value jumps often now that we have fixed most of the TEROS network issues. For now, I am identifying
+# the faulty sensors as those 2 ST DEV outside of the mean and removing them. We might want to use a 
+# moving average or something similar to identify sensor errors down the road.
+
+# Removing values that are greater than mean + 2 ST DEV - look into other functions for this
+teros_data2 %>%
+    filter(!TSOIL>mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)) | TSOIL<mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)),) %>%
+    filter(!VWC>mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)) | VWC<mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)),) %>%
+    filter(!VWC<0,) %>%
+    filter(!EC>mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)) | EC<mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)),)->
+    teros_data3
+
+# Calculating daily averages - or do we want to keep the 15-minute data, BBL?
+ 
+teros_data3 %>%
+    mutate(Date = paste(month(TIMESTAMP), "/", day(TIMESTAMP))) ->
+    teros_data3
+
+daily_dat <- teros_data3 %>%
+    group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
+    summarise(n = n(),
+              TIMESTAMP = mean(TIMESTAMP),
+              meanTSOIL = mean(TSOIL),
+              meanVWC = mean(VWC),
+              meanEC = mean(EC))
+
+p_tsoil <- ggplot(daily_dat, aes(TIMESTAMP, meanTSOIL, color = Plot)) + 
+    geom_line() +
+    facet_wrap(.~Plot)
+print(p_tsoil)
+
+p_vwc <- ggplot(daily_dat, aes(TIMESTAMP, meanVWC, color = Plot)) + 
+    geom_line() +
+    facet_wrap(.~Plot)
+print(p_vwc)
+
+p_ec <- ggplot(daily_dat, aes(TIMESTAMP, meanEC, color = Plot)) + 
+    geom_line() +
+    facet_wrap(.~Plot)
+print(p_ec)
+
+
