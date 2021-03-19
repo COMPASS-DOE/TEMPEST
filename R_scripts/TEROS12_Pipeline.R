@@ -107,47 +107,89 @@ teros_data %>%
     filter(!is.na(Plot)) ->
     teros_data2 # It looks like 71 rows with no Plot???
 
-# Cleaning data set by excluding nonsense values
+# Cleaning data set
 # BBL what are your thoughts on data cleaning? I'm hopeful that we won't have to deal with these
 # large value jumps often now that we have fixed most of the TEROS network issues. For now, I am identifying
-# the faulty sensors as those 2 ST DEV outside of the mean and removing them. We might want to use a 
+# the faulty sensors as those with values 2 ST DEV outside of the mean and removing them. We might want to use a 
 # moving average or something similar to identify sensor errors down the road.
 
-# Removing values that are greater than mean + 2 ST DEV - look into other functions for this
+# Removing values that are +/- mean + 2 ST DEV - look into other functions for this
 teros_data2 %>%
-    filter(!TSOIL>mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)) | TSOIL<mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)),) %>%
-    filter(!VWC>mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)) | VWC<mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)),) %>%
-    filter(!VWC<0,) %>%
-    filter(!EC>mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)) | EC<mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)),)->
-    teros_data3
+  filter(!TSOIL>mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)) & !TSOIL<mean(TSOIL, na.rm=T)-(3*sd(TSOIL, na.rm=TRUE))) %>%
+  filter(!VWC>mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)) & !VWC<mean(VWC, na.rm=T)-(2*sd(VWC, na.rm=TRUE))) %>%
+  filter(!EC>mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)) & !EC<mean(EC, na.rm=T)-(2*sd(EC, na.rm=TRUE)))->
+  teros_data3
 
 # Calculating daily averages - or do we want to keep the 15-minute data, BBL?
  
 teros_data3 %>%
-    mutate(Date = paste(month(TIMESTAMP), "/", day(TIMESTAMP))) ->
-    teros_data3
-
-daily_dat <- teros_data3 %>%
+    mutate(Date = paste(month(TIMESTAMP), "/", day(TIMESTAMP))) %>%
     group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
     summarise(n = n(),
-              TIMESTAMP = mean(TIMESTAMP),
-              meanTSOIL = mean(TSOIL),
-              meanVWC = mean(VWC),
-              meanEC = mean(EC))
+            TIMESTAMP = mean(TIMESTAMP),
+            meanTSOIL = mean(TSOIL),
+            meanVWC = mean(VWC),
+            meanEC = mean(EC)) ->
+   daily_dat
 
-p_tsoil <- ggplot(daily_dat, aes(TIMESTAMP, meanTSOIL, color = Plot)) + 
-    geom_line() +
+p_tsoil <- ggplot(daily_dat, aes(TIMESTAMP, meanTSOIL, color = Plot, group=ID)) + 
+    geom_point() +
+    ylab("Average Daily Soil Temperature (°C)") +
+    xlab("Date") +
+    scale_color_manual(values=c("green", "blue", "red")) +
     facet_wrap(.~Plot)
 print(p_tsoil)
 
-p_vwc <- ggplot(daily_dat, aes(TIMESTAMP, meanVWC, color = Plot)) + 
-    geom_line() +
+p_vwc <- ggplot(daily_dat, aes(TIMESTAMP, meanVWC, color = Plot, group=ID)) + 
+    geom_point() +
+    ylab("Average Daily Volumetric Water Content") +
+    xlab("Date") +
+    scale_color_manual(values=c("green", "blue", "red")) +
     facet_wrap(.~Plot)
 print(p_vwc)
 
-p_ec <- ggplot(daily_dat, aes(TIMESTAMP, meanEC, color = Plot)) + 
-    geom_line() +
+p_ec <- ggplot(daily_dat, aes(TIMESTAMP, meanEC, color = Plot, group=ID)) + 
+    geom_point() +
+    ylab("Average Daily Electrical Conductivity (µS/cm)") +
+    xlab("Date") +
+    scale_color_manual(values=c("green", "blue", "red")) +
     facet_wrap(.~Plot)
 print(p_ec)
+
+# Looking at data post-February 2021 network maintenance
+daily_dat %>%
+  filter(TIMESTAMP >= as.Date("2021-02-26 11:52:30")) %>%
+  mutate(Depth = factor(Depth, levels=c("5", "15", "30"), labels=c("5 cm", "15 cm", "30 cm"))) ->
+  daily_2021
+
+p_tsoil <- ggplot(daily_2021, aes(TIMESTAMP, meanTSOIL, color = Plot, group=ID)) + 
+  geom_line(size=1.5) +
+  ylab("Average Daily Soil Temperature (°C)") +
+  xlab("Date") +
+  scale_color_manual(values=c("green", "blue", "red")) +
+  facet_wrap(.~Plot)
+print(p_tsoil)
+
+p_vwc <- ggplot(daily_2021, aes(TIMESTAMP, meanVWC, color = Plot, group=ID)) + 
+  geom_line(size=1.5) +
+  ylab("Average Daily Volumetric Water Content") +
+  xlab("Date") +
+  scale_color_manual(values=c("green", "blue", "red")) +
+  facet_wrap(.~Plot)
+print(p_vwc)
+
+p_ec <- ggplot(daily_2021, aes(TIMESTAMP, meanEC, color = Plot, group=ID)) + 
+  geom_line(size=1.5) +
+  ylab("Average Daily Electrical Conductivity (µS/cm)") +
+  xlab("Date") +
+  scale_color_manual(values=c("green", "blue", "red")) +
+  facet_wrap(.~Plot)
+print(p_ec)
+
+
+
+
+
+
 
 
