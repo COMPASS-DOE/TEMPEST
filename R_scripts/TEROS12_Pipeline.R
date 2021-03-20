@@ -83,19 +83,19 @@ teros_data$VWC <- 3.879E-4 * (teros_data$VWC) - 0.6956
 
 # Initial inspection of each environmental variable over time, data set will need some cleaning
 message("Plotting...")
-p_tsoil <- ggplot(teros_data, aes(TIMESTAMP, TSOIL, color = Plot)) +
+p_tsoil <- ggplot(teros_data, aes(TIMESTAMP, TSOIL, group = Data_Table_ID, color = Plot)) +
   geom_line() +
-  facet_grid(.~Plot)
+  facet_wrap(~Data_Logger_ID)
 print(p_tsoil)
 
-p_vwc <- ggplot(teros_data, aes(TIMESTAMP, VWC, color = Plot)) +
+p_vwc <- ggplot(teros_data, aes(TIMESTAMP, VWC, group = Data_Table_ID, color = Plot)) +
   geom_line() +
-  facet_grid(.~Plot)
+  facet_wrap(~Data_Logger_ID)
 print(p_vwc)
 
-p_ec <- ggplot(teros_data, aes(TIMESTAMP, EC, color = Plot)) +
+p_ec <- ggplot(teros_data, aes(TIMESTAMP, EC, group = Data_Table_ID, color = Plot)) +
   geom_line() +
-  facet_grid(.~Plot)
+  facet_wrap(~Data_Logger_ID)
 print(p_ec)
 
 # Data QA/QC issues:
@@ -193,29 +193,27 @@ print(p_ec)
 # Looking at data post-February 2021 network maintenance
 daily_dat %>%
   filter(Date >= as.Date("2021-02-26 11:52:30")) %>%
-  mutate(Depth = factor(Depth, levels=c("5", "15", "30"), labels=c("5 cm", "15 cm", "30 cm"))) ->
+  mutate(Depth = factor(Depth, levels = c("5", "15", "30"),
+                        labels = c("5 cm", "15 cm", "30 cm"))) ->
   daily_2021
 
-p_tsoil <- ggplot(daily_2021, aes(Date, meanTSOIL, color = Plot, group=ID)) +
-  geom_line(size=1.5) +
+p_tsoil <- ggplot(daily_2021, aes(Date, meanTSOIL, color = Plot, group = ID)) +
+  geom_line(size = 1.5) +
   ylab("Average Daily Soil Temperature (?C)") +
-  xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_tsoil)
 
-p_vwc <- ggplot(daily_2021, aes(Date, meanVWC, color = Plot, group=ID)) +
-  geom_line(size=1.5) +
+p_vwc <- ggplot(daily_2021, aes(Date, meanVWC, color = Plot, group = ID)) +
+  geom_line(size = 1.5) +
   ylab("Average Daily Volumetric Water Content") +
-  xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_vwc)
 
-p_ec <- ggplot(daily_2021, aes(Date, meanEC, color = Plot, group=ID)) +
-  geom_line(size=1.5) +
+p_ec <- ggplot(daily_2021, aes(Date, meanEC, color = Plot, group = ID)) +
+  geom_line(size = 1.5) +
   ylab("Average Daily Electrical Conductivity (?S/cm)") +
-  xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_ec)
