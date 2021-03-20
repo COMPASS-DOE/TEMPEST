@@ -72,7 +72,7 @@ teros_data %>%
   teros_data
 
 # Applying calibration equation for mineral soil VWC
-teros_data$VWC <- 3.879E-4*(teros_data$VWC) - 0.6956
+teros_data$VWC <- 3.879E-4 * (teros_data$VWC) - 0.6956
 
 # Initial inspection of each environmental variable over time, data set will need some cleaning
 message("Plotting...")
@@ -109,17 +109,31 @@ teros_data %>%
 # the faulty sensors as those with values 2 ST DEV outside of the mean and removing them. We might want to use a
 # moving average or something similar to identify sensor errors down the road.
 
-# Removing values that are +/- mean + 2 ST DEV - look into other functions for this
-teros_data2 %>%
-  filter(!TSOIL>mean(TSOIL, na.rm=T)+(2*sd(TSOIL, na.rm=TRUE)) & !TSOIL<mean(TSOIL, na.rm=T)-(3*sd(TSOIL, na.rm=TRUE))) %>%
-  filter(!VWC>mean(VWC, na.rm=T)+(2*sd(VWC, na.rm=TRUE)) & !VWC<mean(VWC, na.rm=T)-(2*sd(VWC, na.rm=TRUE))) %>%
-  filter(!EC>mean(EC, na.rm=T)+(2*sd(EC, na.rm=TRUE)) & !EC<mean(EC, na.rm=T)-(2*sd(EC, na.rm=TRUE)))->
-  teros_data3
+
+# Outlier detection based on mean absolute deviation
+# https://www.sciencedirect.com/science/article/abs/pii/S0022103113000668
+# "By default, we suggest a threshold of 2.5 as a reasonable choice."
+mad_outlier <- function(x, ndev = 2.5) {
+  xmed <- median(x, na.rm = TRUE)
+  xmad <- mad(x, na.rm = TRUE)
+  xout <- abs(x - xmed) / xmad > ndev
+  nexc <- sum(xout, na.rm = TRUE)
+  message("Median = ", xmed, ", mad = ", xmad, ", ndev = ", ndev, ", exclude = ",
+          nexc, " of ", length(xout), " (", round(nexc / length(xout) * 100), "%)")
+  xout
+}
+
+message("TSOIL: ", appendLF = FALSE)
+teros_data2$TSOIL[mad_outlier(teros_data2$TSOIL)] <- NA_real_
+message("VWC: ", appendLF = FALSE)
+teros_data2$VWC[mad_outlier(teros_data2$VWC)] <- NA_real_
+message("EC: ", appendLF = FALSE)
+teros_data2$EC[mad_outlier(teros_data2$EC)] <- NA_real_
 
 # Calculating daily averages - or do we want to keep the 15-minute data, BBL?
 
-teros_data3 %>%
-  mutate(Date = paste(month(TIMESTAMP), "/", day(TIMESTAMP))) %>%
+teros_data2 %>%
+  mutate(Date = as.Date(TIMESTAMP)) %>%
   group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
   summarise(n = n(),
             TIMESTAMP = mean(TIMESTAMP),
