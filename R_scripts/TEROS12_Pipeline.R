@@ -44,6 +44,13 @@ files <- list.files(path = rawdata_dir,
 message(length(files), " files to parse")
 stopifnot(length(files) > 0)  # error if no files found
 
+DEBUG <- TRUE
+if(DEBUG || Sys.getenv("CI") == "TRUE") {
+  # We are debugging, or running in GitHub Actions
+  # To speed things up, pick a random file to process
+  files <- sample(files, 1)
+}
+
 # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
 # Read the data files into a string vector, remove those lines, and then pass to read.csv()
 # Finally we set the TIMESTAMP field and reshape the combined data frame to one observation per row
@@ -119,11 +126,34 @@ mad_outlier <- function(x, ndev = 2.5) {
 }
 
 message("TSOIL: ", appendLF = FALSE)
-teros_data2$TSOIL[mad_outlier(teros_data2$TSOIL)] <- NA_real_
+tsoil_outliers <- mad_outlier(teros_data2$TSOIL)
+teros_data2$TSOIL[tsoil_outliers] <- NA_real_
 message("VWC: ", appendLF = FALSE)
-teros_data2$VWC[mad_outlier(teros_data2$VWC)] <- NA_real_
+vwc_outliers <- mad_outlier(teros_data2$VWC)
+teros_data2$VWC[vwc_outliers] <- NA_real_
 message("EC: ", appendLF = FALSE)
-teros_data2$EC[mad_outlier(teros_data2$EC)] <- NA_real_
+ec_outliers <- mad_outlier(teros_data2$EC)
+teros_data2$EC[ec_outliers] <- NA_real_
+
+# Outlier report
+teros_data2 %>%
+  mutate(Date = round_date(TIMESTAMP, unit = "month"),
+         TSOIL = tsoil_outliers,
+         VWC = vwc_outliers,
+         EC = ec_outliers) %>%
+  select(Date, Data_Logger_ID, Data_Table_ID, TSOIL, VWC, EC) %>%
+  group_by(Date, Data_Logger_ID, Data_Table_ID) %>%
+  summarise(TSOIL = sum(TSOIL) / n(),
+            VWC = sum(VWC) / n(),
+            EC = sum(EC) / n()) ->
+  outlier_summary
+
+outlier_summary %>%
+  pivot_longer(c(TSOIL, VWC, EC), names_to = "Group", values_to = "Outliers") %>%
+  ggplot(aes(Group, Date, fill = Outliers)) + geom_tile() +
+  scale_fill_continuous(labels = scales::percent_format()) ->
+  p_outliers
+print(p_outliers)
 
 # Calculating daily averages - or do we want to keep the 15-minute data, BBL?
 
@@ -131,9 +161,9 @@ teros_data2 %>%
   mutate(Date = as.Date(TIMESTAMP)) %>%
   group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
   summarise(n = n(),
-            meanTSOIL = mean(TSOIL),
-            meanVWC = mean(VWC),
-            meanEC = mean(EC)) ->
+            meanTSOIL = mean(TSOIL, na.rm = TRUE),
+            meanVWC = mean(VWC, na.rm = TRUE),
+            meanEC = mean(EC, na.rm = TRUE)) ->
   daily_dat
 
 p_tsoil <- ggplot(daily_dat, aes(Date, meanTSOIL, color = Plot, group=ID)) +
