@@ -20,13 +20,9 @@ inventory <- read_csv("../Data/inventory/inventory.csv")
 
 #add column to indicate if a specific tree had significant growth fron 2019 to 2020
 inventory <- inventory %>%
-  mutate(Sig_growth_2020 = case_when(
-    DBH_2020 >= DBH_2019 + 0.5 ~ TRUE,
-    DBH_2020 <= DBH_2019 - 0.5 ~ TRUE,
-    TRUE ~ FALSE
-  ))
+  mutate(Sig_growth_2020 = abs(DBH_2020-DBH_2019) > 0.5)
 
-print(inventory %>% select(DBH_2019,DBH_2020, Sig_growth_2020))
+print(inventory %>% select(DBH_2019,DBH_2020, Sig_growth_2020), n = 200)
 summary(inventory)
 ```
 
