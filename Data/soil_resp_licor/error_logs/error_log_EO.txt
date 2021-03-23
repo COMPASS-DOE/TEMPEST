@@ -1,0 +1,16 @@
+2018-08-20 15:33:59: Measurement=TestEO_20180820.81x: The measurement was restarted.
+
+2018-08-20 19:20:01: Measurement=TestEO_20180820.81x: The measurement was restarted.
+
+2018-08-20 20:36:34: Measurement=TestEO_20180820.81x: The measurement was restarted.
+
+2018-08-22 10:48:33: Measurement=TestEO_20180822.81x: The measurement was restarted.
+
+2018-08-22 11:15:31: Measurement=TestEO_20180822.81x: The measurement was restarted.
+
+2018-08-22 15:47:53: Measurement=TestEO_20180822.81x: The measurement was restarted.
+
+2018-08-22 17:22:39: Measurement=TestEO_20180822.81x: The measurement was restarted.
+
+2018-08-24 11:11:03: Measurement=TestEO_20180824.81x: The measurement was restarted.
+

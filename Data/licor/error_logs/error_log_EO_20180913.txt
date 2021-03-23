@@ -1,1 +1,0 @@
-2018-09-13 16:46:24: Measurement=EOtest_20180913.81x: The measurement was restarted.
