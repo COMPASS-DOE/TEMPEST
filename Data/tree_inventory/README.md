@@ -11,8 +11,7 @@ Tag           | Tag number (integer)
 Species_code  | Species code (genus + species; https://plants.usda.gov/)
 DBH_{year}    | Diameter at 1.4 m in {year}, cm (numeric)
 Date_{year}   | Date inventory performed in {year} (string, YYYY-MM-DD)
-Status_{year} | Status in {year} (string, LI=live; DS=dead standing; DC=??)
+Status_{year} | ForestGEO status code in {year} (string, LI=live; DS=dead standing; DC=dead and down)
 Sapflux       | If sapflux tree, noted here (string)
 In_Plot       | For historical reasons, some trees are out of plot (string, TRUE/FALSE)
 Notes         | Notes
-JS_codes      | ???
