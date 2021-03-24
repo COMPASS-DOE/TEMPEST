@@ -26,37 +26,39 @@ print(inventory %>% select(DBH_2019,DBH_2020, Sig_growth_2020))
 summary(inventory)
 ```
 
-# Summary Table
-```{r summary_table}
+# Long Table
+```{r long data}
+#used method for pivoting longer multiple columns from https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns
+
+#Take all variables that end in a year and turn it into a categorical variable Type
+long_inventory <- inventory %>%
+  pivot_longer(grep(colnames(inventory), pattern=".*_\\d{4}"), names_pattern = "(.*)_(\\d{4})", names_to = c("Type","Year"), values_to = "val",  values_transform = list(val = as.character), names_transform = list(Year = as.integer))
+
+#Unpack Type into seperate variables
+long_inventory <- long_inventory %>% 
+  pivot_wider(names_from = Type, values_from=val) %>%
+  relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
+  mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"), Sig_growth = as.logical(Sig_growth))
+
+print(long_inventory, n = 50)
+summary(long_inventory)
+```
+
+# Number of Trees
+```{r numtrees}
 #create summary table that displays the number of trees of each species in each plot
 summary_table <- inventory %>% 
   group_by(Plot, Species_code) %>% 
   summarize(num_trees = n())
 
 print(summary_table, n=100)
-```
 
-# Long Table
-```{r long data}
-#used method for pivoting long multiple columns from https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns
 
-#Take all variables that end in a year and turn it into a categorical variable Type
-long_inventory <- inventory %>%
-  pivot_longer(grep(colnames(inventory), pattern=".*_\\d{4}"), names_pattern = "(.*)_(\\d{4})", names_to = c("Type","Year"), values_to = "val",  values_transform = list(val = as.character), names_transform = list(Year = as.integer)) %>%
-  relocate(c(Tag, Type, Year, val))
-
-#Unpack Type into seperate variables
-long_inventory <- long_inventory %>% 
-  pivot_wider(names_from = Type, values_from=val) %>%
-  relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
-  mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"))
-
-print(long_inventory, n = 300)
-summary(long_inventory)
+Tree_num <- long_inventory %>% group_by(Plot, Species_code, Year) %>% summarize(num_trees = n())
+print(Tree_num, n = 100)
 ```
 
 # Graphs
 ```{r graphs}
-#Gizmolin246!
 ```
 
