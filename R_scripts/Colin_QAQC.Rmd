@@ -35,18 +35,6 @@ summary_table <- inventory %>%
 
 print(summary_table, n=100)
 ```
-# Long Example
-```{r}
-dat <- data.frame(Tag = 1:2, DBH_2019 = 2:3, DBH_2020 = 3:4)
-print(dat)
-dat %>% 
-  pivot_longer(starts_with("DBH"), values_to = "DBH") %>% 
-  separate(name, into = c("junk", "year")) %>% 
-  select(-junk) ->
-  dbh_data
-print(dbh_data)
-```
-
 
 # Long Table
 ```{r long data}
@@ -54,15 +42,17 @@ print(dbh_data)
 
 #Take all variables that end in a year and turn it into a categorical variable Type
 long_inventory <- inventory %>%
-  pivot_longer(grep(colnames(inventory), pattern=".*_\\d{4}"), names_pattern = "(.*)_(\\d{4})", names_to = c("Type","Year"), values_to = "val",  values_transform = list(val = as.character)) %>%
+  pivot_longer(grep(colnames(inventory), pattern=".*_\\d{4}"), names_pattern = "(.*)_(\\d{4})", names_to = c("Type","Year"), values_to = "val",  values_transform = list(val = as.character), names_transform = list(Year = as.integer)) %>%
   relocate(c(Tag, Type, Year, val))
 
 #Unpack Type into seperate variables
 long_inventory <- long_inventory %>% 
   pivot_wider(names_from = Type, values_from=val) %>%
-  relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))
+  relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
+  mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"))
 
 print(long_inventory, n = 300)
+summary(long_inventory)
 ```
 
 # Graphs
