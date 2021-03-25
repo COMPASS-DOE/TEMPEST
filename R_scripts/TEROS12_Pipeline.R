@@ -13,9 +13,13 @@ theme_set(theme_bw())
 # Helper function: read string vector into a data frame, reshape, and drop NA
 fileread <- function(fn) {
   message("Reading ", basename(fn), "...")
+  # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
+  # Read the data files into a string vector, remove those lines, and then pass to read.csv()
   rawdata <- readLines(fn)[-c(1, 3, 4)]
   textConnection(rawdata) %>%
     read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
+    as_tibble() %>%
+    # Reshape the data frame to one observation per row
     gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
     filter(!is.na(value)) %>%
     # Pull data logger ID out of statname
@@ -44,23 +48,15 @@ files <- list.files(path = rawdata_dir,
 message(length(files), " files to parse")
 stopifnot(length(files) > 0)  # error if no files found
 
-DEBUG <- TRUE
-if(DEBUG || Sys.getenv("CI") == "TRUE") {
-  # We are debugging, or running in GitHub Actions
-  # To speed things up, pick a random file to process
-  files <- sample(files, 1)
-}
-
-# Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
-# Read the data files into a string vector, remove those lines, and then pass to read.csv()
-# Finally we set the TIMESTAMP field and reshape the combined data frame to one observation per row
+# Process all files through fileread() (above), combine, remove duplicates...
 files %>%
   lapply(fileread) %>%
   bind_rows() %>%
-  distinct() %>%
-  spread(variable, value) %>%
-  as_tibble() ->
+  distinct() ->
   teros_data
+
+# Defensive programming: should be exactly three variables
+stopifnot(length(unique(teros_data$variable)) == 3)
 
 # Read mapping file that includes location and sensor ID info
 message("Reading map file and merging...")
@@ -69,12 +65,11 @@ read.csv(file.path(rawdata_dir, "TEMPEST_TEROS_Network_Location&ID.csv"),
   select(Plot, Grid_Square, ID, Depth, Data_Logger_ID, Data_Table_ID) ->
   map
 
-# Defensive programming: should be exactly three variables
-stopifnot(length(unique(teros_data$variable)) == 3)
-
-# Merge the two data frames, pulling plot, grid square, ID, and depth info into teros_data
+# Reshape (reducing data set size), and then merge the two
+# data frames, pulling plot, grid square, ID, and depth info into teros_data
 # Reshape to put each variable into its own column
 teros_data %>%
+  spread(variable, value) %>%
   left_join(map, by = c("Data_Logger_ID", "Data_Table_ID")) ->
   teros_data
 
@@ -106,9 +101,12 @@ print(p_ec)
 # BBL any idea why there are NAs for Plot? I could not figure it out. All the raw data files, mapping
 # document, and code look good to me. For now, I am removing them from the data set.
 
-teros_data %>%
-  filter(!is.na(Plot)) ->
-  teros_data2 # It looks like 71 rows with no Plot???
+if(any(is.na(teros_data$Plot))) {
+  warning("There are NA plot values in TEROS data. This should not happen!")
+  teros_data %>%
+    filter(!is.na(Plot)) ->
+    teros_data # It looks like 71 rows with no Plot???
+}
 
 # Cleaning data set
 
@@ -126,17 +124,17 @@ mad_outlier <- function(x, ndev = 2.5) {
 }
 
 message("TSOIL: ", appendLF = FALSE)
-tsoil_outliers <- mad_outlier(teros_data2$TSOIL)
-teros_data2$TSOIL[tsoil_outliers] <- NA_real_
+tsoil_outliers <- mad_outlier(teros_data$TSOIL)
+teros_data$TSOIL[tsoil_outliers] <- NA_real_
 message("VWC: ", appendLF = FALSE)
-vwc_outliers <- mad_outlier(teros_data2$VWC)
-teros_data2$VWC[vwc_outliers] <- NA_real_
+vwc_outliers <- mad_outlier(teros_data$VWC)
+teros_data$VWC[vwc_outliers] <- NA_real_
 message("EC: ", appendLF = FALSE)
-ec_outliers <- mad_outlier(teros_data2$EC)
-teros_data2$EC[ec_outliers] <- NA_real_
+ec_outliers <- mad_outlier(teros_data$EC)
+teros_data$EC[ec_outliers] <- NA_real_
 
 # Outlier report
-teros_data2 %>%
+teros_data %>%
   mutate(Date = round_date(TIMESTAMP, unit = "month"),
          TSOIL = tsoil_outliers,
          VWC = vwc_outliers,
@@ -157,7 +155,7 @@ print(p_outliers)
 
 # Calculating daily averages - or do we want to keep the 15-minute data, BBL?
 
-teros_data2 %>%
+teros_data %>%
   mutate(Date = as.Date(TIMESTAMP)) %>%
   group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
   summarise(n = n(),
@@ -167,26 +165,26 @@ teros_data2 %>%
   daily_dat
 
 p_tsoil <- ggplot(daily_dat, aes(Date, meanTSOIL, color = Plot, group=ID)) +
-  geom_point() +
+  geom_point(na.rm = TRUE) +
   ylab("Average Daily Soil Temperature (?C)") +
   xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_tsoil)
 
 p_vwc <- ggplot(daily_dat, aes(Date, meanVWC, color = Plot, group=ID)) +
-  geom_point() +
+  geom_point(na.rm = TRUE) +
   ylab("Average Daily Volumetric Water Content") +
   xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_vwc)
 
 p_ec <- ggplot(daily_dat, aes(Date, meanEC, color = Plot, group=ID)) +
-  geom_point() +
+  geom_point(na.rm = TRUE) +
   ylab("Average Daily Electrical Conductivity (?S/cm)") +
   xlab("Date") +
-  scale_color_manual(values=c("green", "blue", "red")) +
+  scale_color_manual(values = c("green", "blue", "red")) +
   facet_wrap(.~Plot)
 print(p_ec)
 
