@@ -50,9 +50,7 @@ summary(long_inventory)
 summary_table <- inventory %>% 
   group_by(Plot, Species_code) %>% 
   summarize(num_trees = n())
-
 print(summary_table, n=100)
-
 
 Tree_num <- long_inventory %>% group_by(Plot, Species_code, Year) %>% summarize(num_trees = n())
 print(Tree_num, n = 100)
