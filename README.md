@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![render-rmarkdown](https://github.com/COMPASS-DOE/TEMPEST/workflows/render-rmarkdown/badge.svg)](https://github.com/COMPASS-DOE/TEMPEST/actions)
+<!-- badges: end -->
+
 # TEMPEST
 ## Temperate Ecosystem Manipulation to Probe Effects of Storm Treatments 
 
