@@ -4,25 +4,33 @@ author: "Colin Wu"
 date: "3/10/2021"
 output: 
   html_document:
+    df_print: paged
+    #See https://bookdown.org/yihui/rmarkdown/html-document.html#data-frame-printing
     toc: yes
     toc_float: yes
     code_folding: hide
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(ggplot2)
+library(lemon)
+library(rmarkdown)
+library(knitr)
+
+#knit_print.tibble <- lemon_print
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, rows.print=20)
 ```
 
 # Inventory
 ```{r inventory}
-inventory <- read_csv("../Data/inventory/inventory.csv")
+inventory <- read_csv("../Data/tree_inventory/inventory.csv")
 
 #add column to indicate if a specific tree had significant growth fron 2019 to 2020
 inventory <- inventory %>%
   mutate(Sig_growth_2020 = abs(DBH_2020-DBH_2019) > 0.5)
+inventory
 
-print(inventory %>% select(DBH_2019,DBH_2020, Sig_growth_2020))
 summary(inventory)
 ```
 
@@ -40,7 +48,7 @@ long_inventory <- long_inventory %>%
   relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
   mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"), Sig_growth = as.logical(Sig_growth))
 
-print(long_inventory, n = 50)
+long_inventory
 summary(long_inventory)
 ```
 
@@ -50,10 +58,21 @@ summary(long_inventory)
 summary_table <- inventory %>% 
   group_by(Plot, Species_code) %>% 
   summarize(num_trees = n())
-print(summary_table, n=100)
+summary_table
 
 Tree_num <- long_inventory %>% group_by(Plot, Species_code, Year) %>% summarize(num_trees = n())
-print(Tree_num, n = 100)
+Tree_num
+
+Stem_Live <- long_inventory %>% 
+  group_by(Plot, Year) %>% 
+  summarize(Alive = length(grep("LI", Status)), Dead = length(grep("D.", Status)))
+Stem_Live
+
+Stem_Standing <- long_inventory %>% 
+  group_by(Year) %>%
+  summarize(Standing = length(grep(".S|LI", Status)), Down = length(grep(".C", Status)))
+Stem_Standing
+
 ```
 
 # Graphs
