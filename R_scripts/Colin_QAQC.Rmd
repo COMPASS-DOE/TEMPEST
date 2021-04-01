@@ -13,9 +13,6 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggplot2)
-library(lemon)
-library(rmarkdown)
-library(knitr)
 
 #knit_print.tibble <- lemon_print
 
