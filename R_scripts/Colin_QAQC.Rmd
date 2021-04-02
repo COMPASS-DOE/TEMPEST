@@ -45,7 +45,7 @@ long_inventory <- long_inventory %>%
   relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
   mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"), 
          Sig_growth = as.logical(Sig_growth),
-         Basal_Area = pi*(DBH/2)^2/2000)
+         BA = pi*(DBH/2)^2/2000)
 
 long_inventory
 summary(long_inventory)
@@ -76,5 +76,7 @@ Stem_Standing
 
 # Graphs
 ```{r graphs}
+BA_graph <- long_inventory %>% ggplot(aes(Date, BA, color = Species_code, group=1)) + geom_line() + geom_point() + facet_wrap(~Plot)
+print(BA_graph)
 ```
 
