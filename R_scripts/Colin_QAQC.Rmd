@@ -46,7 +46,7 @@ long_inventory <- long_inventory %>%
   relocate(c(Tag, Year, Date, Status, Sig_growth, DBH))%>%
   mutate(DBH = as.numeric(DBH), Date = as.Date(Date, format = "%m/%d/%y"), 
          Sig_growth = as.logical(Sig_growth),
-         BA = pi*(DBH/200)^2/2)
+         BA = pi*(DBH/200)^2/0.2)
 
 long_inventory
 summary(long_inventory)
@@ -76,7 +76,10 @@ Stem_Standing <- long_inventory %>%
   summarize(Standing = length(grep(".S|LI", Status)), Down = length(grep(".C", Status)))
 Stem_Standing
 
-Total_BA <- long_inventory %>% group_by(Plot) %>% summarize(BA = sum(BA, na.rm=TRUE))
+Total_BA <- long_inventory %>% 
+  group_by(Plot, Year) %>% 
+  summarize(BA = sum(BA, na.rm=TRUE)) %>%
+  pivot_wider(names_from = Year, values_from = BA, names_prefix = "BA_")
 Total_BA
 ```
 
@@ -105,7 +108,7 @@ down_trees
 
 ## Incorrect Status
 ```{r}
-wrong_status <- long_inventory %>% filter(!grepl("LI|D[SC]", Status))
+wrong_status <- long_inventory %>% filter(!grepl("LI|D[SC]", Status)) %>% select(Tag, Year, Status, Notes)
 wrong_status
 ```
 
