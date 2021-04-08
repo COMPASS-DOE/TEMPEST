@@ -85,7 +85,11 @@ Total_BA
 
 # Graphs
 ```{r graphs}
-BA_graph <- long_inventory %>% ggplot(aes(Date, BA, color = Species_code, group=1)) + geom_line() + geom_point() + facet_wrap(~Plot)
+BA_graph <- long_inventory %>% 
+  group_by(Year, Species_code, Plot) %>% 
+  summarize(BA = sum(BA)) %>% ggplot(aes(Year, BA, fill = Species_code)) +
+  geom_area() +
+  facet_wrap(~Plot)
 print(BA_graph)
 ```
 
