@@ -98,7 +98,7 @@ print(BA_graph)
 ```{r}
 zombie_trees <- long_inventory %>%
   group_by(Tag) %>%
-  summarize(Zombie = !all(sapply(which(Status == "LI"), function(x, y) all(x < y), which(Status != "LI")))) %>% filter(Zombie)
+  filter(!all(sapply(which(Status == "LI"), function(x, y) all(x < y), which(Status != "LI"))))
 zombie_trees
 ```
 
@@ -106,13 +106,16 @@ zombie_trees
 ```{r}
 down_trees <- long_inventory %>% 
   group_by(Tag) %>%
-  summarize(Down_Stand = !all(sapply(grep(".S|LI", Status), function(x, y) all(x < y), grep(".C", Status)))) %>% filter(Down_Stand)
+  filter(!all(sapply(grep(".S|LI", Status), function(x, y) all(x < y), grep(".C", Status))))
 down_trees
 ```
 
 ## Incorrect Status
 ```{r}
-wrong_status <- long_inventory %>% filter(!grepl("LI|D[SC]", Status)) %>% select(Tag, Year, Status, Notes)
+wrong_status <- long_inventory %>%
+  group_by(Tag) %>%
+  filter(!all(sapply(grep(NA, Status), function(x, y) all(x < y), grep(!NA, Status))) | (!grepl("LI|D[SC]", Status) & !is.na(Status))) %>% 
+  select(Tag, Year, Status, Notes)
 wrong_status
 ```
 
