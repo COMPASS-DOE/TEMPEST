@@ -87,10 +87,14 @@ Total_BA
 ```{r graphs}
 BA_graph <- long_inventory %>% 
   group_by(Year, Species_code, Plot) %>% 
-  summarize(BA = sum(BA)) %>% ggplot(aes(Year, BA, fill = Species_code)) +
+  summarize(BA = sum(BA)) %>% 
+  ggplot(aes(Year, BA, fill = Species_code)) +
   geom_area() +
   facet_wrap(~Plot)
 print(BA_graph)
+
+Diam_Distr <- long_inventory %>% ggplot(aes(DBH)) + geom_density() + facet_grid(Year~Plot)
+Diam_Distr
 ```
 
 # Error Check {.tabset}
