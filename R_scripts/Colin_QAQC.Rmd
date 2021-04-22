@@ -82,7 +82,7 @@ Total_BA <- long_inventory %>%
   pivot_wider(names_from = Year, values_from = BA, names_prefix = "BA_")
 Total_BA
 
-Mortality_Table <- long_inventory %>% arrange(Year) %>% group_by(Tag) %>% filter((lag(Status) == "LI" | is.na(lag(Status))) & grepl("D.", Status))
+Mortality_Table <- long_inventory %>% arrange(Year) %>% group_by(Tag) %>% filter(lag(Status) == "LI" & grepl("D.", Status))
 Mortality_Table
 ```
 
