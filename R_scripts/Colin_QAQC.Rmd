@@ -113,7 +113,7 @@ scatter_inventory <- inventory %>%
 scatter_inventory[is.na(scatter_inventory)] <- 0
 scatter_inventory
 
-scatterpie_dist <- ggplot() + geom_scatterpie(aes(X, Y, r = total/18), data = scatter_inventory, cols = colnames(scatter_inventory)[-(1:4)]) + coord_equal() + facet_wrap(~Plot, ncol=1) + scale_x_continuous(breaks = 1:10, labels=c(LETTERS[1:10])) + xlab(NULL)
+scatterpie_dist <- ggplot() + geom_scatterpie(aes(X, Y), data = scatter_inventory, cols = colnames(scatter_inventory)[-(1:4)]) + coord_equal() + facet_wrap(~Plot, ncol=1) + scale_x_continuous(breaks = 1:10, labels=c(LETTERS[1:10])) + xlab(NULL)
 
 scatterpie_dist
 ```
@@ -121,6 +121,8 @@ scatterpie_dist
 # Error Check {.tabset}
 ## Zombie Trees
 ```{r}
+# Table of trees that were dead (DS, DC) in one year and then alive (LI) in a subsequent year
+# Groups trees by their tag (groups data by each different tree) and checks if every LI status is before every dead (DS, DC) status by finding their indices and comparing values
 zombie_trees <- long_inventory %>%
   group_by(Tag) %>%
   filter(!all(sapply(which(Status == "LI"), function(x, y) all(x < y), which(Status != "LI"))))
@@ -146,7 +148,7 @@ wrong_status
 
 ## Incorrect DBH
 ```{r}
+#Table of trees that are less than 1 cm in diameter (diameter is too small to be considered an accurate measurement)
 bad_DBH <- long_inventory %>% filter(DBH < 1)
 bad_DBH
 ```
-
