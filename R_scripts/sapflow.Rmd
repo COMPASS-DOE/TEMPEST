@@ -1,0 +1,90 @@
+---
+title: "Sapflow QA / QC"
+author: "Stephanie Pennington"
+date: "5/6/2021"
+output: html_document
+---
+
+```{r setup}
+# Load packages
+library(readr)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Global chunk options
+knitr:: opts_chunk$set(echo = FALSE)
+
+# Function setup
+read_sapflow <- function(filename) {
+    sdat <- readLines(filename)
+    sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
+    
+    # parse line one to extract logger name
+    pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
+    logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
+    
+    read_csv(sdat, skip = 1) %>% 
+        mutate(Logger = logger_name)
+}
+
+# Read in data
+s_files <- list.files(path = "../Data/sapflow/", pattern = "PNNL", full.names = TRUE)
+ports <- read_csv("../Design/ports.csv")
+
+```
+
+```{r process}
+
+# pivot long
+# extract number form former col name "DiffVolt_Avg(1)" would become "1"
+# join with ports dataframe and bring in tree codes
+
+lapply(s_files, read_sapflow) %>%  
+    bind_rows() %>% 
+    pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
+                 names_to = "Port", values_to = "Value") %>% 
+    rename(Timestamp = TIMESTAMP, Record = RECORD) %>% 
+    mutate(Timestamp = ymd_hms(Timestamp), 
+           Port = parse_number(Port), 
+           Logger = parse_number(Logger)) %>% 
+    left_join(ports, by = c("Logger", "Port")) %>% 
+    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
+
+if(sum(is.na(sapflow$Tree_Code)) > 0) {
+    warning("Missing tree code")
+    # use antijoin()
+}
+
+
+
+```
+
+
+```{r qa/qc}
+
+sapflow %>% 
+    mutate(E1 = !between(Value, 0, 1), # Value out of range
+           E2 = is.na(Value)) -> t # Value NaN
+
+# get test dataset
+
+# check for weird days
+## daytime values > neighttime values
+## midnight to 6 should look like 6 to midnight
+
+# check for weird hours
+## does 10am match up with +- 3 days
+## does that meas fall btw previous and next measurement
+    
+
+```
+
+
+
+```{r plots}
+
+
+```
+
