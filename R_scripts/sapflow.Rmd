@@ -11,7 +11,7 @@ output:
     number_sections: true
 ---
 
-```{r setup, echo=FALSE, message=FALSE}
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 # Load packages
 TESTING <- TRUE
 VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
@@ -28,15 +28,15 @@ knitr:: opts_chunk$set(echo = FALSE)
 
 # Function setup
 read_sapflow <- function(filename) {
-    sdat <- readLines(filename)
-    sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
-    
-    # parse line one to extract logger name
-    pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
-    logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
-    
-    read_csv(sdat, skip = 1) %>% 
-        mutate(Logger = logger_name)
+  sdat <- readLines(filename)
+  sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
+  
+  # parse line one to extract logger name
+  pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
+  logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
+  
+  read_csv(sdat, skip = 1) %>% 
+    mutate(Logger = logger_name)
 }
 
 # Generate list of 'current' sapflow files 
@@ -44,45 +44,45 @@ s_files <- list.files(path = "../Data/sapflow/", pattern = "PNNL", full.names = 
 ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
 ```
 
-```{r process}
-
-# pivot long
-# extract number form former col name "DiffVolt_Avg(1)" would become "1"
-# join with ports dataframe and bring in tree codes
+```{r process-data}
+# Read in data we're reporting on, reshape and reformat for analysis, etc.
 
 if(TESTING) {
-    message("TESTING!")
-    sapflow <- read_csv("test_data/sapflow_test_20210601.csv")
+  message("TESTING!")
+  sapflow <- read_csv("test_data/sapflow_test_20210601.csv")
 } else {
-    # Read in data
-    lapply(s_files, read_sapflow) %>%  
-        bind_rows() %>% 
-        pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
-                     names_to = "Port", values_to = "Value") %>% 
-        rename(Timestamp = TIMESTAMP, Record = RECORD) %>% 
-        mutate(Timestamp = ymd_hms(Timestamp, tz = "EST"), 
-               Port = parse_number(Port), 
-               Logger = parse_number(Logger)) -> sf_raw
-    
-    sf_raw %>% 
-        left_join(ports, by = c("Logger", "Port")) %>% 
-        select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
-    
-    nomatch <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
-    if(nrow(nomatch) > 0) {
-        warning("There were logger/port combinations that I couldn't find in ports.csv:")
-        nomatch %>% 
-            distinct(Logger, Port) %>% 
-            print()
-    }
+  # Read in data
+  lapply(s_files, read_sapflow) %>%  
+    bind_rows() %>% 
+    # extract number form former col name "DiffVolt_Avg(1)" would become "1"
+    # join with ports dataframe and bring in tree codes
+    pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
+                 names_to = "Port", values_to = "Value") %>% 
+    rename(Timestamp = TIMESTAMP, 
+           Record = RECORD) %>% 
+    mutate(Timestamp = ymd_hms(Timestamp, tz = "EST"), 
+           Port = parse_number(Port), 
+           Logger = parse_number(Logger)) -> sf_raw
+  
+  sf_raw %>% 
+    left_join(ports, by = c("Logger", "Port")) %>% 
+    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
+  
+  nomatch <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
+  if(nrow(nomatch) > 0) {
+    warning("There were logger/port combinations that I couldn't find in ports.csv:")
+    nomatch %>% 
+      distinct(Logger, Port) %>% 
+      print()
+  }
 }
 
 # Add some extra time information
 sapflow %>% 
-    mutate(Year = year(Timestamp), 
-           Yearday = yday(Timestamp), 
-           Time = hour(Timestamp) + minute(Timestamp) / 60) -> 
-    sapflow
+  mutate(Year = year(Timestamp), 
+         Yearday = yday(Timestamp), 
+         Time = hour(Timestamp) + minute(Timestamp) / 60) -> 
+  sapflow
 
 # BBL-SP todo
 # * test dataset should include data that don't have a logger/port match
@@ -96,8 +96,8 @@ sapflow %>%
 trees <- c("F16", "S15", "F2", "S6", "S2", "F13", "C10", "C11", "L4")
 
 sapflow %>% 
-    filter(Tree_Code %in% trees,
-           Timestamp > "2021-04-25 12:30:00") -> test_df
+  filter(Tree_Code %in% trees,
+         Timestamp > "2021-04-25 12:30:00") -> test_df
 ```
 
 What do we want to identify? h/t to SP's lovely test data here
@@ -113,10 +113,10 @@ TREND TEST (?)
 * if data exhibiting trend over X days
 
 I think each section (code chunk = test) produces a data frame with day, tree, error_code
-    ERROR_xxxxx
-    WARNING_xxxxx
-    NOTE_xxxxxx
-    
+ERROR_xxxxx
+WARNING_xxxxx
+NOTE_xxxxxx
+
 It sticks this into a list
 
 At the end of the script, we assemble all of these into a single summary data frame
@@ -130,42 +130,44 @@ At the end of the script, we assemble all of these into a single summary data fr
 # Daily cycle test
 
 ```{r daily-cycle-test}
-
+# Helper function
 daily_cycle_amplitude <- function(hours, values) {
-    stopifnot(length(hours) == length(values))
-    
-    # We need data coverage over the day to do this
-    if(min(hours) > 4 && max(hours) < 20) {
-        return(NA)
-    }
-    
-    # Simple test: voltage during afternoon hours (based on known good data) should be lower
-    # than others
-    afternoon <- hours %in% 12:18
-    mean(values[afternoon]) - mean(values[!afternoon])
+  stopifnot(length(hours) == length(values))
+  stopifnot(!any(duplicated(hours)))
+  
+  # We need data coverage over the day to do this
+  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 24) {
+    return(NA)
+  }
+  
+  # Simple test: voltage during afternoon hours (based on known good data) should be lower
+  # than others
+  afternoon <- hours %in% 12:18
+  mean(values[afternoon]) - mean(values[!afternoon])
 }
 
+# Compute 'amplitude' (kind of; the difference between afternoon and non-afternoon values)
 sapflow %>% 
-    group_by(Year, Yearday, Tree_Code) %>% 
-    summarise(amplitude = daily_cycle_amplitude(Time, Value),
-              good_cycle = amplitude < -0.01 & amplitude > -0.2,
-              .groups = "drop") ->
-    daily_amplitude_data
+  group_by(Year, Yearday, Tree_Code) %>% 
+  summarise(amplitude = daily_cycle_amplitude(Time, Value),
+            good_cycle = amplitude < -0.01 & amplitude > -0.2,
+            .groups = "drop") ->
+  daily_amplitude_data
 
 # Make a basic table
 daily_amplitude_data %>% 
-    group_by(Tree_Code) %>%
-    summarise(failures = sum(!good_cycle)) %>%
-    arrange(desc(failures))
+  group_by(Tree_Code) %>%
+  summarise(failures = sum(!good_cycle)) %>%
+  arrange(desc(failures))
 
 sapflow %>% 
-    left_join(daily_amplitude_data, by = c("Year", "Yearday", "Tree_Code")) ->
-    sapflow
+  left_join(daily_amplitude_data, by = c("Year", "Yearday", "Tree_Code")) ->
+  sapflow
 
 ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
-    geom_point() + 
-    facet_wrap(~Tree_Code) + 
-    coord_cartesian(ylim = c(0, 1))
+  geom_point() + 
+  facet_wrap(~Tree_Code) + 
+  coord_cartesian(ylim = c(0, 1))
 
 ```
 
