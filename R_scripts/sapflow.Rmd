@@ -1,12 +1,14 @@
 ---
 title: "Sapflow QA / QC"
-author: "Stephanie Pennington"
-date: "5/6/2021"
+author: "Ben Bond-Lamberty and Stephanie Pennington"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
 ```{r setup}
 # Load packages
+TESTING <- TRUE
+
 library(readr)
 library(lubridate)
 library(dplyr)
@@ -36,15 +38,14 @@ check_cycle <- function(dataframe) {
     night <- c(19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5)
     browser()
     dataframe %>% 
-    mutate(DOY = yday(Timestamp), HOD = hour(Timestamp)) %>% 
-    group_by(DOY) %>% 
-    summarise(E3 = ifelse(Value[which(HOD %in% day)] < Value[which(HOD %in% night)]))
+        mutate(DOY = yday(Timestamp), HOD = hour(Timestamp)) %>% 
+        group_by(DOY) %>% 
+        summarise(E3 = ifelse(Value[which(HOD %in% day)] < Value[which(HOD %in% night)]))
 }
 
-# Read in data
+# Generate list of 'current' sapflow files 
 s_files <- list.files(path = "../Data/sapflow/", pattern = "PNNL", full.names = TRUE)
 ports <- read_csv("../Design/ports.csv")
-
 ```
 
 ```{r process}
@@ -53,49 +54,61 @@ ports <- read_csv("../Design/ports.csv")
 # extract number form former col name "DiffVolt_Avg(1)" would become "1"
 # join with ports dataframe and bring in tree codes
 
-lapply(s_files, read_sapflow) %>%  
-    bind_rows() %>% 
-    pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
-                 names_to = "Port", values_to = "Value") %>% 
-    rename(Timestamp = TIMESTAMP, Record = RECORD) %>% 
-    mutate(Timestamp = ymd_hms(Timestamp), 
-           Port = parse_number(Port), 
-           Logger = parse_number(Logger)) -> sf_raw
-
-left_join(sf_raw, ports, by = c("Logger", "Port")) %>% 
-    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
-
-if(nrow(anti_join(sf_raw, ports, by = c("Logger", "Port"))) > 0) {
-    warning("Error in join")
+if(TESTING) {
+    sf_raw <- read_csv("test_data/sapflow_test_20210601.csv")
+} else {
+    # Read in data
+    lapply(s_files, read_sapflow) %>%  
+        bind_rows() %>% 
+        pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
+                     names_to = "Port", values_to = "Value") %>% 
+        rename(Timestamp = TIMESTAMP, Record = RECORD) %>% 
+        mutate(Timestamp = ymd_hms(Timestamp), 
+               Port = parse_number(Port), 
+               Logger = parse_number(Logger)) -> sf_raw
+    
+    sf_raw %>% 
+        left_join(ports, by = c("Logger", "Port")) %>% 
+        select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
+    
+    nomatch <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
+    if(nrow(nomatch) > 0) {
+        warning("There were logger/port combinations that I couldn't find in ports.csv:")
+        nomatch %>% 
+            distinct(Logger, Port) %>% 
+            print()
+    }
 }
 
+# BBL-SP todo
+# * test dataset should include data that don't have a logger/port match
+# * test code above should read RAW test data ideally
 ```
 
 
-```{r qa/qc}
-
-#Create test dataset
+```{r create-test-dataset, eval=FALSE}
+# Create test dataset - not normally run
 trees <- c("F16", "S15", "F2", "S6", "S2", "F13", "C10", "C11", "L4")
 
 sapflow %>% 
     filter(Tree_Code %in% trees,
            Timestamp > "2021-04-25 12:30:00") -> test_df
+```
+
+```{r}
 
 sapflow %>% 
     mutate(E1 = !between(Value, 0, 1), # Value out of range
            E2 = is.na(Value)) -> t # Value NaN
 
 # check for weird days
-## daytime values > neighttime values
+## daytime values > nighttime values
 ## midnight to 6 should look like 6 to midnight
 
 # check for weird hours
 ## does 10am match up with +- 3 days
 ## does that meas fall btw previous and next measurement
-    
-
 ```
-
 
 
 ```{r plots}
