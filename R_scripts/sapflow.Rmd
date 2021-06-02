@@ -16,6 +16,14 @@ output:
 TESTING <- TRUE
 VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
 
+# This list holds the test results. The name of each list entry is of the form
+# "WARN.<test_name" or "ERROR.<test_name>".
+# Every entry is a tibble/data frame, with the following required columns:
+# * Tree_Code
+# * Port
+# * failures - an integer
+DAILY_TESTS <- list()
+
 library(readr)
 library(lubridate)
 library(dplyr)
@@ -79,9 +87,8 @@ if(TESTING) {
 
 # Add some extra time information
 sapflow %>% 
-  mutate(Year = year(Timestamp), 
-         Yearday = yday(Timestamp), 
-         Time = hour(Timestamp) + minute(Timestamp) / 60) -> 
+  mutate(Date = as.Date(Timestamp),
+         Hour = hour(Timestamp) + minute(Timestamp) / 60) -> 
   sapflow
 
 # BBL-SP todo
@@ -122,13 +129,17 @@ It sticks this into a list
 
 At the end of the script, we assemble all of these into a single summary data frame
 
-# Out of range test
+# Data statistics
+
+# Tests
+
+## Out of range test
 
 ```{r out-of-range-test}
 # SCP
 ```
 
-# Daily cycle test
+## Daily cycle test
 
 ```{r daily-cycle-test}
 # Helper function
@@ -149,31 +160,46 @@ daily_cycle_amplitude <- function(hours, values) {
 
 # Compute 'amplitude' (kind of; the difference between afternoon and non-afternoon values)
 sapflow %>% 
-  group_by(Year, Yearday, Tree_Code) %>% 
-  summarise(amplitude = daily_cycle_amplitude(Time, Value),
+  group_by(Date, Tree_Code, Port) %>% 
+  summarise(amplitude = daily_cycle_amplitude(Hour, Value),
             good_cycle = amplitude < -0.01 & amplitude > -0.2,
             .groups = "drop") ->
   daily_amplitude_data
 
-# Make a basic table
+# Store results
 daily_amplitude_data %>% 
-  group_by(Tree_Code) %>%
-  summarise(failures = sum(!good_cycle)) %>%
-  arrange(desc(failures))
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!good_cycle), .groups = "drop") ->
+  DAILY_TESTS[["WARN.daily_cycle"]]
 
 sapflow %>% 
-  left_join(daily_amplitude_data, by = c("Year", "Yearday", "Tree_Code")) ->
+  left_join(daily_amplitude_data, by = c("Date", "Tree_Code", "Port")) ->
   sapflow
 
 ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
   geom_point() + 
   facet_wrap(~Tree_Code) + 
   coord_cartesian(ylim = c(0, 1))
-
 ```
 
-# Trend test
+## Trend test
 
 ```{r trend-test}
 
 ```
+
+# Summary
+
+## Daily test failure count:
+
+```{r summary, warning=FALSE}
+DAILY_TESTS %>% 
+  bind_rows(.id = "test") %>% 
+  separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
+  pivot_wider(names_from = "Test_name", values_from = "failures") ->
+  daily_test_summary
+
+library(DT)
+datatable(daily_test_summary, rownames = FALSE, filter = "top", options = list(pageLength = 5, scrollX = TRUE))
+```
+
