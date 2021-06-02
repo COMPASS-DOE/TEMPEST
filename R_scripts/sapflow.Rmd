@@ -29,6 +29,18 @@ read_sapflow <- function(filename) {
         mutate(Logger = logger_name)
 }
 
+check_cycle <- function(dataframe) {
+    # Takes in a dataframe and compares values or daytime and nighttime sapflow
+    # Returns the dataframe with a new column 
+    day <- 6:18
+    night <- c(19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5)
+    browser()
+    dataframe %>% 
+    mutate(DOY = yday(Timestamp), HOD = hour(Timestamp)) %>% 
+    group_by(DOY) %>% 
+    summarise(E3 = ifelse(Value[which(HOD %in% day)] < Value[which(HOD %in% night)]))
+}
+
 # Read in data
 s_files <- list.files(path = "../Data/sapflow/", pattern = "PNNL", full.names = TRUE)
 ports <- read_csv("../Design/ports.csv")
@@ -48,27 +60,30 @@ lapply(s_files, read_sapflow) %>%
     rename(Timestamp = TIMESTAMP, Record = RECORD) %>% 
     mutate(Timestamp = ymd_hms(Timestamp), 
            Port = parse_number(Port), 
-           Logger = parse_number(Logger)) %>% 
-    left_join(ports, by = c("Logger", "Port")) %>% 
+           Logger = parse_number(Logger)) -> sf_raw
+
+left_join(sf_raw, ports, by = c("Logger", "Port")) %>% 
     select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
 
-if(sum(is.na(sapflow$Tree_Code)) > 0) {
-    warning("Missing tree code")
-    # use antijoin()
+if(nrow(anti_join(sf_raw, ports, by = c("Logger", "Port"))) > 0) {
+    warning("Error in join")
 }
-
-
 
 ```
 
 
 ```{r qa/qc}
 
+#Create test dataset
+trees <- c("F16", "S15", "F2", "S6", "S2", "F13", "C10", "C11", "L4")
+
+sapflow %>% 
+    filter(Tree_Code %in% trees,
+           Timestamp > "2021-04-25 12:30:00") -> test_df
+
 sapflow %>% 
     mutate(E1 = !between(Value, 0, 1), # Value out of range
            E2 = is.na(Value)) -> t # Value NaN
-
-# get test dataset
 
 # check for weird days
 ## daytime values > neighttime values
