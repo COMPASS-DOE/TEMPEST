@@ -88,6 +88,7 @@ sapflow %>%
 # * test dataset should include data that don't have a logger/port match
 # * test code above should read RAW test data ideally
 # * check sapflow manual - confirm we should see high values at night, low during day 
+# * duplicated data? May want to distinct() sapflow
 ```
 
 
