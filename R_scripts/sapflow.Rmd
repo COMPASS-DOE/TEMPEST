@@ -1,7 +1,7 @@
 ---
 title: "Sapflow QA / QC"
 author: "Ben Bond-Lamberty and Stephanie Pennington"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`r Sys.time()`"
 output:
   html_document:
     df_print: paged
@@ -15,6 +15,9 @@ output:
 # Load packages
 TESTING <- TRUE
 VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
+
+# Daily cycle settings
+AMPLITUDE_RANGE <- c(-0.01, -0.2)
 
 # This list holds the test results. The name of each list entry is of the form
 # "WARN.<test_name" or "ERROR.<test_name>".
@@ -140,11 +143,25 @@ skim(sapflow)
 
 ## Out of range test
 
+This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
+
 ```{r out-of-range-test}
 # SCP
 ```
 
+## Missing data test
+
+This test flags missing (`NA`) data.
+
+```{r missing-test}
+# SCP
+```
+
 ## Daily cycle test
+
+This test identifies days that don't have a normal-looking daily cycle (here defined simply
+as having afternoon values that are lower than non-afternoon values; allowable range is
+`r paste(AMPLITUDE_RANGE, collapse = ", ")`). 
 
 ```{r daily-cycle-test}
 # Helper function
@@ -167,7 +184,7 @@ daily_cycle_amplitude <- function(hours, values) {
 sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
   summarise(amplitude = daily_cycle_amplitude(Hour, Value),
-            good_cycle = amplitude < -0.01 & amplitude > -0.2,
+            good_cycle = between(amplitude, min(AMPLITUDE_RANGE), max(AMPLITUDE_RANGE)),
             .groups = "drop") ->
   daily_amplitude_data
 
