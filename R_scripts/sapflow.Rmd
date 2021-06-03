@@ -131,6 +131,11 @@ At the end of the script, we assemble all of these into a single summary data fr
 
 # Data statistics
 
+```{r, warning=FALSE}
+library(skimr)
+skim(sapflow)
+```
+
 # Tests
 
 ## Out of range test
@@ -234,7 +239,7 @@ ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) +
 DAILY_TESTS %>% 
   bind_rows(.id = "test") %>% 
   separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
-  pivot_wider(names_from = "Test_name", values_from = "failures") ->
+  pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
   daily_test_summary
 
 library(DT)
