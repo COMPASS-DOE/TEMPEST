@@ -210,7 +210,7 @@ ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) +
 TREND_DAYS <- 7
 ```
 
-This test looks at every `r TREND_DAYS` of data and tests whether there's a significant 
+This test looks at every `r TREND_DAYS` days of data and tests whether there's a significant 
 trend (using a Mann-Kendall test) in the daily mean.
 
 ```{r trend-test}
