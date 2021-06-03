@@ -148,7 +148,7 @@ daily_cycle_amplitude <- function(hours, values) {
   stopifnot(!any(duplicated(hours)))
   
   # We need data coverage over the day to do this
-  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 24) {
+  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 50) {
     return(NA)
   }
   
@@ -169,7 +169,7 @@ sapflow %>%
 # Store results
 daily_amplitude_data %>% 
   group_by(Tree_Code, Port) %>%
-  summarise(failures = sum(!good_cycle), .groups = "drop") ->
+  summarise(failures = sum(!good_cycle, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["WARN.daily_cycle"]]
 
 sapflow %>% 
@@ -184,8 +184,46 @@ ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) +
 
 ## Trend test
 
-```{r trend-test}
+```{r}
+TREND_DAYS <- 7
+```
 
+This test looks at every `r TREND_DAYS` of data and tests whether there's a significant 
+trend (using a Mann-Kendall test) in the daily mean.
+
+```{r trend-test}
+sapflow %>% 
+  mutate(group = yday(Timestamp) %/% TREND_DAYS) ->
+  sapflow
+
+library(Kendall)
+
+mk_no_trend <- function(x) {
+  if(length(x) < 3) NA else  MannKendall(x)$sl > 0.05
+}
+
+sapflow %>% 
+  group_by(Date, group, Tree_Code, Port) %>% 
+  summarise(Value = mean(Value), .groups = "drop") %>% 
+  group_by(group, Tree_Code, Port) %>% 
+  summarise(no_trend = mk_no_trend(Value),
+            .groups = "drop") ->
+  weekly_trends
+
+# Store results
+weekly_trends %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!no_trend, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["WARN.trend"]]
+
+sapflow %>% 
+  left_join(weekly_trends, by = c("group", "Tree_Code", "Port")) ->
+  sapflow
+
+ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
+  geom_point() + 
+  facet_wrap(~Tree_Code) + 
+  coord_cartesian(ylim = c(0, 1))
 ```
 
 # Summary
@@ -200,6 +238,9 @@ DAILY_TESTS %>%
   daily_test_summary
 
 library(DT)
-datatable(daily_test_summary, rownames = FALSE, filter = "top", options = list(pageLength = 5, scrollX = TRUE))
+datatable(daily_test_summary, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
 ```
 
