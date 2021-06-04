@@ -166,7 +166,7 @@ daily_range_test %>%
 daily_range_test %>% 
   ggplot(aes(x = Timestamp, y = Value, color = E1)) + 
   geom_point() + 
-  facet_wrap(~Tree_Code)
+  facet_wrap(~Tree_Code, scales = "free")
 
 ```
 
@@ -195,7 +195,7 @@ daily_nan_test %>%
 daily_nan_test %>% 
   ggplot(aes(x = Timestamp, y = Value, color = E2)) + 
   geom_point() + 
-  facet_wrap(~Tree_Code)
+  facet_wrap(~Tree_Code, scales = "free")
 
 ```
 
