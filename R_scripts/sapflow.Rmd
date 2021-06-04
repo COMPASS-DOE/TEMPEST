@@ -14,7 +14,7 @@ output:
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 # Load packages
 TESTING <- TRUE
-VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
+VOLTAGE_RANGE <- c(0.2, 0.8)  # expected 'good' range for probe voltage diff
 
 # Daily cycle settings
 AMPLITUDE_RANGE <- c(-0.01, -0.2)
@@ -146,7 +146,28 @@ skim(sapflow)
 This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
 
 ```{r out-of-range-test}
-# SCP
+
+# Helper function
+range_test <- function(values) {
+  !between(values, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))
+}
+
+# Compute daily check if sensor went outside of the expected range
+sapflow %>% 
+  group_by(Date, Tree_Code, Port) %>% 
+  mutate(E1 = range_test(Value)) -> daily_range_test
+
+# Count flags and store results
+daily_range_test %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(E1, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["ERR.range"]] # Store results in list
+
+daily_range_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = E1)) + 
+  geom_point() + 
+  facet_wrap(~Tree_Code, scales = "free")
+
 ```
 
 ## Missing data test
@@ -154,7 +175,28 @@ This test flags data outside of the expected good voltage range: `r paste(VOLTAG
 This test flags missing (`NA`) data.
 
 ```{r missing-test}
-# SCP
+
+# Helper function
+nan_test <- function(values) {
+  is.na(values)
+}
+
+# Compute daily check if sensor has NaNs
+sapflow %>% 
+  group_by(Date, Tree_Code, Port) %>% 
+  mutate(E2 = nan_test(Value)) -> daily_nan_test
+
+# Count flags and store results
+daily_nan_test %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(E2, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["ERR.NaN"]] # Store results in list
+
+daily_nan_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = E2)) + 
+  geom_point() + 
+  facet_wrap(~Tree_Code, scales = "free")
+
 ```
 
 ## Daily cycle test
