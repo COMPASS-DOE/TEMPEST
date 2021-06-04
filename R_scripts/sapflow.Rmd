@@ -1,7 +1,7 @@
 ---
 title: "Sapflow QA / QC"
 author: "Ben Bond-Lamberty and Stephanie Pennington"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "`r Sys.time()`"
 output:
   html_document:
     df_print: paged
@@ -15,6 +15,17 @@ output:
 # Load packages
 TESTING <- TRUE
 VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
+
+# Daily cycle settings
+AMPLITUDE_RANGE <- c(-0.01, -0.2)
+
+# This list holds the test results. The name of each list entry is of the form
+# "WARN.<test_name" or "ERROR.<test_name>".
+# Every entry is a tibble/data frame, with the following required columns:
+# * Tree_Code
+# * Port
+# * failures - an integer
+DAILY_TESTS <- list()
 
 library(readr)
 library(lubridate)
@@ -79,9 +90,8 @@ if(TESTING) {
 
 # Add some extra time information
 sapflow %>% 
-  mutate(Year = year(Timestamp), 
-         Yearday = yday(Timestamp), 
-         Time = hour(Timestamp) + minute(Timestamp) / 60) -> 
+  mutate(Date = as.Date(Timestamp),
+         Hour = hour(Timestamp) + minute(Timestamp) / 60) -> 
   sapflow
 
 # BBL-SP todo
@@ -122,13 +132,36 @@ It sticks this into a list
 
 At the end of the script, we assemble all of these into a single summary data frame
 
-# Out of range test
+# Data statistics
+
+```{r, warning=FALSE}
+library(skimr)
+skim(sapflow)
+```
+
+# Tests
+
+## Out of range test
+
+This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
 
 ```{r out-of-range-test}
 # SCP
 ```
 
-# Daily cycle test
+## Missing data test
+
+This test flags missing (`NA`) data.
+
+```{r missing-test}
+# SCP
+```
+
+## Daily cycle test
+
+This test identifies days that don't have a normal-looking daily cycle (here defined simply
+as having afternoon values that are lower than non-afternoon values; allowable range is
+`r paste(AMPLITUDE_RANGE, collapse = ", ")`). 
 
 ```{r daily-cycle-test}
 # Helper function
@@ -137,7 +170,7 @@ daily_cycle_amplitude <- function(hours, values) {
   stopifnot(!any(duplicated(hours)))
   
   # We need data coverage over the day to do this
-  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 24) {
+  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 50) {
     return(NA)
   }
   
@@ -149,31 +182,87 @@ daily_cycle_amplitude <- function(hours, values) {
 
 # Compute 'amplitude' (kind of; the difference between afternoon and non-afternoon values)
 sapflow %>% 
-  group_by(Year, Yearday, Tree_Code) %>% 
-  summarise(amplitude = daily_cycle_amplitude(Time, Value),
-            good_cycle = amplitude < -0.01 & amplitude > -0.2,
+  group_by(Date, Tree_Code, Port) %>% 
+  summarise(amplitude = daily_cycle_amplitude(Hour, Value),
+            good_cycle = between(amplitude, min(AMPLITUDE_RANGE), max(AMPLITUDE_RANGE)),
             .groups = "drop") ->
   daily_amplitude_data
 
-# Make a basic table
+# Store results
 daily_amplitude_data %>% 
-  group_by(Tree_Code) %>%
-  summarise(failures = sum(!good_cycle)) %>%
-  arrange(desc(failures))
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!good_cycle, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["WARN.daily_cycle"]]
 
 sapflow %>% 
-  left_join(daily_amplitude_data, by = c("Year", "Yearday", "Tree_Code")) ->
+  left_join(daily_amplitude_data, by = c("Date", "Tree_Code", "Port")) ->
   sapflow
 
 ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
   geom_point() + 
   facet_wrap(~Tree_Code) + 
   coord_cartesian(ylim = c(0, 1))
-
 ```
 
-# Trend test
+## Trend test
+
+```{r}
+TREND_DAYS <- 7
+```
+
+This test looks at every `r TREND_DAYS` days of data and tests whether there's a significant 
+trend (using a Mann-Kendall test) in the daily mean.
 
 ```{r trend-test}
+sapflow %>% 
+  mutate(group = yday(Timestamp) %/% TREND_DAYS) ->
+  sapflow
 
+library(Kendall)
+
+mk_no_trend <- function(x) {
+  if(length(x) < 3) NA else  MannKendall(x)$sl > 0.05
+}
+
+sapflow %>% 
+  group_by(Date, group, Tree_Code, Port) %>% 
+  summarise(Value = mean(Value), .groups = "drop") %>% 
+  group_by(group, Tree_Code, Port) %>% 
+  summarise(no_trend = mk_no_trend(Value),
+            .groups = "drop") ->
+  weekly_trends
+
+# Store results
+weekly_trends %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!no_trend, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["WARN.trend"]]
+
+sapflow %>% 
+  left_join(weekly_trends, by = c("group", "Tree_Code", "Port")) ->
+  sapflow
+
+ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
+  geom_point() + 
+  facet_wrap(~Tree_Code) + 
+  coord_cartesian(ylim = c(0, 1))
 ```
+
+# Summary
+
+## Daily test failure count:
+
+```{r summary, warning=FALSE}
+DAILY_TESTS %>% 
+  bind_rows(.id = "test") %>% 
+  separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
+  pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
+  daily_test_summary
+
+library(DT)
+datatable(daily_test_summary, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+```
+
