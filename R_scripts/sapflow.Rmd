@@ -175,7 +175,28 @@ daily_range_test %>%
 This test flags missing (`NA`) data.
 
 ```{r missing-test}
-# SCP
+
+# Helper function
+nan_test <- function(values) {
+  is.na(values)
+}
+
+# Compute daily check if sensor has NaNs
+test_df %>% 
+  group_by(Date, Tree_Code, Port) %>% 
+  mutate(E2 = nan_test(Value)) -> daily_nan_test
+
+# Count flags and store results
+daily_nan_test %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(E2, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["ERR.NaN"]] # Store results in list
+
+daily_nan_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = E2)) + 
+  geom_point() + 
+  facet_wrap(~Tree_Code)
+
 ```
 
 ## Daily cycle test
