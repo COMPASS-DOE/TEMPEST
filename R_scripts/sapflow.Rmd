@@ -14,7 +14,7 @@ output:
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 # Load packages
 TESTING <- TRUE
-VOLTAGE_RANGE <- c(0.2, 0.6)  # expected 'good' range for probe voltage diff
+VOLTAGE_RANGE <- c(0.2, 0.8)  # expected 'good' range for probe voltage diff
 
 # Daily cycle settings
 AMPLITUDE_RANGE <- c(-0.01, -0.2)
@@ -153,7 +153,7 @@ range_test <- function(values) {
 }
 
 # Compute daily check if sensor went outside of the expected range
-test_df %>% 
+sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
   mutate(E1 = range_test(Value)) -> daily_range_test
 
@@ -182,7 +182,7 @@ nan_test <- function(values) {
 }
 
 # Compute daily check if sensor has NaNs
-test_df %>% 
+sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
   mutate(E2 = nan_test(Value)) -> daily_nan_test
 
