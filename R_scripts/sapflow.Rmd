@@ -95,7 +95,8 @@ if(TESTING) {
 # Add some extra time information
 sapflow %>% 
   mutate(Date = as.Date(Timestamp),
-         Hour = hour(Timestamp) + minute(Timestamp) / 60) -> 
+         Hour = hour(Timestamp) + minute(Timestamp) / 60,
+         Plot = substr(Tree_Code, 1, 1)) -> 
   sapflow
 
 # BBL-SP todo
@@ -120,6 +121,39 @@ sapflow %>%
 ```{r, warning=FALSE}
 library(skimr)
 skim(sapflow)
+```
+
+# Data visualization
+
+## Daily cycle {.tabset}
+
+### Control
+
+```{r daily-control}
+p_daily <- ggplot(filter(sapflow, Plot == "C"), 
+       aes(Hour, Value, color = Species, group = paste(Tree_Code, Date))) + 
+  geom_line() +
+  coord_cartesian(ylim = VOLTAGE_RANGE) +
+  facet_grid(~Tree_Code)
+print(p_daily)
+```
+
+### Fresh
+
+```{r daily-fresh}
+print(p_daily %+% filter(sapflow, Plot == "F"))
+```
+
+### Salt
+
+```{r daily-salt}
+print(p_daily %+% filter(sapflow, Plot == "S"))
+```
+
+### L
+
+```{r daily-L}
+print(p_daily %+% filter(sapflow, Plot == "L"))
 ```
 
 # Tests
