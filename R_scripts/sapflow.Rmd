@@ -19,6 +19,9 @@ VOLTAGE_RANGE <- c(0.2, 0.8)  # expected 'good' range for probe voltage diff
 # Daily cycle settings
 AMPLITUDE_RANGE <- c(-0.01, -0.2)
 
+# In graphs, TRUE is "ok" while FALSE is "error"
+TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
+
 # This list holds the test results. The name of each list entry is of the form
 # "WARN.<test_name" or "ERROR.<test_name>".
 # Every entry is a tibble/data frame, with the following required columns:
@@ -60,7 +63,8 @@ ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
 
 if(TESTING) {
   message("TESTING!")
-  sapflow <- read_csv("test_data/sapflow_test_20210601.csv")
+  sapflow <- read_csv("test_data/sapflow_test_20210601.csv",
+                      col_types = "Tdddddcc")
 } else {
   # Read in data
   lapply(s_files, read_sapflow) %>%  
@@ -111,27 +115,6 @@ sapflow %>%
          Timestamp > "2021-04-25 12:30:00") -> test_df
 ```
 
-What do we want to identify? h/t to SP's lovely test data here
-
-OUT OF RANGE TEST
-* values out of range {0.2, 0.6} (from manual)
-* also: days with values outside of {0.2, 0.6}
-
-DAILY CYCLE TEST
-* days exhibiting a 'normal' cycle
-
-TREND TEST (?)
-* if data exhibiting trend over X days
-
-I think each section (code chunk = test) produces a data frame with day, tree, error_code
-ERROR_xxxxx
-WARNING_xxxxx
-NOTE_xxxxxx
-
-It sticks this into a list
-
-At the end of the script, we assemble all of these into a single summary data frame
-
 # Data statistics
 
 ```{r, warning=FALSE}
@@ -146,57 +129,49 @@ skim(sapflow)
 This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
 
 ```{r out-of-range-test}
-
-# Helper function
-range_test <- function(values) {
-  !between(values, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))
-}
-
 # Compute daily check if sensor went outside of the expected range
 sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
-  mutate(E1 = range_test(Value)) -> daily_range_test
+  mutate(in_range = between(Value, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))) -> 
+  daily_range_test
 
 # Count flags and store results
 daily_range_test %>% 
   group_by(Tree_Code, Port) %>%
-  summarise(failures = sum(E1, na.rm = TRUE), .groups = "drop") ->
+  summarise(failures = sum(!in_range, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["ERR.range"]] # Store results in list
 
 daily_range_test %>% 
-  ggplot(aes(x = Timestamp, y = Value, color = E1)) + 
+  ggplot(aes(x = Timestamp, y = Value, color = in_range)) + 
   geom_point() + 
-  facet_wrap(~Tree_Code, scales = "free")
-
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ## Missing data test
 
-This test flags missing (`NA`) data.
+This test flags missing (`NA`) or not a number (`NaN`) data.
 
 ```{r missing-test}
-
-# Helper function
-nan_test <- function(values) {
-  is.na(values)
-}
-
 # Compute daily check if sensor has NaNs
 sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
-  mutate(E2 = nan_test(Value)) -> daily_nan_test
+  mutate(is_number = is.finite(Value)) -> 
+  daily_nan_test
 
 # Count flags and store results
 daily_nan_test %>% 
   group_by(Tree_Code, Port) %>%
-  summarise(failures = sum(E2, na.rm = TRUE), .groups = "drop") ->
+  summarise(failures = sum(!is_number, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["ERR.NaN"]] # Store results in list
 
 daily_nan_test %>% 
-  ggplot(aes(x = Timestamp, y = Value, color = E2)) + 
+  ggplot(aes(x = Timestamp, y = Value, color = is_number)) + 
   geom_point() + 
-  facet_wrap(~Tree_Code, scales = "free")
-
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ## Daily cycle test
@@ -243,7 +218,9 @@ sapflow %>%
 ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
   geom_point() + 
   facet_wrap(~Tree_Code) + 
-  coord_cartesian(ylim = c(0, 1))
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ## Trend test
@@ -287,7 +264,9 @@ sapflow %>%
 ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
   geom_point() + 
   facet_wrap(~Tree_Code) + 
-  coord_cartesian(ylim = c(0, 1))
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 # Summary
