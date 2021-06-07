@@ -13,11 +13,14 @@ output:
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 # Load packages
-TESTING <- TRUE
+TESTING <- FALSE
 VOLTAGE_RANGE <- c(0.2, 0.8)  # expected 'good' range for probe voltage diff
 
 # Daily cycle settings
 AMPLITUDE_RANGE <- c(-0.01, -0.2)
+
+# In graphs, TRUE is "ok" while FALSE is "error"
+TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
 
 # This list holds the test results. The name of each list entry is of the form
 # "WARN.<test_name" or "ERROR.<test_name>".
@@ -51,16 +54,25 @@ read_sapflow <- function(filename) {
 }
 
 # Generate list of 'current' sapflow files 
-s_files <- list.files(path = "../Data/sapflow/", pattern = "PNNL", full.names = TRUE)
+s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
 ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
 ```
+
+I see `r length(s_files)` current sapflow files:
+
+```{r}
+basename(s_files) %>% 
+  knitr::kable(col.names = "Files")
+```
+
 
 ```{r process-data}
 # Read in data we're reporting on, reshape and reformat for analysis, etc.
 
 if(TESTING) {
   message("TESTING!")
-  sapflow <- read_csv("test_data/sapflow_test_20210601.csv")
+  sapflow <- read_csv("test_data/sapflow_test_20210601.csv",
+                      col_types = "Tdddddcc")
 } else {
   # Read in data
   lapply(s_files, read_sapflow) %>%  
@@ -91,7 +103,8 @@ if(TESTING) {
 # Add some extra time information
 sapflow %>% 
   mutate(Date = as.Date(Timestamp),
-         Hour = hour(Timestamp) + minute(Timestamp) / 60) -> 
+         Hour = hour(Timestamp) + minute(Timestamp) / 60,
+         Plot = substr(Tree_Code, 1, 1)) -> 
   sapflow
 
 # BBL-SP todo
@@ -111,27 +124,6 @@ sapflow %>%
          Timestamp > "2021-04-25 12:30:00") -> test_df
 ```
 
-What do we want to identify? h/t to SP's lovely test data here
-
-OUT OF RANGE TEST
-* values out of range {0.2, 0.6} (from manual)
-* also: days with values outside of {0.2, 0.6}
-
-DAILY CYCLE TEST
-* days exhibiting a 'normal' cycle
-
-TREND TEST (?)
-* if data exhibiting trend over X days
-
-I think each section (code chunk = test) produces a data frame with day, tree, error_code
-ERROR_xxxxx
-WARNING_xxxxx
-NOTE_xxxxxx
-
-It sticks this into a list
-
-At the end of the script, we assemble all of these into a single summary data frame
-
 # Data statistics
 
 ```{r, warning=FALSE}
@@ -139,67 +131,140 @@ library(skimr)
 skim(sapflow)
 ```
 
+# Data visualization
+
+## Daily cycle {.tabset}
+
+### Control
+
+```{r daily-control}
+p_daily <- ggplot(filter(sapflow, Plot == "C"), 
+       aes(Hour, Value, color = Species, group = Date)) + 
+  geom_line() +
+  coord_cartesian(ylim = VOLTAGE_RANGE) +
+  facet_wrap(~Tree_Code)
+print(p_daily)
+```
+
+### Fresh
+
+```{r daily-fresh}
+print(p_daily %+% filter(sapflow, Plot == "F"))
+```
+
+### Salt
+
+```{r daily-salt}
+print(p_daily %+% filter(sapflow, Plot == "S"))
+```
+
+### Shore
+
+```{r daily-L}
+print(p_daily %+% filter(sapflow, Plot == "L"))
+```
+
 # Tests
 
-## Out of range test
+## Out of range test {.tabset}
 
 This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
 
 ```{r out-of-range-test}
-
-# Helper function
-range_test <- function(values) {
-  !between(values, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))
-}
-
 # Compute daily check if sensor went outside of the expected range
 sapflow %>% 
-  group_by(Date, Tree_Code, Port) %>% 
-  mutate(E1 = range_test(Value)) -> daily_range_test
+  group_by(Plot, Date, Tree_Code, Port) %>% 
+  mutate(in_range = between(Value, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))) -> 
+  daily_range_test
 
 # Count flags and store results
 daily_range_test %>% 
-  group_by(Tree_Code, Port) %>%
-  summarise(failures = sum(E1, na.rm = TRUE), .groups = "drop") ->
+  group_by(Plot, Tree_Code, Port) %>%
+  summarise(failures = sum(!in_range, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["ERR.range"]] # Store results in list
 
-daily_range_test %>% 
-  ggplot(aes(x = Timestamp, y = Value, color = E1)) + 
-  geom_point() + 
-  facet_wrap(~Tree_Code, scales = "free")
-
+p_oor <- daily_range_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = in_range)) + 
+  geom_line() + 
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
-## Missing data test
+### Control
 
-This test flags missing (`NA`) data.
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "L")
+```
+
+## Missing data test {.tabset}
+
+This test flags missing (`NA`) or not a number (`NaN`) data.
 
 ```{r missing-test}
-
-# Helper function
-nan_test <- function(values) {
-  is.na(values)
-}
-
 # Compute daily check if sensor has NaNs
 sapflow %>% 
   group_by(Date, Tree_Code, Port) %>% 
-  mutate(E2 = nan_test(Value)) -> daily_nan_test
+  mutate(is_number = is.finite(Value)) -> 
+  daily_nan_test
 
 # Count flags and store results
 daily_nan_test %>% 
   group_by(Tree_Code, Port) %>%
-  summarise(failures = sum(E2, na.rm = TRUE), .groups = "drop") ->
+  summarise(failures = sum(!is_number, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["ERR.NaN"]] # Store results in list
 
-daily_nan_test %>% 
-  ggplot(aes(x = Timestamp, y = Value, color = E2)) + 
-  geom_point() + 
-  facet_wrap(~Tree_Code, scales = "free")
-
+p_md <- daily_nan_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = is_number)) + 
+  geom_line() + 
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
-## Daily cycle test
+### Control
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "L")
+```
+
+## Daily cycle test {.tabset}
 
 This test identifies days that don't have a normal-looking daily cycle (here defined simply
 as having afternoon values that are lower than non-afternoon values; allowable range is
@@ -240,13 +305,39 @@ sapflow %>%
   left_join(daily_amplitude_data, by = c("Date", "Tree_Code", "Port")) ->
   sapflow
 
-ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
-  geom_point() + 
+p_dc <- ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
+  geom_point(size = 0.5) + 
   facet_wrap(~Tree_Code) + 
-  coord_cartesian(ylim = c(0, 1))
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
-## Trend test
+### Control
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "L")
+```
+
+## Trend test {.tabset}
 
 ```{r}
 TREND_DAYS <- 7
@@ -263,10 +354,14 @@ sapflow %>%
 library(Kendall)
 
 mk_no_trend <- function(x) {
-  if(length(x) < 3) NA else  MannKendall(x)$sl > 0.05
+  if(length(x) < 3) NA else {
+    capture.output(mk <- MannKendall(x))
+    mk$sl > 0.05
+  }
 }
 
 sapflow %>% 
+  arrange(Date) %>% 
   group_by(Date, group, Tree_Code, Port) %>% 
   summarise(Value = mean(Value), .groups = "drop") %>% 
   group_by(group, Tree_Code, Port) %>% 
@@ -284,10 +379,36 @@ sapflow %>%
   left_join(weekly_trends, by = c("group", "Tree_Code", "Port")) ->
   sapflow
 
-ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
-  geom_point() + 
+p_tt <- ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
+  geom_point(size = 0.5) + 
   facet_wrap(~Tree_Code) + 
-  coord_cartesian(ylim = c(0, 1))
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Control
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "L")
 ```
 
 # Summary
