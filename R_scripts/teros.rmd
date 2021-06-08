@@ -1,0 +1,25 @@
+---
+title: "TEROS QA / QC"
+author: "Stephanie Pennington"
+date: "6/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+##probably taken from Anya's
+##this will use data from the "Current Data" folders
+```
+
+# Data Statistics
+
+# Data visualization
+
+## Daily cycle {.tabset}
+
+### Control
+
+### Fresh
+
+### Salt
+
+# Tests
