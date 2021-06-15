@@ -56,6 +56,7 @@ read_sapflow <- function(filename) {
 # Generate list of 'current' sapflow files 
 s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
 ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
+inventory <- read_csv("../Data/tree_inventory/inventory.csv")
 ```
 
 I see `r length(s_files)` current sapflow files:
@@ -89,15 +90,27 @@ if(TESTING) {
   
   sf_raw %>% 
     left_join(ports, by = c("Logger", "Port")) %>% 
-    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Species) -> sapflow
+    left_join(inventory, by = c("Tree_Code" = "Sapflux")) %>% 
+    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid, Species) -> sapflow
   
-  nomatch <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
-  if(nrow(nomatch) > 0) {
+  nomatch_ports <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
+  if(nrow(nomatch_ports) > 0) {
     warning("There were logger/port combinations that I couldn't find in ports.csv:")
-    nomatch %>% 
+    nomatch_ports %>% 
       distinct(Logger, Port) %>% 
       print()
   }
+  
+ sf_raw %>% 
+    left_join(ports, by = c("Logger", "Port")) %>% 
+    anti_join(inventory, by = c("Tree_Code" = "Sapflux")) ->  nomatch_inv
+  if(nrow(nomatch_inv) > 0) {
+    warning("There were logger/port combinations that I couldn't find in inventory.csv:")
+    nomatch_inv %>% 
+      distinct(Tree_Code) %>% 
+      print()
+  }
+  
 }
 
 # Add some extra time information
@@ -418,6 +431,9 @@ p_tt %+% filter(sapflow, Plot == "L")
 ```{r summary, warning=FALSE}
 DAILY_TESTS %>% 
   bind_rows(.id = "test") %>% 
+  left_join(inventory, by = c("Tree_Code" = "Sapflux")) %>% 
+  rename("Plot" = "Plot.x") %>% 
+  select(test, Plot, Tree_Code, Port, Grid, failures) %>% 
   separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
   pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
   daily_test_summary
