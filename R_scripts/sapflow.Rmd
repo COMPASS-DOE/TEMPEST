@@ -77,7 +77,14 @@ if(TESTING) {
 } else {
   # Read in data
   lapply(s_files, read_sapflow) %>%  
-    bind_rows() %>% 
+    bind_rows()  -> sf_primitive
+  
+  # if() {
+  #   # check and warn if any duplicate rows
+  # }
+  
+  sf_primitive %>% 
+    distinct()
     # extract number form former col name "DiffVolt_Avg(1)" would become "1"
     # join with ports dataframe and bring in tree codes
     pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
