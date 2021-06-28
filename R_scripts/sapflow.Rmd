@@ -84,7 +84,7 @@ if(TESTING) {
   # }
   
   sf_primitive %>% 
-    distinct()
+    distinct() %>% 
     # extract number form former col name "DiffVolt_Avg(1)" would become "1"
     # join with ports dataframe and bring in tree codes
     pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(6)`, 
