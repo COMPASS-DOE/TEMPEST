@@ -1,3 +1,6 @@
 \# RMarkdown and RPubs
 *.dcf
 *.html
+html-figures/
+sapflow_files/
+
