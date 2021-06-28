@@ -55,8 +55,9 @@ read_sapflow <- function(filename) {
 
 # Generate list of 'current' sapflow files 
 s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
-ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
-inventory <- read_csv("../Data/tree_inventory/inventory.csv")
+#ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
+#inventory <- read_csv("../Data/tree_inventory/inventory.csv")
+sf_inventory <- read_csv("../Design/sapflow_inventory.csv")
 ```
 
 I see `r length(s_files)` current sapflow files:
@@ -96,11 +97,10 @@ if(TESTING) {
            Logger = parse_number(Logger)) -> sf_raw
   
   sf_raw %>% 
-    left_join(ports, by = c("Logger", "Port")) %>% 
-    left_join(inventory, by = c("Tree_Code" = "Sapflux")) %>% 
-    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid, Species) -> sapflow
+    left_join(sf_inventory, by = c("Logger", "Port")) %>% 
+    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid_Square, Species, Installation_Date) -> sapflow
   
-  nomatch_ports <- anti_join(sf_raw, ports, by = c("Logger", "Port"))
+  nomatch_ports <- anti_join(sf_raw, sf_inventory, by = c("Logger", "Port"))
   if(nrow(nomatch_ports) > 0) {
     warning("There were logger/port combinations that I couldn't find in ports.csv:")
     nomatch_ports %>% 
@@ -108,15 +108,6 @@ if(TESTING) {
       print()
   }
   
- sf_raw %>% 
-    left_join(ports, by = c("Logger", "Port")) %>% 
-    anti_join(inventory, by = c("Tree_Code" = "Sapflux")) ->  nomatch_inv
-  if(nrow(nomatch_inv) > 0) {
-    warning("There were logger/port combinations that I couldn't find in inventory.csv:")
-    nomatch_inv %>% 
-      distinct(Tree_Code) %>% 
-      print()
-  }
   
 }
 
@@ -440,7 +431,7 @@ DAILY_TESTS %>%
   bind_rows(.id = "test") %>% 
   left_join(inventory, by = c("Tree_Code" = "Sapflux")) %>% 
   rename("Plot" = "Plot.x") %>% 
-  select(test, Plot, Tree_Code, Port, Grid, failures) %>% 
+  select(test, Plot, Tree_Code, Port, Grid_Square, Logger, Installation_Date, failures) %>% 
   separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
   pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
   daily_test_summary
