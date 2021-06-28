@@ -49,7 +49,15 @@ fileread <- function(fn) {
 
 ```
 
+``` {r process-data}
+fileread("~/Dropbox/TEMPEST_PNNL_Data/Current_data/PNNL_11_Terosdata.dat") -> y
+```
+
 # Data Statistics
+```{r, warning=FALSE}
+library(skimr)
+skim(y)
+```
 
 # Data visualization
 
