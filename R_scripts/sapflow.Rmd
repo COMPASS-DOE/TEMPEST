@@ -35,6 +35,7 @@ library(lubridate)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(plotly)
 theme_set(theme_minimal())
 
 # Global chunk options
@@ -101,8 +102,8 @@ if(TESTING) {
     filter(!is.na(Tree_Code)) %>% #remove ports that dont have any sensors
     select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid_Square, Species, Installation_Date) %>% 
     mutate(Deep_Sensor = grepl("D", Tree_Code),
-           Grid_Letter = substring(sapflow$Grid_Square, 1, 1), 
-           Grid_Number = substring(sapflow$Grid_Square, 2, 2)) -> sapflow
+           Grid_Letter = substring(Grid_Square, 1, 1), 
+           Grid_Number = substring(Grid_Square, 2, 2)) -> sapflow
 
   nomatch_ports <- anti_join(sf_raw, sf_inventory, by = c("Logger", "Port"))
   if(nrow(nomatch_ports) > 0) {
@@ -323,7 +324,7 @@ sapflow %>%
 
 # Store results
 daily_amplitude_data %>% 
-  group_by(Tree_Code, Port, Plot) %>%
+  group_by(Tree_Code, Port) %>%
   summarise(failures = sum(!good_cycle, na.rm = TRUE), .groups = "drop") ->
   DAILY_TESTS[["WARN.daily_cycle"]]
 
@@ -441,7 +442,7 @@ p_tt %+% filter(sapflow, Plot == "L")
 
 ## Daily test failure count:
 
-```{r summary, warning=FALSE}
+```{r summary, warning=FALSE, fig.width = 7, fig.height = 8}
 DAILY_TESTS %>% 
   bind_rows(.id = "test") %>% 
   left_join(sf_inventory, by = c("Tree_Code", "Port")) %>% 
@@ -452,12 +453,14 @@ DAILY_TESTS %>%
 
 # Spatial map of errors
 ggplot(filter(daily_test, Plot %in% c("C", "F", "S")), aes(x = Grid_Letter, y = Grid_Number)) + 
-  geom_point(aes(color = test)) + facet_wrap(test~Plot)
+  geom_jitter(aes(color = test)) + facet_wrap(~Plot, ncol = 1) + theme_minimal() -> p
+
+ggplotly(p)
 
 daily_test %>%
   separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
   pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
-  daily_test_summary
+  daily_test_summary 
 
 library(DT)
 datatable(daily_test_summary, 
