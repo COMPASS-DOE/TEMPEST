@@ -43,7 +43,7 @@ source("read_sapflow.R")
 theme_set(theme_minimal())
 
 # Global chunk options
-knitr:: opts_chunk$set(echo = FALSE)
+knitr:: opts_chunk$set(echo = FALSE, fig.width=10, fig.height = 9)
 
 # Generate list of 'current' sapflow files 
 s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
@@ -431,9 +431,9 @@ p_tt %+% filter(sapflow, Plot == "L")
 
 # Summary
 
-## Daily test failure count:
+## Spatial Map of Flags
+```{r spatial, fig.align=1}
 
-```{r summary, warning=FALSE, fig.width = 7, fig.height = 8}
 DAILY_TESTS %>% 
   bind_rows(.id = "test") %>% 
   left_join(sf_inventory, by = c("Tree_Code", "Port")) %>% 
@@ -444,10 +444,17 @@ DAILY_TESTS %>%
 
 # Spatial map of errors
 ggplot(filter(daily_test, Plot %in% c("C", "F", "S")), aes(x = Grid_Letter, y = Grid_Number)) + 
-  geom_jitter(aes(color = test)) + facet_wrap(~Plot, ncol = 1) + theme_minimal() -> p
+  geom_jitter(aes(color = test)) + facet_wrap(~Plot, ncol = 1) + 
+  theme_minimal() -> p
 
 ggplotly(p)
 
+```
+
+
+## Daily test failure count:
+
+```{r summary, warning=FALSE}
 daily_test %>%
   separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
   pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
