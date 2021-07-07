@@ -49,21 +49,15 @@ if(nrow(nomatch) > 0) {
     warning("There were logger/channel combinations that I couldn't find in teros_inventory.csv:")
     nomatch %>% 
         distinct(Data_Logger_ID, Data_Table_ID) %>% 
-        print()
+        kable()
     }
 
 ```
 
 # Data Statistics
 ```{r, warning=FALSE}
-library(skimr)
-
-teros_data %>% 
-    mutate(Date = as_date(Round)) %>% 
-    group_by(Date, Data_Logger_ID, Data_Table_ID) %>% 
-    summarise(NAs = sum(!is.finite(M_Value))) -> teros_summary
-
-skim(teros_summary)
+# library(skimr)
+# skim(teros_summary)
 ```
 
 # Data visualization {.tabset}
@@ -93,6 +87,11 @@ print(p %+% filter(teros_data, Plot == "Seawater"))
 # Tests
 ```{r tests}
  # Summarise nan and out of bound counts
+
+teros_data %>% 
+    mutate(Date = as_date(Round)) %>% 
+    group_by(Date, Data_Logger_ID, Data_Table_ID) %>% 
+    summarise(NAs = sum(!is.finite(M_Value))) -> teros_summary
 
 library(DT)
 datatable(teros_summary, 
