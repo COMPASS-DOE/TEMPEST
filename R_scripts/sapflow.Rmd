@@ -36,7 +36,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(plotly)
-
+library(kableExtra)
+set.seed(7)
 source("read_sapflow.R")
 
 theme_set(theme_minimal())
@@ -100,7 +101,7 @@ if(TESTING) {
     warning("There were logger/port combinations that I couldn't find in sapflow_inventory.csv:")
     nomatch_ports %>% 
       distinct(Logger, Port) %>% 
-      print()
+      kable()
   }
   
   
