@@ -18,55 +18,85 @@ library(lubridate)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(kableExtra)
 theme_set(theme_minimal())
 
 # Global chunk options
 knitr:: opts_chunk$set(echo = FALSE)
 
-# # Function setup
-# read_sapflow <- function(filename) {
-#   sdat <- readLines(filename)
-#   sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
-#   
-#   # parse line one to extract logger name
-#   pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
-#   logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
-#   
-#   read_csv(sdat, skip = 1) %>% 
-#     mutate(Logger = logger_name)
-# }
-
 # From Anya's script:
 # Helper function: read string vector into a data frame, reshape, and drop NA
-fileread <- function(fn) {
-    message("Reading ", basename(fn), "...")
-    rawdata <- readLines(fn)[-c(1, 3, 4)]
-    textConnection(rawdata) %>%
-        read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
-        gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
-        filter(!is.na(value))
-}
+source("teros_fileread.R")
 
+teros_files <- list.files("~/Dropbox/TEMPEST_PNNL_Data/Current_data/", pattern = "Terosdata.dat", full.names = TRUE)
+
+teros_inventory <- read_csv("../Data/TEROS12/TEROS_Network_Location.csv")
 ```
 
 ``` {r process-data}
-fileread("~/Dropbox/TEMPEST_PNNL_Data/Current_data/PNNL_11_Terosdata.dat") -> y
+teros_primative <- lapply(teros_files, fileread) %>% bind_rows()
+
+teros_primative %>% 
+    mutate(Round = floor_date(TIMESTAMP, "3 hours")) %>% # round timestamp to nearest three hours
+    group_by(variable, Data_Logger_ID, Data_Table_ID, Round) %>% 
+    summarise(M_Value = mean(value, na.rm = TRUE)) -> teros_raw
+
+teros_raw %>% 
+    left_join(teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel")) -> teros_data
+
+nomatch <- anti_join(teros_raw, teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel"))
+if(nrow(nomatch) > 0) {
+    warning("There were logger/channel combinations that I couldn't find in teros_inventory.csv:")
+    nomatch %>% 
+        distinct(Data_Logger_ID, Data_Table_ID) %>% 
+        print()
+    }
+
 ```
 
 # Data Statistics
 ```{r, warning=FALSE}
 library(skimr)
-skim(y)
+
+teros_data %>% 
+    mutate(Date = as_date(Round)) %>% 
+    group_by(Date, Data_Logger_ID, Data_Table_ID) %>% 
+    summarise(NAs = sum(!is.finite(M_Value))) -> teros_summary
+
+skim(teros_summary)
 ```
 
-# Data visualization
+# Data visualization {.tabset}
 
-## Daily cycle {.tabset}
+## Control
+```{r Control}
+p <- ggplot(filter(teros_data, Plot == "Control"), 
+            aes(Round, M_Value, group = Data_Table_ID, color = as.factor(Data_Table_ID))) + 
+    geom_line() +
+#   coord_cartesian(ylim = VOLTAGE_RANGE) +
+    facet_wrap(variable~Data_Logger_ID, scales = "free")
+print(p)
 
-### Control
 
-### Fresh
+```
 
-### Salt
+## Fresh
+```{r Fresh}
+print(p %+% filter(teros_data, Plot == "Freshwater"))
+```
+
+## Salt
+```{r Salt}
+print(p %+% filter(teros_data, Plot == "Seawater"))
+```
 
 # Tests
+```{r tests}
+ # Summarise nan and out of bound counts
+
+library(DT)
+datatable(teros_summary, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+```
