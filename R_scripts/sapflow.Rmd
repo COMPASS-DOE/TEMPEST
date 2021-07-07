@@ -432,7 +432,7 @@ p_tt %+% filter(sapflow, Plot == "L")
 # Summary
 
 ## Spatial Map of Flags
-```{r spatial, fig.align=1}
+```{r spatial, fig.width = 4}
 
 DAILY_TESTS %>% 
   bind_rows(.id = "test") %>% 
