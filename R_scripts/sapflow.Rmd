@@ -36,23 +36,13 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(plotly)
+
+source("read_sapflow.R")
+
 theme_set(theme_minimal())
 
 # Global chunk options
 knitr:: opts_chunk$set(echo = FALSE)
-
-# Function setup
-read_sapflow <- function(filename) {
-  sdat <- readLines(filename)
-  sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
-  
-  # parse line one to extract logger name
-  pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
-  logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
-  
-  read_csv(sdat, skip = 1) %>% 
-    mutate(Logger = logger_name)
-}
 
 # Generate list of 'current' sapflow files 
 s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
