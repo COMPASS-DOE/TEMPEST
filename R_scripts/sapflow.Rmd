@@ -29,7 +29,7 @@ TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
 # * Port
 # * failures - an integer
 DAILY_TESTS <- list()
-
+ 
 library(readr)
 library(lubridate)
 library(dplyr)

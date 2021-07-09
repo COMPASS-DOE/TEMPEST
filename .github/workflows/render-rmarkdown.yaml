@@ -21,6 +21,7 @@ jobs:
         run: |
           install.packages("remotes")
           remotes::install_cran("rmarkdown")
+          install.packahes("readr")
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
