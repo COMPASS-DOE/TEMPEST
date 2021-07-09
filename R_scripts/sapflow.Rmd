@@ -182,7 +182,7 @@ print(p_daily_5cm %+% filter(sapflow, Plot == "S", Deep_Sensor == "TRUE"))
 print(p_daily_25cm %+% filter(sapflow, Plot == "L"))
 ```
 
-# Tests
+# Tests 
 
 ## Out of range test {.tabset}
 
