@@ -102,6 +102,25 @@ datatable(teros_summary,
           options = list(pageLength = 10, scrollX = TRUE))
 ```
 
+# Tests - last installation date
+```{r}
+# we want to report the last known "online" date
+
+# let's create a test data frame for this
+dates <- c("2018-07-11", "2018-07-12", "2018-07-11", "2018-07-12")
+loggers <- c("A", "A", "B", "B")
+values <- c(2, NA, 3, 4)
+
+data.frame(dates, loggers, values) -> test_df
+
+test_df %>% 
+    group_by(loggers) %>% 
+    summarise(last_online = tail(test_df$dates[which(is.finite(test_df$values))], n = 1))
+
+
+```
+
+
 # Spatial Map
 ```{r spatial}
 ggplot(teros_summary, aes(x = Grid_Letter, y = Grid_Number)) + geom_point(aes(color = NAs))-> p
