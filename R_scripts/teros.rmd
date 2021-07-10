@@ -19,6 +19,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(kableExtra)
+library(plotly)
 theme_set(theme_minimal())
 
 # Global chunk options
@@ -65,12 +66,11 @@ if(nrow(nomatch) > 0) {
 ## Control
 ```{r Control}
 p <- ggplot(filter(teros_data, Plot == "Control"), 
-            aes(Round, M_Value, group = Data_Table_ID, color = as.factor(Data_Table_ID))) + 
+            aes(Round, M_Value, group = Data_Table_ID, color = as.factor(Depth))) + 
     geom_line() +
 #   coord_cartesian(ylim = VOLTAGE_RANGE) +
     facet_wrap(variable~Data_Logger_ID, scales = "free")
 print(p)
-
 
 ```
 
@@ -89,8 +89,10 @@ print(p %+% filter(teros_data, Plot == "Seawater"))
  # Summarise nan and out of bound counts
 
 teros_data %>% 
-    mutate(Date = as_date(Round)) %>% 
-    group_by(Date, Data_Logger_ID, Data_Table_ID) %>% 
+    mutate(Date = as_date(Round), 
+           Grid_Letter = substring(`Grid Square`, 1, 1), 
+           Grid_Number = substring(`Grid Square`, 2, 2)) %>% 
+    group_by(Data_Logger_ID, Grid_Letter, Grid_Number, `Junction Box ID`) %>% 
     summarise(NAs = sum(!is.finite(M_Value))) -> teros_summary
 
 library(DT)
@@ -98,4 +100,12 @@ datatable(teros_summary,
           rownames = FALSE,
           filter = "top",
           options = list(pageLength = 10, scrollX = TRUE))
+```
+
+# Spatial Map
+```{r spatial}
+ggplot(teros_summary, aes(x = Grid_Letter, y = Grid_Number)) + geom_point(aes(color = NAs))-> p
+
+ggplotly(p)
+
 ```
