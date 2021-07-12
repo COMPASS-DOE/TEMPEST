@@ -11,7 +11,10 @@ output:
     code_folding: hide
 ---
 ```{r setup, include=FALSE}
-library(tidyverse)
+#library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(readr)
 library(ggplot2)
 #library(scatterpie)
 #knit_print.tibble <- lemon_print
