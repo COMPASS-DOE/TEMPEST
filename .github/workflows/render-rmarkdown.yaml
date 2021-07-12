@@ -17,9 +17,9 @@ jobs:
           fetch-depth: 0
       - uses: r-lib/actions/setup-r@v1
       - uses: r-lib/actions/setup-pandoc@v1
-      - name: Install rmarkdown and remotes packages
+      - name: Install needed packages
         run: |
-          install.packages("remotes")
+          install.packages(c("remotes", "readr", "lubridate", "dplyr", "readr", "tidyr", "ggplot2", "plotly", "kableExtra", "skimr", "Kendall", "DT"))
           remotes::install_cran("rmarkdown")
         shell: Rscript {0}
       - name: Render Rmarkdown files

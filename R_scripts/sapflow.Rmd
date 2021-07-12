@@ -1,0 +1,469 @@
+---
+title: "Sapflow QA / QC"
+author: "Ben Bond-Lamberty and Stephanie Pennington"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+# Load packages
+TESTING <- FALSE
+VOLTAGE_RANGE <- c(0.2, 0.8)  # expected 'good' range for probe voltage diff
+
+# Daily cycle settings
+AMPLITUDE_RANGE <- c(-0.01, -0.2)
+
+# In graphs, TRUE is "ok" while FALSE is "error"
+TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
+
+# This list holds the test results. The name of each list entry is of the form
+# "WARN.<test_name" or "ERROR.<test_name>".
+# Every entry is a tibble/data frame, with the following required columns:
+# * Tree_Code
+# * Port
+# * failures - an integer
+DAILY_TESTS <- list()
+ 
+library(readr)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(plotly)
+library(kableExtra)
+set.seed(7)
+source("read_sapflow.R")
+
+theme_set(theme_minimal())
+
+# Global chunk options
+knitr:: opts_chunk$set(echo = FALSE, fig.width=10, fig.height = 9)
+
+# Generate list of 'current' sapflow files 
+s_files <- list.files(path = "../Data/sapflow/", pattern = "sapflow\\.dat$", full.names = TRUE)
+#ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
+#inventory <- read_csv("../Data/tree_inventory/inventory.csv")
+sf_inventory <- read_csv("../Design/sapflow_inventory.csv")
+```
+
+I see `r length(s_files)` current sapflow files:
+
+```{r}
+basename(s_files) %>% 
+  knitr::kable(col.names = "Files")
+```
+
+
+```{r process-data}
+# Read in data we're reporting on, reshape and reformat for analysis, etc.
+
+if(TESTING) {
+  message("TESTING!")
+  sapflow <- read_csv("test_data/sapflow_test_20210601.csv",
+                      col_types = "Tdddddcc")
+} else {
+  # Read in data
+  lapply(s_files, read_sapflow) %>%  
+    bind_rows()  -> sf_primitive
+  
+  # if() {
+  #   # check and warn if any duplicate rows
+  # }
+  
+  sf_primitive %>% 
+    distinct() %>% 
+    # extract number form former col name "DiffVolt_Avg(1)" would become "1"
+    # join with ports dataframe and bring in tree codes
+    pivot_longer(cols = `DiffVolt_Avg(1)`:`DiffVolt_Avg(11)`, 
+                 names_to = "Port", values_to = "Value") %>% 
+    rename(Timestamp = TIMESTAMP, 
+           Record = RECORD) %>% 
+    mutate(Timestamp = ymd_hms(Timestamp, tz = "EST"), 
+           Port = parse_number(Port), 
+           Logger = parse_number(Logger)) -> sf_raw
+  
+  sf_raw %>% 
+    left_join(sf_inventory, by = c("Logger", "Port")) %>% 
+    filter(!is.na(Tree_Code)) %>% #remove ports that dont have any sensors
+    select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid_Square, Species, Installation_Date) %>% 
+    mutate(Deep_Sensor = grepl("D", Tree_Code),
+           Grid_Letter = substring(Grid_Square, 1, 1), 
+           Grid_Number = substring(Grid_Square, 2, 2)) -> sapflow
+
+  nomatch_ports <- anti_join(sf_raw, sf_inventory, by = c("Logger", "Port"))
+  if(nrow(nomatch_ports) > 0) {
+    warning("There were logger/port combinations that I couldn't find in sapflow_inventory.csv:")
+    nomatch_ports %>% 
+      distinct(Logger, Port) %>% 
+      kable()
+  }
+  
+  
+}
+
+# Add some extra time information
+sapflow %>% 
+  mutate(Date = as.Date(Timestamp),
+         Hour = hour(Timestamp) + minute(Timestamp) / 60,
+         Plot = substr(Tree_Code, 1, 1)) -> 
+  sapflow
+
+# BBL-SP todo
+# * test dataset should include data that don't have a logger/port match
+# * test code above should read RAW test data ideally
+# * check sapflow manual - confirm we should see high values at night, low during day 
+# * duplicated data? May want to distinct() sapflow
+```
+
+
+```{r create-test-dataset, eval=FALSE}
+# Create test dataset - not normally run
+trees <- c("F16", "S15", "F2", "S6", "S2", "F13", "C10", "C11", "L4")
+
+sapflow %>% 
+  filter(Tree_Code %in% trees,
+         Timestamp > "2021-04-25 12:30:00") -> test_df
+```
+
+# Data statistics
+
+```{r, warning=FALSE}
+library(skimr)
+skim(sapflow)
+```
+
+# Data visualization
+
+## Daily cycle {.tabset}
+
+### Control
+
+```{r daily-control}
+p_daily_25cm <- ggplot(filter(sapflow, Plot == "C", Deep_Sensor == "FALSE"), 
+       aes(Hour, Value, color = Species, group = Date)) + 
+  geom_line() +
+  coord_cartesian(ylim = VOLTAGE_RANGE) +
+  facet_wrap(~Tree_Code)
+print(p_daily_25cm)
+
+p_daily_5cm <- ggplot(filter(sapflow, Plot == "C", Deep_Sensor == "TRUE"), 
+       aes(Hour, Value, group = Date)) + 
+  geom_line() +
+#  coord_cartesian(ylim = VOLTAGE_RANGE) +
+  facet_wrap(~Tree_Code, scales = "free")
+print(p_daily_5cm)
+```
+
+### Fresh
+
+```{r daily-fresh}
+print(p_daily_25cm %+% filter(sapflow, Plot == "F", Deep_Sensor == "FALSE"))
+
+print(p_daily_5cm %+% filter(sapflow, Plot == "F", Deep_Sensor == "TRUE"))
+```
+
+### Salt
+
+```{r daily-salt}
+print(p_daily_25cm %+% filter(sapflow, Plot == "S", Deep_Sensor == "FALSE"))
+
+print(p_daily_5cm %+% filter(sapflow, Plot == "S", Deep_Sensor == "TRUE"))
+```
+
+### Shore
+
+```{r daily-L}
+print(p_daily_25cm %+% filter(sapflow, Plot == "L"))
+```
+
+# Tests 
+
+## Out of range test {.tabset}
+
+This test flags data outside of the expected good voltage range: `r paste(VOLTAGE_RANGE, collapse = ", ")`.
+
+```{r out-of-range-test}
+# Compute daily check if sensor went outside of the expected range
+sapflow %>% 
+  group_by(Plot, Date, Tree_Code, Port) %>% 
+  mutate(in_range = between(Value, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE))) -> 
+  daily_range_test
+
+# Count flags and store results
+daily_range_test %>% 
+  group_by(Plot, Tree_Code, Port) %>%
+  summarise(failures = sum(!in_range, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["ERR.range"]] # Store results in list
+
+p_oor <- daily_range_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = in_range)) + 
+  geom_line() + 
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Control
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_oor %+% filter(daily_range_test, Plot == "L")
+```
+
+## Missing data test {.tabset}
+
+This test flags missing (`NA`) or not a number (`NaN`) data.
+
+```{r missing-test}
+# Compute daily check if sensor has NaNs
+sapflow %>% 
+  group_by(Date, Tree_Code, Port) %>% 
+  mutate(is_number = is.finite(Value)) -> 
+  daily_nan_test
+
+# Count flags and store results
+daily_nan_test %>% 
+  group_by(Tree_Code, Port, Plot) %>%
+  summarise(failures = sum(!is_number, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["ERR.NaN"]] # Store results in list
+
+p_md <- daily_nan_test %>% 
+  ggplot(aes(x = Timestamp, y = Value, color = is_number)) + 
+  geom_line() + 
+  facet_wrap(~Tree_Code, scales = "free") +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Control
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_md %+% filter(daily_nan_test, Plot == "L")
+```
+
+## Daily cycle test {.tabset}
+
+This test identifies days that don't have a normal-looking daily cycle (here defined simply
+as having afternoon values that are lower than non-afternoon values; allowable range is
+`r paste(AMPLITUDE_RANGE, collapse = ", ")`). 
+
+```{r daily-cycle-test}
+# Helper function
+daily_cycle_amplitude <- function(hours, values) {
+  stopifnot(length(hours) == length(values))
+  stopifnot(!any(duplicated(hours)))
+  
+  # We need data coverage over the day to do this
+  if(min(hours) > 4 && max(hours) < 20 || length(hours) < 50) {
+    return(NA)
+  }
+  
+  # Simple test: voltage during afternoon hours (based on known good data) should be lower
+  # than others
+  afternoon <- hours %in% 12:18
+  mean(values[afternoon]) - mean(values[!afternoon])
+}
+
+# Compute 'amplitude' (kind of; the difference between afternoon and non-afternoon values)
+sapflow %>% 
+  group_by(Date, Tree_Code, Port) %>% 
+  summarise(amplitude = daily_cycle_amplitude(Hour, Value),
+            good_cycle = between(amplitude, min(AMPLITUDE_RANGE), max(AMPLITUDE_RANGE)),
+            .groups = "drop") ->
+  daily_amplitude_data
+
+# Store results
+daily_amplitude_data %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!good_cycle, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["WARN.daily_cycle"]]
+
+sapflow %>% 
+  left_join(daily_amplitude_data, by = c("Date", "Tree_Code", "Port")) ->
+  sapflow
+
+p_dc <- ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) + 
+  geom_point(size = 0.5) + 
+  facet_wrap(~Tree_Code) + 
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Control
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_dc %+% filter(sapflow, Plot == "L")
+```
+
+## Trend test {.tabset}
+
+```{r}
+TREND_DAYS <- 7
+```
+
+This test looks at every `r TREND_DAYS` days of data and tests whether there's a significant 
+trend (using a Mann-Kendall test) in the daily mean.
+
+```{r trend-test}
+sapflow %>% 
+  mutate(group = yday(Timestamp) %/% TREND_DAYS) ->
+  sapflow
+
+library(Kendall)
+
+mk_no_trend <- function(x) {
+  if(length(x) < 3) NA else {
+    capture.output(mk <- MannKendall(x))
+    mk$sl > 0.05
+  }
+}
+
+sapflow %>% 
+  arrange(Date) %>% 
+  group_by(Date, group, Tree_Code, Port) %>% 
+  summarise(Value = mean(Value), .groups = "drop") %>% 
+  group_by(group, Tree_Code, Port) %>% 
+  summarise(no_trend = mk_no_trend(Value),
+            .groups = "drop") ->
+  weekly_trends
+
+# Store results
+weekly_trends %>% 
+  group_by(Tree_Code, Port) %>%
+  summarise(failures = sum(!no_trend, na.rm = TRUE), .groups = "drop") ->
+  DAILY_TESTS[["WARN.trend"]]
+
+sapflow %>% 
+  left_join(weekly_trends, by = c("group", "Tree_Code", "Port")) ->
+  sapflow
+
+p_tt <- ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) + 
+  geom_point(size = 0.5) + 
+  facet_wrap(~Tree_Code) + 
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = TEST_COLOR_SCALE) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Control
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "C")
+```
+
+### Fresh
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "F")
+```
+
+### Salt
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "S")
+```
+
+### Shore
+
+```{r}
+p_tt %+% filter(sapflow, Plot == "L")
+```
+
+# Summary
+
+## Spatial Map of Flags
+```{r spatial, fig.width = 4}
+
+DAILY_TESTS %>% 
+  bind_rows(.id = "test") %>% 
+  left_join(sf_inventory, by = c("Tree_Code", "Port")) %>% 
+  select(test, Plot, Tree_Code, Species, Port, 
+         Grid_Square, Logger, Installation_Date, failures) %>% 
+  mutate(Grid_Letter = substring(Grid_Square, 1, 1), 
+         Grid_Number = substring(Grid_Square, 2, 2)) -> daily_test
+
+# Spatial map of errors
+ggplot(filter(daily_test, Plot %in% c("C", "F", "S")), aes(x = Grid_Letter, y = Grid_Number)) + 
+  geom_jitter(aes(color = test)) + facet_wrap(~Plot, ncol = 1) + 
+  theme_minimal() -> p
+
+ggplotly(p)
+
+```
+
+
+## Daily test failure count:
+
+```{r summary, warning=FALSE}
+daily_test %>%
+  separate(test, into = c("Test_type", "Test_name"), sep = "\\.") %>% 
+  pivot_wider(names_from = "Test_name", values_from = "failures", values_fill = 0) ->
+  daily_test_summary 
+
+library(DT)
+datatable(daily_test_summary, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+```
+

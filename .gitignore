@@ -4,3 +4,5 @@
 .Ruserdata
 
 .DS_Store
+# ignore sapflow data for now until we have a good update system
+Data/sapflow/
