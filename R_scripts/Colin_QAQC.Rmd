@@ -13,7 +13,7 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggplot2)
-library(scatterpie)
+#library(scatterpie)
 #knit_print.tibble <- lemon_print
 
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, rows.print=20)
@@ -100,7 +100,7 @@ Mortality_Table
 Diam_Distr <- long_inventory %>% ggplot(aes(DBH)) + geom_density() + facet_grid(Year~Plot)
 Diam_Distr
 ```
-```{r scatterpie, fig.width=10,fig.height=20}
+```{r scatterpie, fig.width=10,fig.height=20, eval=FALSE}
 scatter_inventory <- inventory %>% 
   filter(!is.na(X) & !is.na(Y)) %>% 
   mutate(X=match(tolower(X), letters), Y= as.integer(Y)) %>%
