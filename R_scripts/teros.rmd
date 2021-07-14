@@ -8,6 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 ##this will use data from the "Current Data" folders
 
+EC_RANGE <- c(0, 20) #dS/m (bulk)
+VWC_RANGE <- c(0.00, 0.70 ) #m3/m3
+TEMP_RANGE <- c(-40, 60) #degC
+
 # In graphs, TRUE is "ok" while FALSE is "error"
 TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
 
@@ -28,6 +32,7 @@ knitr:: opts_chunk$set(echo = FALSE)
 # From Anya's script:
 # Helper function: read string vector into a data frame, reshape, and drop NA
 source("teros_fileread.R")
+source("teros_functions.R")
 
 teros_files <- list.files("~/Dropbox/TEMPEST_PNNL_Data/Current_data/", pattern = "Terosdata.dat", full.names = TRUE)
 
@@ -93,7 +98,10 @@ teros_data %>%
            Grid_Letter = substring(`Grid Square`, 1, 1), 
            Grid_Number = substring(`Grid Square`, 2, 2)) %>% 
     group_by(Data_Logger_ID, Grid_Letter, Grid_Number, `Junction Box ID`) %>% 
-    summarise(NAs = sum(!is.finite(M_Value))) -> teros_summary
+    summarise(NAs = sum(!is.finite(M_Value)),
+              T_bounds = teros_bounds(M_Value, TEMP_RANGE),
+              VWC_bounds = teros_bounds(M_Value, VWC_RANGE),
+              EC_bounds = teros_bounds(M_Value, EC_RANGE)) -> teros_summary
 
 library(DT)
 datatable(teros_summary, 
