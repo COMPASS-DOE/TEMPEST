@@ -45,6 +45,9 @@ teros_primative <- lapply(teros_files, fileread) %>% bind_rows()
 teros_primative %>% 
     mutate(Round = floor_date(TIMESTAMP, "3 hours")) %>% # round timestamp to nearest three hours
     group_by(variable, Data_Logger_ID, Data_Table_ID, Round) %>% 
+    #na count needs to be before this
+    # NAs = sum(!is.finite(M_Value)),
+    #           
     summarise(M_Value = mean(value, na.rm = TRUE)) -> teros_raw
 
 teros_raw %>% 
@@ -97,11 +100,11 @@ teros_data %>%
     mutate(Date = as_date(Round), 
            Grid_Letter = substring(`Grid Square`, 1, 1), 
            Grid_Number = substring(`Grid Square`, 2, 2)) %>% 
+    pivot_wider(names_from = variable, values_from = M_Value) %>% 
     group_by(Data_Logger_ID, Grid_Letter, Grid_Number, `Junction Box ID`) %>% 
-    summarise(NAs = sum(!is.finite(M_Value)),
-              T_bounds = teros_bounds(M_Value, TEMP_RANGE),
-              VWC_bounds = teros_bounds(M_Value, VWC_RANGE),
-              EC_bounds = teros_bounds(M_Value, EC_RANGE)) -> teros_summary
+    summarise(T_bounds = teros_bounds(TSOIL, TEMP_RANGE),
+              VWC_bounds = teros_bounds(VWC, VWC_RANGE),
+              EC_bounds = teros_bounds(EC, EC_RANGE)) -> teros_summary
 
 library(DT)
 datatable(teros_summary, 
@@ -119,12 +122,21 @@ dates <- c("2018-07-11", "2018-07-12", "2018-07-11", "2018-07-12")
 loggers <- c("A", "A", "B", "B")
 values <- c(2, NA, 3, 4)
 
-data.frame(dates, loggers, values) -> test_df
+tibble(dates, loggers, values) -> test_df
 
 test_df %>% 
+    filter(is.finite(values)) %>% 
     group_by(loggers) %>% 
-    summarise(last_online = tail(test_df$dates[which(is.finite(test_df$values))], n = 1))
+    summarise(last_online = max(dates)) -> x
 
+test_df %>% 
+    filter(!is.finite(values)) %>% 
+    group_by(loggers) %>% 
+    summarise(na_days = length(unique(dates))) -> y
+# what is an na_day? is it a day with more than x nas or a full day? what do you normally see
+
+left_join(x,y) %>% 
+    replace_na(list(na_days = 0))
 
 ```
 
