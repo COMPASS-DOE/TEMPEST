@@ -261,25 +261,37 @@ p_md <- daily_nan_test %>%
 ### Control
 
 ```{r}
-p_md %+% filter(daily_nan_test, Plot == "C")
+p_md %+% filter(sapflow, Logger == "11") %+% labs(title = "Logger: 11")
+
+p_md %+% filter(sapflow, Logger == "12") %+% labs(title = "Logger: 13")
+
+p_md %+% filter(sapflow, Logger == "13") %+% labs(title = "Logger: 13")
 ```
 
 ### Fresh
 
 ```{r}
-p_md %+% filter(daily_nan_test, Plot == "F")
+p_md %+% filter(sapflow, Logger == "31") %+% labs(title = "Logger: 31")
+
+p_md %+% filter(sapflow, Logger == "32") %+% labs(title = "Logger: 32")
+
+p_md %+% filter(sapflow, Logger == "33") %+% labs(title = "Logger: 33")
 ```
 
 ### Salt
 
 ```{r}
-p_md %+% filter(daily_nan_test, Plot == "S")
+p_md %+% filter(sapflow, Logger == "21") %+% labs(title = "Logger: 21")
+
+p_md %+% filter(sapflow, Logger == "22") %+% labs(title = "Logger: 22")
+
+p_md %+% filter(sapflow, Logger == "23") %+% labs(title = "Logger: 23")
 ```
 
 ### Shore
 
 ```{r}
-p_md %+% filter(daily_nan_test, Plot == "L")
+p_md %+% filter(sapflow, Plot == "L")
 ```
 
 ## Daily cycle test {.tabset}
@@ -334,19 +346,31 @@ p_dc <- ggplot(sapflow, aes(Timestamp, Value, color = good_cycle)) +
 ### Control
 
 ```{r}
-p_dc %+% filter(sapflow, Plot == "C")
+p_dc %+% filter(sapflow, Logger == "11") %+% labs(title = "Logger: 11")
+
+p_dc %+% filter(sapflow, Logger == "12") %+% labs(title = "Logger: 13")
+
+p_dc %+% filter(sapflow, Logger == "13") %+% labs(title = "Logger: 13")
 ```
 
 ### Fresh
 
 ```{r}
-p_dc %+% filter(sapflow, Plot == "F")
+p_dc %+% filter(sapflow, Logger == "31") %+% labs(title = "Logger: 31")
+
+p_dc %+% filter(sapflow, Logger == "32") %+% labs(title = "Logger: 32")
+
+p_dc %+% filter(sapflow, Logger == "33") %+% labs(title = "Logger: 33")
 ```
 
 ### Salt
 
 ```{r}
-p_dc %+% filter(sapflow, Plot == "S")
+p_dc %+% filter(sapflow, Logger == "21") %+% labs(title = "Logger: 21")
+
+p_dc %+% filter(sapflow, Logger == "22") %+% labs(title = "Logger: 22")
+
+p_dc %+% filter(sapflow, Logger == "23") %+% labs(title = "Logger: 23")
 ```
 
 ### Shore
@@ -408,19 +432,31 @@ p_tt <- ggplot(sapflow, aes(Timestamp, Value, color = no_trend)) +
 ### Control
 
 ```{r}
-p_tt %+% filter(sapflow, Plot == "C")
+p_tt %+% filter(sapflow, Logger == "11") %+% labs(title = "Logger: 11")
+
+p_tt %+% filter(sapflow, Logger == "12") %+% labs(title = "Logger: 13")
+
+p_tt %+% filter(sapflow, Logger == "13") %+% labs(title = "Logger: 13")
 ```
 
 ### Fresh
 
 ```{r}
-p_tt %+% filter(sapflow, Plot == "F")
+p_tt %+% filter(sapflow, Logger == "31") %+% labs(title = "Logger: 31")
+
+p_tt %+% filter(sapflow, Logger == "32") %+% labs(title = "Logger: 32")
+
+p_tt %+% filter(sapflow, Logger == "33") %+% labs(title = "Logger: 33")
 ```
 
 ### Salt
 
 ```{r}
-p_tt %+% filter(sapflow, Plot == "S")
+p_tt %+% filter(sapflow, Logger == "21") %+% labs(title = "Logger: 21")
+
+p_tt %+% filter(sapflow, Logger == "22") %+% labs(title = "Logger: 22")
+
+p_tt %+% filter(sapflow, Logger == "23") %+% labs(title = "Logger: 23")
 ```
 
 ### Shore
@@ -428,6 +464,59 @@ p_tt %+% filter(sapflow, Plot == "S")
 ```{r}
 p_tt %+% filter(sapflow, Plot == "L")
 ```
+
+```{r duplicate-count}
+# Let's count the number of repeating values we have
+
+# compute_rle <- function(x) {
+#     rle_dat <- rle(x$Value)
+#     maxrun <- which.max(rle_dat$lengths)
+#     data.frame(maxrun = rle_dat$lengths[maxrun], maxrunval = rle_dat$values[maxrun])
+# }
+# 
+# sapflow %>%
+#     group_by(Date, Tree_Code) %>%
+#     do(compute_rle(.)) %>%
+#     print()
+
+
+# ggplot(reps_logger, aes(x = Date, y = Average, group = Logger, color = Is_old)) +
+#     geom_line() +
+#     labs(title = "Average Number of Consecutive Repeating Values by Data Logger",
+#                        color = "Logger Model") +
+#     scale_color_manual(labels = c("CR1000X", "CR1000"),
+#                        values = c("grey", "maroon1"))
+
+```
+# Last Online Date
+
+```{r last-online}
+
+# We want to report the last known "online" date
+
+sapflow %>% 
+  filter(is.finite(Value)) %>% 
+  group_by(Tree_Code) %>% 
+  summarise(last_online = max(Date)) -> x
+
+sapflow %>% 
+  filter(!is.finite(Value)) %>% 
+  group_by(Tree_Code) %>% 
+  summarise(na_days = length(unique(Date))) -> y
+
+# what is an na_day? is it a day with more than x nas or a full day? what do you normally see
+
+left_join(x,y) %>% 
+    replace_na(list(na_days = 0)) -> last_online
+
+library(DT)
+datatable(last_online, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+
+```
+
 
 # Summary
 
