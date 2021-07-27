@@ -468,24 +468,29 @@ p_tt %+% filter(sapflow, Plot == "L")
 ```{r duplicate-count}
 # Let's count the number of repeating values we have
 
-# compute_rle <- function(x) {
-#     rle_dat <- rle(x$Value)
-#     maxrun <- which.max(rle_dat$lengths)
-#     data.frame(maxrun = rle_dat$lengths[maxrun], maxrunval = rle_dat$values[maxrun])
-# }
-# 
-# sapflow %>%
-#     group_by(Date, Tree_Code) %>%
-#     do(compute_rle(.)) %>%
-#     print()
+old_logs <- c("11", "22", "32", "41")
 
+compute_rle <- function(x) {
+    rle_dat <- rle(x$Value)
+    maxrun <- which.max(rle_dat$lengths)
+    data.frame(maxrun = rle_dat$lengths[maxrun], maxrunval = rle_dat$values[maxrun])
+}
 
-# ggplot(reps_logger, aes(x = Date, y = Average, group = Logger, color = Is_old)) +
-#     geom_line() +
-#     labs(title = "Average Number of Consecutive Repeating Values by Data Logger",
-#                        color = "Logger Model") +
-#     scale_color_manual(labels = c("CR1000X", "CR1000"),
-#                        values = c("grey", "maroon1"))
+sapflow %>%
+  group_by(Date, Tree_Code, Logger) %>%
+  do(compute_rle(.)) %>% 
+  group_by(Date, Logger) %>% 
+  summarise(Average = mean(maxrun)) -> sf_reps
+
+sf_reps %>% 
+  mutate(Is_old = Logger %in% old_logs) -> sf_reps
+
+ggplot(sf_reps, aes(x = Date, y = Average, group = Logger, color = Is_old)) +
+    geom_line() +
+    labs(title = "Average Number of Consecutive Repeating Values by Data Logger",
+                       color = "Logger Model") +
+    scale_color_manual(labels = c("CR1000X", "CR1000"),
+                       values = c("grey", "maroon1"))
 
 ```
 # Last Online Date
