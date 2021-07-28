@@ -1,0 +1,41 @@
+---
+title: "Soil Respiration"
+author: "Stephanie Pennington"
+date: "7/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+# In graphs, TRUE is "ok" while FALSE is "error"
+TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
+
+DAILY_TESTS <- list()
+
+library(readr)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_minimal())
+
+# Global chunk options
+knitr:: opts_chunk$set(echo = FALSE)
+```
+
+```{r process}
+
+```
+
+
+# Data visualization
+
+## Daily cycle {.tabset}
+
+### Control
+
+### Fresh
+
+### Salt
+
+# Tests
