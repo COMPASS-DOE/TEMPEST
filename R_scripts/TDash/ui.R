@@ -19,21 +19,25 @@ ui <- dashboardPage(
     dashboardSidebar(
         sidebarMenu(
             menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
-            menuItem("Stats", tabName = "stats", icon = icon("chart-pie"))
+            menuItem("Graphs", tabName = "graphs", icon = icon("chart-pie"))
             )
     ),
     dashboardBody(
-        tabItem(
-            tabName = "dashboard"
-        ),
-        tabItem(
-            tabName = "stats"
-        ),
-        sidebarPanel(
-            selectInput("plot", "Plot:",
-                        choices = unique(sapflow$Plot))),
-        fluidRow(
-            box(plotOutput("sf_timeseries"), width = 8)
+        tabItems(
+          tabItem(
+                tabName = "dashboard",
+                dataTableOutput("data")
+          ),
+
+          tabItem(
+                tabName = "graphs",
+                sidebarPanel(
+                    selectInput("plot", "Plot:",
+                                choices = unique(sapflow$Plot))),
+                fluidRow(
+                    box(plotOutput("sf_timeseries"), width = 8))
+          )
         )
     )
 )
+
