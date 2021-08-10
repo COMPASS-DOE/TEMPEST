@@ -11,6 +11,13 @@ library(kableExtra)
 set.seed(7)
 source("read_sapflow.R")
 
+# Generate list of 'current' sapflow files
+s_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Current_data/",
+                      pattern = "sapflow\\.dat$", full.names = TRUE)
+#ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
+#inventory <- read_csv("../Data/tree_inventory/inventory.csv")
+sf_inventory <- read_csv("../Design/sapflow_inventory.csv")
+
 lapply(s_files, read_sapflow) %>%
     bind_rows()  -> sf_primitive
 
@@ -40,9 +47,6 @@ if(nrow(nomatch_ports) > 0) {
     nomatch_ports %>%
         distinct(Logger, Port) %>%
         kable()
-}
-
-
 }
 
 # Add some extra time information

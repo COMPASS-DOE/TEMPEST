@@ -10,6 +10,7 @@
 library(shiny)
 library(shinydashboard)
 library(dplyr)
+library(shinyWidgets)
 
 ui <- dashboardPage(
     skin = "black",
@@ -26,6 +27,11 @@ ui <- dashboardPage(
         tabItems(
           tabItem(
                 tabName = "dashboard",
+                # actionButton("update", "Update Data"),
+                pickerInput("logger-filter","Loggers",
+                            choices= unique(sapflow$Logger),
+                            selected = "11",
+                            multiple = T),
                 dataTableOutput("data")
           ),
 
@@ -35,7 +41,7 @@ ui <- dashboardPage(
                     selectInput("plot", "Plot:",
                                 choices = unique(sapflow$Plot))),
                 fluidRow(
-                    box(plotOutput("sf_timeseries"), width = 8))
+                    box(plotOutput("sf_timeseries"), width = 12))
           )
         )
     )
