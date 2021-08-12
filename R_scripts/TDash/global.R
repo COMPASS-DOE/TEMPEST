@@ -5,7 +5,7 @@ library(DT)
 library(readr)
 #source("../process_sapflow.R")
 
-sapflow <- read_csv("../../Data/sapflow/sapflow.csv")
+# sapflow <- read_csv("../../Data/sapflow/sapflow.csv")
 
 # test <- reactiveFileReader(1000,
 #                            session,

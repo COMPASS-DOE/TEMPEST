@@ -9,14 +9,15 @@ library(ggplot2)
 library(plotly)
 library(kableExtra)
 set.seed(7)
-source("read_sapflow.R")
+
+process_sapflow <- function() {
 
 # Generate list of 'current' sapflow files
 s_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Current_data/",
                       pattern = "sapflow\\.dat$", full.names = TRUE)
 #ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
 #inventory <- read_csv("../Data/tree_inventory/inventory.csv")
-sf_inventory <- read_csv("../Design/sapflow_inventory.csv")
+sf_inventory <- read_csv("../../Design/sapflow_inventory.csv")
 
 lapply(s_files, read_sapflow) %>%
     bind_rows()  -> sf_primitive
@@ -42,6 +43,7 @@ sf_raw %>%
            Grid_Number = substring(Grid_Square, 2, 2)) -> sapflow
 
 nomatch_ports <- anti_join(sf_raw, sf_inventory, by = c("Logger", "Port"))
+
 if(nrow(nomatch_ports) > 0) {
     warning("There were logger/port combinations that I couldn't find in sapflow_inventory.csv:")
     nomatch_ports %>%
@@ -53,7 +55,8 @@ if(nrow(nomatch_ports) > 0) {
 sapflow %>%
     mutate(Date = as.Date(Timestamp),
            Hour = hour(Timestamp) + minute(Timestamp) / 60,
-           Plot = substr(Tree_Code, 1, 1)) ->
-    sapflow
+           Plot = substr(Tree_Code, 1, 1))
 
-write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
+#write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
+
+}

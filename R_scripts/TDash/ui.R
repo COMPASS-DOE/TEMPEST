@@ -32,7 +32,7 @@ ui <- dashboardPage(
                             choices= unique(sapflow$Logger),
                             selected = "11",
                             multiple = T),
-                dataTableOutput("data")
+                tableOutput("test")
           ),
 
           tabItem(

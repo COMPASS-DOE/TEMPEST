@@ -6,18 +6,42 @@ library(readr)
 
 server <- function(input, output) {
 
-    observeEvent(input$update, {
-        source("../process_data.R")
-    })
+    source("../read_sapflow.R")
+    source("../process_sapflow.R")
 
-    output$data <- renderDataTable({
+
+    output$test <- renderTable({
+        invalidateLater(1000 * 30)
+
+        sapflow <<- process_sapflow()
+
         sapflow %>%
-            filter(Logger == input$`logger-filter`) %>%
+            filter(Logger %in% input$`logger-filter`) %>%
             group_by(Tree_Code) %>%
             do(tail(., 10)) %>%
             select(Timestamp, Tree_Code, Value, Logger, Grid_Square) %>%
-            pivot_wider(id_cols = Timestamp ,names_from = "Tree_Code", values_from = "Value")
-    })
+            pivot_wider(id_cols = Tree_Code ,names_from = "Timestamp", values_from = "Value")
+        })
+
+
+    #  reactive({
+    #      invalidateLater(1000 * 30, session)
+    #
+    #      test_df <-read_csv("~/Desktop/test_reactive.csv")
+    # })
+    #
+    # output$test <- renderTable({
+    #     test_df
+    # })
+
+    # output$data <- renderDataTable({
+    #     sapflow %>%
+    #         filter(Logger %in% input$`logger-filter`) %>%
+    #         group_by(Tree_Code) %>%
+    #         do(tail(., 10)) %>%
+    #         select(Timestamp, Tree_Code, Value, Logger, Grid_Square) %>%
+    #         pivot_wider(id_cols = Tree_Code ,names_from = "Timestamp", values_from = "Value")
+    # })
 
     output$sf_timeseries <- renderPlot({
 
