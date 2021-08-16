@@ -33,18 +33,13 @@ ui <- dashboardPage(
                 actionButton("refreshButton",
                              label = "Refresh",
                              class = "btn-success"),
-                pickerInput("logger-filter", "Loggers",
-                            choices= unique(sapflow_data$Logger),
-                            selected = "11",
-                            multiple = TRUE),
+                uiOutput("dataloggerSelector"),
                 tableOutput("table")
           ),
 
           tabItem(
                 tabName = "graphs",
-                sidebarPanel(
-                    selectInput("plot", "Plot:",
-                                choices = unique(sapflow_data$Plot))),
+                uiOutput("plotSelector"),
                 fluidRow(
                     box(plotOutput("sf_timeseries"), width = 12))
           )

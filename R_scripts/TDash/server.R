@@ -53,12 +53,29 @@ server <- function(input, output) {
         }
     })
 
-    output$sf_timeseries <- renderPlot({
-        input$refreshButton
-        autoInvalidate()
+    output$dataloggerSelector <- renderUI({
+        pickerInput("logger-filter", "Loggers",
+                    choices = unique(sapflow_data$Logger),
+                    selected = "11",
+                    multiple = TRUE)
+    })
 
-        sapflow_data %>%
-            filter(Plot == input$plot) %>%
+    output$plotSelector <- renderUI({
+        selectInput("plot", "Plot:",
+                    choices = unique(sapflow_data$Plot),
+                    selected = "C")
+    })
+
+    output$sf_timeseries <- renderPlot({
+        input$plot
+
+        if(is.null(input$plot)) {  # initial state before update
+            sdata <- sapflow_data
+        } else {
+            sdata <- filter(sapflow_data, Plot == input$plot)
+        }
+
+        sdata %>%
             ggplot(aes(x = Timestamp, y = Value)) +
             geom_line() +
             facet_wrap(~Tree_Code, scales = "free") +
