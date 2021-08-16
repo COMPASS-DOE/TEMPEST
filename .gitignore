@@ -8,3 +8,4 @@
 Data/sapflow/
 R_scripts/some tests.R
 R_scripts/token.rds
+R_scripts/droptoken.rds
