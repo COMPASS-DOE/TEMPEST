@@ -11,6 +11,8 @@ library(shiny)
 library(shinydashboard)
 library(dplyr)
 library(shinyWidgets)
+# Dummy variable
+sapflow <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
     skin = "black",

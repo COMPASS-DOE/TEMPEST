@@ -9,7 +9,7 @@ library(readr)
 library(dplyr)
 
 # Function setup
-read_sapflow <- function(filename) {
+read_sapflow <- function(filename, token) {
 
     # download file to temp file
     drop_download(filename, local_path = "tempfile.dat",
