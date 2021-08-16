@@ -3,4 +3,4 @@
 *.html
 html-figures/
 sapflow_files/
-
+.httr-oauth

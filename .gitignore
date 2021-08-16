@@ -7,3 +7,4 @@
 # ignore sapflow data for now until we have a good update system
 Data/sapflow/
 R_scripts/some tests.R
+R_scripts/token.rds
