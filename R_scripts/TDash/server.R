@@ -9,42 +9,43 @@ source("../read_sapflow.R")
 source("../process_sapflow.R")
 token <- readRDS("../droptoken.rds")
 
-drop_dir = "TEMPEST_PNNL_Data/Current_Data"
-cursor <- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
+datadir <- "TEMPEST_PNNL_Data/Current_Data"
+cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
 last_update <- NA
-force_update <- TRUE
-sapflow_data <- data.frame()
+
+# Start off by downloading all data
+sapflow_data <- process_sapflow(token)
 
 server <- function(input, output) {
 
     autoInvalidate <- reactiveTimer(5 * 1000)
 
-    sapflow_data_display <- reactive({
+    output$table <- renderTable({
 
         input$refreshButton
         autoInvalidate()
 
-        filelist <- drop_dir(drop_dir, cursor = cursor, dtoken = token)
+        filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
         update_needed <- nrow(filelist) > 0
 
-        if(update_needed || force_update) {
+        if(update_needed) {
             showNotification("Updating data...", duration = 3)
 
-            # Read dropbox file
+            # Read dropbox files
             sapflow_data <<- process_sapflow(token)
 
-            # Update the cursor
+            # Update the cursor tracking directory state
             cursor <<- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
-            force_update <<- FALSE
             last_update <<- Sys.time()
         }
-    })
-
-    output$table <- renderTable({
 
         if(nrow(sapflow_data)) {
-            sapflow_data %>%
-                filter(Logger %in% input$`logger-filter`) %>%
+            if(is.null(input$`logger-filter`)) {  # initial state before update
+                sdata <- sapflow_data
+            } else {
+                sdata <- filter(sapflow_data, Logger %in% input$`logger-filter`)
+            }
+            sdata %>%
                 group_by(Tree_Code) %>%
                 do(tail(., 10)) %>%
                 select(Timestamp, Tree_Code, Value, Logger, Grid_Square) %>%
@@ -53,6 +54,8 @@ server <- function(input, output) {
     })
 
     output$sf_timeseries <- renderPlot({
+        input$refreshButton
+        autoInvalidate()
 
         sapflow_data %>%
             filter(Plot == input$plot) %>%
