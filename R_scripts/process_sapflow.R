@@ -13,10 +13,9 @@ set.seed(7)
 process_sapflow <- function() {
 
 # Generate list of 'current' sapflow files
-s_files <- list.files(path = "~/Dropbox/TEMPEST_PNNL_Data/Current_data/",
-                      pattern = "sapflow\\.dat$", full.names = TRUE)
-#ports <- read_csv("../Design/ports.csv", col_types = "ldcdc")
-#inventory <- read_csv("../Data/tree_inventory/inventory.csv")
+s_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
+s_files <- grep(s_dir$path_display, pattern = "sapflow\\.dat$", value = TRUE)
+
 sf_inventory <- read_csv("../../Design/sapflow_inventory.csv")
 
 lapply(s_files, read_sapflow) %>%

@@ -28,11 +28,14 @@ ui <- dashboardPage(
           tabItem(
                 tabName = "dashboard",
                 # actionButton("update", "Update Data"),
+                actionButton("refreshButton",
+                             label = "Refresh",
+                             class = "btn-success"),
                 pickerInput("logger-filter","Loggers",
                             choices= unique(sapflow$Logger),
                             selected = "11",
                             multiple = T),
-                tableOutput("test")
+                tableOutput("table")
           ),
 
           tabItem(
