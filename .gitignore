@@ -10,3 +10,4 @@ R_scripts/some tests.R
 R_scripts/token.rds
 R_scripts/droptoken.rds
 R_scripts/tempfile.dat
+R_scripts/TDash/tempfile.dat
