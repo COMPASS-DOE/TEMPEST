@@ -38,10 +38,10 @@ ui <- dashboardPage(
           ),
 
           tabItem(
-                tabName = "graphs",
-                uiOutput("plotSelector"),
-                fluidRow(
-                    box(plotOutput("sf_timeseries"), width = 12))
+                 tabName = "graphs"#,
+                # uiOutput("plotSelector"),
+                # fluidRow(
+                #     box(plotOutput("sf_timeseries"), width = 12))
           )
         )
     )
