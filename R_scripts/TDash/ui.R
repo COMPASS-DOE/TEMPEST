@@ -43,14 +43,14 @@ ui <- dashboardPage(
                  tabName = "sapflow",
                 uiOutput("plotSelector"),
                 fluidRow(
-                    box(plotOutput("sf_timeseries", height = "800px"), width = 12)
+                    box(plotlyOutput("sf_timeseries", height = "800px"), width = 12)
                     )
           ),
           tabItem(
               tabName = "teros",
               #uiOutput("plotSelector"),
               fluidRow(
-                  box(plotOutput("teros_timeseries", height = "800px"), width = 12)
+                  box(plotlyOutput("teros_timeseries", height = "800px"), width = 12)
               )
           )
         )

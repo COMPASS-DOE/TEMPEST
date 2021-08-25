@@ -119,7 +119,7 @@ server <- function(input, output) {
          }
      })
 
-     output$sf_timeseries <- renderPlot({
+     output$sf_timeseries <- renderPlotly({
          #input$plot
 
          autoInvalidate()
@@ -144,7 +144,7 @@ server <- function(input, output) {
                       alpha = 0.2, fill = "deepskyblue")
      })
 
-     output$teros_timeseries <- renderPlot({
+     output$teros_timeseries <- renderPlotly({
          #input$plot
 
          autoInvalidate()
@@ -156,7 +156,13 @@ server <- function(input, output) {
              tdata <- filter(tdata, substr(Plot, 1, 1) == input$plot)
          }
 
+         display_bounds <- tibble(variable = c("EC", "TSOIL", "VWC"),
+                                  min_val = c(0, 15, 2000),
+                                  max_val = c(500, 30, 4500))
+
          tdata %>%
+             left_join(display_bounds, by = "variable") %>%
+             filter(value >= min_val, value <= max_val) %>%
              ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
              geom_line() +
              facet_wrap(variable~Depth, scales = "free") +
