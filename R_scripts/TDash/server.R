@@ -148,14 +148,14 @@ server <- function(input, output) {
          #input$plot
 
          autoInvalidate()
-         teros_data <- reactive_df()$teros
+         tdata <- reactive_df()$teros
 
          if(is.null(input$plot)) {  # initial state before update
-             tdata <- teros_data
+             tdata <- tdata
          } else {
-             tdata <- filter(teros_data, substr(Plot, 1, 1) == input$plot)
+             tdata <- filter(tdata, substr(Plot, 1, 1) == input$plot)
          }
-browser()
+
          tdata %>%
              ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
              geom_line() +

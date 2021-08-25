@@ -15,7 +15,7 @@ library(shinyWidgets)
 # sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
-    skin = "green",
+    skin = "black",
     dashboardHeader(
         title = "TEMPEST Dashboard"
     ),
@@ -47,11 +47,11 @@ ui <- dashboardPage(
                     )
           ),
           tabItem(
-              tabName = "teros"#,
-              # uiOutput("plotSelector"),
-              # fluidRow(
-              #     box(plotOutput("teros_timeseries", height = "800px"), width = 12)
-              # )
+              tabName = "teros",
+              #uiOutput("plotSelector"),
+              fluidRow(
+                  box(plotOutput("teros_timeseries", height = "800px"), width = 12)
+              )
           )
         )
     )
