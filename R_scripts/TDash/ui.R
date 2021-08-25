@@ -12,17 +12,18 @@ library(shinydashboard)
 library(dplyr)
 library(shinyWidgets)
 # Dummy variable
-sapflow_data <- data.frame(Logger = NA, Plot = NA)
+# sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
-    skin = "black",
+    skin = "green",
     dashboardHeader(
         title = "TEMPEST Dashboard"
     ),
     dashboardSidebar(
         sidebarMenu(
             menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
-            menuItem("Graphs", tabName = "graphs", icon = icon("chart-pie"))
+            menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
+            menuItem("TEROS", tabName = "teros", icon = icon("temperature-high"))
             )
     ),
     dashboardBody(
@@ -34,14 +35,23 @@ ui <- dashboardPage(
                              label = "Refresh",
                              class = "btn-success"),
                 uiOutput("dataloggerSelector"),
-                tableOutput("table")
+                dataTableOutput("table"),
+                dataTableOutput("teros_table")
           ),
 
           tabItem(
-                 tabName = "graphs"#,
-                # uiOutput("plotSelector"),
-                # fluidRow(
-                #     box(plotOutput("sf_timeseries"), width = 12))
+                 tabName = "sapflow",
+                uiOutput("plotSelector"),
+                fluidRow(
+                    box(plotOutput("sf_timeseries", height = "800px"), width = 12)
+                    )
+          ),
+          tabItem(
+              tabName = "teros"#,
+              # uiOutput("plotSelector"),
+              # fluidRow(
+              #     box(plotOutput("teros_timeseries", height = "800px"), width = 12)
+              # )
           )
         )
     )

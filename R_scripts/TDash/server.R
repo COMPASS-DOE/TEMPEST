@@ -7,6 +7,8 @@ library(rdrop2)
 
 source("../read_sapflow.R")
 source("../process_sapflow.R")
+source("../process_teros.R")
+source("../teros_fileread.R")
 token <- readRDS("../droptoken.rds")
 
 datadir <- "TEMPEST_PNNL_Data/Current_Data"
@@ -18,17 +20,30 @@ last_update <- NA
 
 server <- function(input, output) {
 
-    autoInvalidate <- reactiveTimer(30 * 1000)
+    autoInvalidate <- reactiveTimer(10 * 1000)
 
-    reactive_df <- reactive({
+    autoInvalidate_t <- reactiveTimer(10 * 1000)
+
+    reactive_sf <- reactive({
 
         autoInvalidate()
+
+        showNotification("Updating data...", duration = 3, type = "message")
         process_sapflow(token)
     })
 
+    # reactive_teros <- reactive({
+    #
+    #     autoInvalidate_t()
+    #
+    #     showNotification("Updating data...", duration = 3, type = "message")
+    #     process_teros(token)
+    #
+    # })
+
     output$dataloggerSelector <- renderUI({
 
-        sapflow_data <- reactive_df()
+        sapflow_data <- reactive_sf()
 
         pickerInput("logger-filter", "Loggers",
                     choices = unique(sapflow_data$Logger),
@@ -37,35 +52,36 @@ server <- function(input, output) {
     })
 
 
-#
-#     output$plotSelector <- renderUI({
-#         selectInput("plot", "Plot:",
-#                     choices = unique(sapflow_data$Plot),
-#                     selected = "C")
-#     })
 
-     output$table <- renderTable({
+    output$plotSelector <- renderUI({
+
+        sapflow_data <- reactive_df()
+
+        selectInput("plot", "Plot:",
+                    choices = unique(sapflow_data$Plot),
+                    selected = "C")
+    })
+
+     output$table <- renderDataTable({
 
         # input$refreshButton
 
          autoInvalidate()
-         sapflow_data <- reactive_df()
+         sapflow_data <- reactive_sf()
 
-         filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
-         update_needed <- nrow(filelist) > 0
-
-         if(update_needed) {
-             showNotification("Updating data...", duration = 3)
-
-             # Read dropbox files
-             sapflow_data <<- process_sapflow(token)
-
-             # Update the cursor tracking directory state
-             cursor <<- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
-             last_update <<- Sys.time()
-         }
-
-        sapflow_data <- reactive_df()
+         # filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
+         # update_needed <- nrow(filelist) > 0
+         #
+         # if(update_needed) {
+         #     showNotification("Updating data...", duration = 3)
+         #
+         #     # Read dropbox files
+         #     sapflow_data <<- process_sapflow(token)
+         #
+         #     # Update the cursor tracking directory state
+         #     cursor <<- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
+         #     last_update <<- Sys.time()
+         # }
 
          if(nrow(sapflow_data)) {
              if(is.null(input$`logger-filter`)) {  # initial state before update
@@ -81,20 +97,75 @@ server <- function(input, output) {
          }
     })
 
+     # output$teros_table <- renderDataTable({
+     #
+     #     # input$refreshButton
+     #
+     #     autoInvalidate_t()
+     #     teros_data <- reactive_teros()
+     #
+     #     if(nrow(teros_data)) {
+     #         if(is.null(input$`logger-filter`)) {  # initial state before update
+     #             tdata <- teros_data
+     #         } else {
+     #             tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
+     #         }
+     #         tdata %>%
+     #             group_by(ID, variable) %>%
+     #             do(tail(., 10)) %>%
+     #             select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
+     #             pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+     #     }
+     # })
 
-    # output$sf_timeseries <- renderPlot({
-    #     input$plot
-    #
-    #     if(is.null(input$plot)) {  # initial state before update
-    #         sdata <- sapflow_data
-    #     } else {
-    #         sdata <- filter(sapflow_data, Plot == input$plot)
-    #     }
-    #
-    #     sdata %>%
-    #         ggplot(aes(x = Timestamp, y = Value)) +
-    #         geom_line() +
-    #         facet_wrap(~Tree_Code, scales = "free") +
-    #         theme(axis.text.x = element_text(angle = 90))
-    # })
+     output$sf_timeseries <- renderPlot({
+         input$plot
+
+         autoInvalidate()
+         sapflow_data <- reactive_sf()
+
+         if(is.null(input$plot)) {  # initial state before update
+             sdata <- sapflow_data
+         } else {
+             sdata <- filter(sapflow_data, Plot == input$plot)
+         }
+
+         sdata %>%
+             ggplot(aes(x = Timestamp, y = Value, group = Tree_Code)) +
+             geom_line() +
+             facet_wrap(~Species, scales = "free") +
+             theme(axis.text.x = element_text(angle = 90)) +
+             theme_minimal() +
+             annotate(geom = "rect",
+                      xmin = ymd_hms("2021-08-25 00:06:00"),
+                      xmax = ymd_hms("2021-08-25 17:00:00"),
+                      ymin = -Inf, ymax = Inf,
+                      alpha = 0.2, fill = "deepskyblue")
+     })
+
+     # output$teros_timeseries <- renderPlot({
+     #     input$plot
+     #
+     #     autoInvalidate_t()
+     #     teros_data <- reactive_teros()
+     #
+     #     if(is.null(input$plot)) {  # initial state before update
+     #         tdata <- teros_data
+     #     } else {
+     #         tdata <- filter(teros_data, substr(Plot, 1, 1) == input$plot)
+     #     }
+     #
+     #     tdata %>%
+     #         ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
+     #         geom_line() +
+     #         facet_wrap(variable~Depth, scales = "free") +
+     #         theme(axis.text.x = element_text(angle = 90)) +
+     #         theme_minimal() +
+     #         annotate(geom = "rect",
+     #                  xmin = ymd_hms("2021-08-25 00:06:00"),
+     #                  xmax = ymd_hms("2021-08-25 17:00:00"),
+     #                  ymin = -Inf, ymax = Inf,
+     #                  alpha = 0.2, fill = "deepskyblue")
+     # })
+
 }

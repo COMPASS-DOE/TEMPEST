@@ -7,11 +7,19 @@
 # the TEMPEST Project. Functions are ordered and annotated for routine implementation.
 
 # Helper function: read string vector into a data frame, reshape, and drop NA
-fileread <- function(fn) {
+fileread <- function(fn, token) {
+
     message("Reading ", basename(fn), "...")
+
+    # download file to temp file
+    drop_download(fn, local_path = "tempfile.dat",
+                  dtoken = token,
+                  overwrite = TRUE)
+
     # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
     # Read the data files into a string vector, remove those lines, and then pass to read.csv()
-    rawdata <- readLines(fn)[-c(1, 3, 4)]
+    rawdata <- readLines("tempfile.dat")[-c(1, 3, 4)]
+
     textConnection(rawdata) %>%
         read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
         as_tibble() %>%
@@ -19,10 +27,10 @@ fileread <- function(fn) {
         gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
         filter(!is.na(value)) %>%
         # Pull data logger ID out of statname
-        separate(Statname, into = c("Inst", "Data_Logger_ID"), sep = "_" ) %>%
+        separate(Statname, into = c("Inst", "Logger"), sep = "_" ) %>%
         # Parse the data logger number, channel number, and variable number out of the
         # Statname and Channel columns
-        mutate(Data_Logger_ID = as.integer(Data_Logger_ID, fixed = TRUE),
+        mutate(Logger = as.integer(Logger, fixed = TRUE),
                TIMESTAMP = ymd_hms(TIMESTAMP)) %>%
         select(-Inst) %>%  # unneeded
         # Next, parse channel into the data logger channel and variable number
