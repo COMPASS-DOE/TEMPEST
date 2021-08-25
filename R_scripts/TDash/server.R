@@ -20,16 +20,16 @@ last_update <- NA
 
 server <- function(input, output) {
 
-    autoInvalidate <- reactiveTimer(10 * 1000)
+    autoInvalidate <- reactiveTimer(600 * 1000)
 
-    autoInvalidate_t <- reactiveTimer(10 * 1000)
-
-    reactive_sf <- reactive({
+    reactive_df <- reactive({
 
         autoInvalidate()
 
         showNotification("Updating data...", duration = 3, type = "message")
-        process_sapflow(token)
+
+        list(sapflow = process_sapflow(token),
+             teros = process_teros(token))
     })
 
     # reactive_teros <- reactive({
@@ -43,7 +43,7 @@ server <- function(input, output) {
 
     output$dataloggerSelector <- renderUI({
 
-        sapflow_data <- reactive_sf()
+        sapflow_data <- reactive_df()$sapflow
 
         pickerInput("logger-filter", "Loggers",
                     choices = unique(sapflow_data$Logger),
@@ -55,7 +55,7 @@ server <- function(input, output) {
 
     output$plotSelector <- renderUI({
 
-        sapflow_data <- reactive_df()
+        sapflow_data <- reactive_df()$sapflow
 
         selectInput("plot", "Plot:",
                     choices = unique(sapflow_data$Plot),
@@ -67,7 +67,7 @@ server <- function(input, output) {
         # input$refreshButton
 
          autoInvalidate()
-         sapflow_data <- reactive_sf()
+         sapflow_data <- reactive_df()$sapflow
 
          # filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
          # update_needed <- nrow(filelist) > 0
@@ -97,32 +97,33 @@ server <- function(input, output) {
          }
     })
 
-     # output$teros_table <- renderDataTable({
-     #
-     #     # input$refreshButton
-     #
-     #     autoInvalidate_t()
-     #     teros_data <- reactive_teros()
-     #
-     #     if(nrow(teros_data)) {
-     #         if(is.null(input$`logger-filter`)) {  # initial state before update
-     #             tdata <- teros_data
-     #         } else {
-     #             tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
-     #         }
-     #         tdata %>%
-     #             group_by(ID, variable) %>%
-     #             do(tail(., 10)) %>%
-     #             select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
-     #             pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
-     #     }
-     # })
+     output$teros_table <- renderDataTable({
 
-     output$sf_timeseries <- renderPlot({
-         input$plot
+         # input$refreshButton
 
          autoInvalidate()
-         sapflow_data <- reactive_sf()
+         teros_data <- reactive_df()$teros
+
+         if(nrow(teros_data)) {
+
+             if(is.null(input$`logger-filter`)) {  # initial state before update
+                 tdata <- teros_data
+             } else {
+                 tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
+             }
+             tdata %>%
+                 group_by(ID, variable) %>%
+                 do(tail(., 10)) %>%
+                 select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
+                 pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+         }
+     })
+
+     output$sf_timeseries <- renderPlot({
+         #input$plot
+
+         autoInvalidate()
+         sapflow_data <- reactive_df()$sapflow
 
          if(is.null(input$plot)) {  # initial state before update
              sdata <- sapflow_data
@@ -137,35 +138,35 @@ server <- function(input, output) {
              theme(axis.text.x = element_text(angle = 90)) +
              theme_minimal() +
              annotate(geom = "rect",
-                      xmin = ymd_hms("2021-08-25 00:06:00"),
+                      xmin = ymd_hms("2021-08-25 00:07:10"),
                       xmax = ymd_hms("2021-08-25 17:00:00"),
                       ymin = -Inf, ymax = Inf,
                       alpha = 0.2, fill = "deepskyblue")
      })
 
-     # output$teros_timeseries <- renderPlot({
-     #     input$plot
-     #
-     #     autoInvalidate_t()
-     #     teros_data <- reactive_teros()
-     #
-     #     if(is.null(input$plot)) {  # initial state before update
-     #         tdata <- teros_data
-     #     } else {
-     #         tdata <- filter(teros_data, substr(Plot, 1, 1) == input$plot)
-     #     }
-     #
-     #     tdata %>%
-     #         ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
-     #         geom_line() +
-     #         facet_wrap(variable~Depth, scales = "free") +
-     #         theme(axis.text.x = element_text(angle = 90)) +
-     #         theme_minimal() +
-     #         annotate(geom = "rect",
-     #                  xmin = ymd_hms("2021-08-25 00:06:00"),
-     #                  xmax = ymd_hms("2021-08-25 17:00:00"),
-     #                  ymin = -Inf, ymax = Inf,
-     #                  alpha = 0.2, fill = "deepskyblue")
-     # })
+     output$teros_timeseries <- renderPlot({
+         #input$plot
+
+         autoInvalidate()
+         teros_data <- reactive_df()$teros
+
+         if(is.null(input$plot)) {  # initial state before update
+             tdata <- teros_data
+         } else {
+             tdata <- filter(teros_data, substr(Plot, 1, 1) == input$plot)
+         }
+browser()
+         tdata %>%
+             ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
+             geom_line() +
+             facet_wrap(variable~Depth, scales = "free") +
+             theme(axis.text.x = element_text(angle = 90)) +
+             theme_minimal() +
+             annotate(geom = "rect",
+                      xmin = ymd_hms("2021-08-25 00:06:00"),
+                      xmax = ymd_hms("2021-08-25 17:00:00"),
+                      ymin = -Inf, ymax = Inf,
+                      alpha = 0.2, fill = "deepskyblue")
+     })
 
 }
