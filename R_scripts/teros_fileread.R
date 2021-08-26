@@ -31,7 +31,7 @@ fileread <- function(fn, token) {
         # Parse the data logger number, channel number, and variable number out of the
         # Statname and Channel columns
         mutate(Logger = as.integer(Logger, fixed = TRUE),
-               TIMESTAMP = ymd_hms(TIMESTAMP)) %>%
+               TIMESTAMP = ymd_hms(TIMESTAMP, tz = "EST")) %>%
         select(-Inst) %>%  # unneeded
         # Next, parse channel into the data logger channel and variable number
         separate(channel, into = c("Data_Table_ID", "variable"), sep = ",") %>%

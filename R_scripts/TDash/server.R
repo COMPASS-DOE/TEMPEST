@@ -119,7 +119,7 @@ server <- function(input, output) {
          }
      })
 
-     output$sf_timeseries <- renderPlotly({
+     output$sf_timeseries <- renderPlot({
          #input$plot
 
          autoInvalidate()
@@ -138,13 +138,13 @@ server <- function(input, output) {
              theme(axis.text.x = element_text(angle = 90)) +
              theme_minimal() +
              annotate(geom = "rect",
-                      xmin = ymd_hms("2021-08-25 00:07:10"),
-                      xmax = ymd_hms("2021-08-25 17:00:00"),
+                      xmin = ymd_hms("2021-08-25 00:07:10", tz = "EST"),
+                      xmax = ymd_hms("2021-08-25 17:00:00", tz = "EST"),
                       ymin = -Inf, ymax = Inf,
                       alpha = 0.2, fill = "deepskyblue")
      })
 
-     output$teros_timeseries <- renderPlotly({
+     output$teros_timeseries <- renderPlot({
          #input$plot
 
          autoInvalidate()
@@ -169,8 +169,8 @@ server <- function(input, output) {
              theme(axis.text.x = element_text(angle = 90)) +
              theme_minimal() +
              annotate(geom = "rect",
-                      xmin = ymd_hms("2021-08-25 00:06:00"),
-                      xmax = ymd_hms("2021-08-25 17:00:00"),
+                      xmin = ymd_hms("2021-08-25 00:07:10", tz = "EST"),
+                      xmax = ymd_hms("2021-08-25 17:00:00", tz = "EST"),
                       ymin = -Inf, ymax = Inf,
                       alpha = 0.2, fill = "deepskyblue")
      })
