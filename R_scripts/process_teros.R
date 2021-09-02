@@ -20,7 +20,7 @@ process_teros <- function(token) {
 
     teros_primative %>%
         mutate(diff = difftime(Sys.time(), TIMESTAMP, units = "days")) %>%
-        filter(diff < 3) %>%
+        filter(diff < 5) %>%
         #na count needs to be before this
         # NAs = sum(!is.finite(M_Value)),
         left_join(teros_inventory, by = c("Logger" = "Data Logger ID",

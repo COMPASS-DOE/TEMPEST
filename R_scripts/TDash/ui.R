@@ -31,9 +31,9 @@ ui <- dashboardPage(
           tabItem(
                 tabName = "dashboard",
                 # actionButton("update", "Update Data"),
-                actionButton("refreshButton",
-                             label = "Refresh",
-                             class = "btn-success"),
+                # actionButton("refreshButton",
+                #              label = "Refresh",
+                #              class = "btn-success"),
                 uiOutput("dataloggerSelector"),
                 dataTableOutput("table"),
                 dataTableOutput("teros_table")
@@ -48,7 +48,7 @@ ui <- dashboardPage(
           ),
           tabItem(
               tabName = "teros",
-              #uiOutput("plotSelector"),
+              uiOutput("plotSelectorT"),
               fluidRow(
                   box(plotOutput("teros_timeseries", height = "800px"), width = 12)
               )

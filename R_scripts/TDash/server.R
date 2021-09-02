@@ -15,12 +15,9 @@ datadir <- "TEMPEST_PNNL_Data/Current_Data"
 cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
 last_update <- NA
 
-# Start off by downloading all data
-#sapflow_data <- process_sapflow(token)
-
 server <- function(input, output) {
 
-    autoInvalidate <- reactiveTimer(600 * 1000)
+    autoInvalidate <- reactiveTimer(60 * 60 * 1000)
 
     reactive_df <- reactive({
 
@@ -32,14 +29,6 @@ server <- function(input, output) {
              teros = process_teros(token))
     })
 
-    # reactive_teros <- reactive({
-    #
-    #     autoInvalidate_t()
-    #
-    #     showNotification("Updating data...", duration = 3, type = "message")
-    #     process_teros(token)
-    #
-    # })
 
     output$dataloggerSelector <- renderUI({
 
@@ -59,6 +48,15 @@ server <- function(input, output) {
 
         selectInput("plot", "Plot:",
                     choices = unique(sapflow_data$Plot),
+                    selected = "C")
+    })
+
+    output$plotSelectorT <- renderUI({
+
+        teros_data <- reactive_df()$teros
+
+        selectInput("tPlot", "Plot:",
+                    choices = unique(substr(teros_data$Plot, 1, 1)),
                     selected = "C")
     })
 
@@ -150,10 +148,10 @@ server <- function(input, output) {
          autoInvalidate()
          tdata <- reactive_df()$teros
 
-         if(is.null(input$plot)) {  # initial state before update
+         if(is.null(input$tPlot)) {  # initial state before update
              tdata <- tdata
          } else {
-             tdata <- filter(tdata, substr(Plot, 1, 1) == input$plot)
+             tdata <- filter(tdata, substr(Plot, 1, 1) == input$tPlot)
          }
 
          display_bounds <- tibble(variable = c("EC", "TSOIL", "VWC"),
