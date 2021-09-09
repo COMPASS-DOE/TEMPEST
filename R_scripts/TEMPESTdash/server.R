@@ -17,14 +17,15 @@ last_update <- NA
 
 server <- function(input, output) {
 
-    autoInvalidate <- reactiveTimer(60 * 60 * 1000)
-    shinyalert(title = "Test!", time = (30 * 1000), type = "info")
+    autoInvalidate <- reactiveTimer(15 * 60 * 1000)
+
     reactive_df <- reactive({
 
         autoInvalidate()
 
-        list(sapflow = process_sapflow(token),
-             teros = process_teros(token))
+        sapflow <- withProgress(process_sapflow(token), message = "Updating sapflow...")
+        teros <- withProgress(process_teros(token), message = "Updating TEROS...")
+        list(sapflow = sapflow, teros = teros)
     })
 
 
@@ -134,8 +135,8 @@ server <- function(input, output) {
              theme(axis.text.x = element_text(angle = 90)) +
              theme_minimal() +
              annotate(geom = "rect",
-                      xmin = ymd_hms("2021-08-25 00:07:10", tz = "EST"),
-                      xmax = ymd_hms("2021-08-25 17:00:00", tz = "EST"),
+                      xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+                      xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
                       ymin = -Inf, ymax = Inf,
                       alpha = 0.2, fill = "deepskyblue")
      })
@@ -165,8 +166,8 @@ server <- function(input, output) {
              theme(axis.text.x = element_text(angle = 90)) +
              theme_minimal() +
              annotate(geom = "rect",
-                      xmin = ymd_hms("2021-08-25 00:07:10", tz = "EST"),
-                      xmax = ymd_hms("2021-08-25 17:00:00", tz = "EST"),
+                      xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+                      xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
                       ymin = -Inf, ymax = Inf,
                       alpha = 0.2, fill = "deepskyblue")
      })

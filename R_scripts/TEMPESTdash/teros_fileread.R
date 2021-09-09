@@ -7,8 +7,9 @@
 # the TEMPEST Project. Functions are ordered and annotated for routine implementation.
 
 # Helper function: read string vector into a data frame, reshape, and drop NA
-fileread <- function(fn, token) {
+fileread <- function(fn, token, total_files) {
 
+    incProgress(1 / total_files)
     message("Reading ", basename(fn), "...")
 
     # download file to temp file

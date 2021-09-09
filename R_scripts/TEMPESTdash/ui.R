@@ -27,6 +27,7 @@ ui <- dashboardPage(
             )
     ),
     dashboardBody(
+        tags$head(tags$style(".shiny-notification {position: fixed; top: 30% ;left: 50%; width: 300px")),
         tabItems(
           tabItem(
                 tabName = "dashboard",

@@ -9,7 +9,9 @@ library(readr)
 library(dplyr)
 
 # Function setup
-read_sapflow <- function(filename, token) {
+read_sapflow <- function(filename, token, total_files) {
+
+    incProgress(1 / total_files)
 
     # download file to temp file
     drop_download(filename, local_path = "tempfile.dat",

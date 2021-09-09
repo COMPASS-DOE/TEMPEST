@@ -18,7 +18,7 @@ process_sapflow <- function(token) {
 
     sf_inventory <- read_csv("sapflow_inventory.csv", col_types = "cdcdddcD")
 
-    lapply(s_files, read_sapflow, token) %>%
+    lapply(s_files, read_sapflow, token, length(s_files)) %>%
         bind_rows()  -> sf_primitive
 
     sf_primitive %>%

@@ -16,7 +16,7 @@ process_teros <- function(token) {
 
     teros_inventory <- read_csv("TEROS_Network_Location.csv")
 
-    lapply(t_files, fileread, token) %>% bind_rows() -> teros_primative
+    lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primative
 
     teros_primative %>%
         mutate(diff = difftime(Sys.time(), TIMESTAMP, units = "days")) %>%
