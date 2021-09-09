@@ -5,11 +5,11 @@ library(DT)
 library(readr)
 library(rdrop2)
 
-source("../read_sapflow.R")
-source("../process_sapflow.R")
-source("../process_teros.R")
-source("../teros_fileread.R")
-token <- readRDS("../droptoken.rds")
+source("read_sapflow.R")
+source("process_sapflow.R")
+source("process_teros.R")
+source("teros_fileread.R")
+token <- readRDS("droptoken.rds")
 
 datadir <- "TEMPEST_PNNL_Data/Current_Data"
 cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
@@ -18,12 +18,10 @@ last_update <- NA
 server <- function(input, output) {
 
     autoInvalidate <- reactiveTimer(60 * 60 * 1000)
-
+    shinyalert(title = "Test!", time = (30 * 1000), type = "info")
     reactive_df <- reactive({
 
         autoInvalidate()
-
-        showNotification("Updating data...", duration = 3, type = "message")
 
         list(sapflow = process_sapflow(token),
              teros = process_teros(token))

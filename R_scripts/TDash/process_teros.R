@@ -14,7 +14,7 @@ process_teros <- function(token) {
     t_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
     t_files <- grep(t_dir$path_display, pattern = "Terosdata\\.dat$", value = TRUE)
 
-    teros_inventory <- read_csv("../../Data/TEROS12/TEROS_Network_Location.csv")
+    teros_inventory <- read_csv("TEROS_Network_Location.csv")
 
     lapply(t_files, fileread, token) %>% bind_rows() -> teros_primative
 
