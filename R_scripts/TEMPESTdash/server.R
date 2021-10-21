@@ -50,6 +50,16 @@ server <- function(input, output) {
                     selected = "C")
     })
 
+    output$sensorSelector <- renderUI({
+
+        sapflow_data <- reactive_df()$sapflow
+
+        pickerInput("sensor", "Sensor",
+                    choices = unique(sapflow_data$Tree_Code),
+                    selected = "F11",
+                    multiple = TRUE)
+    })
+
     output$plotSelectorT <- renderUI({
 
         teros_data <- reactive_df()$teros
@@ -133,12 +143,37 @@ server <- function(input, output) {
              geom_line() +
              facet_wrap(~Species, scales = "free") +
              theme(axis.text.x = element_text(angle = 90)) +
-             theme_minimal() +
-             annotate(geom = "rect",
-                      xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
-                      xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
-                      ymin = -Inf, ymax = Inf,
-                      alpha = 0.2, fill = "deepskyblue")
+             theme_minimal() #+
+             # annotate(geom = "rect",
+             #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+             #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
+             #          ymin = -Inf, ymax = Inf,
+             #          alpha = 0.2, fill = "deepskyblue")
+     })
+
+
+     sf_xts <- reactive({
+         autoInvalidate()
+         sapflow_data <- reactive_df()$sapflow
+
+         if(is.null(input$sensor)) {  # initial state before update
+             sf_filtered <- sapflow_data
+         } else {
+             sf_filtered <- filter(sapflow_data, Tree_Code == input$sensor)
+         }
+
+browser()
+         sf_filtered %>%
+             select(Timestamp, Tree_Code, Value) %>%
+             pivot_wider(names_from = "Tree_Code", values_from = "Value") -> sf_formatted
+
+         xts(x = sf_formatted[,-1], order.by = sf_formatted$Timestamp)
+     })
+
+     output$sfsensor_timeseries <- renderDygraph({
+         #input$tree
+
+         dygraph(sf_xts()) %>% dyRangeSelector()
      })
 
      output$teros_timeseries <- renderPlot({
@@ -159,17 +194,19 @@ server <- function(input, output) {
 
          tdata %>%
              left_join(display_bounds, by = "variable") %>%
-             filter(value >= min_val, value <= max_val) %>%
-             ggplot(aes(x = TIMESTAMP, y = value, group = ID)) +
+             filter(value >= min_val, value <= max_val) -> t
+
+             ggplot(t, aes(x = TIMESTAMP, y = value, group = ID)) +
              geom_line() +
              facet_wrap(variable~Depth, scales = "free") +
              theme(axis.text.x = element_text(angle = 90)) +
-             theme_minimal() +
-             annotate(geom = "rect",
-                      xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
-                      xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
-                      ymin = -Inf, ymax = Inf,
-                      alpha = 0.2, fill = "deepskyblue")
+              theme_minimal() #+
+             # annotate(geom = "rect",
+             #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+             #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
+             #          ymin = -Inf, ymax = Inf,
+             #          alpha = 0.2, fill = "deepskyblue")
+
      })
 
 }

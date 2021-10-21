@@ -42,14 +42,20 @@ ui <- dashboardPage(
 
           tabItem(
                  tabName = "sapflow",
-                uiOutput("plotSelector"),
                 fluidRow(
-                    box(plotOutput("sf_timeseries", height = "800px"), width = 12)
+                    box(uiOutput("plotSelector"),
+                        plotOutput("sf_timeseries", height = "800px"),
+                        width = 12),
+                    box(uiOutput("sensorSelector"),
+                        dygraphOutput("sfsensor_timeseries", height = "800px"),
+                        width = 12
                     )
+                    ),
           ),
           tabItem(
               tabName = "teros",
               uiOutput("plotSelectorT"),
+             # uiOutput("sensorSelectorT"),
               fluidRow(
                   box(plotOutput("teros_timeseries", height = "800px"), width = 12)
               )
