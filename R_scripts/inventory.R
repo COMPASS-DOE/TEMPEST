@@ -48,17 +48,20 @@ inv_long %>%
     geom_line() +
     facet_wrap(~Status, scales = "free")
 
+genera <- read_csv("../Data/tree_inventory/species-genera.csv")
+
 # Live trees species mix
 inv_long %>%
     filter(Status == "LI") %>%
-    group_by(Plot, Year, Species_code) %>%
+    left_join(genera, by = "Species_code") %>%
+    group_by(Plot, Year, Genus) %>%
     summarise(n = n(),
               BA = sum(((DBH / 100) / 2) ^ 2 * pi, na.rm = TRUE) * 10000 / (50 * 40),
               .groups = "drop") ->
     species_mix
 
 # Live trees DBH
-ggplot(species_mix, aes(Year, BA, fill = Species_code)) +
+ggplot(species_mix, aes(Year, BA, fill = Genus)) +
     geom_area(position="stack") +
     facet_grid(Plot~.)
 
