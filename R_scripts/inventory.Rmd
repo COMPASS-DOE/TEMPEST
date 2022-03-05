@@ -1,0 +1,194 @@
+---
+title: "TEMPEST tree inventory"
+author: "Ben"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        code_folding: hide
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# QA/QC and summarize the TEMPEST inventory data
+# BBL March 22022
+
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+```{r process-inventory}
+inv <- read_csv("../Data/tree_inventory/inventory.csv",
+                col_types = "ccdcdDccdDcDdcDdclcc")
+
+genera <- read_csv("../Data/tree_inventory/species-genera.csv", 
+                   col_types = "cc")
+
+# There are some trees in our records that aren't in the plot, because of plot
+# relocation several years ago. Remove them
+inv <- filter(inv, In_Plot)
+
+# Compute growth
+# Growth_{year} is the difference between DBH_{year} and DBH_{year-1}
+# It may be negative, because of inaccuracies in hand measurement of DBH
+# Also flag resurrection and zombie trees
+cn <- colnames(inv)
+cn <- cn[grep("DBH_[0-9]{4}$", cn)]
+years <- as.integer(gsub("DBH_", "", cn))
+for(yr in years[-1]) {
+    inv[[paste0("Growth_", yr)]] <- inv[[paste0("DBH_", yr)]] - inv[[paste0("DBH_", yr-1)]]
+    inv[[paste0("Resurrect_", yr)]] <- inv[[paste0("Status_", yr)]] == "LI" &
+        inv[[paste0("Status_", yr-1)]] %in% c("DS", "DC")
+    inv[[paste0("Zombie_", yr)]] <- inv[[paste0("Status_", yr)]] == "DS" &
+        inv[[paste0("Status_", yr-1)]] == c("DC")}
+
+# The inventory file is 'wide'; we want it long
+# Helper function: pivot_longer and separate {prefix}_{year}
+pivot_and_split <- function(df, col_prefix) {
+    stopifnot(any(grepl(col_prefix, colnames(df)))) # not present
+    newcol <- gsub("_", "", col_prefix)
+    df %>%
+        select(Plot, Section, Tag, Grid, Species_code, starts_with(col_prefix)) %>%
+        pivot_longer(cols = starts_with(col_prefix), values_to = newcol) %>%
+        separate(name, into = c("x", "Year")) %>%
+        select(-x)
+}
+
+# Reshape and split the date_{year}, Status_{year}, and DBH_{year} columns
+inv_long_dbh <- pivot_and_split(inv, "DBH_")
+inv_long_date <- pivot_and_split(inv, "Date_")
+inv_long_growth <- pivot_and_split(inv, "Growth_")
+inv_long_resurrect <- pivot_and_split(inv, "Resurrect_")
+inv_long_zombie <- pivot_and_split(inv, "Zombie_")
+joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")
+inv %>%
+    pivot_and_split("Status_") %>%
+    left_join(inv_long_dbh, by = joincols) %>%
+    left_join(inv_long_growth, by = joincols) %>%
+    left_join(inv_long_resurrect, by = joincols) %>%
+    left_join(inv_long_zombie, by = joincols) %>%
+    left_join(inv_long_date, by = joincols) %>%
+    # clean up
+    mutate(Year = as.integer(Year)) %>%
+    arrange(Plot, Tag, Year) %>% 
+    # add genus information for cleaner graphs
+    left_join(genera, by = "Species_code") %>% 
+    # status codes propagate to following years
+    mutate(Status_original = Status) %>% 
+    fill(Status) ->
+    inv_long
+
+rm(inv_long_dbh, inv_long_date, inv_long_growth, inv_long_resurrect, inv_long_zombie)
+```
+
+## QA/QC
+
+### Tree-specific relative growth
+
+```{r relative-growth}
+growth_limits <- c(-1.0, 1.0)
+ggplot(inv_long, aes(DBH, Growth, color = Genus)) +
+    geom_jitter(na.rm = TRUE) + 
+    coord_cartesian(ylim = growth_limits) + 
+    ggtitle("DBH versus growth") +
+    facet_wrap(~Year)
+
+inv_long %>% 
+    filter(Growth < min(growth_limits) | Growth > max(growth_limits)) %>% 
+    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH, Growth) %>% 
+    knitr::kable(caption = "Extreme growth values")
+```
+
+### Resurrection trees
+
+Used to be dead, now alive.
+
+```{r resurrection}
+inv_long %>% 
+    filter(Resurrect) %>% 
+    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
+    knitr::kable()
+```
+
+### Zombie trees
+
+Used to be dead down, now dead standing.
+
+```{r zombies}
+inv_long %>% 
+    filter(Zombie) %>% 
+    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
+    knitr::kable()
+```
+
+### Bad data trees
+
+```{r bad-data}
+inv_long %>% 
+    filter(!Status %in% c("LI", "DS", "DC")) %>% 
+    knitr::kable(caption = "Bad status")
+
+inv_long %>% 
+    filter(DBH < 1) %>% 
+    knitr::kable(caption = "Bad DBH")
+
+inv_long %>%
+    filter(Status == "LI", is.na(Species_code)) %>%
+    group_by(Plot, Section, Tag, Grid, Species_code) %>% 
+    summarise(Year = paste(Year, collapse = ", "), .groups = "drop") %>% 
+    knitr::kable(caption = "Live tree, unknown species")
+```
+
+## Data summary
+
+### Number of trees
+
+```{r tree-numbers}
+# Number of trees
+inv_long %>%
+    group_by(Plot, Year, Status) %>%
+    summarise(n = n(), .groups = "drop") %>%
+    ggplot(aes(Year, n, color = Plot, group = Plot)) +
+    geom_point() +
+    geom_line() +
+    facet_grid(Status~., scales = "free")
+```
+
+### Basal area
+
+```{r basal-area}
+# Live trees species mix
+inv_long %>%
+    filter(Status == "LI") %>%
+    group_by(Plot, Year, Genus) %>%
+    summarise(n = n(),
+              BA = sum(((DBH / 100) / 2) ^ 2 * pi, na.rm = TRUE) * 10000 / (50 * 40),
+              .groups = "drop") ->
+    species_mix
+
+# Live trees DBH
+ggplot(species_mix, aes(Year, BA, fill = Genus)) +
+    geom_area(position="stack") +
+    facet_grid(Plot~.)
+```
+
+### Plot totals
+
+```{r plot-totals}
+species_mix %>%
+    group_by(Plot, Year) %>%
+    summarise(n = sum(n),
+              BA = sum(BA, na.rm = TRUE),
+              .groups = "drop") ->
+    plot_totals
+
+ggplot(plot_totals, aes(Year, BA, color = Plot, group = Plot)) + geom_point() + geom_line()
+ggplot(plot_totals, aes(Year, n, color = Plot, group = Plot)) + geom_point() + geom_line()
+```
+
+
