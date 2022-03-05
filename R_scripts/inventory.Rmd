@@ -88,16 +88,6 @@ rm(inv_long_dbh, inv_long_date, inv_long_growth, inv_long_resurrect, inv_long_zo
 
 ## QA/QC
 
-### Live tree, unknown species
-
-```{r, unknown-species}
-inv_long %>%
-    filter(Status == "LI", is.na(Species_code)) %>%
-    group_by(Plot, Section, Tag, Grid, Species_code) %>% 
-    summarise(Year = paste(Year, collapse = ", "), .groups = "drop") %>% 
-    knitr::kable()
-```
-
 ### Tree-specific relative growth
 
 ```{r relative-growth}
@@ -134,6 +124,24 @@ inv_long %>%
     filter(Zombie) %>% 
     select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
     knitr::kable()
+```
+
+### Bad data trees
+
+```{r bad-data}
+inv_long %>% 
+    filter(!Status %in% c("LI", "DS", "DC")) %>% 
+    knitr::kable(caption = "Bad status")
+
+inv_long %>% 
+    filter(DBH < 1) %>% 
+    knitr::kable(caption = "Bad DBH")
+
+inv_long %>%
+    filter(Status == "LI", is.na(Species_code)) %>%
+    group_by(Plot, Section, Tag, Grid, Species_code) %>% 
+    summarise(Year = paste(Year, collapse = ", "), .groups = "drop") %>% 
+    knitr::kable(caption = "Live tree, unknown species")
 ```
 
 ## Data summary
