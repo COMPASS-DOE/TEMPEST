@@ -12,7 +12,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# inventory.r
 # QA/QC and summarize the TEMPEST inventory data
 # BBL March 22022
 
@@ -30,13 +29,14 @@ inv <- read_csv("../Data/tree_inventory/inventory.csv",
 genera <- read_csv("../Data/tree_inventory/species-genera.csv", 
                    col_types = "cc")
 
-# There are some trees in our records that aren't in the plot (because of plot
-# relocation several years ago). Remove them
+# There are some trees in our records that aren't in the plot, because of plot
+# relocation several years ago. Remove them
 inv <- filter(inv, In_Plot)
 
 # Compute growth
 # Growth_{year} is the difference between DBH_{year} and DBH_{year-1}
 # It may be negative, because of inaccuracies in hand measurement of DBH
+# Also flag resurrection and zombie trees
 cn <- colnames(inv)
 cn <- cn[grep("DBH_[0-9]{4}$", cn)]
 years <- as.integer(gsub("DBH_", "", cn))
@@ -65,23 +65,25 @@ inv_long_date <- pivot_and_split(inv, "Date_")
 inv_long_growth <- pivot_and_split(inv, "Growth_")
 inv_long_resurrect <- pivot_and_split(inv, "Resurrect_")
 inv_long_zombie <- pivot_and_split(inv, "Zombie_")
+joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")
 inv %>%
     pivot_and_split("Status_") %>%
-    left_join(inv_long_dbh, by = c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")) %>%
-    left_join(inv_long_growth, by = c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")) %>%
-    left_join(inv_long_resurrect, by = c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")) %>%
-    left_join(inv_long_zombie, by = c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")) %>%
-    left_join(inv_long_date, by = c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")) %>%
+    left_join(inv_long_dbh, by = joincols) %>%
+    left_join(inv_long_growth, by = joincols) %>%
+    left_join(inv_long_resurrect, by = joincols) %>%
+    left_join(inv_long_zombie, by = joincols) %>%
+    left_join(inv_long_date, by = joincols) %>%
+    # clean up
     mutate(Year = as.integer(Year)) %>%
     arrange(Plot, Tag, Year) %>% 
-    left_join(genera, by = "Species_code") ->
-    inv_long
-
-# Status codes propagate to following years
-inv_long %>% 
+    # add genus information for cleaner graphs
+    left_join(genera, by = "Species_code") %>% 
+    # status codes propagate to following years
     mutate(Status_original = Status) %>% 
     fill(Status) ->
     inv_long
+
+rm(inv_long_dbh, inv_long_date, inv_long_growth, inv_long_resurrect, inv_long_zombie)
 ```
 
 ## QA/QC
@@ -103,12 +105,12 @@ growth_limits <- c(-1.0, 1.0)
 ggplot(inv_long, aes(DBH, Growth, color = Genus)) +
     geom_jitter(na.rm = TRUE) + 
     coord_cartesian(ylim = growth_limits) + 
-    ggtitle("DBH versus growth (extreme values not shown)") +
+    ggtitle("DBH versus growth") +
     facet_wrap(~Year)
 
 inv_long %>% 
     filter(Growth < min(growth_limits) | Growth > max(growth_limits)) %>% 
-    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
+    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH, Growth) %>% 
     knitr::kable(caption = "Extreme growth values")
 ```
 
