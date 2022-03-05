@@ -99,6 +99,14 @@ ggplot(inv_long, aes(DBH, Growth, color = Genus)) +
     facet_wrap(~Year)
 
 inv_long %>% 
+    filter(Growth >= min(growth_limits), Growth <= max(growth_limits)) %>% 
+    group_by(Genus, Year) %>% 
+    summarise(Growth = mean(Growth, na.rm = TRUE),
+              .groups = "drop") %>% 
+    pivot_wider(names_from = "Year", values_from = "Growth") %>% 
+    knitr::kable(caption = "Growth by genus and year", digits = 2)
+
+inv_long %>% 
     filter(Growth < min(growth_limits) | Growth > max(growth_limits)) %>% 
     select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH, Growth) %>% 
     knitr::kable(caption = "Extreme growth values")
