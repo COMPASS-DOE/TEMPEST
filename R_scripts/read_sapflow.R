@@ -28,7 +28,7 @@ read_sapflow <- function(filename, token, total_files) {
     pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
     logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
 
-    read.csv(textConnection(sdat[-1])) %>%
-        as_tibble() %>%
+    # The "I()" notation is how to read from a string; see help page
+    read_csv(I(sdat[-1])) %>%
         mutate(Logger = logger_name)
 }
