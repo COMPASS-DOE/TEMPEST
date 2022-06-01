@@ -16,9 +16,9 @@ process_teros <- function(token) {
 
     teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
 
-    lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primative
+    lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primitive
 
-    teros_primative %>%
+    teros_primitive %>%
         mutate(diff = difftime(Sys.time(), TIMESTAMP, units = "days")) %>%
         filter(diff < 5) %>%
         #na count needs to be before this
