@@ -9,8 +9,16 @@ library(readr)
 library(dplyr)
 
 # Function setup
-read_sapflow <- function(filename) {
-    sdat <- readLines(filename)
+read_sapflow <- function(filename, token, total_files) {
+
+    incProgress(1 / total_files)
+
+    # download file to temp file
+    drop_download(filename, local_path = "tempfile.dat",
+                  dtoken = token,
+                  overwrite = TRUE)
+
+    sdat <- readLines("tempfile.dat") #temp file goes here
     sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
 
     # parse line one to extract logger name

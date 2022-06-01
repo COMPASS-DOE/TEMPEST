@@ -8,6 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 ##this will use data from the "Current Data" folders
 
+EC_RANGE <- c(0, 20) #dS/m (bulk)
+VWC_RANGE <- c(0.00, 0.70 ) #m3/m3
+TEMP_RANGE <- c(-40, 60) #degC
+
 # In graphs, TRUE is "ok" while FALSE is "error"
 TEST_COLOR_SCALE <- c("TRUE" = "black", "FALSE" = "red")
 
@@ -18,55 +22,144 @@ library(lubridate)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(kableExtra)
+library(plotly)
 theme_set(theme_minimal())
 
 # Global chunk options
 knitr:: opts_chunk$set(echo = FALSE)
 
-# # Function setup
-# read_sapflow <- function(filename) {
-#   sdat <- readLines(filename)
-#   sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
-#   
-#   # parse line one to extract logger name
-#   pnnl_x <- gregexpr("PNNL_", sdat[1])[[1]][1]
-#   logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
-#   
-#   read_csv(sdat, skip = 1) %>% 
-#     mutate(Logger = logger_name)
-# }
-
 # From Anya's script:
 # Helper function: read string vector into a data frame, reshape, and drop NA
-fileread <- function(fn) {
-    message("Reading ", basename(fn), "...")
-    rawdata <- readLines(fn)[-c(1, 3, 4)]
-    textConnection(rawdata) %>%
-        read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
-        gather(channel, value, -TIMESTAMP, -RECORD, -Statname) %>%
-        filter(!is.na(value))
-}
+source("teros_fileread.R")
+source("teros_functions.R")
 
+teros_files <- list.files("~/Dropbox/TEMPEST_PNNL_Data/Current_data/", pattern = "Terosdata.dat", full.names = TRUE)
+
+teros_inventory <- read_csv("../Data/TEROS12/TEROS_Network_Location.csv")
 ```
 
 ``` {r process-data}
-fileread("~/Dropbox/TEMPEST_PNNL_Data/Current_data/PNNL_11_Terosdata.dat") -> y
+teros_primative <- lapply(teros_files, fileread) %>% bind_rows()
+
+teros_primative %>% 
+    mutate(Round = floor_date(TIMESTAMP, "3 hours")) %>% # round timestamp to nearest three hours
+    group_by(variable, Data_Logger_ID, Data_Table_ID, Round) %>% 
+    #na count needs to be before this
+    # NAs = sum(!is.finite(M_Value)),
+    #           
+    left_join(teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel")) %>% 
+    select(- `Date of Last Field Check`) %>% 
+    rename("Active_Date" = "Date Online (2020)")  %>% 
+    summarise(M_Value = mean(value, na.rm = TRUE)) -> teros_raw
+
+teros_raw %>% 
+    left_join(teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel")) %>% 
+    select(- `Date of Last Field Check`) %>% 
+    rename("Active_Date" = "Date Online (2020)") -> teros_data
+
+nomatch <- anti_join(teros_raw, teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel"))
+if(nrow(nomatch) > 0) {
+    warning("There were logger/channel combinations that I couldn't find in teros_inventory.csv:")
+    nomatch %>% 
+        distinct(Data_Logger_ID, Data_Table_ID) %>% 
+        kable()
+    }
+
 ```
 
 # Data Statistics
 ```{r, warning=FALSE}
-library(skimr)
-skim(y)
+# library(skimr)
+# skim(teros_summary)
 ```
 
-# Data visualization
+# Data visualization {.tabset}
 
-## Daily cycle {.tabset}
+## Control
+```{r Control}
+p <- ggplot(filter(teros_data, Data_Logger_ID == "11"), 
+            aes(Round, M_Value, group = Data_Table_ID)) + 
+    geom_line() +
+#   coord_cartesian(ylim = VOLTAGE_RANGE) +
+    facet_wrap(variable~Depth, scales = "free") +
+    labs(title = "Logger: 11")
+print(p)
 
-### Control
+print(p %+% filter(teros_data, Data_Logger_ID == "12")) %+% labs(title = "Logger: 12")
 
-### Fresh
+print(p %+% filter(teros_data, Data_Logger_ID == "13")) %+% labs(title = "Logger: 13")
+```
 
-### Salt
+## Fresh
+```{r Fresh}
+print(p %+% filter(teros_data, Data_Logger_ID == "21")) %+% labs(title = "Logger: 21")
+
+print(p %+% filter(teros_data, Data_Logger_ID == "22")) %+% labs(title = "Logger: 22")
+
+print(p %+% filter(teros_data, Data_Logger_ID == "23")) %+% labs(title = "Logger: 23")
+```
+
+## Salt
+```{r Salt}
+print(p %+% filter(teros_data, Plot == "Seawater")) %+% labs(title = "Logger: 41")
+```
+
+# Tests - Last Online Date
+```{r last-online}
+
+# we want to report the last known "online" date
+# count NAs using raw data
+teros_primative %>%
+    left_join(teros_inventory, by = c("Data_Logger_ID" = "Data Logger ID", "Data_Table_ID" = "Terosdata table channel")) %>% 
+    mutate(Date = date(TIMESTAMP)) -> t
+               
+t %>%            
+    filter(is.finite(value)) %>% 
+    group_by(`Junction Box ID`) %>% 
+    summarise(last_online = max(Date)) -> x
+
+t %>% 
+    filter(!is.finite(value)) %>% 
+    group_by(`Junction Box ID`) %>% 
+    summarise(na_days = length(unique(Date))) -> y
+
+left_join(x,y) %>% 
+    replace_na(list(na_days = 0)) -> last_online
+
+library(DT)
+datatable(last_online, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+
+```
 
 # Tests
+```{r tests}
+ # Summarise nan and out of bound counts
+
+teros_data %>% 
+    mutate(Date = as_date(Round), 
+           Grid_Letter = substring(`Grid Square`, 1, 1), 
+           Grid_Number = substring(`Grid Square`, 2, 2)) %>% 
+    pivot_wider(names_from = variable, values_from = M_Value) %>% 
+    group_by(Data_Logger_ID, Grid_Letter, Grid_Number, `Junction Box ID`) %>% 
+    summarise(T_bounds = teros_bounds(TSOIL, TEMP_RANGE),
+              VWC_bounds = teros_bounds(VWC, VWC_RANGE),
+              EC_bounds = teros_bounds(EC, EC_RANGE)) -> teros_summary
+
+library(DT)
+datatable(teros_summary, 
+          rownames = FALSE,
+          filter = "top",
+          options = list(pageLength = 10, scrollX = TRUE))
+```
+
+# Spatial Map
+```{r spatial}
+# ggplot(teros_summary, aes(x = Grid_Letter, y = Grid_Number)) + geom_point(aes(color = NAs))-> p
+# 
+# ggplotly(p)
+
+```
