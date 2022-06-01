@@ -16,7 +16,7 @@ process_sapflow <- function(token) {
     s_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
     s_files <- grep(s_dir$path_display, pattern = "sapflow\\.dat$", value = TRUE)
 
-    sf_inventory <- read_csv("sapflow_inventory.csv", col_types = "cdcdddcD")
+    sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
 
     lapply(s_files, read_sapflow, token, length(s_files)) %>%
         bind_rows()  -> sf_primitive
