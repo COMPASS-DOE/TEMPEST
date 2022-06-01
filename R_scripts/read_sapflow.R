@@ -29,6 +29,6 @@ read_sapflow <- function(filename, token, total_files) {
     logger_name <- substr(sdat[1], start = pnnl_x, stop = pnnl_x + 6)
 
     # The "I()" notation is how to read from a string; see help page
-    read_csv(I(sdat[-1])) %>%
+    read_csv(I(sdat), skip = 1) %>%
         mutate(Logger = logger_name)
 }
