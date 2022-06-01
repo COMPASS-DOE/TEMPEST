@@ -4,11 +4,10 @@ library(shiny)
 library(DT)
 library(readr)
 library(rdrop2)
+library(dygraphs)
 
-source("read_sapflow.R")
-source("process_sapflow.R")
-source("process_teros.R")
-source("teros_fileread.R")
+
+source("global.R")
 token <- readRDS("droptoken.rds")
 
 datadir <- "TEMPEST_PNNL_Data/Current_Data"
@@ -162,7 +161,6 @@ server <- function(input, output) {
              sf_filtered <- filter(sapflow_data, Tree_Code == input$sensor)
          }
 
-browser()
          sf_filtered %>%
              select(Timestamp, Tree_Code, Value) %>%
              pivot_wider(names_from = "Tree_Code", values_from = "Value") -> sf_formatted
