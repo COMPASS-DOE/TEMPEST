@@ -31,6 +31,12 @@ ui <- dashboardPage(
         tabItems(
           tabItem(
                 tabName = "dashboard",
+                fluidRow(
+                    # Frontpage - boxes - start -----------------------------------------------
+                    valueBox(
+                        "—", "Tweets Today",
+                        color = "purple",
+                        icon = icon("comment-dots"))),
                 # actionButton("update", "Update Data"),
                 # actionButton("refreshButton",
                 #              label = "Refresh",
