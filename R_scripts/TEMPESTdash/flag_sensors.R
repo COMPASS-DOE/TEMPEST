@@ -27,11 +27,11 @@ frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) 
 # values and associated limits
 flag_sensors <- function(values, limits, na.rm = FALSE) {
     frac_out <- frac_outside_limits(values, min(limits), max(limits), na.rm = na.rm)
-    # We could use `cut` here but honestly this seems simpler
-    color_pos <- length(STOPLIGHT_COLORS[frac_out >= STOPLIGHT_COLORS])
-    # Defensive programming; color_pos must be in the possible stoplight entries
-    stopifnot(between(color_pos, 1, length(STOPLIGHT_COLORS)))
-    tibble(fraction_out = frac_out, color = names(STOPLIGHT_COLORS)[color_pos])
+    colors <- cut(frac_out,
+                  c(STOPLIGHT_COLORS, 1),
+                  labels = names(STOPLIGHT_COLORS),
+                  right = FALSE)
+    tibble(fraction_out = frac_out, color = as.character(colors))
 }
 
 
