@@ -9,13 +9,14 @@
 
 library(shiny)
 library(shinydashboard)
+library(shinydashboardPlus)
 library(dplyr)
 library(shinyWidgets)
 # Dummy variable
 # sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
-    skin = "black",
+    skin = "black-light",
     dashboardHeader(
         title = "TEMPEST Dashboard"
     ),
@@ -23,7 +24,10 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
             menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
-            menuItem("TEROS", tabName = "teros", icon = icon("temperature-high"))
+            menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
+            menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
+            menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
+            menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
             )
     ),
     dashboardBody(
@@ -32,41 +36,102 @@ ui <- dashboardPage(
           tabItem(
                 tabName = "dashboard",
                 fluidRow(
-                    # Frontpage - boxes - start -----------------------------------------------
+                    # Frontpage - boxes
                     valueBox(
-                        "—", "Tweets Today",
-                        color = "purple",
-                        icon = icon("comment-dots"))),
-                # actionButton("update", "Update Data"),
-                # actionButton("refreshButton",
-                #              label = "Refresh",
-                #              class = "btn-success"),
-                uiOutput("dataloggerSelector"),
-                dataTableOutput("table"),
-                dataTableOutput("teros_table")
-          ),
-
-          tabItem(
-                 tabName = "sapflow",
-                fluidRow(
-                    box(uiOutput("plotSelector"),
-                        plotOutput("sf_timeseries", height = "800px"),
-                        width = 12),
-                    box(uiOutput("sensorSelector"),
-                        dygraphOutput("sfsensor_timeseries", height = "800px"),
-                        width = 12
-                    )
+                        "98%", "Sapflow",
+                        color = "green",
+                        icon = icon("tree"), width = 3),
+                    valueBox(
+                        "90%", "TEROS",
+                        color = "yellow",
+                        icon = icon("exclamation-circle"), width = 3),
+                    valueBox(
+                        "75%", "AquaTroll",
+                        color = "red",
+                        icon = icon("exclamation-triangle"), width = 3),
+                    valueBox(
+                        "100%", "Battery",
+                        color = "green",
+                        icon = icon("car-battery"), width = 3),
                     ),
-          ),
-          tabItem(
-              tabName = "teros",
-              uiOutput("plotSelectorT"),
-             # uiOutput("sensorSelectorT"),
-              fluidRow(
-                  box(plotOutput("teros_timeseries", height = "800px"), width = 12)
-              )
-          )
-        )
-    )
+                fluidRow(
+                    # selectInput(inputId = "plot",
+                    #             label = "Plot:",
+                    #             choices = c("Control", "Seawater", "Freshwater")),
+                    tabBox(width = 12,
+                           #uiOutput("plotSelector"),
+                        tabPanel(
+                            title = "Sapflow",
+                            dygraphOutput("sfsensor_timeseries", height = "200px")
+                        ),
+                        tabPanel(
+                            title = "Teros"
+                        ),
+                        tabPanel(
+                            title = "AquaTroll"
+                        ),
+                        tabPanel(
+                            title = "Battery",
+                            plotlyOutput("battery", height = "200px")
+                        )
+                    )
+                )
+
+                # fluidRow(
+                #     tabBox(
+                #         width = 12,
+                #         tabPanel(
+                #             status = "primary",
+                #             title = "Sapflow",
+                #             plotOutput("sf_timeseries", height = "800px")
+                #         )
+                #     )
+                # ),
+# actionButton("update", "Update Data"),
+# actionButton("refreshButton",
+#              label = "Refresh",
+#              class = "btn-success"),
+
+),
+tabItem(
+    tabName = "alerts",
+    textInput(inputId = "phone-number",
+              label = "Phone number:",
+              value = "(301) 555-5555"),
+
+    # Input: Selector for choosing dataset ----
+    selectInput(inputId = "carrier",
+                label = "Select your carrier:",
+                choices = c("Verizon", "AT&T", "T Mobile")),
+
+    submitButton("Recieve Text Alerts")
+)
+
+          # tabItem(
+          #        tabName = "sapflow",
+          #       fluidRow(
+          #           box(uiOutput("plotSelector"),
+          #               plotOutput("sf_timeseries", height = "800px"),
+          #               width = 12),
+          #           box(uiOutput("sensorSelector"),
+          #               dygraphOutput("sfsensor_timeseries", height = "800px"),
+          #               width = 12
+          #           ),
+          #           uiOutput("dataloggerSelector"),
+          #           dataTableOutput("table")
+          #           ),
+          # )#,
+          # tabItem(
+          #     tabName = "teros",
+          #    # uiOutput("sensorSelectorT"),
+          #     fluidRow(
+          #         uiOutput("plotSelectorT"),
+          #         box(plotOutput("teros_timeseries", height = "800px"), width = 12),
+          #         uiOutput("dataloggerSelector"),
+          #         dataTableOutput("teros_table")
+          #     )
+          #  )
+         )
+     )
 )
 
