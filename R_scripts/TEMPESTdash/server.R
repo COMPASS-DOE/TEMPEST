@@ -6,7 +6,7 @@ library(readr)
 library(rdrop2)
 library(dygraphs)
 library(xts)
-
+library(dygraphs)
 
 source("global.R")
 token <- readRDS("droptoken.rds")

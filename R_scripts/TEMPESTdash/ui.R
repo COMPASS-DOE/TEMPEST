@@ -12,6 +12,7 @@ library(shinydashboard)
 library(shinydashboardPlus)
 library(dplyr)
 library(shinyWidgets)
+library(dygraphs)
 # Dummy variable
 # sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
