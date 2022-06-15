@@ -29,19 +29,19 @@ server <- function(input, output) {
         list(sapflow = sapflow, teros = teros, battery = battery)
     })
 
-#
-#     output$dataloggerSelector <- renderUI({
-#
-#         sapflow_data <- reactive_df()$sapflow
-#
-#         pickerInput("logger-filter", "Loggers",
-#                     choices = unique(sapflow_data$Logger),
-#                     selected = "11",
-#                     multiple = TRUE)
-#     })
-#
-#
-#
+    #
+    #     output$dataloggerSelector <- renderUI({
+    #
+    #         sapflow_data <- reactive_df()$sapflow
+    #
+    #         pickerInput("logger-filter", "Loggers",
+    #                     choices = unique(sapflow_data$Logger),
+    #                     selected = "11",
+    #                     multiple = TRUE)
+    #     })
+    #
+    #
+    #
     # output$plotSelector <- renderUI({
     #     autoInvalidate()
     #     sapflow_data <- reactive_df()$sapflow
@@ -50,108 +50,108 @@ server <- function(input, output) {
     #                 choices = unique(sapflow_data$Plot),
     #                 selected = "C")
     # })
-#
-#     output$sensorSelector <- renderUI({
-#         autoInvalidate()
-#         sapflow_data <- reactive_df()$sapflow
-#
-#         pickerInput("sensor", "Sensor",
-#                     choices = unique(sapflow_data$Tree_Code),
-#                     selected = "F11",
-#                     multiple = TRUE)
-#     })
-#
-#     output$plotSelectorT <- renderUI({
-#         autoInvalidate()
-#         teros_data <- reactive_df()$teros
-#
-#         selectInput("tPlot", "Plot:",
-#                     choices = unique(substr(teros_data$Plot, 1, 1)),
-#                     selected = "C")
-#     })
-#
-#      output$table <- renderDataTable({
-#
-#         # input$refreshButton
-#
-#          autoInvalidate()
-#          sapflow_data <- reactive_df()$sapflow
-#
-#          # filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
-#          # update_needed <- nrow(filelist) > 0
-#          #
-#          # if(update_needed) {
-#          #     showNotification("Updating data...", duration = 3)
-#          #
-#          #     # Read dropbox files
-#          #     sapflow_data <<- process_sapflow(token)
-#          #
-#          #     # Update the cursor tracking directory state
-#          #     cursor <<- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
-#          #     last_update <<- Sys.time()
-#          # }
-#
-#          if(nrow(sapflow_data)) {
-#              if(is.null(input$`logger-filter`)) {  # initial state before update
-#                  sdata <- sapflow_data
-#              } else {
-#                  sdata <- filter(sapflow_data, Logger %in% input$`logger-filter`)
-#              }
-#              sdata %>%
-#                  group_by(Tree_Code) %>%
-#                  do(tail(., 10)) %>%
-#                  select(Timestamp, Tree_Code, Value, Logger, Grid_Square) %>%
-#                  pivot_wider(id_cols = Tree_Code ,names_from = "Timestamp", values_from = "Value")
-#          }
-#     })
-#
-#      output$teros_table <- renderDataTable({
-#
-#          # input$refreshButton
-#
-#          autoInvalidate()
-#          teros_data <- reactive_df()$teros
-#
-#          if(nrow(teros_data)) {
-#
-#              if(is.null(input$`logger-filter`)) {  # initial state before update
-#                  tdata <- teros_data
-#              } else {
-#                  tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
-#              }
-#              tdata %>%
-#                  group_by(ID, variable) %>%
-#                  do(tail(., 10)) %>%
-#                  select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
-#                  pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
-#          }
-#      })
-#
-#      output$sf_timeseries <- renderPlot({
-#          #input$plot
-#
-#          autoInvalidate()
-#          sapflow_data <- reactive_df()$sapflow
-#
-#          if(is.null(input$plot)) {  # initial state before update
-#              sdata <- sapflow_data
-#          } else {
-#              sdata <- filter(sapflow_data, Plot == input$plot)
-#          }
-#
-#          sdata %>%
-#              ggplot(aes(x = Timestamp, y = Value, group = Tree_Code)) +
-#              geom_line() +
-#              facet_wrap(~Species, scales = "free") +
-#              theme(axis.text.x = element_text(angle = 90)) +
-#              theme_minimal() #+
-#              # annotate(geom = "rect",
-#              #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
-#              #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
-#              #          ymin = -Inf, ymax = Inf,
-#              #          alpha = 0.2, fill = "deepskyblue")
-#      })
-#
+    #
+    #     output$sensorSelector <- renderUI({
+    #         autoInvalidate()
+    #         sapflow_data <- reactive_df()$sapflow
+    #
+    #         pickerInput("sensor", "Sensor",
+    #                     choices = unique(sapflow_data$Tree_Code),
+    #                     selected = "F11",
+    #                     multiple = TRUE)
+    #     })
+    #
+    #     output$plotSelectorT <- renderUI({
+    #         autoInvalidate()
+    #         teros_data <- reactive_df()$teros
+    #
+    #         selectInput("tPlot", "Plot:",
+    #                     choices = unique(substr(teros_data$Plot, 1, 1)),
+    #                     selected = "C")
+    #     })
+    #
+    #      output$table <- renderDataTable({
+    #
+    #         # input$refreshButton
+    #
+    #          autoInvalidate()
+    #          sapflow_data <- reactive_df()$sapflow
+    #
+    #          # filelist <- drop_dir(datadir, cursor = cursor, dtoken = token)
+    #          # update_needed <- nrow(filelist) > 0
+    #          #
+    #          # if(update_needed) {
+    #          #     showNotification("Updating data...", duration = 3)
+    #          #
+    #          #     # Read dropbox files
+    #          #     sapflow_data <<- process_sapflow(token)
+    #          #
+    #          #     # Update the cursor tracking directory state
+    #          #     cursor <<- drop_dir(drop_dir, cursor = TRUE, dtoken = token)
+    #          #     last_update <<- Sys.time()
+    #          # }
+    #
+    #          if(nrow(sapflow_data)) {
+    #              if(is.null(input$`logger-filter`)) {  # initial state before update
+    #                  sdata <- sapflow_data
+    #              } else {
+    #                  sdata <- filter(sapflow_data, Logger %in% input$`logger-filter`)
+    #              }
+    #              sdata %>%
+    #                  group_by(Tree_Code) %>%
+    #                  do(tail(., 10)) %>%
+    #                  select(Timestamp, Tree_Code, Value, Logger, Grid_Square) %>%
+    #                  pivot_wider(id_cols = Tree_Code ,names_from = "Timestamp", values_from = "Value")
+    #          }
+    #     })
+    #
+    #      output$teros_table <- renderDataTable({
+    #
+    #          # input$refreshButton
+    #
+    #          autoInvalidate()
+    #          teros_data <- reactive_df()$teros
+    #
+    #          if(nrow(teros_data)) {
+    #
+    #              if(is.null(input$`logger-filter`)) {  # initial state before update
+    #                  tdata <- teros_data
+    #              } else {
+    #                  tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
+    #              }
+    #              tdata %>%
+    #                  group_by(ID, variable) %>%
+    #                  do(tail(., 10)) %>%
+    #                  select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
+    #                  pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+    #          }
+    #      })
+    #
+    #      output$sf_timeseries <- renderPlot({
+    #          #input$plot
+    #
+    #          autoInvalidate()
+    #          sapflow_data <- reactive_df()$sapflow
+    #
+    #          if(is.null(input$plot)) {  # initial state before update
+    #              sdata <- sapflow_data
+    #          } else {
+    #              sdata <- filter(sapflow_data, Plot == input$plot)
+    #          }
+    #
+    #          sdata %>%
+    #              ggplot(aes(x = Timestamp, y = Value, group = Tree_Code)) +
+    #              geom_line() +
+    #              facet_wrap(~Species, scales = "free") +
+    #              theme(axis.text.x = element_text(angle = 90)) +
+    #              theme_minimal() #+
+    #              # annotate(geom = "rect",
+    #              #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+    #              #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
+    #              #          ymin = -Inf, ymax = Inf,
+    #              #          alpha = 0.2, fill = "deepskyblue")
+    #      })
+    #
 
     output$battery <- renderPlotly({
         # Battery voltages, from the sapflow data
@@ -159,12 +159,17 @@ server <- function(input, output) {
         battery <- reactive_df()$battery
         latest_ts <- max(battery$Timestamp)
 
-        battery %>%
-            ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
-            geom_point() +
-            labs(y = "Battery (V)") +
-            coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
-            b
+        if(nrow(battery)) {
+            battery %>%
+                ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
+                geom_point() +
+                labs(y = "Battery (V)") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+
         plotly::ggplotly(b)
     })
 
@@ -176,72 +181,81 @@ server <- function(input, output) {
         teros <- reactive_df()$teros
         latest_ts <- max(teros$TIMESTAMP)
 
-        teros %>%
-            mutate(Timestamp_rounded = round_date(TIMESTAMP, "15 minutes")) %>%
-            group_by(Plot, variable, Logger, Timestamp_rounded) %>%
-            summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
-            ggplot(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
-            facet_grid(variable~., scales = "free") +
-            geom_line() +
-            xlab("") +
-            coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
-            b
+        if(nrow(teros)) {
+            teros %>%
+                mutate(Timestamp_rounded = round_date(TIMESTAMP, "15 minutes")) %>%
+                group_by(Plot, variable, Logger, Timestamp_rounded) %>%
+                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+                ggplot(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
+                facet_grid(variable~., scales = "free") +
+                geom_line() +
+                xlab("") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+
         plotly::ggplotly(b)
     })
 
-     output$sfsensor_timeseries <- renderPlotly({
-         # Average sapflow data by plot and 15 minute interval
-         # This graph is shown when users click the "Sapflow" tab on the dashboard
+    output$sfsensor_timeseries <- renderPlotly({
+        # Average sapflow data by plot and 15 minute interval
+        # This graph is shown when users click the "Sapflow" tab on the dashboard
 
-         sapflow <- reactive_df()$sapflow
+        sapflow <- reactive_df()$sapflow
         latest_ts <- max(sapflow$Timestamp)
 
-        sapflow %>%
-             mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%
-             group_by(Plot, Logger, Timestamp_rounded) %>%
-             summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
-             ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
-             geom_line() +
-             xlab("") +
-             coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
-             b
-         plotly::ggplotly(b)
-     })
+        if(nrow(sapflow)) {
+            sapflow %>%
+                mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%
+                group_by(Plot, Logger, Timestamp_rounded) %>%
+                summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
+                ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
+                geom_line() +
+                xlab("") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
+    })
 
 
 
 
-     # output$teros_timeseries <- renderPlot({
-     #     #input$plot
-     #
-     #     autoInvalidate()
-     #     tdata <- reactive_df()$teros
-     #
-     #     if(is.null(input$tPlot)) {  # initial state before update
-     #         tdata <- tdata
-     #     } else {
-     #         tdata <- filter(tdata, substr(Plot, 1, 1) == input$tPlot)
-     #     }
-     #
-     #     display_bounds <- tibble(variable = c("EC", "TSOIL", "VWC"),
-     #                              min_val = c(0, 15, 2000),
-     #                              max_val = c(500, 30, 4500))
-     #
-     #     tdata %>%
-     #         left_join(display_bounds, by = "variable") %>%
-     #         filter(value >= min_val, value <= max_val) -> t
-     #
-     #         ggplot(t, aes(x = TIMESTAMP, y = value, group = ID)) +
-     #         geom_line() +
-     #         facet_wrap(variable~Depth, scales = "free") +
-     #         theme(axis.text.x = element_text(angle = 90)) +
-     #          theme_minimal() #+
-     #         # annotate(geom = "rect",
-     #         #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
-     #         #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
-     #         #          ymin = -Inf, ymax = Inf,
-     #         #          alpha = 0.2, fill = "deepskyblue")
-     #
-     # })
+    # output$teros_timeseries <- renderPlot({
+    #     #input$plot
+    #
+    #     autoInvalidate()
+    #     tdata <- reactive_df()$teros
+    #
+    #     if(is.null(input$tPlot)) {  # initial state before update
+    #         tdata <- tdata
+    #     } else {
+    #         tdata <- filter(tdata, substr(Plot, 1, 1) == input$tPlot)
+    #     }
+    #
+    #     display_bounds <- tibble(variable = c("EC", "TSOIL", "VWC"),
+    #                              min_val = c(0, 15, 2000),
+    #                              max_val = c(500, 30, 4500))
+    #
+    #     tdata %>%
+    #         left_join(display_bounds, by = "variable") %>%
+    #         filter(value >= min_val, value <= max_val) -> t
+    #
+    #         ggplot(t, aes(x = TIMESTAMP, y = value, group = ID)) +
+    #         geom_line() +
+    #         facet_wrap(variable~Depth, scales = "free") +
+    #         theme(axis.text.x = element_text(angle = 90)) +
+    #          theme_minimal() #+
+    #         # annotate(geom = "rect",
+    #         #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
+    #         #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
+    #         #          ymin = -Inf, ymax = Inf,
+    #         #          alpha = 0.2, fill = "deepskyblue")
+    #
+    # })
 
 }

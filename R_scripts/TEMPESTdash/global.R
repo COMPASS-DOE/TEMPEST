@@ -13,6 +13,11 @@ source("../process_teros.R", local = TRUE)
 
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
 
+NO_DATA_GRAPH <- ggplot() +
+    annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +
+    theme(axis.title = element_blank(),
+          axis.text  = element_blank(),
+    )
 
 #source("../process_sapflow.R")
 
