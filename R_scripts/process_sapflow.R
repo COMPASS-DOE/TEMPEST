@@ -54,7 +54,11 @@ process_sapflow <- function(token) {
     sapflow %>%
         mutate(Date = as.Date(Timestamp),
                Hour = hour(Timestamp) + minute(Timestamp) / 60,
-               Plot = substr(Tree_Code, 1, 1))
+               Plot = substr(Tree_Code, 1, 1),
+               Plot = case_when(Plot == "F" ~ "Freshwater",
+                                Plot == "C" ~ "Control",
+                                Plot == "S" ~ "Saltwater",
+                                Plot == "L" ~ "Shoreline"))
 
     #write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
 
