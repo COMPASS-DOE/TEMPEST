@@ -160,34 +160,29 @@ server <- function(input, output) {
         battery_data %>%
             ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
             geom_point() +
-            labs(y = "Battery (V)") +
-            theme_minimal() -> b
+            labs(y = "Battery (V)") ->
+            b
 
         plotly::ggplotly(b)
 
     })
 
-     sf_xts <- reactive({
-         autoInvalidate()
-         sapflow_data <- reactive_df()$sapflow %>%  filter(Timestamp > "2022-05-13", Timestamp < "2022-05-28")
+     output$sfsensor_timeseries <- renderPlotly({
+         # Average sapflow data by plot and 15 minute interval
+         # This graph is shown when users click the "Sapflow" tab on the dashboard
 
-         if(is.null(input$sensor)) {  # initial state before update
-             sf_filtered <- sapflow_data %>% filter(Plot == "C")
-         } else {
-             sf_filtered <- filter(sapflow_data, Tree_Code == input$sensor)
-         }
+               latest_ts <- max(sapflow$Timestamp)
 
-         sf_filtered %>%
-             select(Timestamp, Tree_Code, Value) %>%
-             pivot_wider(names_from = "Tree_Code", values_from = "Value") -> sf_formatted
-
-         xts(x = sf_formatted[,-1], order.by = sf_formatted$Timestamp)
-     })
-
-     output$sfsensor_timeseries <- renderDygraph({
-         #input$tree
-         autoInvalidate()
-         dygraph(sf_xts()) %>% dyRangeSelector()
+        sapflow %>%
+             mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%
+             group_by(Plot, Logger, Timestamp_rounded) %>%
+             summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
+             ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
+             geom_line() +
+             xlab("") +
+             coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+             b
+         plotly::ggplotly(b)
      })
 
 

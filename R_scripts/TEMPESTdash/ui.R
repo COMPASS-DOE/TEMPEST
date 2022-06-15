@@ -63,7 +63,7 @@ ui <- dashboardPage(
                            #uiOutput("plotSelector"),
                         tabPanel(
                             title = "Sapflow",
-                            dygraphOutput("sfsensor_timeseries", height = "200px")
+                            plotlyOutput("sfsensor_timeseries", height = "200px")
                         ),
                         tabPanel(
                             title = "Teros"
