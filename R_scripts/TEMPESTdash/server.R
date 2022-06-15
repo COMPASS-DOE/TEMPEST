@@ -25,7 +25,8 @@ server <- function(input, output) {
 
         sapflow <- withProgress(process_sapflow(token), message = "Updating sapflow...")
         teros <- withProgress(process_teros(token), message = "Updating TEROS...")
-        list(sapflow = sapflow, teros = teros)
+        battery = select(sapflow, Timestamp, BattV_Avg, Plot)
+        list(sapflow = sapflow, teros = teros, battery = battery)
     })
 
 #
@@ -153,25 +154,47 @@ server <- function(input, output) {
 #
 
     output$battery <- renderPlotly({
-        battery_data <- reactive_df()$sapflow %>%
-            select(Timestamp, BattV_Avg, Plot) %>%
-            filter(Timestamp > "2022-05-13", Timestamp < "2022-05-28")
+        # Battery voltages, from the sapflow data
+        # This graph is shown when users click the "Battery" tab on the dashboard
+        battery <- reactive_df()$battery
+        latest_ts <- max(battery$Timestamp)
 
-        battery_data %>%
+        battery %>%
             ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
             geom_point() +
-            labs(y = "Battery (V)") ->
+            labs(y = "Battery (V)") +
+            coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
             b
-
         plotly::ggplotly(b)
+    })
 
+    output$teros_timeseries <- renderPlotly({
+        # Average TEROS data by plot and 15 minute interval,
+        # one facet per sensor (temperature, moisture, conductivity)
+        # This graph is shown when users click the "TEROS" tab on the dashboard
+
+        teros <- reactive_df()$teros
+        latest_ts <- max(teros$TIMESTAMP)
+
+        teros %>%
+            mutate(Timestamp_rounded = round_date(TIMESTAMP, "15 minutes")) %>%
+            group_by(Plot, variable, Logger, Timestamp_rounded) %>%
+            summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+            ggplot(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
+            facet_grid(variable~., scales = "free") +
+            geom_line() +
+            xlab("") +
+            coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+            b
+        plotly::ggplotly(b)
     })
 
      output$sfsensor_timeseries <- renderPlotly({
          # Average sapflow data by plot and 15 minute interval
          # This graph is shown when users click the "Sapflow" tab on the dashboard
 
-               latest_ts <- max(sapflow$Timestamp)
+         sapflow <- reactive_df()$sapflow
+        latest_ts <- max(sapflow$Timestamp)
 
         sapflow %>%
              mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%

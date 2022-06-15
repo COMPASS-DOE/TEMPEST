@@ -66,7 +66,8 @@ ui <- dashboardPage(
                             plotlyOutput("sfsensor_timeseries", height = "200px")
                         ),
                         tabPanel(
-                            title = "Teros"
+                            title = "TEROS",
+                            plotlyOutput("teros_timeseries", height = "200px")
                         ),
                         tabPanel(
                             title = "AquaTroll"
