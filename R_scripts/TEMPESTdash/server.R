@@ -222,40 +222,4 @@ server <- function(input, output) {
         plotly::ggplotly(b)
     })
 
-
-
-
-    # output$teros_timeseries <- renderPlot({
-    #     #input$plot
-    #
-    #     autoInvalidate()
-    #     tdata <- reactive_df()$teros
-    #
-    #     if(is.null(input$tPlot)) {  # initial state before update
-    #         tdata <- tdata
-    #     } else {
-    #         tdata <- filter(tdata, substr(Plot, 1, 1) == input$tPlot)
-    #     }
-    #
-    #     display_bounds <- tibble(variable = c("EC", "TSOIL", "VWC"),
-    #                              min_val = c(0, 15, 2000),
-    #                              max_val = c(500, 30, 4500))
-    #
-    #     tdata %>%
-    #         left_join(display_bounds, by = "variable") %>%
-    #         filter(value >= min_val, value <= max_val) -> t
-    #
-    #         ggplot(t, aes(x = TIMESTAMP, y = value, group = ID)) +
-    #         geom_line() +
-    #         facet_wrap(variable~Depth, scales = "free") +
-    #         theme(axis.text.x = element_text(angle = 90)) +
-    #          theme_minimal() #+
-    #         # annotate(geom = "rect",
-    #         #          xmin = ymd_hms("2021-09-09 00:07:00", tz = "EST"),
-    #         #          xmax = ymd_hms("2021-09-09 17:00:00", tz = "EST"),
-    #         #          ymin = -Inf, ymax = Inf,
-    #         #          alpha = 0.2, fill = "deepskyblue")
-    #
-    # })
-
 }
