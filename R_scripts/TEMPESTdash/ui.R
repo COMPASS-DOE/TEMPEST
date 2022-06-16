@@ -17,9 +17,9 @@ library(dygraphs)
 # sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
-    skin = "black-light",
+    skin = if_else(TESTING, "red-light", "black-light"),
     dashboardHeader(
-        title = "TEMPEST Dashboard"
+        title = if_else(TESTING, "TEST Dashboard", "TEMPEST Dashboard")
     ),
     dashboardSidebar(
         sidebarMenu(

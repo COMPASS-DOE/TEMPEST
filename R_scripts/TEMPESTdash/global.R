@@ -10,6 +10,7 @@ source("../read_sapflow.R", local = TRUE)
 source("../process_sapflow.R", local = TRUE)
 source("../process_teros.R", local = TRUE)
 
+TESTING <- TRUE
 
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
 

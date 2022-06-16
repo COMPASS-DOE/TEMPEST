@@ -12,7 +12,9 @@ source("global.R")
 token <- readRDS("droptoken.rds")
 
 datadir <- "TEMPEST_PNNL_Data/Current_Data"
-cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
+if(!TESTING) {
+    cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
+}
 last_update <- NA
 
 server <- function(input, output) {
@@ -23,9 +25,15 @@ server <- function(input, output) {
 
         autoInvalidate()
 
-        sapflow <- withProgress(process_sapflow(token), message = "Updating sapflow...")
-        teros <- withProgress(process_teros(token), message = "Updating TEROS...")
-        battery = select(sapflow, Timestamp, BattV_Avg, Plot)
+        if(TESTING) {
+            sapflow <- readRDS("test-data/sapflow")
+            teros <- readRDS("test-data/teros")
+            battery <- readRDS("test-data/battery")
+        } else {
+            sapflow <- withProgress(process_sapflow(token), message = "Updating sapflow...")
+            teros <- withProgress(process_teros(token), message = "Updating TEROS...")
+            battery <- select(sapflow, Timestamp, BattV_Avg, Plot)
+        }
         list(sapflow = sapflow, teros = teros, battery = battery)
     })
 
