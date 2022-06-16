@@ -9,10 +9,10 @@ library(xts)
 library(dygraphs)
 
 source("global.R")
-token <- readRDS("droptoken.rds")
 
-datadir <- "TEMPEST_PNNL_Data/Current_Data"
+#datadir <- "TEMPEST_PNNL_Data/Current_Data"
 if(!TESTING) {
+    token <- readRDS("droptoken.rds")
     cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
 }
 last_update <- NA
