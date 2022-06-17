@@ -11,8 +11,8 @@ library(dygraphs)
 source("global.R")
 source("flag_sensors.R")
 
-#datadir <- "TEMPEST_PNNL_Data/Current_Data"
 if(!TESTING) {
+    datadir <- "TEMPEST_PNNL_Data/Current_Data"
     token <- readRDS("droptoken.rds")
     cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
 }
@@ -31,8 +31,8 @@ server <- function(input, output) {
             teros <- readRDS("test-data/teros")
             battery <- readRDS("test-data/battery")
         } else {
-            sapflow <- withProgress(process_sapflow(token), message = "Updating sapflow...")
-            teros <- withProgress(process_teros(token), message = "Updating TEROS...")
+            sapflow <- withProgress(process_sapflow(token, datadir), message = "Updating sapflow...")
+            teros <- withProgress(process_teros(token, datadir), message = "Updating TEROS...")
             battery <- select(sapflow, Timestamp, BattV_Avg, Plot)
         }
 

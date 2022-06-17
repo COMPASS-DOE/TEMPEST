@@ -10,10 +10,10 @@ library(plotly)
 library(kableExtra)
 set.seed(7)
 
-process_sapflow <- function(token) {
+process_sapflow <- function(token, datadir) {
 
     # Generate list of 'current' sapflow files
-    s_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
+    s_dir <- drop_dir(datadir, dtoken = token)
     s_files <- grep(s_dir$path_display, pattern = "sapflow\\.dat$", value = TRUE)
 
     sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
@@ -61,5 +61,4 @@ process_sapflow <- function(token) {
                                 Plot == "L" ~ "Shoreline"))
 
     #write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
-
 }

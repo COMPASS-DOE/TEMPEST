@@ -8,10 +8,10 @@ library(kableExtra)
 set.seed(7)
 
 
-process_teros <- function(token) {
-
+process_teros <- function(token, datadir) {
+browser()
     # Generate list of 'current' teros files
-    t_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
+    t_dir <- drop_dir(datadir, dtoken = token)
     t_files <- grep(t_dir$path_display, pattern = "Terosdata\\.dat$", value = TRUE)
 
     teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
@@ -38,5 +38,4 @@ process_teros <- function(token) {
     }
 
     return(teros)
-
 }

@@ -10,7 +10,7 @@ source("../read_sapflow.R", local = TRUE)
 source("../process_sapflow.R", local = TRUE)
 source("../process_teros.R", local = TRUE)
 
-TESTING <- TRUE
+TESTING <- FALSE
 
 # TODO: back from present? Or back from latest timestamp in data?
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
