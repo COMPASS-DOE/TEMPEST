@@ -12,7 +12,9 @@ source("../process_teros.R", local = TRUE)
 
 TESTING <- TRUE
 
+# TODO: back from present? Or back from latest timestamp in data?
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
+FLAG_TIME_WINDOW <- 1         # hours back from present
 
 NO_DATA_GRAPH <- ggplot() +
     annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +

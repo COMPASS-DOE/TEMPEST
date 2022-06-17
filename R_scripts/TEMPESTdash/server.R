@@ -37,8 +37,12 @@ server <- function(input, output) {
         }
 
         # Do limits testing and compute data needed for badges
-        sapflow_bdg <- flag_sensors(sapflow$Value, limits = SAPFLOW_RANGE)
+        sapflow %>%
+            filter(Timestamp > (max(Timestamp) - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
+            sapflow_bdg
 
+        # Return data
         list(sapflow = sapflow,
              teros = teros,
              battery = battery,
