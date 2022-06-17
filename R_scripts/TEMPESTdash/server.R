@@ -34,7 +34,14 @@ server <- function(input, output) {
             teros <- withProgress(process_teros(token), message = "Updating TEROS...")
             battery <- select(sapflow, Timestamp, BattV_Avg, Plot)
         }
-        list(sapflow = sapflow, teros = teros, battery = battery)
+
+        # Do limits testing and compute data needed for badges
+        sapflow_bdg <- flag_sensors(sapflow$Value, limits = SAPFLOW_RANGE)
+
+        list(sapflow = sapflow,
+             teros = teros,
+             battery = battery,
+             sapflow_bdg = sapflow_bdg)
     })
 
     #
@@ -228,6 +235,15 @@ server <- function(input, output) {
             b <- NO_DATA_GRAPH
         }
         plotly::ggplotly(b)
+    })
+
+    # Dashboard badges
+    output$sapflow_bdg <- renderValueBox({
+        valueBox(reactive_df()$sapflow_bdg$percent_out[1],
+                 "Sapflow",
+                 color = reactive_df()$sapflow_bdg$color[1],
+                 icon = icon("tree")
+        )
     })
 
 }

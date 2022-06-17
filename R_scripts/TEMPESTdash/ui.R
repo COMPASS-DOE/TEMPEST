@@ -13,8 +13,6 @@ library(shinydashboardPlus)
 library(dplyr)
 library(shinyWidgets)
 library(dygraphs)
-# Dummy variable
-# sapflow_data <- data.frame(Logger = NA, Plot = NA)
 
 ui <- dashboardPage(
     skin = if_else(TESTING, "red-light", "black-light"),
@@ -38,10 +36,7 @@ ui <- dashboardPage(
                 tabName = "dashboard",
                 fluidRow(
                     # Frontpage - boxes
-                    valueBox(
-                        "98%", "Sapflow",
-                        color = "green",
-                        icon = icon("tree"), width = 3),
+                    valueBoxOutput("sapflow_bdg", width = 3),
                     valueBox(
                         "90%", "TEROS",
                         color = "yellow",
