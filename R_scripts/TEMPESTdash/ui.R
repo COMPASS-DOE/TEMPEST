@@ -45,10 +45,7 @@ ui <- dashboardPage(
                         "75%", "AquaTroll",
                         color = "red",
                         icon = icon("exclamation-triangle"), width = 3),
-                    valueBox(
-                        "100%", "Battery",
-                        color = "green",
-                        icon = icon("car-battery"), width = 3),
+                    valueBoxOutput("battery_bdg", width = 3),
                 ),
                 fluidRow(
                     # selectInput(inputId = "plot",

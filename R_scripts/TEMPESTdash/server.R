@@ -33,7 +33,11 @@ server <- function(input, output) {
         } else {
             sapflow <- withProgress(process_sapflow(token, datadir), message = "Updating sapflow...")
             teros <- withProgress(process_teros(token, datadir), message = "Updating TEROS...")
-            battery <- select(sapflow, Timestamp, BattV_Avg, Plot)
+            sapflow %>%
+                select(Timestamp, BattV_Avg, Plot) %>%
+                group_by(Plot, Timestamp) %>%
+                summarise(BattV_Avg = mean(BattV_Avg), .groups = "drop") ->
+                battery
         }
 
         # Do limits testing and compute data needed for badges
@@ -41,12 +45,17 @@ server <- function(input, output) {
             filter(Timestamp > (max(Timestamp) - FLAG_TIME_WINDOW * 60 * 60)) %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
+        battery %>%
+            filter(Timestamp > (max(Timestamp) - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
+            battery_bdg
 
         # Return data
         list(sapflow = sapflow,
              teros = teros,
              battery = battery,
-             sapflow_bdg = sapflow_bdg)
+             sapflow_bdg = sapflow_bdg,
+             battery_bdg = battery_bdg)
     })
 
     output$battery <- renderPlotly({
@@ -124,6 +133,13 @@ server <- function(input, output) {
                  "Sapflow",
                  color = reactive_df()$sapflow_bdg$color[1],
                  icon = icon("tree")
+        )
+    })
+    output$battery_bdg <- renderValueBox({
+        valueBox(reactive_df()$battery_bdg$percent_in[1],
+                 "Battery",
+                 color = reactive_df()$battery_bdg$color[1],
+                 icon = icon("bolt")
         )
     })
 

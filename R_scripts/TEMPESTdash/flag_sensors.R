@@ -3,8 +3,8 @@ library(dplyr)
 # To be filled in based on real data
 # We could provide defaults, but let the users adjust if they want; bonus time
 TEROS_SWC_RANGE <- c()
-SAPFLOW_RANGE <- c(0.4, 0.7) # this is roughly the 10%/90% quantiles of the test data
-VOLTAGE_RANGE <- c()
+SAPFLOW_RANGE <- c(0.4, 0.7) # roughly the 10%/90% quantiles of the test data
+VOLTAGE_RANGE <- c(12.5, 14.3) # roughly 0.95%/99.5% quantiles of the test data
 
 # Green-yellow-red levels; could have more colors if desired
 STOPLIGHT_COLORS <- c("green" = 0.0,    # green starts at 0% fail (this shouldn't change)
