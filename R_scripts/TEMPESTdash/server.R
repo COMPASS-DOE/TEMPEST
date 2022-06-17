@@ -9,6 +9,7 @@ library(xts)
 library(dygraphs)
 
 source("global.R")
+source("flag_sensors.R")
 
 #datadir <- "TEMPEST_PNNL_Data/Current_Data"
 if(!TESTING) {
@@ -115,7 +116,7 @@ server <- function(input, output) {
 
     # Dashboard badges
     output$sapflow_bdg <- renderValueBox({
-        valueBox(reactive_df()$sapflow_bdg$percent_out[1],
+        valueBox(reactive_df()$sapflow_bdg$percent_in[1],
                  "Sapflow",
                  color = reactive_df()$sapflow_bdg$color[1],
                  icon = icon("tree")

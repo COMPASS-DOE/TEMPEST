@@ -31,8 +31,8 @@ flag_sensors <- function(values, limits, na.rm = FALSE) {
                   c(STOPLIGHT_COLORS, 1),
                   labels = names(STOPLIGHT_COLORS),
                   right = FALSE)
-    tibble(fraction_out = frac_out,
-           percent_out = paste0(round(fraction_out * 100, 0), "%"),
+    tibble(fraction_in = 1- frac_out,
+           percent_in = paste0(round(fraction_in * 100, 0), "%"),
            color = as.character(colors))
 }
 
