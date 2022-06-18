@@ -84,6 +84,7 @@ server <- function(input, output) {
                 ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
                 geom_point() +
                 labs(y = "Battery (V)") +
+                geom_hline(yintercept = VOLTAGE_RANGE, linetype = 2) +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
         } else {
@@ -110,7 +111,9 @@ server <- function(input, output) {
                 facet_grid(variable~., scales = "free") +
                 geom_line() +
                 xlab("") +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+                geom_hline(data = TEROS_RANGE, aes(yintercept = low), linetype = 2) +
+                geom_hline(data = TEROS_RANGE, aes(yintercept = high), linetype = 2) +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -134,6 +137,7 @@ server <- function(input, output) {
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
                 geom_line() +
                 xlab("") +
+                geom_hline(yintercept = SAPFLOW_RANGE, linetype = 2) +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
                 b
         } else {
