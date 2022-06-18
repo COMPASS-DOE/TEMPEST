@@ -139,7 +139,7 @@ server <- function(input, output) {
         valueBox(reactive_df()$battery_bdg$percent_in[1],
                  "Battery",
                  color = reactive_df()$battery_bdg$color[1],
-                 icon = icon("bolt")
+                 icon = icon("car-battery")
         )
     })
 
