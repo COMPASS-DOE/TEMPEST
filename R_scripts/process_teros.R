@@ -9,7 +9,6 @@ set.seed(7)
 
 
 process_teros <- function(token, datadir) {
-browser()
     # Generate list of 'current' teros files
     t_dir <- drop_dir(datadir, dtoken = token)
     t_files <- grep(t_dir$path_display, pattern = "Terosdata\\.dat$", value = TRUE)

@@ -33,10 +33,7 @@ ui <- dashboardPage(
                     # Front page badges; their attributes are computed by the server
                     valueBoxOutput("sapflow_bdg", width = 3),
                     valueBoxOutput("teros_bdg", width = 3),
-                    valueBox(
-                        "75%", "AquaTroll",
-                        color = "red",
-                        icon = icon("exclamation-triangle"), width = 3),
+                    valueBoxOutput("aquatroll_bdg", width = 3),
                     valueBoxOutput("battery_bdg", width = 3),
                 ),
                 fluidRow(
@@ -47,18 +44,19 @@ ui <- dashboardPage(
                            #uiOutput("plotSelector"),
                            tabPanel(
                                title = "Sapflow",
-                               plotlyOutput("sfsensor_timeseries", height = "200px")
+                               plotlyOutput("sapflow_plot", height = "200px")
                            ),
                            tabPanel(
                                title = "TEROS",
-                               plotlyOutput("teros_timeseries", height = "200px")
+                               plotlyOutput("teros_plot", height = "200px")
                            ),
                            tabPanel(
-                               title = "AquaTroll"
+                               title = "AquaTroll",
+                               plotlyOutput("aquatroll_plot", height = "200px")
                            ),
                            tabPanel(
                                title = "Battery",
-                               plotlyOutput("battery", height = "200px")
+                               plotlyOutput("battery_plot", height = "200px")
                            )
                     )
                 )
