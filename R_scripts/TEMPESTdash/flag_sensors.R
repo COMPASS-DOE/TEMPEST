@@ -1,8 +1,10 @@
 library(dplyr)
 
-# To be filled in based on real data
-# We could provide defaults, but let the users adjust if they want; bonus time
+# These RANGE variables are passed to flag_sensors() by the server, and used
+# to identify sensors out of range
+
 # For TEROS, these are all 1%/99% quantiles of test data
+# This one is a tibble because TEROS is three variables in a single dataset
 TEROS_RANGE <- tribble(~variable, ~low, ~high,
                        "EC",      16,   225,
                        "TSOIL",   15,   18,
@@ -10,15 +12,16 @@ TEROS_RANGE <- tribble(~variable, ~low, ~high,
 SAPFLOW_RANGE <- c(0.4, 0.7) # roughly the 10%/90% quantiles of test data
 VOLTAGE_RANGE <- c(12.5, 14.3) # roughly 0.95%/99.5% quantiles of test data
 
-# Green-yellow-red levels; could have more colors if desired
+# Badge colors and 'trigger' values
+# Currently green-yellow-red; could have more colors if desired
 BADGE_COLORS <- c("green" = 0.0,    # green starts at 0% fail (this shouldn't change)
                   "yellow" = 0.05,  # yellow starts at 5% fail
                   "red" = 0.2)      # red starts at 20%
 
 # Compute badge color(s) based on fraction(s) out
-badge_color <- function(frac_out) {
-    if(BADGE_COLORS[1] != 0.0) {
-        stop("The first entry in BADGE_COLORS must be zero")
+badge_color <- function(frac_out, badge_colors = BADGE_COLORS) {
+    if(badge_colors[1] != 0.0) {
+        stop("The first entry in badge_colors must be zero")
     }
 
     colors <- cut(frac_out,
@@ -47,7 +50,7 @@ flag_sensors <- function(values, limits, na.rm = FALSE) {
            color = badge_color(frac_out))
 }
 
-#
+# # Test code for flag_sensors above
 # # Basic test data
 # message("Basic test - grouped data")
 # test <- tibble(plot = rep(1:3, each = 10),

@@ -1,3 +1,7 @@
+#
+# These are global settings for the TEMPEST data dashboard
+# June 2022
+
 library(ggplot2)
 theme_set(theme_minimal())
 library(dplyr)
@@ -21,12 +25,3 @@ NO_DATA_GRAPH <- ggplot() +
     theme(axis.title = element_blank(),
           axis.text  = element_blank(),
     )
-
-#source("../process_sapflow.R")
-
-# sapflow <- read_csv("../../Data/sapflow/sapflow.csv")
-
-# test <- reactiveFileReader(1000,
-#                            session,
-#                            filePath = "~/Desktop/test_reactive.csv",
-#                            readFunc = read.csv)

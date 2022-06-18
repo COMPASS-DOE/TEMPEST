@@ -1,3 +1,6 @@
+#
+# This is the server of the TEMPEST data dashboard
+# June 2022
 
 library(dplyr)
 library(shiny)
@@ -11,6 +14,8 @@ library(dygraphs)
 source("global.R")
 source("flag_sensors.R")
 
+# The server normally access the SERC Dropbox to download data
+# If we are TESTING, however, skip this and use local test data only
 if(!TESTING) {
     datadir <- "TEMPEST_PNNL_Data/Current_Data"
     token <- readRDS("droptoken.rds")
@@ -82,7 +87,7 @@ server <- function(input, output) {
         if(nrow(battery)) {
             battery %>%
                 ggplot(aes(Timestamp, BattV_Avg, color = Plot)) +
-                geom_point() +
+                geom_line() +
                 labs(y = "Battery (V)") +
                 geom_hline(yintercept = VOLTAGE_RANGE, linetype = 2) +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
