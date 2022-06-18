@@ -94,7 +94,7 @@ server <- function(input, output) {
         if(nrow(sapflow)) {
             latest_ts <- max(sapflow$Timestamp)
             sapflow %>%
-                mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%
+                mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, Logger, Timestamp_rounded) %>%
                 summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
@@ -119,7 +119,7 @@ server <- function(input, output) {
         if(nrow(teros)) {
             latest_ts <- max(teros$TIMESTAMP)
             teros %>%
-                mutate(Timestamp_rounded = round_date(TIMESTAMP, "15 minutes")) %>%
+                mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, variable, Logger, Timestamp_rounded) %>%
                 summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
@@ -148,7 +148,7 @@ server <- function(input, output) {
         if(nrow(aquatroll)) {
             latest_ts <- max(aquatroll$Timestamp)
             aquatroll %>%
-                mutate(Timestamp_rounded = round_date(Timestamp, "15 minutes")) %>%
+                mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot_long, Probe_ShortName, Timestamp_rounded) %>%
                 summarise(Plot = Plot_long,
                           Temp = mean(Temp, na.rm = TRUE), .groups = "drop") %>%
