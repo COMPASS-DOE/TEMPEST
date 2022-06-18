@@ -35,12 +35,9 @@ ui <- dashboardPage(
             tabItem(
                 tabName = "dashboard",
                 fluidRow(
-                    # Frontpage - boxes
+                    # Front page badges; their attributes are computed by the server
                     valueBoxOutput("sapflow_bdg", width = 3),
-                    valueBox(
-                        "90%", "TEROS",
-                        color = "yellow",
-                        icon = icon("exclamation-circle"), width = 3),
+                    valueBoxOutput("teros_bdg", width = 3),
                     valueBox(
                         "75%", "AquaTroll",
                         color = "red",

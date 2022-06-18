@@ -45,18 +45,33 @@ server <- function(input, output) {
             filter(Timestamp > (max(Timestamp) - FLAG_TIME_WINDOW * 60 * 60)) %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
+        # TEROS is awkward, because we only have one badge, but three
+        # variables within a single dataset. We compute out-of-limits for each
+        # variable, and then combine to a single value and badge color
+        teros %>%
+            filter(TIMESTAMP > (max(TIMESTAMP) - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            left_join(TEROS_RANGE, by = "variable") %>%
+            group_by(variable) %>%
+            summarise(flag_sensors(value, limits = c(low[1], high[1]))) %>%
+            summarise(fraction_in = weighted.mean(fraction_in, n)) %>%
+            mutate(percent_in = paste0(round(fraction_in * 100, 0), "%"),
+                   color = badge_color(1 - fraction_in)) ->
+            teros_bdg
         battery %>%
             filter(Timestamp > (max(Timestamp) - FLAG_TIME_WINDOW * 60 * 60)) %>%
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
-        # Return data
+        # Return data and badge information
         list(sapflow = sapflow,
              teros = teros,
              battery = battery,
              sapflow_bdg = sapflow_bdg,
+             teros_bdg = teros_bdg,
              battery_bdg = battery_bdg)
     })
+
+    # ------------------ Dashboard graphs -----------------------------
 
     output$battery <- renderPlotly({
         # Battery voltages, from the sapflow data
@@ -127,12 +142,20 @@ server <- function(input, output) {
         plotly::ggplotly(b)
     })
 
-    # Dashboard badges
+    # ------------------ Dashboard badges -----------------------------
+
     output$sapflow_bdg <- renderValueBox({
         valueBox(reactive_df()$sapflow_bdg$percent_in[1],
                  "Sapflow",
                  color = reactive_df()$sapflow_bdg$color[1],
                  icon = icon("tree")
+        )
+    })
+    output$teros_bdg <- renderValueBox({
+        valueBox(reactive_df()$teros_bdg$percent_in[1],
+                 "TEROS",
+                 color = reactive_df()$teros_bdg$color[1],
+                 icon = icon("temperature-high")
         )
     })
     output$battery_bdg <- renderValueBox({
