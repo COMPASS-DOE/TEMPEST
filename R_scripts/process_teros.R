@@ -18,14 +18,11 @@ process_teros <- function(token, datadir) {
     lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primitive
 
     teros_primitive %>%
-        mutate(diff = difftime(Sys.time(), TIMESTAMP, units = "days")) %>%
-        filter(diff < 5) %>%
-        #na count needs to be before this
-        # NAs = sum(!is.finite(M_Value)),
         left_join(teros_inventory, by = c("Logger" = "Data Logger ID",
                                           "Data_Table_ID" = "Terosdata table channel")) %>%
         select(- `Date of Last Field Check`) %>%
-        rename("Active_Date" = "Date Online (2020)") -> teros
+        rename("Active_Date" = "Date Online (2020)") ->
+        teros
 
     nomatch <- anti_join(teros, teros_inventory, by = c("Logger" = "Data Logger ID",
                                                             "Data_Table_ID" = "Terosdata table channel"))

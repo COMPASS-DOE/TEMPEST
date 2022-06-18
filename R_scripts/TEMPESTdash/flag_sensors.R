@@ -45,10 +45,15 @@ frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) 
 # values and associated limits
 flag_sensors <- function(values, limits, na.rm = FALSE) {
     frac_out <- frac_outside_limits(values, min(limits), max(limits), na.rm = na.rm)
-    tibble(n = length(values),
-           fraction_in = 1- frac_out,
-           percent_in = paste0(round(fraction_in * 100, 0), "%"),
-           color = badge_color(frac_out))
+    x <- tibble(n = length(values),
+                fraction_in = 1- frac_out,
+                percent_in = paste0(round(fraction_in * 100, 0), "%"),
+                color = badge_color(frac_out))
+    # 'NaN' entries usually mean no data
+    invalids <- is.nan(x$fraction_in)
+    x$percent_in[invalids] <- "--"
+    x$color[invalids] <- "black"
+    x
 }
 
 # # Test code for flag_sensors above

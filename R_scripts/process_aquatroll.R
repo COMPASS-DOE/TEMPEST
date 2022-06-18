@@ -21,7 +21,6 @@ read_aquatroll <- function(filename, token, total_files) {
 }
 
 process_aquatroll <- function(token, datadir) {
-    browser()
     # Generate list of 'current' Aquatroll files
     at_dir <- drop_dir(datadir, dtoken = token)
     at_files <- grep(at_dir$path_display, pattern = "TMP_TROLL", value = TRUE)
@@ -30,9 +29,14 @@ process_aquatroll <- function(token, datadir) {
 
     lapply(at_files, fileread, token, length(at_files)) %>% bind_rows() -> aquatroll_raw
 
-    aquatroll_raw %>%
-        separate(Probe_Name, into = c("junk", "probenum"), sep = "_GW", remove = FALSE) %>%
-        mutate(Probe_ShortName = paste0("GW", probenum)) %>%
-        select(-junk, -probenum) %>%
-        left_join(select(at_inventory, Probe_ShortName = InstallationMethod_ID, Plot_long = Site_ID), by = "Probe_ShortName")
+    if(nrow(aquatroll_raw)) {
+        aquatroll_raw %>%
+            separate(Probe_Name, into = c("junk", "probenum"), sep = "_GW", remove = FALSE) %>%
+            mutate(Probe_ShortName = paste0("GW", probenum)) %>%
+            select(-junk, -probenum) %>%
+            left_join(select(at_inventory, Probe_ShortName = InstallationMethod_ID, Plot_long = Site_ID), by = "Probe_ShortName")
+    } else { # no data
+        tibble(Timestamp = NA_Date_, Probe_ShortName = NA_character_,
+               Plot_long = NA_character_, Temp = NA_real_, Plot = NA_character_)
+    }
 }

@@ -39,6 +39,7 @@ server <- function(input, output) {
         } else {
             sapflow <- withProgress(process_sapflow(token, datadir), message = "Updating sapflow...")
             teros <- withProgress(process_teros(token, datadir), message = "Updating TEROS...")
+            aquatroll <- withProgress(process_aquatroll(token, datadir), message = "Updating AquaTroll...")
             sapflow %>%
                 select(Timestamp, BattV_Avg, Plot) %>%
                 group_by(Plot, Timestamp) %>%
@@ -116,7 +117,7 @@ server <- function(input, output) {
 
         teros <- reactive_df()$teros
 
-        if(nrow(teros)) {
+        if(nrow(teros) > 1) {
             latest_ts <- max(teros$TIMESTAMP)
             teros %>%
                 mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
@@ -145,7 +146,7 @@ server <- function(input, output) {
         # This graph is shown when users click the "Battery" tab on the dashboard
         aquatroll <- reactive_df()$aquatroll
 
-        if(nrow(aquatroll)) {
+        if(nrow(aquatroll) > 1) {
             latest_ts <- max(aquatroll$Timestamp)
             aquatroll %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
