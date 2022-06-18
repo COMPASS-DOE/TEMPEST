@@ -21,13 +21,13 @@ read_aquatroll <- function(filename, token, total_files) {
 }
 
 process_aquatroll <- function(token, datadir) {
-    # Generate list of 'current' Aquatroll files
+    # Generate list of 'current' AquaTroll files
     at_dir <- drop_dir(datadir, dtoken = token)
     at_files <- grep(at_dir$path_display, pattern = "TMP_TROLL", value = TRUE)
 
     at_inventory <- read_csv("TMP_AquaTroll_InstallationMethods.csv")
 
-    lapply(at_files, fileread, token, length(at_files)) %>% bind_rows() -> aquatroll_raw
+    lapply(at_files, read_aquatroll, token, length(at_files)) %>% bind_rows() -> aquatroll_raw
 
     if(nrow(aquatroll_raw)) {
         aquatroll_raw %>%

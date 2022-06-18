@@ -24,6 +24,7 @@ fileread <- function(fn, token, total_files) {
     # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
     # Read the data files into a string vector, remove those lines, and then pass to read.csv()
     rawdata <- readLines("tempfile.dat")[-c(1, 3, 4)]
+    unlink("tempfile.dat")
 
     textConnection(rawdata) %>%
         read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%
