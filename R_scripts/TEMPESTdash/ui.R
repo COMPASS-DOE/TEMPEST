@@ -22,11 +22,7 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
             menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
-            menuItem(
-                "TEROS",
-                tabName = "teros",
-                icon = icon("temperature-high")
-            ),
+            menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
             menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
             menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
             menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
@@ -45,11 +41,7 @@ ui <- dashboardPage(
                     valueBoxOutput("battery_bdg", width = 3),
                 ),
                 fluidRow(
-                    # selectInput(inputId = "plot",
-                    #             label = "Plot:",
-                    #             choices = c("Control", "Seawater", "Freshwater")),
                     tabBox(width = 12,
-                           #uiOutput("plotSelector"),
                            tabPanel(
                                title = "Sapflow",
                                plotlyOutput("sapflow_plot", height = "200px")
@@ -88,9 +80,9 @@ ui <- dashboardPage(
                       ),
                       tabItem(
                           tabName = "battery",
-                          DT::dataTableOutput("btable"),
-                          actionButton("press", "press me"),
-                          textOutput("number")
+                          dataTableOutput("btable")#,
+                          # actionButton("press", "press me"),
+                          # textOutput("number")
                       ),
             tabItem(
                 tabName = "alerts",
