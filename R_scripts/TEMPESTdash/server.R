@@ -162,6 +162,126 @@ server <- function(input, output) {
         } else {
             b <- NO_DATA_GRAPH
         }
+      
+    # output$plotSelector <- renderUI({
+    #
+    # })
+
+
+#
+#     output$dataloggerSelector <- renderUI({
+#
+#         sapflow_data <- reactive_df()$sapflow
+#
+#         pickerInput("logger-filter", "Loggers",
+#                     choices = unique(sapflow_data$Logger),
+#                     selected = "11",
+#                     multiple = TRUE)
+#     })
+#
+#
+#
+
+#
+#     output$sensorSelector <- renderUI({
+#         autoInvalidate()
+#         sapflow_data <- reactive_df()$sapflow
+#
+#         pickerInput("sensor", "Sensor",
+#                     choices = unique(sapflow_data$Tree_Code),
+#                     selected = "F11",
+#                     multiple = TRUE)
+#     })
+#
+#     output$plotSelectorT <- renderUI({
+#         autoInvalidate()
+#         teros_data <- reactive_df()$teros
+#
+#         selectInput("tPlot", "Plot:",
+#                     choices = unique(substr(teros_data$Plot, 1, 1)),
+#                     selected = "C")
+#     })
+#
+
+    # output$plotSelector <- renderUI({
+    #     sapflow_data <- reactive_df()$sapflow
+    #
+    #     selectInput("plot",
+    #                 "Plot:",
+    #                 choices = unique(sapflow_data$Plot),
+    #                 selected = "Freshwater")
+    # })
+
+    output$table <- renderDataTable(datatable({
+        autoInvalidate()
+        sapflow_data <- reactive_df()$sapflow
+
+        # if(is.null(input$plotSelector)) {
+        #     sdata <- sapflow_data
+        # }
+        # if(length(input$plotSelector) > 0){
+        #     sdata <- filter(sapflow_data, Plot %in% input$plotSelector)
+        # }
+
+        sapflow_data %>% select(Tree_Code, Plot) -> plots
+
+        sapflow_data %>%
+            group_by(Tree_Code) %>%
+            do(tail(., 10)) %>%
+            select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
+            pivot_wider(
+                id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
+                names_from = "Timestamp",
+                values_from = "Value"
+            )
+
+    }))
+
+
+
+
+     output$teros_table <- renderDataTable({
+
+         # input$refreshButton
+
+         autoInvalidate()
+         teros_data <- reactive_df()$teros
+
+         # if(nrow(teros_data)) {
+         #
+         #     if(is.null(input$`logger-filter`)) {  # initial state before update
+         #         tdata <- teros_data
+         #     } else {
+         #         tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
+         #     }
+         teros_data %>%
+                 group_by(ID, variable) %>%
+                 do(tail(., 10)) %>%
+                 select(TIMESTAMP, ID, value, Logger, `Grid Square`) %>%
+                 pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+         #}
+     })
+
+     observeEvent(input$press, {
+         browser()
+         output$number <- print("testing")
+         #print(input$btable_rows_selected)
+     })
+
+     output$btable <- DT::renderDataTable({
+
+         autoInvalidate()
+         reactive_df()$sapflow %>%
+             select(Timestamp, BattV_Avg, Plot, Logger) %>%
+             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
+             group_by(Plot, Logger) %>%
+             distinct() %>%
+             do(tail(., 10)) %>%
+             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") -> bdf
+
+             datatable(bdf)
+
+     })
 
         plotly::ggplotly(b)
     })

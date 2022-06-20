@@ -1,4 +1,5 @@
 #
+
 # This is the user-interface definition of the TEMPEST data dashboard
 # June 2022
 
@@ -6,19 +7,26 @@ library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(dplyr)
+library(dygraphs)
 library(shinyWidgets)
 library(dygraphs)
 
 ui <- dashboardPage(
+
     skin = if_else(TESTING, "red-light", "black-light"),
     dashboardHeader(
         title = if_else(TESTING, "TEST Dashboard", "TEMPEST Dashboard")
     ),
+
     dashboardSidebar(
         sidebarMenu(
             menuItem("Dashboard", tabName = "dashboard", icon = icon("compass")),
             menuItem("Sapflow", tabName = "sapflow", icon = icon("tree")),
-            menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
+            menuItem(
+                "TEROS",
+                tabName = "teros",
+                icon = icon("temperature-high")
+            ),
             menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
             menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
             menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
@@ -62,6 +70,28 @@ ui <- dashboardPage(
                 )
 
             ),
+                      tabItem(
+                          tabName = "sapflow",
+                          dataTableOutput("table"),
+                          selectInput("plot",
+                                      "Plot:",
+                                      choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
+                                      selected = "Freshwater"),
+                          plotlyOutput("splot")
+                      ),
+                      tabItem(
+                          tabName = "teros",
+                          dataTableOutput("teros_table")
+                      ),
+                      tabItem(
+                          tabName = "aquatroll"
+                      ),
+                      tabItem(
+                          tabName = "battery",
+                          DT::dataTableOutput("btable"),
+                          actionButton("press", "press me"),
+                          textOutput("number")
+                      ),
             tabItem(
                 tabName = "alerts",
                 textInput(inputId = "phone-number",
