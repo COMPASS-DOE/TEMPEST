@@ -9,7 +9,11 @@
 # Helper function: read string vector into a data frame, reshape, and drop NA
 fileread <- function(fn, token, total_files) {
 
-    incProgress(1 / total_files)
+    # If we're running in a Shiny session, update progress bar
+    if(!is.null(getDefaultReactiveDomain())) {
+        incProgress(1 / total_files)
+    }
+
     message("Reading ", basename(fn), "...")
 
     # download file to temp file
@@ -20,6 +24,7 @@ fileread <- function(fn, token, total_files) {
     # Lines 1, 3, and 4 of the TEROS data files contain sensor metadata that we want to remove
     # Read the data files into a string vector, remove those lines, and then pass to read.csv()
     rawdata <- readLines("tempfile.dat")[-c(1, 3, 4)]
+    unlink("tempfile.dat")
 
     textConnection(rawdata) %>%
         read.csv(check.names = FALSE, na.strings = "NAN", stringsAsFactors = FALSE) %>%

@@ -8,10 +8,9 @@ library(kableExtra)
 set.seed(7)
 
 
-process_teros <- function(token) {
-
+process_teros <- function(token, datadir) {
     # Generate list of 'current' teros files
-    t_dir <- drop_dir("TEMPEST_PNNL_Data/Current_Data/", dtoken = token)
+    t_dir <- drop_dir(datadir, dtoken = token)
     t_files <- grep(t_dir$path_display, pattern = "Terosdata\\.dat$", value = TRUE)
 
     teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
@@ -19,14 +18,11 @@ process_teros <- function(token) {
     lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primitive
 
     teros_primitive %>%
-        mutate(diff = difftime(Sys.time(), TIMESTAMP, units = "days")) %>%
-        filter(diff < 5) %>%
-        #na count needs to be before this
-        # NAs = sum(!is.finite(M_Value)),
         left_join(teros_inventory, by = c("Logger" = "Data Logger ID",
                                           "Data_Table_ID" = "Terosdata table channel")) %>%
         select(- `Date of Last Field Check`) %>%
-        rename("Active_Date" = "Date Online (2020)") -> teros
+        rename("Active_Date" = "Date Online (2020)") ->
+        teros
 
     nomatch <- anti_join(teros, teros_inventory, by = c("Logger" = "Data Logger ID",
                                                             "Data_Table_ID" = "Terosdata table channel"))
@@ -38,5 +34,4 @@ process_teros <- function(token) {
     }
 
     return(teros)
-
 }

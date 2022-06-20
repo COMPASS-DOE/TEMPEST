@@ -22,6 +22,7 @@ read_sapflow <- function(filename, token, total_files) {
                   overwrite = TRUE)
 
     sdat <- readLines("tempfile.dat") #temp file goes here
+    unlink("tempfile.dat")
     sdat <- sdat[-3:-4] # remove lines 3 and 4 with unneeded information
 
     # parse line one to extract logger name
