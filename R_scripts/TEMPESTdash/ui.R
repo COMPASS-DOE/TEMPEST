@@ -94,7 +94,8 @@ ui <- dashboardPage(
             ),
                       tabItem(
                           tabName = "sapflow",
-                          dataTableOutput("table"),
+                          DT::dataTableOutput("sapflow_table"),
+                          verbatimTextOutput("y11"),
                           selectInput("plot",
                                       "Plot:",
                                       choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
@@ -113,20 +114,20 @@ ui <- dashboardPage(
                           dataTableOutput("btable")#,
                           # actionButton("press", "press me"),
                           # textOutput("number")
-                      ),
-            tabItem(
-                tabName = "alerts",
-                textInput(inputId = "phone-number",
-                          label = "Phone number:",
-                          value = "(301) 555-5555"),
-
-                # Input: Selector for choosing dataset ----
-                selectInput(inputId = "carrier",
-                            label = "Select your carrier:",
-                            choices = c("Verizon", "AT&T", "T Mobile")),
-
-                submitButton("Receive Text Alerts")
-            )
+                      )#,
+            # tabItem(
+            #     tabName = "alerts",
+            #     textInput(inputId = "phone-number",
+            #               label = "Phone number:",
+            #               value = "(301) 555-5555"),
+            #
+            #     # Input: Selector for choosing dataset ----
+            #     selectInput(inputId = "carrier",
+            #                 label = "Select your carrier:",
+            #                 choices = c("Verizon", "AT&T", "T Mobile")),
+            #
+            #     submitButton("Receive Text Alerts")
+            # )
 
         )
     )
