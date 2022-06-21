@@ -216,7 +216,7 @@ server <- function(input, output) {
     #                 selected = "Freshwater")
     # })
 
-    output$table <- renderDataTable(datatable({
+    output$sapflow_table <- DT::renderDataTable(datatable({
         autoInvalidate()
         sapflow_data <- reactive_df()$sapflow
 
@@ -240,6 +240,8 @@ server <- function(input, output) {
             )
 
     }))
+
+    output$y11 <- renderPrint(input$sapflow_table_rows_selected)
 
      output$teros_table <- renderDataTable({
 
