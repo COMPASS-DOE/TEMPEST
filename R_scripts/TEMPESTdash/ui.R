@@ -10,6 +10,7 @@ library(dplyr)
 library(dygraphs)
 library(shinyWidgets)
 library(dygraphs)
+library(shinybusy)
 
 ui <- dashboardPage(
 
@@ -42,13 +43,16 @@ ui <- dashboardPage(
                 ),
                 fluidRow(
                     column(6,
-                                  progress_circle(value = 0, shiny_id = "circle")
+                           progress_circle(value = 0, shiny_id = "circle",
+                                           color = "#00B0CA", stroke_width = 15,
+                                           trail_color = "#BBE7E6"),
+                           tags$h3("Flood Progress", align = "center")
                            ),
                     column(6,
                            tabBox(width = 12,
                                   tabPanel(
-                                      title = "Sapflow"
-
+                                      title = "Sapflow",
+                                      dataTableOutput("sapflow_sensors")
                                   ),
                                   tabPanel(
                                       title = "TEROS"
@@ -59,8 +63,8 @@ ui <- dashboardPage(
 
                                   ),
                                   tabPanel(
-                                      title = "Battery"
-
+                                      title = "Battery",
+                                      dataTableOutput("batt_sensors")
                                   )
                                   )
 

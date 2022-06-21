@@ -51,7 +51,6 @@ server <- function(input, output) {
         latest_ts <- Sys.time()
 
         # Do limits testing and compute data needed for badges
-browser()
         sapflow %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < latest_ts) %>%
@@ -93,6 +92,34 @@ browser()
     })
 
     # ------------------ Dashboard graphs -----------------------------
+
+    observeEvent(autoInvalidate(), {
+
+        update_progress("circle", {
+            round(as.numeric(difftime(Sys.time(), EVENT_START, units = "hours")) / 10, 2)
+        })
+    })
+
+    output$sapflow_sensors <- renderDataTable({
+        reactive_df()$sapflow %>%
+            filter(Timestamp > Sys.time() - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < Sys.time()) -> sapflow
+
+        bad_sensors(sapflow, sapflow$Value, "Tree_Code", limits = SAPFLOW_RANGE) -> vals
+
+        datatable(vals, options = list(paging = FALSE, searching = FALSE))
+    })
+
+    output$batt_sensors <- renderDataTable({
+        reactive_df()$battery %>%
+            filter(Timestamp > Sys.time() - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < Sys.time()) -> battery
+
+        bad_sensors(battery, battery$BattV_Avg, "Logger", limits = VOLTAGE_RANGE) -> vals
+
+        datatable(vals, options = list(paging = FALSE, searching = FALSE))
+    })
+
 
     output$sapflow_plot <- renderPlotly({
         # Average sapflow data by plot and 15 minute interval
