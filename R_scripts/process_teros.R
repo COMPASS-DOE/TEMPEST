@@ -21,7 +21,8 @@ process_teros <- function(token, datadir) {
         left_join(teros_inventory, by = c("Logger" = "Data Logger ID",
                                           "Data_Table_ID" = "Terosdata table channel")) %>%
         select(- `Date of Last Field Check`) %>%
-        rename("Active_Date" = "Date Online (2020)") ->
+        rename("Active_Date" = "Date Online (2020)",
+               "Grid_Square" = "Grid Square") ->
         teros
 
     nomatch <- anti_join(teros, teros_inventory, by = c("Logger" = "Data Logger ID",

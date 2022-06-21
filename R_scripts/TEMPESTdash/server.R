@@ -69,11 +69,13 @@ server <- function(input, output) {
             mutate(percent_in = paste0(round(fraction_in * 100, 0), "%"),
                    color = badge_color(1 - fraction_in)) ->
             teros_bdg
+
         aquatroll %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < latest_ts) %>%
             summarise(flag_sensors(Temp, limits = AQUATROLL_TEMP_RANGE)) ->
             aquatroll_bdg
+
         battery %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < latest_ts) %>%

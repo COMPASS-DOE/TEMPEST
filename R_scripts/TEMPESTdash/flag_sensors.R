@@ -43,9 +43,9 @@ frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) 
 
 bad_sensors <- function(df, values, id, limits) {
 
-    df[!between(values, min(limits), max(limits)), ] %>% select(id) -> bounds
+    df[!between(values, min(limits), max(limits)), ] %>% select(id, Grid_Square) -> bounds
 
-    df[is.na(values), ] %>% select(id) -> nas
+    df[is.na(values), ] %>% select(id, Grid_Square) -> nas
 
     unique(bind_rows(nas, bounds))
 
