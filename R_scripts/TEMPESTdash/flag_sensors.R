@@ -9,8 +9,8 @@ TEROS_RANGE <- tribble(~variable, ~low, ~high,
                        "EC",      16,   225,
                        "TSOIL",   5,   25,
                        "VWC",     2000, 3000)
-SAPFLOW_RANGE <- c(0.4, 0.7) # roughly the 10%/90% quantiles of test data
-VOLTAGE_RANGE <- c(12.5, 14.3) # roughly 0.05%/99.5% quantiles of test data
+SAPFLOW_RANGE <- c(0.2, 0.8) # roughly the 10%/90% quantiles of test data
+VOLTAGE_RANGE <- c(12, 14.3) # roughly 0.05%/99.5% quantiles of test data
 AQUATROLL_TEMP_RANGE <- c(6.3, 14.6) # roughly 1%/99% quantiles of test data
 
 # Badge colors and 'trigger' values
