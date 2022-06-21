@@ -9,7 +9,8 @@ library(readr)
 library(rdrop2)
 library(dygraphs)
 library(xts)
-library(dygraphs)
+library(shinybusy)
+
 
 source("global.R")
 source("flag_sensors.R")
@@ -47,16 +48,21 @@ server <- function(input, output) {
                 battery
         }
 
+        latest_ts <- Sys.time()
+
         # Do limits testing and compute data needed for badges
+
         sapflow %>%
-            filter(Timestamp > (Sys.time() - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
         # TEROS is awkward, because we only have one badge, but three
         # variables within a single dataset. We compute out-of-limits for each
         # variable, and then combine to a single value and badge color
         teros %>%
-            filter(TIMESTAMP > (Sys.time() - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            filter(TIMESTAMP > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   TIMESTAMP < latest_ts) %>%
             left_join(TEROS_RANGE, by = "variable") %>%
             group_by(variable) %>%
             summarise(flag_sensors(value, limits = c(low[1], high[1]))) %>%
@@ -65,11 +71,13 @@ server <- function(input, output) {
                    color = badge_color(1 - fraction_in)) ->
             teros_bdg
         aquatroll %>%
-            filter(Timestamp > (Sys.time() - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
             summarise(flag_sensors(Temp, limits = AQUATROLL_TEMP_RANGE)) ->
             aquatroll_bdg
         battery %>%
-            filter(Timestamp > (Sys.time() - FLAG_TIME_WINDOW * 60 * 60)) %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
@@ -95,14 +103,15 @@ server <- function(input, output) {
         if(nrow(sapflow)) {
             latest_ts <- Sys.time()
             sapflow %>%
+                filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
+                       Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, Logger, Timestamp_rounded) %>%
                 summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
                 geom_line() +
                 xlab("") +
-                geom_hline(yintercept = SAPFLOW_RANGE, linetype = 2) +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts))->
+                geom_hline(yintercept = SAPFLOW_RANGE, linetype = 2) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -120,6 +129,9 @@ server <- function(input, output) {
         if(nrow(teros) > 1) {
             latest_ts <- Sys.time()
             teros %>%
+                filter(TIMESTAMP > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
+                       TIMESTAMP < latest_ts) %>%
+                mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
                 mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, variable, Logger, Timestamp_rounded) %>%
                 summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
@@ -128,8 +140,7 @@ server <- function(input, output) {
                 geom_line() +
                 xlab("") +
                 geom_hline(data = TEROS_RANGE, aes(yintercept = low), linetype = 2) +
-                geom_hline(data = TEROS_RANGE, aes(yintercept = high), linetype = 2) +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                geom_hline(data = TEROS_RANGE, aes(yintercept = high), linetype = 2) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -149,6 +160,8 @@ server <- function(input, output) {
         if(nrow(aquatroll) > 1) {
             latest_ts <- Sys.time()
             aquatroll %>%
+                filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
+                       Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot_long, Probe_ShortName, Timestamp_rounded) %>%
                 summarise(Plot = Plot_long,
@@ -156,8 +169,7 @@ server <- function(input, output) {
                 ggplot(aes(Timestamp_rounded, Temp, color = Plot, group = Probe_ShortName)) +
                 geom_line() +
                 xlab("") +
-                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, linetype = 2) +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, linetype = 2)  ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -166,6 +178,27 @@ server <- function(input, output) {
         plotly::ggplotly(b)
     })
 
+    output$battery_plot <- renderPlotly({
+        # Battery voltages, from the sapflow data
+        # This graph is shown when users click the "Battery" tab on the dashboard
+        battery <- reactive_df()$battery
+
+        if(nrow(battery)) {
+            latest_ts <- Sys.time()
+            battery %>%
+                filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
+                       Timestamp < latest_ts) %>%
+                ggplot(aes(Timestamp, BattV_Avg, color = as.factor(Logger))) +
+                geom_line() +
+                labs(x = "", y = "Battery (V)") +
+                geom_hline(yintercept = VOLTAGE_RANGE, linetype = 2) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+
+        plotly::ggplotly(b)
+    })
 
     # output$plotSelector <- renderUI({
     #
@@ -280,27 +313,6 @@ server <- function(input, output) {
              datatable()
 
      })
-
-    output$battery_plot <- renderPlotly({
-        # Battery voltages, from the sapflow data
-        # This graph is shown when users click the "Battery" tab on the dashboard
-        battery <- reactive_df()$battery
-
-        if(nrow(battery)) {
-            latest_ts <- Sys.time()
-            battery %>%
-                ggplot(aes(Timestamp, BattV_Avg, color = Logger)) +
-                geom_line() +
-                labs(x = "", y = "Battery (V)") +
-                geom_hline(yintercept = VOLTAGE_RANGE, linetype = 2) +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
-                b
-        } else {
-            b <- NO_DATA_GRAPH
-        }
-
-        plotly::ggplotly(b)
-    })
 
     # ------------------ Dashboard badges -----------------------------
 
