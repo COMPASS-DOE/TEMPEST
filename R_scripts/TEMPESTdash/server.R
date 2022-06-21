@@ -51,7 +51,7 @@ server <- function(input, output) {
         latest_ts <- Sys.time()
 
         # Do limits testing and compute data needed for badges
-
+browser()
         sapflow %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < latest_ts) %>%

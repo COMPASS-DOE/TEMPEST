@@ -41,6 +41,16 @@ frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) 
     sum(is.na(values) | !between(values, left_limit, right_limit)) / length(values)
 }
 
+bad_sensors <- function(df, values, id, limits) {
+
+    df[!between(values, min(limits), max(limits)), ] %>% select(id) -> bounds
+
+    df[is.na(values), ] %>% select(id) -> nas
+
+    unique(bind_rows(nas, bounds))
+
+}
+
 # Return both fraction_out and associated badge color for a vector of
 # values and associated limits
 flag_sensors <- function(values, limits, na.rm = FALSE) {

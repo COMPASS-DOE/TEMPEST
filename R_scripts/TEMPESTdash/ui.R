@@ -41,24 +41,50 @@ ui <- dashboardPage(
                     valueBoxOutput("battery_bdg", width = 3),
                 ),
                 fluidRow(
-                    tabBox(width = 12,
-                           tabPanel(
-                               title = "Sapflow",
-                               plotlyOutput("sapflow_plot", height = "200px")
+                    column(6,
+                                  progress_circle(value = 0, shiny_id = "circle")
                            ),
-                           tabPanel(
-                               title = "TEROS",
-                               plotlyOutput("teros_plot", height = "200px")
-                           ),
-                           tabPanel(
-                               title = "AquaTroll",
-                               plotlyOutput("aquatroll_plot", height = "200px")
-                           ),
-                           tabPanel(
-                               title = "Battery",
-                               plotlyOutput("battery_plot", height = "200px")
+                    column(6,
+                           tabBox(width = 12,
+                                  tabPanel(
+                                      title = "Sapflow"
+
+                                  ),
+                                  tabPanel(
+                                      title = "TEROS"
+
+                                  ),
+                                  tabPanel(
+                                      title = "AquaTroll"
+
+                                  ),
+                                  tabPanel(
+                                      title = "Battery"
+
+                                  )
+                                  )
+
                            )
-                    )
+                ),
+                fluidRow(
+                           tabBox(width = 12,
+                                  tabPanel(
+                                      title = "Sapflow",
+                                      plotlyOutput("sapflow_plot", height = "400px")
+                                  ),
+                                  tabPanel(
+                                      title = "TEROS",
+                                      plotlyOutput("teros_plot", height = "400px")
+                                  ),
+                                  tabPanel(
+                                      title = "AquaTroll",
+                                      plotlyOutput("aquatroll_plot", height = "400px")
+                                  ),
+                                  tabPanel(
+                                      title = "Battery",
+                                      plotlyOutput("battery_plot", height = "400px")
+                                  )
+                           )
                 )
 
             ),
