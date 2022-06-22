@@ -55,11 +55,12 @@ ui <- dashboardPage(
                                       dataTableOutput("sapflow_sensors")
                                   ),
                                   tabPanel(
-                                      title = "TEROS"
-
+                                      title = "TEROS",
+                                      dataTableOutput("teros_sensors")
                                   ),
                                   tabPanel(
-                                      title = "AquaTroll"
+                                      title = "AquaTroll",
+                                      dataTableOutput("troll_sensors")
 
                                   ),
                                   tabPanel(
@@ -107,7 +108,9 @@ ui <- dashboardPage(
                           dataTableOutput("teros_table")
                       ),
                       tabItem(
-                          tabName = "aquatroll"
+                          tabName = "aquatroll",
+                          dataTableOutput("troll600_table"),
+                          dataTableOutput("troll200_table")
                       ),
                       tabItem(
                           tabName = "battery",

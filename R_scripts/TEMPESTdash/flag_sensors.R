@@ -34,11 +34,15 @@ badge_color <- function(frac_out, badge_colors = BADGE_COLORS) {
 
 # Compute fraction (0-1) of values outside specified limits
 # By default, NA counts as a failure
+which_outside_limits <- function(values, left_limit, right_limit) {
+    is.na(values) | !between(values, left_limit, right_limit)
+}
+
 frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) {
     if(na.rm) values <- na.omit(values)
 
     # In this calculation, NAs count as out-of-bounds
-    sum(is.na(values) | !between(values, left_limit, right_limit)) / length(values)
+    sum(which_outside_limits(values, left_limit, right_limit)) / length(values)
 }
 
 bad_sensors <- function(df, values, id, limits) {

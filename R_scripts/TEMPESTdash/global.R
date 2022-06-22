@@ -21,7 +21,8 @@ TESTING <- FALSE
 GRAPH_TIME_WINDOW <- 6 * 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
-EVENT_START <- as.POSIXct("2022-06-21 06:30:00", tz = "America/New_York")
+EVENT_START <- with_tz(as.POSIXct("2022-06-22 06:30:00", tz = "America/New_York"), tz = "EST")
+EVENT_STOP <- with_tz(as.POSIXct("2022-06-22 16:30:00", tz = "America/New_York"), tz = "EST")
 
 NO_DATA_GRAPH <- ggplot() +
     annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +
