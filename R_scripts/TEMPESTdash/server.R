@@ -75,17 +75,33 @@ server <- function(input, output) {
 
         teros_filtered %>%
             group_by(variable) %>%
-            mutate(bad_sensor = which_outside_limits(value, left_limit = low[1], right_limit = high[1])) %>%
+            mutate(bad_sensor = which_outside_limits(value,
+                                                     left_limit = low[1],
+                                                     right_limit = high[1]),
+                   .keep = "all") %>%
             filter(bad_sensor) %>%
             select(ID, Logger, Grid_Square) %>%
             distinct(ID, Logger) -> teros_bad_sensors
 
         aquatroll$aquatroll_600 %>%
-            select(Timestamp, Logger_ID, Well_Name, Temp) -> a600
+            select(Timestamp, Logger_ID, Well_Name, Temp) %>%
+            mutate(Sensor = 600) -> a600
 
         aquatroll$aquatroll_200 %>%
             select(Timestamp, Logger_ID, Well_Name, Temp) %>%
+            mutate(Sensor = 200) %>%
             bind_rows(a600) -> aquatroll_temp
+
+        aquatroll_temp %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
+            mutate(bad_sensor = which_outside_limits(Temp,
+                                                     left_limit = AQUATROLL_TEMP_RANGE[1],
+                                                     right_limit = AQUATROLL_TEMP_RANGE[2])) %>%
+            filter(bad_sensor) %>%
+            select(Well_Name, Logger_ID) %>%
+            arrange(Well_Name, Logger_ID) ->
+            aquatroll_bad_sensors
 
         aquatroll_temp %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
@@ -98,19 +114,22 @@ server <- function(input, output) {
                    Timestamp < latest_ts) %>%
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
-browser()
 
         # Return data and badge information
         list(sapflow = sapflow,
+             sapflow_bdg = sapflow_bdg,
+
              teros = teros,
              teros_bad_sensors = teros_bad_sensors,
+             teros_bdg = teros_bdg,
+
              aquatroll_600 = aquatroll$aquatroll_600,
              aquatroll_200 = aquatroll$aquatroll_200,
              aquatroll_temp = aquatroll_temp,
-             battery = battery,
-             sapflow_bdg = sapflow_bdg,
-             teros_bdg = teros_bdg,
+             aquatroll_bad_sensors = aquatroll_bad_sensors,
              aquatroll_bdg = aquatroll_bdg,
+
+             battery = battery,
              battery_bdg = battery_bdg)
     })
 
@@ -123,7 +142,7 @@ browser()
         })
     })
 
-    output$sapflow_sensors <- renderDataTable({
+    output$sapflow_bad_sensors <- renderDataTable({
 
         reactive_df()$sapflow %>%
             filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
@@ -134,22 +153,17 @@ browser()
         datatable(vals, options = list(searching = FALSE, pageLength = 5))
     })
 
-    output$teros_sensors <- renderDataTable({
+    output$teros_bad_sensors <- renderDataTable({
         reactive_df()$teros_bad_sensors %>%
             datatable(options = list(searching = FALSE, pageLength = 5))
     })
 
-    output$troll_sensors <- renderDataTable({
-        reactive_df()$aquatroll_temp %>%
-            filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < lubridate::with_tz(Sys.time(), tzone = "EST"))  -> troll_temp
-
-        bad_sensors(troll_temp, troll_temp$Temp, "Well_Name", limits = AQUATROLL_TEMP_RANGE) -> vals
-
-        datatable(vals, options = list(searching = FALSE, pageLength = 5))
+    output$troll_bad_sensors <- DT::renderDataTable({
+        reactive_df()$aquatroll_bad_sensors %>%
+            datatable(options = list(searching = FALSE, pageLength = 5))
     })
 
-    output$batt_sensors <- renderDataTable({
+    output$batt_bad_sensors <- renderDataTable({
 
         reactive_df()$battery %>%
             filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
@@ -181,7 +195,7 @@ browser()
                                ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6")+
                 geom_line() +
                 xlab("") +
-                geom_hline(yintercept = SAPFLOW_RANGE, linetype = 2)  ->
+                geom_hline(yintercept = SAPFLOW_RANGE, color = "grey", linetype = 2)  ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -207,14 +221,14 @@ browser()
                 group_by(Plot, variable, Logger, Timestamp_rounded) %>%
                 summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> t
 
-                ggplot(t) +
+            ggplot(t) +
                 geom_rect(data = TEROS_RANGE, group = 1,
-                               aes(xmin = EVENT_START, xmax = EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
+                          aes(xmin = EVENT_START, xmax = EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
                 facet_grid(variable~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
-                geom_hline(data = TEROS_RANGE, aes(yintercept = low), linetype = 2) +
-                geom_hline(data = TEROS_RANGE, aes(yintercept = high), linetype = 2) ->
+                geom_hline(data = TEROS_RANGE, aes(yintercept = low), color = "grey", linetype = 2) +
+                geom_hline(data = TEROS_RANGE, aes(yintercept = high), color = "grey", linetype = 2) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -247,7 +261,7 @@ browser()
                          ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
                 geom_line() +
                 xlab("") +
-                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, linetype = 2)  ->
+                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, color = "grey", linetype = 2)  ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -272,7 +286,7 @@ browser()
                          ymin = min(VOLTAGE_RANGE), ymax = max(VOLTAGE_RANGE)) +
                 geom_line() +
                 labs(x = "", y = "Battery (V)") +
-                geom_hline(yintercept = VOLTAGE_RANGE, linetype = 2) ->
+                geom_hline(yintercept = VOLTAGE_RANGE, color = "grey", linetype = 2) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -286,40 +300,40 @@ browser()
     # })
 
 
-#
-#     output$dataloggerSelector <- renderUI({
-#
-#         sapflow_data <- reactive_df()$sapflow
-#
-#         pickerInput("logger-filter", "Loggers",
-#                     choices = unique(sapflow_data$Logger),
-#                     selected = "11",
-#                     multiple = TRUE)
-#     })
-#
-#
-#
+    #
+    #     output$dataloggerSelector <- renderUI({
+    #
+    #         sapflow_data <- reactive_df()$sapflow
+    #
+    #         pickerInput("logger-filter", "Loggers",
+    #                     choices = unique(sapflow_data$Logger),
+    #                     selected = "11",
+    #                     multiple = TRUE)
+    #     })
+    #
+    #
+    #
 
-#
-#     output$sensorSelector <- renderUI({
-#         autoInvalidate()
-#         sapflow_data <- reactive_df()$sapflow
-#
-#         pickerInput("sensor", "Sensor",
-#                     choices = unique(sapflow_data$Tree_Code),
-#                     selected = "F11",
-#                     multiple = TRUE)
-#     })
-#
-#     output$plotSelectorT <- renderUI({
-#         autoInvalidate()
-#         teros_data <- reactive_df()$teros
-#
-#         selectInput("tPlot", "Plot:",
-#                     choices = unique(substr(teros_data$Plot, 1, 1)),
-#                     selected = "C")
-#     })
-#
+    #
+    #     output$sensorSelector <- renderUI({
+    #         autoInvalidate()
+    #         sapflow_data <- reactive_df()$sapflow
+    #
+    #         pickerInput("sensor", "Sensor",
+    #                     choices = unique(sapflow_data$Tree_Code),
+    #                     selected = "F11",
+    #                     multiple = TRUE)
+    #     })
+    #
+    #     output$plotSelectorT <- renderUI({
+    #         autoInvalidate()
+    #         teros_data <- reactive_df()$teros
+    #
+    #         selectInput("tPlot", "Plot:",
+    #                     choices = unique(substr(teros_data$Plot, 1, 1)),
+    #                     selected = "C")
+    #     })
+    #
 
     # output$plotSelector <- renderUI({
     #     sapflow_data <- reactive_df()$sapflow
@@ -357,70 +371,46 @@ browser()
 
     output$y11 <- renderPrint(input$sapflow_table_rows_selected)
 
-     output$teros_table <- renderDataTable({
+    output$teros_table <- renderDataTable({
 
-         # input$refreshButton
+        # input$refreshButton
 
-         autoInvalidate()
-         teros_data <- reactive_df()$teros
+        autoInvalidate()
+        teros_data <- reactive_df()$teros
 
-         # if(nrow(teros_data)) {
-         #
-         #     if(is.null(input$`logger-filter`)) {  # initial state before update
-         #         tdata <- teros_data
-         #     } else {
-         #         tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
-         #     }
-         teros_data %>%
-                 group_by(ID, variable) %>%
-                 do(tail(., 10)) %>%
-                 select(TIMESTAMP, ID, value, Logger, Grid_Square) %>%
-                 pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
-         #}
-     })
+        # if(nrow(teros_data)) {
+        #
+        #     if(is.null(input$`logger-filter`)) {  # initial state before update
+        #         tdata <- teros_data
+        #     } else {
+        #         tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
+        #     }
+        teros_data %>%
+            group_by(ID, variable) %>%
+            do(tail(., 10)) %>%
+            select(TIMESTAMP, ID, value, Logger, Grid_Square) %>%
+            pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+        #}
+    })
 
-     observeEvent(input$press, {
-         output$number <- print("testing")
-         #print(input$btable_rows_selected)
-     })
+    observeEvent(input$press, {
+        output$number <- print("testing")
+        #print(input$btable_rows_selected)
+    })
 
-     output$btable <- DT::renderDataTable({
-         autoInvalidate()
-         reactive_df()$battery %>%
-             select(Timestamp, BattV_Avg, Plot, Logger) %>%
-             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
-             group_by(Plot, Logger) %>%
-             distinct() %>%
-             do(tail(., 10)) %>%
-             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
-             datatable()
+    output$btable <- DT::renderDataTable({
+        autoInvalidate()
+        reactive_df()$battery %>%
+            select(Timestamp, BattV_Avg, Plot, Logger) %>%
+            filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
+            group_by(Plot, Logger) %>%
+            distinct() %>%
+            do(tail(., 10)) %>%
+            pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
+            datatable()
 
-     })
+    })
 
-     output$troll600_table <- DT::renderDataTable({
-         autoInvalidate()
-         reactive_df()$aquatroll_600 %>%
-             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
-             pivot_longer(cols = c("Temp", "Salinity", "Pressure_psi"), names_to = "variable") %>%
-             select(Timestamp, Well_Name, Logger_ID, Plot, variable, value) %>% group_by(Plot, Logger_ID) %>%
-             distinct() %>%
-             do(tail(.,10)) %>%
-             pivot_wider(id_cols = c("Plot", "Logger_ID"), names_from = "Timestamp", values_from = "value") %>%
-             datatable()
-
-     })
-
-     output$troll200_table <- DT::renderDataTable({
-         autoInvalidate()
-         reactive_df()$aquatroll_200 %>%
-             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
-             pivot_longer(cols = c("Temp", "Salinity", "Pressure_psi"), names_to = "variable") %>%
-             select(Timestamp, Well_Name, Logger_ID, Plot, variable, value) %>% group_by(Plot, Logger_ID) %>%
-             distinct() %>%
-             do(tail(.,10)) %>%
-             pivot_wider(id_cols = c("Plot", "Logger_ID"), names_from = "Timestamp", values_from = "value") %>%
-             datatable()
-     })
 
     # ------------------ Dashboard badges -----------------------------
 

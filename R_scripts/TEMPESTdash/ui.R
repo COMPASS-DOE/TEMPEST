@@ -52,20 +52,20 @@ ui <- dashboardPage(
                            tabBox(width = 12,
                                   tabPanel(
                                       title = "Sapflow",
-                                      dataTableOutput("sapflow_sensors")
+                                      dataTableOutput("sapflow_bad_sensors")
                                   ),
                                   tabPanel(
                                       title = "TEROS",
-                                      dataTableOutput("teros_sensors")
+                                      dataTableOutput("teros_bad_sensors")
                                   ),
                                   tabPanel(
                                       title = "AquaTroll",
-                                      dataTableOutput("troll_sensors")
+                                      dataTableOutput("troll_bad_sensors")
 
                                   ),
                                   tabPanel(
                                       title = "Battery",
-                                      dataTableOutput("batt_sensors")
+                                      dataTableOutput("batt_bad_sensors")
                                   )
                                   )
 

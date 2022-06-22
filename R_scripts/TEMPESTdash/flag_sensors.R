@@ -32,12 +32,13 @@ badge_color <- function(frac_out, badge_colors = BADGE_COLORS) {
     as.character(colors)
 }
 
-# Compute fraction (0-1) of values outside specified limits
-# By default, NA counts as a failure
+# Identify which observations are outside of limits
 which_outside_limits <- function(values, left_limit, right_limit) {
     is.na(values) | !between(values, left_limit, right_limit)
 }
 
+# Compute fraction (0-1) of values outside specified limits
+# By default, NA counts as a failure
 frac_outside_limits <- function(values, left_limit, right_limit, na.rm = FALSE) {
     if(na.rm) values <- na.omit(values)
 
