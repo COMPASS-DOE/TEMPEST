@@ -93,14 +93,14 @@ server <- function(input, output) {
             bind_rows(a600) -> aquatroll_temp
 
         aquatroll_temp %>%
-            #filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-            #       Timestamp < latest_ts) %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
             mutate(bad_sensor = which_outside_limits(Temp,
                                                      left_limit = AQUATROLL_TEMP_RANGE[1],
                                                      right_limit = AQUATROLL_TEMP_RANGE[2])) %>%
             filter(bad_sensor) %>%
-            select(Sensor, Logger_ID) %>%
-            arrange(Sensor, Logger_ID) ->
+            select(Well_Name, Logger_ID) %>%
+            arrange(Well_Name, Logger_ID) ->
             aquatroll_bad_sensors
 
         aquatroll_temp %>%
@@ -159,7 +159,6 @@ server <- function(input, output) {
     })
 
     output$troll_bad_sensors <- DT::renderDataTable({
-        browser()
         reactive_df()$aquatroll_bad_sensors %>%
             datatable(options = list(searching = FALSE, pageLength = 5))
     })
