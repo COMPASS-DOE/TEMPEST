@@ -48,7 +48,7 @@ server <- function(input, output) {
                 battery
         }
 
-        latest_ts <- Sys.time()
+        latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
 
         # Do limits testing and compute data needed for badges
         sapflow %>%
@@ -70,7 +70,14 @@ server <- function(input, output) {
                    color = badge_color(1 - fraction_in)) ->
             teros_bdg
 
-        aquatroll %>%
+        aquatroll$aquatroll_600 %>%
+            select(Timestamp, Logger_ID, Well_Name, Temp) -> a600
+
+        aquatroll$aquatroll_200 %>%
+            select(Timestamp, Logger_ID, Well_Name, Temp) %>%
+            bind_rows(a600) -> aquatroll_temp
+
+        aquatroll_temp %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < latest_ts) %>%
             summarise(flag_sensors(Temp, limits = AQUATROLL_TEMP_RANGE)) ->
@@ -85,7 +92,9 @@ server <- function(input, output) {
         # Return data and badge information
         list(sapflow = sapflow,
              teros = teros,
-             aquatroll = aquatroll,
+             aquatroll_600 = aquatroll$aquatroll_600,
+             aquatroll_200 = aquatroll$aquatroll_200,
+             aquatroll_temp = aquatroll_temp,
              battery = battery,
              sapflow_bdg = sapflow_bdg,
              teros_bdg = teros_bdg,
@@ -104,8 +113,8 @@ server <- function(input, output) {
 
     output$sapflow_sensors <- renderDataTable({
         reactive_df()$sapflow %>%
-            filter(Timestamp > Sys.time() - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < Sys.time()) -> sapflow
+            filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < lubridate::with_tz(Sys.time(), tzone = "EST")) -> sapflow
 
         bad_sensors(sapflow, sapflow$Value, "Tree_Code", limits = SAPFLOW_RANGE) -> vals
 
@@ -113,9 +122,11 @@ server <- function(input, output) {
     })
 
     output$batt_sensors <- renderDataTable({
+
+        browser()
         reactive_df()$battery %>%
-            filter(Timestamp > Sys.time() - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < Sys.time()) -> battery
+            filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < lubridate::with_tz(Sys.time(), tzone = "EST"))  -> battery
 
         bad_sensors(battery, battery$BattV_Avg, "Logger", limits = VOLTAGE_RANGE) -> vals
 
@@ -130,7 +141,8 @@ server <- function(input, output) {
         sapflow <- reactive_df()$sapflow
 
         if(nrow(sapflow)) {
-            latest_ts <- Sys.time()
+            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+
             sapflow %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
@@ -156,7 +168,7 @@ server <- function(input, output) {
         teros <- reactive_df()$teros
 
         if(nrow(teros) > 1) {
-            latest_ts <- Sys.time()
+            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
             teros %>%
                 filter(TIMESTAMP > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        TIMESTAMP < latest_ts) %>%
@@ -184,18 +196,19 @@ server <- function(input, output) {
         # variables, in which case the badge status computation would be like
         # that of TEROS
         # This graph is shown when users click the "Battery" tab on the dashboard
-        aquatroll <- reactive_df()$aquatroll
+        aquatroll <- reactive_df()$aquatroll_temp
 
         if(nrow(aquatroll) > 1) {
-            latest_ts <- Sys.time()
+            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+
             aquatroll %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
-                group_by(Plot_long, Probe_ShortName, Timestamp_rounded) %>%
-                summarise(Plot = Plot_long,
+                group_by(Logger_ID, Well_Name, Timestamp_rounded) %>%
+                summarise(Well_Name = Well_Name,
                           Temp = mean(Temp, na.rm = TRUE), .groups = "drop") %>%
-                ggplot(aes(Timestamp_rounded, Temp, color = Plot, group = Probe_ShortName)) +
+                ggplot(aes(Timestamp_rounded, Temp, color = Logger_ID, group = Well_Name)) +
                 geom_line() +
                 xlab("") +
                 geom_hline(yintercept = AQUATROLL_TEMP_RANGE, linetype = 2)  ->
@@ -213,7 +226,7 @@ server <- function(input, output) {
         battery <- reactive_df()$battery
 
         if(nrow(battery)) {
-            latest_ts <- Sys.time()
+            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
             battery %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
