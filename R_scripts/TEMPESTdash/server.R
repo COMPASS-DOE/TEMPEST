@@ -83,6 +83,7 @@ server <- function(input, output) {
             select(ID, Logger, Grid_Square) %>%
             distinct(ID, Logger) -> teros_bad_sensors
 
+        # Aquatroll is similar: one badge, two datasets
         aquatroll$aquatroll_600 %>%
             select(Timestamp, Logger_ID, Well_Name, Temp) %>%
             mutate(Sensor = 600) -> a600
@@ -195,6 +196,7 @@ server <- function(input, output) {
                                ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6")+
                 geom_line() +
                 xlab("") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
                 geom_hline(yintercept = SAPFLOW_RANGE, color = "grey", linetype = 2)  ->
                 b
         } else {
@@ -227,6 +229,7 @@ server <- function(input, output) {
                 facet_grid(variable~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
                 geom_hline(data = TEROS_RANGE, aes(yintercept = low), color = "grey", linetype = 2) +
                 geom_hline(data = TEROS_RANGE, aes(yintercept = high), color = "grey", linetype = 2) ->
                 b
@@ -261,6 +264,7 @@ server <- function(input, output) {
                          ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
                 geom_line() +
                 xlab("") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
                 geom_hline(yintercept = AQUATROLL_TEMP_RANGE, color = "grey", linetype = 2)  ->
                 b
         } else {
@@ -286,6 +290,7 @@ server <- function(input, output) {
                          ymin = min(VOLTAGE_RANGE), ymax = max(VOLTAGE_RANGE)) +
                 geom_line() +
                 labs(x = "", y = "Battery (V)") +
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
                 geom_hline(yintercept = VOLTAGE_RANGE, color = "grey", linetype = 2) ->
                 b
         } else {
@@ -346,18 +351,8 @@ server <- function(input, output) {
 
     output$sapflow_table <- DT::renderDataTable(datatable({
         autoInvalidate()
-        sapflow_data <- reactive_df()$sapflow
 
-        # if(is.null(input$plotSelector)) {
-        #     sdata <- sapflow_data
-        # }
-        # if(length(input$plotSelector) > 0){
-        #     sdata <- filter(sapflow_data, Plot %in% input$plotSelector)
-        # }
-
-        sapflow_data %>% select(Tree_Code, Plot) -> plots
-
-        sapflow_data %>%
+        reactive_df()$sapflow %>%
             group_by(Tree_Code) %>%
             do(tail(., 10)) %>%
             select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
@@ -372,20 +367,9 @@ server <- function(input, output) {
     output$y11 <- renderPrint(input$sapflow_table_rows_selected)
 
     output$teros_table <- renderDataTable({
-
-        # input$refreshButton
-
         autoInvalidate()
-        teros_data <- reactive_df()$teros
 
-        # if(nrow(teros_data)) {
-        #
-        #     if(is.null(input$`logger-filter`)) {  # initial state before update
-        #         tdata <- teros_data
-        #     } else {
-        #         tdata <- filter(teros_data, Logger %in% input$`logger-filter`)
-        #     }
-        teros_data %>%
+        reactive_df()$teros %>%
             group_by(ID, variable) %>%
             do(tail(., 10)) %>%
             select(TIMESTAMP, ID, value, Logger, Grid_Square) %>%
@@ -400,6 +384,7 @@ server <- function(input, output) {
 
     output$btable <- DT::renderDataTable({
         autoInvalidate()
+
         reactive_df()$battery %>%
             select(Timestamp, BattV_Avg, Plot, Logger) %>%
             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
