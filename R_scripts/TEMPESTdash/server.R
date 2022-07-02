@@ -54,6 +54,17 @@ server <- function(input, output) {
                    Timestamp < latest_ts) %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
+
+        sapflow %>%
+            group_by(Tree_Code) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
+            select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
+            pivot_wider(id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
+                names_from = "Timestamp",
+                values_from = "Value") ->
+            sapflow_table_data
+
         # TEROS is awkward, because we only have one badge, but three
         # variables within a single dataset. We compute out-of-limits for each
         # variable, and then combine to a single value and badge color
@@ -117,6 +128,7 @@ server <- function(input, output) {
         # Return data and badge information
         list(sapflow = sapflow,
              sapflow_bdg = sapflow_bdg,
+             sapflow_table_data = sapflow_table_data,
 
              teros = teros,
              teros_bad_sensors = teros_bad_sensors,
@@ -190,8 +202,7 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp_rounded) %>%
                 summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
-                geom_rect(aes( xmin = EVENT_START, xmax = EVENT_STOP,
-                               ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6")+
+                SAPFLOW_EVENT_RECT +
                 geom_line() +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
@@ -350,26 +361,41 @@ server <- function(input, output) {
     output$sapflow_table <- DT::renderDataTable(datatable({
         autoInvalidate()
 
-        reactive_df()$sapflow %>%
-            group_by(Tree_Code) %>%
-            do(tail(., 10)) %>%
-            select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
-            pivot_wider(
-                id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
-                names_from = "Timestamp",
-                values_from = "Value"
-            )
-
+        reactive_df()$sapflow_table_data
     }))
 
-    output$y11 <- renderPrint(input$sapflow_table_rows_selected)
+    output$sapflow_detail_graph <- renderPlotly({
+
+        if(length(input$sapflow_table_rows_selected)) {
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
+
+            reactive_df()$sapflow_table_data %>%
+                slice(input$sapflow_table_rows_selected) %>%
+                pull(Tree_Code) ->
+                trees_selected
+
+            reactive_df()$sapflow %>%
+                filter(Tree_Code %in% trees_selected) %>%
+                ggplot(aes(Timestamp, Value, group = Tree_Code, color = Plot)) +
+                SAPFLOW_EVENT_RECT +
+                geom_line() +
+                xlab("") +
+                xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
+                geom_hline(yintercept = SAPFLOW_RANGE, color = "grey", linetype = 2) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
+})
 
     output$teros_table <- renderDataTable({
         autoInvalidate()
 
         reactive_df()$teros %>%
             group_by(ID, variable) %>%
-            do(tail(., 10)) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
             select(TIMESTAMP, ID, value, Logger, Grid_Square) %>%
             pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
         #}
@@ -388,10 +414,10 @@ server <- function(input, output) {
             filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
             group_by(Plot, Logger) %>%
             distinct() %>%
-            do(tail(., 10)) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
             datatable()
-
     })
 
 
@@ -426,4 +452,4 @@ server <- function(input, output) {
         )
     })
 
-}
+    }

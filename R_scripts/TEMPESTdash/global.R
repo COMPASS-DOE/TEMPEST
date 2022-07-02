@@ -30,3 +30,9 @@ NO_DATA_GRAPH <- ggplot() +
     theme(axis.title = element_blank(),
           axis.text  = element_blank(),
     )
+
+SAPFLOW_EVENT_RECT <- geom_rect(aes(xmin = EVENT_START, xmax = EVENT_STOP,
+                                    ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
+                                fill = "#BBE7E6",
+                                alpha = 0.7,
+                                col = "#BBE7E6")
