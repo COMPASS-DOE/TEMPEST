@@ -1,5 +1,3 @@
-#
-
 # This is the user-interface definition of the TEMPEST data dashboard
 # June 2022
 

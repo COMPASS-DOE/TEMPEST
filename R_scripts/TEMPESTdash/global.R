@@ -8,6 +8,7 @@ library(dplyr)
 library(shiny)
 library(DT)
 library(readr)
+library(lubridate)
 
 source("../teros_fileread.R", local = TRUE)
 source("../read_sapflow.R", local = TRUE)
@@ -20,8 +21,8 @@ TESTING <- FALSE
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
-EVENT_START <- with_tz(as.POSIXct("2022-06-22 06:30:00", tz = "America/New_York"), tz = "EST")
-EVENT_STOP <- with_tz(as.POSIXct("2022-06-22 16:30:00", tz = "America/New_York"), tz = "EST")
+EVENT_START <- as_datetime("2022-06-22 06:30:00", tz = "EST")
+EVENT_STOP <- as_datetime("2022-06-22 16:30:00", tz = "EST")
 
 NO_DATA_GRAPH <- ggplot() +
     annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +

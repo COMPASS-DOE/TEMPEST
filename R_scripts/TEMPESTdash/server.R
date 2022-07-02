@@ -1,4 +1,3 @@
-#
 # This is the server of the TEMPEST data dashboard
 # June 2022
 
@@ -11,11 +10,10 @@ library(dygraphs)
 library(xts)
 library(shinybusy)
 
-
 source("global.R")
 source("flag_sensors.R")
 
-# The server normally access the SERC Dropbox to download data
+# The server normally accesses the SERC Dropbox to download data
 # If we are TESTING, however, skip this and use local test data only
 if(!TESTING) {
     datadir <- "TEMPEST_PNNL_Data/Current_Data"
@@ -48,7 +46,7 @@ server <- function(input, output) {
                 battery
         }
 
-        latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+        latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
         # Do limits testing and compute data needed for badges
         sapflow %>%
@@ -139,22 +137,23 @@ server <- function(input, output) {
     observeEvent(autoInvalidate(), {
 
         update_progress("circle", {
-            round(as.numeric(difftime(Sys.time(), EVENT_START, units = "hours")) / 10, 2)
+            round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
+                                      EVENT_START,
+                                      units = "hours")) / 10, 2)
         })
     })
 
-    output$sapflow_bad_sensors <- renderDataTable({
-
+    output$sapflow_bad_sensors <- DT::renderDataTable({
         reactive_df()$sapflow %>%
-            filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < lubridate::with_tz(Sys.time(), tzone = "EST")) -> sapflow
+            filter(Timestamp > with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < with_tz(Sys.time(), tzone = "EST")) -> sapflow
 
         bad_sensors(sapflow, sapflow$Value, "Tree_Code", limits = SAPFLOW_RANGE) -> vals
 
         datatable(vals, options = list(searching = FALSE, pageLength = 5))
     })
 
-    output$teros_bad_sensors <- renderDataTable({
+    output$teros_bad_sensors <- DT::renderDataTable({
         reactive_df()$teros_bad_sensors %>%
             datatable(options = list(searching = FALSE, pageLength = 5))
     })
@@ -164,11 +163,10 @@ server <- function(input, output) {
             datatable(options = list(searching = FALSE, pageLength = 5))
     })
 
-    output$batt_bad_sensors <- renderDataTable({
-
+    output$batt_bad_sensors <- DT::renderDataTable({
         reactive_df()$battery %>%
-            filter(Timestamp > lubridate::with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < lubridate::with_tz(Sys.time(), tzone = "EST"))  -> battery
+            filter(Timestamp > with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < with_tz(Sys.time(), tzone = "EST"))  -> battery
 
         bad_sensors(battery, battery$BattV_Avg, "Logger", limits = VOLTAGE_RANGE) -> vals
 
@@ -183,7 +181,7 @@ server <- function(input, output) {
         sapflow <- reactive_df()$sapflow
 
         if(nrow(sapflow)) {
-            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
             sapflow %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
@@ -213,7 +211,7 @@ server <- function(input, output) {
         teros <- reactive_df()$teros
 
         if(nrow(teros) > 1) {
-            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
             teros %>%
                 left_join(TEROS_RANGE, by = "variable") %>%
                 filter(TIMESTAMP > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
@@ -249,7 +247,7 @@ server <- function(input, output) {
         aquatroll <- reactive_df()$aquatroll_temp
 
         if(nrow(aquatroll) > 1) {
-            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
             aquatroll %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
@@ -280,7 +278,7 @@ server <- function(input, output) {
         battery <- reactive_df()$battery
 
         if(nrow(battery)) {
-            latest_ts <- lubridate::with_tz(Sys.time(), tzone = "EST")
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
             battery %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
