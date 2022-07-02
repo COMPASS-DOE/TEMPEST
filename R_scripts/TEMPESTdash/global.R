@@ -23,6 +23,7 @@ GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
 EVENT_START <- as_datetime("2022-06-22 06:30:00", tz = "EST")
 EVENT_STOP <- as_datetime("2022-06-22 16:30:00", tz = "EST")
+EVENT_HOURS <- as.numeric(difftime(EVENT_STOP, EVENT_START, units = "hours"))
 
 NO_DATA_GRAPH <- ggplot() +
     annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +

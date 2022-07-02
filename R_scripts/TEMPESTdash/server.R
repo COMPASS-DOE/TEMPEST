@@ -139,7 +139,7 @@ server <- function(input, output) {
         update_progress("circle", {
             round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
                                       EVENT_START,
-                                      units = "hours")) / 10, 2)
+                                      units = "hours")) / EVENT_HOURS, 2)
         })
     })
 
