@@ -1,5 +1,3 @@
-#
-
 # This is the user-interface definition of the TEMPEST data dashboard
 # June 2022
 
@@ -96,12 +94,11 @@ ui <- dashboardPage(
                       tabItem(
                           tabName = "sapflow",
                           DT::dataTableOutput("sapflow_table"),
-                          verbatimTextOutput("y11"),
                           selectInput("plot",
                                       "Plot:",
                                       choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
                                       selected = "Freshwater"),
-                          plotlyOutput("splot")
+                          plotlyOutput("sapflow_detail_graph")
                       ),
                       tabItem(
                           tabName = "teros",
