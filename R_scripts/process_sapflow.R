@@ -19,20 +19,9 @@ process_sapflow <- function(token, datadir) {
         progress <- NULL
     }
 
-    sf_primitive <- compasstools::read_sapflow_dir(datadir, token, progress)
+    sf_raw <- compasstools::process_sapflow_dir(datadir, tz = "EST",
+                                                      token, progress)
     sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
-
-    sf_primitive %>%
-        distinct() %>%
-        # extract number form former col name "DiffVolt_Avg(1)" would become "1"
-        # join with ports dataframe and bring in tree codes
-        pivot_longer(cols = starts_with("DiffVolt_Avg"),
-                     names_to = "Port", values_to = "Value") %>%
-        rename(Timestamp = TIMESTAMP,
-               Record = RECORD) %>%
-        mutate(Timestamp = ymd_hms(Timestamp, tz = "EST"),
-               Port = parse_number(Port),
-               Logger = parse_number(Logger)) -> sf_raw
 
     sf_raw %>%
         left_join(sf_inventory, by = c("Logger", "Port")) %>%
