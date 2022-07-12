@@ -8,6 +8,7 @@ library(tidyr)
 library(ggplot2)
 library(plotly)
 library(kableExtra)
+library(compasstools)
 set.seed(7)
 
 process_sapflow <- function(token, datadir) {
@@ -18,7 +19,14 @@ process_sapflow <- function(token, datadir) {
 
     sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
 
-    lapply(s_files, read_sapflow, token, length(s_files)) %>%
+    f <- function(filename, token, total_files) {
+        # If we're running in a Shiny session, update progress bar
+        if(!is.null(getDefaultReactiveDomain())) {
+            incProgress(1 / total_files)
+        }
+        read_file_dropbox(filename, token, compasstools::read_sapflow_file)
+    }
+    lapply(s_files, f, token, length(s_files)) %>%
         bind_rows()  -> sf_primitive
 
     sf_primitive %>%
