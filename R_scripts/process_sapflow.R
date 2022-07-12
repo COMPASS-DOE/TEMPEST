@@ -13,21 +13,14 @@ set.seed(7)
 
 process_sapflow <- function(token, datadir) {
 
-    # Generate list of 'current' sapflow files
-    s_dir <- drop_dir(datadir, dtoken = token)
-    s_files <- grep(s_dir$path_display, pattern = "sapflow\\.dat$", value = TRUE)
-
-    sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
-
-    f <- function(filename, token, total_files) {
-        # If we're running in a Shiny session, update progress bar
-        if(!is.null(getDefaultReactiveDomain())) {
-            incProgress(1 / total_files)
-        }
-        read_file_dropbox(filename, token, compasstools::read_sapflow_file)
+    if(!is.null(getDefaultReactiveDomain())) {
+        progress <- incProgress
+    } else {
+        progress <- NULL
     }
-    lapply(s_files, f, token, length(s_files)) %>%
-        bind_rows()  -> sf_primitive
+
+    sf_primitive <- compasstools::read_sapflow_dir(datadir, token, progress)
+    sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
 
     sf_primitive %>%
         distinct() %>%
