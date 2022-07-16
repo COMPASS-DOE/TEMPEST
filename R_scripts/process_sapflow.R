@@ -8,7 +8,12 @@ library(tidyr)
 library(ggplot2)
 library(plotly)
 library(kableExtra)
+
+if(!require("compasstools")) {
+    stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
+}
 library(compasstools)
+
 set.seed(7)
 
 process_sapflow <- function(token, datadir) {

@@ -9,13 +9,17 @@ set.seed(7)
 
 
 process_teros <- function(token, datadir) {
-    # Generate list of 'current' teros files
-    t_dir <- drop_dir(datadir, dtoken = token)
-    t_files <- grep(t_dir$path_display, pattern = "Terosdata\\.dat$", value = TRUE)
 
     teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
 
-    lapply(t_files, fileread, token, length(t_files)) %>% bind_rows() -> teros_primitive
+    if(!is.null(getDefaultReactiveDomain())) {
+        progress <- incProgress
+    } else {
+        progress <- NULL
+    }
+    teros_primitive <- compasstools::process_teros_dir(datadir, tz = "EST",
+                                                      dropbox_token = token,
+                                                      progress_bar = progress)
 
     teros_primitive %>%
         left_join(teros_inventory, by = c("Logger" = "Data Logger ID",

@@ -69,8 +69,8 @@ server <- function(input, output) {
         # variables within a single dataset. We compute out-of-limits for each
         # variable, and then combine to a single value and badge color
         teros %>%
-            filter(TIMESTAMP > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   TIMESTAMP < latest_ts) %>%
+            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
+                   Timestamp < latest_ts) %>%
             left_join(TEROS_RANGE, by = "variable") ->
             teros_filtered
 
@@ -225,10 +225,9 @@ server <- function(input, output) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
             teros %>%
                 left_join(TEROS_RANGE, by = "variable") %>%
-                filter(TIMESTAMP > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
-                       TIMESTAMP < latest_ts) %>%
-                mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
-                mutate(Timestamp_rounded = round_date(TIMESTAMP, GRAPH_TIME_INTERVAL)) %>%
+                filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
+                       Timestamp < latest_ts) %>%
+                mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, variable, Logger, Timestamp_rounded) %>%
                 summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> t
 
@@ -396,8 +395,8 @@ server <- function(input, output) {
             group_by(ID, variable) %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
-            select(TIMESTAMP, ID, value, Logger, Grid_Square) %>%
-            pivot_wider(id_cols = c("variable", "ID") ,names_from = "TIMESTAMP", values_from = "value")
+            select(Timestamp, ID, value, Logger, Grid_Square) %>%
+            pivot_wider(id_cols = c("variable", "ID"), names_from = "Timestamp", values_from = "value")
         #}
     })
 
