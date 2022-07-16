@@ -38,7 +38,11 @@ server <- function(input, output) {
         } else {
             sapflow <- withProgress(process_sapflow(token, datadir), message = "Updating sapflow...")
             teros <- withProgress(process_teros(token, datadir), message = "Updating TEROS...")
-            aquatroll <- withProgress(process_aquatroll(token, datadir), message = "Updating AquaTroll...")
+            atroll <- withProgress(process_aquatroll(token, datadir), message = "Updating AquaTroll...")
+            aquatroll <- list(
+                aquatroll_600 = filter(atroll, Instrument == "TROLL600"),
+                aquatroll_200 = filter(atroll, Instrument == "TROLL200")
+            )
             sapflow %>%
                 select(Timestamp, BattV_Avg, Plot, Logger) %>%
                 group_by(Plot, Logger, Timestamp) %>%
