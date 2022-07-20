@@ -1,0 +1,25 @@
+[Header]	
+System	9 mL TOC-L with TNM	
+S/W Version	1.00	
+User	sg	
+Date/Time	7/12/2022 5:32:50 PM	
+
+[System]	
+Instrument Options	TOC/ASI/IC Unit/TN/Sparge Kit/	
+
+[Data]	
+Type	Anal.	Sample Name	Sample ID	Result(TOC)	Result(TC)	Result(IC)	Result(POC)	Result(NPOC)	Result(TN)	Unit	Vial	Date / Time	
+Unknown	NPOC/TN	CondBlank1	Untitled					0.000	0.000	mg/L	1	7/11/2022 5:22:33 PM	
+Unknown	NPOC/TN	CondBlank2	Untitled					0.000	0.000	mg/L	2	7/11/2022 5:39:52 PM	
+Unknown	NPOC/TN	CondBlank3	Untitled					0.000	0.000	mg/L	3	7/11/2022 5:54:51 PM	
+Standard	NPOC	STD_0-50ppmNPOC	STD_0-50ppmNPOC					50.00		mg/L	4, 5, 6, 7, 8, 9, 10, 11, 12	7/11/2022 8:32:00 PM	
+Standard	TN	STD_0-10ppmTN	STD_0-10ppmTN						3.000	mg/L	13, 14, 15, 16, 17, 18, 19, 20	7/11/2022 10:59:40 PM	
+Unknown	NPOC/TN	Blank1	Untitled					0.2374	0.02275	mg/L	21	7/11/2022 11:17:23 PM	
+Unknown	NPOC/TN	CKSTD1_1ppmCN	Untitled					1.071	0.9905	mg/L	22	7/11/2022 11:43:33 PM	
+Unknown	NPOC/TN	TMP_FW_B4_T4	Untitled					9.786	0.3571	mg/L	23	7/12/2022 12:08:40 AM	
+Unknown	NPOC/TN	TMP_C_H3_T4	Untitled					22.94	0.8230	mg/L	24	7/12/2022 12:35:39 AM	
+Unknown	NPOC/TN	TMP_FW_E3_T4	Untitled					10.51	0.3645	mg/L	25	7/12/2022 12:52:18 AM	
+Unknown	NPOC/TN	TMP_SW_C3_T4	Untitled					14.34	1.362	mg/L	26	7/12/2022 1:09:18 AM	
+Unknown	NPOC/TN	TMP_SW_F6_T4	Untitled					5.806	0.3862	mg/L	27	7/12/2022 1:35:16 AM	
+Unknown	NPOC/TN	Blank2	Untitled					0.1826	0.01162	mg/L	28	7/12/2022 1:56:44 AM	
+Unknown	NPOC/TN	CKSTD2_1ppmCN	Untitled					1.119	0.9789	mg/L	29	7/12/2022 2:16:30 AM	
