@@ -50,21 +50,60 @@ read_data <- function(data){
     mutate(date = date)
 }
 
-
+read_mes <- function(readme){
+  # First, scrape date from filename
+  date <- str_extract(readme, "[0-9]{8}")
+  # Second, read in Read Me
+  readxl::read_excel(path = readme, sheet = 1) %>% 
+    rename(sample_name = `Sample Name`,
+           sample_vol = `Sample Wt (g)`,
+           total_vol = `Sample`) %>% 
+    select(sample_name, Action) %>% 
+    mutate(date = date)
+}
 # 3. Import data ---------------------------------------------------------------
 
 ## Create a list of files to download
 files <- list.files(path = directory, pattern = "Summary", full.names = TRUE) 
+ReadMes <- list.files(path = directory, pattern = "Readme", full.names = TRUE) 
 
-## Read in data, filter to TMP samples, and add sample name
+## Read in data, filter to TMP samples, and add sample name, add readme actions
 npoc_raw <- files %>% 
   map_df(read_data) %>% 
   filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
   bind_rows() 
 
-######Stopped here 7/19######
+readmes_dilution_action <- ReadMes %>% 
+  map_df(read_mes) %>% 
+  filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
+  filter(Action %in% "Dilution correction needed") %>%
+  bind_rows() 
 
-# 4. Calculate blanks and add to data ------------------------------------------
+######Stopped here 7/19######
+# 4. Dilution Corrections ------------------------------------------------------
+
+dilutions = 
+  readmes_dilution_action %>% 
+  rename(Name = `Sample Name`) %>% 
+  mutate(date_run = str_extract(source, "[0-9]{8}"),
+         date_run = lubridate::as_date(date_run)) %>% 
+  dplyr::select(date_run, Name, Action, Dilution) %>% 
+  force()
+
+
+samples_dilution_corrected = 
+  samples_blank_corrected %>% 
+  left_join(dilutions, by = c("Name", "date_run")) %>% 
+  filter(!Action %in% "Omit") %>% 
+  mutate(Amount_bl_dil_corrected = Amount_bl_corrected * Dilution) %>% 
+  mutate(Amount_bl_dil_corrected = as.numeric(Amount_bl_dil_corrected),
+         Amount_bl_dil_corrected = round(Amount_bl_dil_corrected, 3)) %>% 
+  dplyr::select(Name, date_run, Ion, Amount_bl_dil_corrected, flag) %>% 
+  filter(Amount_bl_dil_corrected > 0)
+
+samples_dilution_corrected
+
+# 5. Calculate blanks and add to data ------------------------------------------
 
 blanks <- npoc_raw %>% 
   filter(grepl("^Blank", sample_name)) %>% 
@@ -76,7 +115,7 @@ blanks <- npoc_raw %>%
   select(date, npoc_blank, tdn_blank)
 
 
-# 5. Add blanks data -----------------------------------------------------------
+# 6. Add blanks data -----------------------------------------------------------
 
 npoc_blank_corrected <- npoc_raw %>% 
   filter(grepl("EC1_K", sample_name)) %>% # filter to EC1 samples only
@@ -88,7 +127,9 @@ npoc_blank_corrected <- npoc_raw %>%
          tdn_mgl = tdn_raw - tdn_blank)
 
 
-# 6. Clean data ----------------------------------------------------------------
+# 7. Clean data ----------------------------------------------------------------
+
+
 
 ## Helper function to calculate mean if numeric, otherwise first (needed to 
 ## preserve dates, which are different for duplicated kits)
