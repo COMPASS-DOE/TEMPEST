@@ -56,9 +56,9 @@ read_mes <- function(readme){
   # Second, read in Read Me
   readxl::read_excel(path = readme, sheet = 1) %>% 
     rename(sample_name = `Sample Name`,
-           sample_vol = `Sample Wt (g)`,
-           total_vol = `Sample`) %>% 
-    select(sample_name, Action) %>% 
+           sample_vol = `Sample wt`,
+           total_vol = `Total vol:`) %>% 
+    select(sample_name, Action, sample_vol, total_vol) %>% 
     mutate(date = date)
 }
 # 3. Import data ---------------------------------------------------------------
@@ -73,63 +73,83 @@ npoc_raw <- files %>%
   filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
   bind_rows() 
 
+blanks_raw <- files %>% 
+  map_df(read_data) %>% 
+  filter(grepl("^Blank", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
 readmes_dilution_action <- ReadMes %>% 
   map_df(read_mes) %>% 
   filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
   filter(Action %in% "Dilution correction needed") %>%
   bind_rows() 
 
-######Stopped here 7/19######
-# 4. Dilution Corrections ------------------------------------------------------
+readmes_all<- ReadMes %>% 
+  map_df(read_mes) %>% 
+  filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
 
-dilutions = 
-  readmes_dilution_action %>% 
-  rename(Name = `Sample Name`) %>% 
-  mutate(date_run = str_extract(source, "[0-9]{8}"),
-         date_run = lubridate::as_date(date_run)) %>% 
-  dplyr::select(date_run, Name, Action, Dilution) %>% 
-  force()
+# 4. Calculate blanks and add to data ------------------------------------------
 
-
-samples_dilution_corrected = 
-  samples_blank_corrected %>% 
-  left_join(dilutions, by = c("Name", "date_run")) %>% 
-  filter(!Action %in% "Omit") %>% 
-  mutate(Amount_bl_dil_corrected = Amount_bl_corrected * Dilution) %>% 
-  mutate(Amount_bl_dil_corrected = as.numeric(Amount_bl_dil_corrected),
-         Amount_bl_dil_corrected = round(Amount_bl_dil_corrected, 3)) %>% 
-  dplyr::select(Name, date_run, Ion, Amount_bl_dil_corrected, flag) %>% 
-  filter(Amount_bl_dil_corrected > 0)
-
-samples_dilution_corrected
-
-# 5. Calculate blanks and add to data ------------------------------------------
-
-blanks <- npoc_raw %>% 
-  filter(grepl("^Blank", sample_name)) %>% 
+##Need to add in and fix LODs ###
+blanks <- blanks_raw %>% 
+  filter(!run_datetime %in% NA) %>% 
   group_by(date) %>% 
-  summarize(npoc_blank_raw = round(mean(npoc_raw[!is.na(npoc_raw)]), 2), 
-            tdn_blank_raw = round(mean(tdn_raw[!is.na(tdn_raw)]), 2)) %>% 
-  mutate(npoc_blank = ifelse(npoc_blank_raw > lod_npoc, npoc_blank_raw, 0), 
-         tdn_blank = ifelse(tdn_blank_raw > lod_tdn, tdn_blank_raw, 0)) %>% 
+  summarize(npoc_blank= round(mean(npoc_raw[!is.na(npoc_raw)]), 2), 
+            tdn_blank= round(mean(tdn_raw[!is.na(tdn_raw)]), 2)) %>% 
+  #summarize(npoc_blank_raw = round(mean(npoc_raw[!is.na(npoc_raw)]), 2), 
+   #         tdn_blank_raw = round(mean(tdn_raw[!is.na(tdn_raw)]), 2)) %>% 
+  #mutate(npoc_blank = ifelse(npoc_blank_raw > lod_npoc, npoc_blank_raw, 0), 
+  #       tdn_blank = ifelse(tdn_blank_raw > lod_tdn, tdn_blank_raw, 0)) %>% 
   select(date, npoc_blank, tdn_blank)
 
 
-# 6. Add blanks data -----------------------------------------------------------
+# 5. Add blanks data -----------------------------------------------------------
 
 npoc_blank_corrected <- npoc_raw %>% 
-  filter(grepl("EC1_K", sample_name)) %>% # filter to EC1 samples only
-  mutate(campaign = "EC1", 
-         kit_id = substr(sample_name, 5, 9), 
-         transect_location = "water") %>% 
+  filter(grepl("TMP", sample_name)) %>% # filter to EC1 samples only
   inner_join(blanks, by = "date") %>% 
-  mutate(npoc_mgl = npoc_raw - npoc_blank, 
-         tdn_mgl = tdn_raw - tdn_blank)
+  mutate(npoc_raw_bc = npoc_raw - npoc_blank, 
+         tdn_raw_bc = tdn_raw - tdn_blank)
+
+# 6. Dilution Corrections ------------------------------------------------------
+
+dilutions = 
+  readmes_dilution_action %>% 
+  mutate(Dilution =  total_vol/sample_vol) %>% 
+  dplyr::select(date, sample_name, Action, Dilution) %>% 
+  force()
+
+samples_dilution_corrected = 
+  npoc_blank_corrected %>%
+  left_join(dilutions, by = c("sample_name", "date")) %>% 
+  filter(Action %in% "Dilution correction needed") %>% 
+  filter(!Action %in% "Omit") %>% 
+  mutate(doc_mg_l= npoc_raw_bc * Dilution, tdn_mg_l = tdn_raw_bc * Dilution, # True concentration = diluted concentration * total vol / sample vol
+         doc_mg_l = as.numeric(doc_mg_l), doc_mg_l = round(doc_mg_l, 3),
+         tdn_mg_l= as.numeric(tdn_mg_l), tdn_mg_l= round(tdn_mg_l, 3))
+# mutate(Amount_bl_dil_corrected = Amount_bl_corrected * Dilution) %>% 
+# mutate(Amount_bl_dil_corrected = as.numeric(Amount_bl_dil_corrected),
+#        Amount_bl_dil_corrected = round(Amount_bl_dil_corrected, 3)) %>% 
+# dplyr::select(Name, date_run, npoc_raw, Amount_bl_dil_corrected, flag) %>% 
+#filter(Amount_bl_dil_corrected > 0)
+
+all_samples_blk_dilution_corrected =
+  npoc_blank_corrected %>%
+  left_join(readmes_all, by = c("sample_name", "date")) %>% 
+  filter(!Action %in% "Dilution correction needed") %>% 
+  filter(!Action %in% "Omit")%>%
+  mutate(doc_mg_l = npoc_raw_bc, tdn_mg_l = tdn_raw_bc) %>%
+  bind_rows(samples_dilution_corrected) %>%
+  dplyr::select(sample_name, date, doc_mg_l, tdn_mg_l)%>%
+  mutate(doc_mg_l = if_else(doc_mg_l < 0, "NA", as.character(doc_mg_l)),
+         tdn_mg_l = if_else(tdn_mg_l < 0, "NA", as.character(tdn_mg_l)),
+         doc_mg_l = as.numeric(doc_mg_l), doc_mg_l = round(doc_mg_l, 3),
+         tdn_mg_l= as.numeric(tdn_mg_l), tdn_mg_l= round(tdn_mg_l, 3))
 
 
+##Have not executed the below as of 7.31.22###
 # 7. Clean data ----------------------------------------------------------------
-
-
 
 ## Helper function to calculate mean if numeric, otherwise first (needed to 
 ## preserve dates, which are different for duplicated kits)
@@ -156,8 +176,8 @@ npoc <- npoc_raw_flags %>%
   select(date, campaign, kit_id, transect_location, npoc_mgl, tdn_mgl, contains("_flag"))
 
 
-# 7. Write data ----------------------------------------------------------------
+# 8. Write data ----------------------------------------------------------------
 
-write_csv(npoc, paste0("/Documents/GitHub/TEMPEST/June_Event/Porewaters/TMP_PW_NPOC_TDN_L0B_", Sys.Date(), ".csv"))
+write_csv(all_samples_blk_dilution_corrected, paste0("~/Documents/GitHub/TEMPEST/June_Event/Porewaters/TMP_PW_NPOC_TDN_L0A_", Sys.Date(), ".csv"))
 
 
