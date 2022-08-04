@@ -159,10 +159,11 @@ all_samples_blk_dilution_corrected <- all_samples_blk_dilution_corrected %>%
 all_samples_blk_dilution_corrected$dups <- duplicated(all_samples_blk_dilution_corrected$sample_name)
 
 duplicates <- all_samples_blk_dilution_corrected %>% filter(dups== "TRUE")
+duplicates_final <- inner_join(all_samples_blk_dilution_corrected, duplicates, by="sample_name")
+write_csv(duplicates_final, paste0("~/Documents/GitHub/TEMPEST/June_Event/Porewaters/JuneEvent_reruns_", Sys.Date(), ".csv"))
 
-unique_samples <- unique(all_samples_blk_dilution_corrected, by="sample_name")
-
-reruns <- anti_join(all_samples_blk_dilution_corrected, unique_samples, by= "sample_name")
+#unique_samples <- unique(all_samples_blk_dilution_corrected, by="sample_name")
+#reruns <- anti_join(all_samples_blk_dilution_corrected, unique_samples, by= "sample_name")
 
 ##Have not executed the below as of 7.31.22###
 # 7. Clean data ----------------------------------------------------------------
