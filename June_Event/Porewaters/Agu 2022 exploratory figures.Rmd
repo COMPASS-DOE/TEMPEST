@@ -1,0 +1,87 @@
+---
+title: "AGU Exploratory Figures"
+author: "AMP"
+date: `r Sys.Date()`
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploring some DOC plots for AGU
+
+```{r load DOC data}
+## Set Github filepath for NPOC data files
+setuser <- "/Users/myer056/OneDrive - PNNL" #I cant get user agnostic file paths to work
+directory = paste0(setuser,"/Documents/GitHub/TEMPEST/June_Event/Porewaters/")
+
+doc <- read.csv('/Users/myer056/OneDrive - PNNL/Documents/GitHub/TEMPEST/June_Event/Porewaters/TMP_PW_NPOC_TDN_L0A_2022-07-31.csv')
+
+#Name Structure: Event_Plot_Grid_Timepoint
+
+doc_factors = doc %>%
+mutate(Event = stringr::str_extract(sample_name, "TMP"),
+       Plot = stringr::str_extract(sample_name, 'FW|SW|C|ESTUARY'), 
+       Grid = stringr::str_extract(sample_name, "B4|C3|C6|D5|E3|F4|F6|H3|H6|I5|SOURCE|BARGE|POOL|WELL"),
+       Timepoint = stringr::str_extract(sample_name,"[0-9]{8}|T[0-9]|HR[0-9]|PreW")) 
+
+
+```
+
+```{r plots}
+library(ggplot2)
+
+sources <- doc_factors %>% 
+  filter(grepl("SOURCE|BARGE", Grid))
+
+sw <- doc_factors %>% 
+  filter(Plot == "SW") %>%
+  group_by()
+
+fw <- doc_factors %>% 
+  filter(Plot == "FW") %>%
+  group_by()
+
+tempest_DOC <- ggplot()+
+  geom_jitter(aes(x=Grid, y=doc_mg_l, color=as.factor(Timepoint)), data=sw)+
+  geom_boxplot(aes(x=Grid, y=doc_mg_l, color=as.factor(Timepoint)), data=sw,
+              position = position_dodge2(width = 1.5, preserve = "single"))+
+#scale_x_discrete(limits=c("Upland","Hillslope","Floodplain","RiverBank","River","FW Wetland"), labels=c("Upland","Hillslope","Floodplain","River \nBank","River","Freshwater \n Wetland"))+
+ # scale_color_manual(values=c("goldenrod2","slategrey","mediumblue","#000000","darkorange4","darkslategrey","turquoise","royalblue3","green"),limits=c("2","3","1","4","5","6","7","8","9"),breaks=c("2","3","1","6","7","8","4","5","9"), labels=c("River Flooded \nOver Soil","Falling Tide","Rising Tide","Low Tide","High Tide","King Tide","Upland Soils", "Freshwater \nWetland Soils", "Trees"),name="Key")+
+  cowplot::theme_cowplot()+
+  xlab("Location")+
+ # ylab(expression(paste("CH"["4"], " Flux ","(mgC m"^"-2", "d"^"-1",")")))+
+  #ggtitle (expression(paste("CH"["4"], " Fluxes")))+
+  theme(axis.title.x= element_text(size=25),axis.text.x= element_text(size=20),axis.text.y =element_text(size=20),axis.title.y = element_text(size=25),legend.position = c(0.01, 0.8))
+
+tempest_DOC
+
+sw_DOC <- ggplot()+
+  geom_point(aes(x=Timepoint, y=doc_mg_l, color=as.factor(Grid)), data=sw)+
+  cowplot::theme_cowplot()+
+  xlab("Location")+
+ # ylab(expression(paste("CH"["4"], " Flux ","(mgC m"^"-2", "d"^"-1",")")))+
+  #ggtitle (expression(paste("CH"["4"], " Fluxes")))+
+  theme(axis.title.x= element_text(size=25),axis.text.x= element_text(size=20),axis.text.y =element_text(size=20),axis.title.y = element_text(size=25),legend.position = c(0.01, 0.8))
+
+sw_DOC
+
+fw_DOC <- ggplot()+
+  geom_point(aes(x=Timepoint, y=doc_mg_l, color=as.factor(Grid)), data=fw)+
+  cowplot::theme_cowplot()+
+  xlab("Location")+
+ # ylab(expression(paste("CH"["4"], " Flux ","(mgC m"^"-2", "d"^"-1",")")))+
+  #ggtitle (expression(paste("CH"["4"], " Fluxes")))+
+  theme(axis.title.x= element_text(size=25),axis.text.x= element_text(size=20),axis.text.y =element_text(size=20),axis.title.y = element_text(size=25),legend.position = c(0.01, 0.8))
+
+fw_DOC
+```
+
+## TEROS
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
