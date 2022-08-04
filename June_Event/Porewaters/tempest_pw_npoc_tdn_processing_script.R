@@ -3,7 +3,7 @@
 ## Data are read in from GitHub
 ## 
 ## Created: 2022-01-15 by Peter Regier for EXCHANGE
-## Updated: 2022-07-19 by Allison Myers-Pigg for TEMPEST
+## Updated: 2022-08-04 by Allison Myers-Pigg for TEMPEST
 ## 
 ##
 # #############
@@ -94,6 +94,8 @@ readmes_all<- ReadMes %>%
 ##Need to add in and fix LODs ###
 blanks <- blanks_raw %>% 
   filter(!run_datetime %in% NA) %>% 
+  mutate(npoc_raw = ifelse(npoc_raw > 0, npoc_raw, NA)) %>%
+  mutate(tdn_raw = ifelse(tdn_raw > 0, tdn_raw, NA)) %>%
   group_by(date) %>% 
   summarize(npoc_blank= round(mean(npoc_raw[!is.na(npoc_raw)]), 2), 
             tdn_blank= round(mean(tdn_raw[!is.na(tdn_raw)]), 2)) %>% 
@@ -107,7 +109,7 @@ blanks <- blanks_raw %>%
 # 5. Add blanks data -----------------------------------------------------------
 
 npoc_blank_corrected <- npoc_raw %>% 
-  filter(grepl("TMP", sample_name)) %>% # filter to EC1 samples only
+  filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
   inner_join(blanks, by = "date") %>% 
   mutate(npoc_raw_bc = npoc_raw - npoc_blank, 
          tdn_raw_bc = tdn_raw - tdn_blank)
@@ -146,7 +148,21 @@ all_samples_blk_dilution_corrected =
          tdn_mg_l = if_else(tdn_mg_l < 0, "NA", as.character(tdn_mg_l)),
          doc_mg_l = as.numeric(doc_mg_l), doc_mg_l = round(doc_mg_l, 3),
          tdn_mg_l= as.numeric(tdn_mg_l), tdn_mg_l= round(tdn_mg_l, 3))
+  
+all_samples_blk_dilution_corrected <- all_samples_blk_dilution_corrected %>% 
+  mutate(sample_name = stringr::str_replace(sample_name,"_DOC","")) %>%
+  mutate(sample_name = stringr::str_replace(sample_name,"HR6","HR7")) %>%
+  mutate(sample_name = stringr::str_replace(sample_name, "_DILUTED4mLsmpl3mLwater", "")) %>%
+  mutate(sample_name = stringr::str_replace(sample_name, "_Diluted", ""))
 
+#Identify if duplicates were run #
+all_samples_blk_dilution_corrected$dups <- duplicated(all_samples_blk_dilution_corrected$sample_name)
+
+duplicates <- all_samples_blk_dilution_corrected %>% filter(dups== "TRUE")
+
+unique_samples <- unique(all_samples_blk_dilution_corrected, by="sample_name")
+
+reruns <- anti_join(all_samples_blk_dilution_corrected, unique_samples, by= "sample_name")
 
 ##Have not executed the below as of 7.31.22###
 # 7. Clean data ----------------------------------------------------------------
