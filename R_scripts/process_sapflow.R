@@ -8,30 +8,25 @@ library(tidyr)
 library(ggplot2)
 library(plotly)
 library(kableExtra)
+
+if(!require("compasstools")) {
+    stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
+}
+library(compasstools)
+
 set.seed(7)
 
 process_sapflow <- function(token, datadir) {
 
-    # Generate list of 'current' sapflow files
-    s_dir <- drop_dir(datadir, dtoken = token)
-    s_files <- grep(s_dir$path_display, pattern = "sapflow\\.dat$", value = TRUE)
+    if(!is.null(getDefaultReactiveDomain())) {
+        progress <- incProgress
+    } else {
+        progress <- NULL
+    }
 
+    sf_raw <- compasstools::process_sapflow_dir(datadir, tz = "EST",
+                                                      token, progress)
     sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
-
-    lapply(s_files, read_sapflow, token, length(s_files)) %>%
-        bind_rows()  -> sf_primitive
-
-    sf_primitive %>%
-        distinct() %>%
-        # extract number form former col name "DiffVolt_Avg(1)" would become "1"
-        # join with ports dataframe and bring in tree codes
-        pivot_longer(cols = starts_with("DiffVolt_Avg"),
-                     names_to = "Port", values_to = "Value") %>%
-        rename(Timestamp = TIMESTAMP,
-               Record = RECORD) %>%
-        mutate(Timestamp = ymd_hms(Timestamp, tz = "EST"),
-               Port = parse_number(Port),
-               Logger = parse_number(Logger)) -> sf_raw
 
     sf_raw %>%
         left_join(sf_inventory, by = c("Logger", "Port")) %>%

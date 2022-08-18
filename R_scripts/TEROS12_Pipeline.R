@@ -52,17 +52,17 @@ teros_data$VWC <- 3.879E-4 * (teros_data$VWC) - 0.6956
 
 # Initial inspection of each environmental variable over time, data set will need some cleaning
 message("Plotting...")
-p_tsoil <- ggplot(teros_data, aes(TIMESTAMP, TSOIL, group = Data_Table_ID, color = Plot)) +
+p_tsoil <- ggplot(teros_data, aes(Timestamp, TSOIL, group = Data_Table_ID, color = Plot)) +
   geom_line() +
   facet_wrap(~Data_Logger_ID)
 print(p_tsoil)
 
-p_vwc <- ggplot(teros_data, aes(TIMESTAMP, VWC, group = Data_Table_ID, color = Plot)) +
+p_vwc <- ggplot(teros_data, aes(Timestamp, VWC, group = Data_Table_ID, color = Plot)) +
   geom_line() +
   facet_wrap(~Data_Logger_ID)
 print(p_vwc)
 
-p_ec <- ggplot(teros_data, aes(TIMESTAMP, EC, group = Data_Table_ID, color = Plot)) +
+p_ec <- ggplot(teros_data, aes(Timestamp, EC, group = Data_Table_ID, color = Plot)) +
   geom_line() +
   facet_wrap(~Data_Logger_ID)
 print(p_ec)
@@ -109,7 +109,7 @@ teros_data$EC[ec_outliers] <- NA_real_
 
 # Outlier report
 teros_data %>%
-  mutate(Date = round_date(TIMESTAMP, unit = "month"),
+  mutate(Date = round_date(Timestamp, unit = "month"),
          TSOIL = tsoil_outliers,
          VWC = vwc_outliers,
          EC = ec_outliers) %>%
@@ -130,7 +130,7 @@ print(p_outliers)
 # Calculating daily averages - or do we want to keep the 15-minute data, BBL?
 
 teros_data %>%
-  mutate(Date = as.Date(TIMESTAMP)) %>%
+  mutate(Date = as.Date(Timestamp)) %>%
   group_by(Date, Plot, Data_Logger_ID, Data_Table_ID, Grid_Square, ID, Depth) %>%
   summarise(n = n(),
             meanTSOIL = mean(TSOIL, na.rm = TRUE),

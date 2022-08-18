@@ -10,8 +10,6 @@ library(DT)
 library(readr)
 library(lubridate)
 
-source("../teros_fileread.R", local = TRUE)
-source("../read_sapflow.R", local = TRUE)
 source("../process_sapflow.R", local = TRUE)
 source("../process_teros.R", local = TRUE)
 source("../process_aquatroll.R", local = TRUE)
