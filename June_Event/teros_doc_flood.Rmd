@@ -16,9 +16,28 @@ pacman::p_load(dplyr,
 
 flood_data <- readRDS("./TEMPESTdash/2022_flood/flood_archive.rds")
 
+waters <- read_csv("~/Downloads/TEMPEST_Flood_Waters - Sheet1 (1).csv", col_types = "ccttccccddddddc")
+
 teros_flood <- flood_data$teros
 
 ```
+
+```{r waters-timeline}
+
+waters %>% 
+    mutate(Date = mdy(Date), 
+           Timestamp_Start = ymd_hms(paste(Date, Time_Start)), 
+           Timestamp_End = ymd_hms(paste(Date, Time_End))) %>% 
+    rename(Label_Name = `Label Name`) %>% 
+    select(Timestamp_Start, Timestamp_End, Label_Name, Plot, Type) %>% 
+    ggplot(aes(y = Plot, color = Type)) + 
+    geom_segment(aes(x = Timestamp_Start, xend = Timestamp_End, y = Plot, yend = Plot)) + 
+    theme_minimal() + 
+    geom_point(aes(x = Timestamp_Start)) + 
+    geom_point(aes(x = Timestamp_End)) -> g
+
+```
+
 
 ```{r boxplots, echo = FALSE}
 
