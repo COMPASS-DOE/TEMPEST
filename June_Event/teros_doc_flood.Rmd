@@ -1,0 +1,40 @@
+---
+title: "teros_doc_flood"
+author: "Stephanie Pennington"
+date: "7/14/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+# Load libraries
+pacman::p_load(dplyr,
+               ggplot2,
+               tidyr,
+               readr,
+               lubridate)
+
+flood_data <- readRDS("./TEMPESTdash/2022_flood/flood_archive.rds")
+
+teros_flood <- flood_data$teros
+
+```
+
+```{r boxplots, echo = FALSE}
+
+teros_flood %>% 
+    drop_na(Plot) %>% 
+    ggplot(aes(x = TIMESTAMP, y = value, color = variable)) + 
+    geom_boxplot() +
+    facet_wrap(Plot~variable, scales = "free") + theme_minimal()
+
+```
+
+```{r}
+
+ggplot(teros_flood, aes(x = TIMESTAMP, y = value, color = Plot)) +
+    geom_point() +
+    facet_wrap(Plot~variable)
+
+```
+
