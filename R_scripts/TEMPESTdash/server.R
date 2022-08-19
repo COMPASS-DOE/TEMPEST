@@ -1,26 +1,8 @@
 # This is the server of the TEMPEST data dashboard
 # June 2022
 
-library(dplyr)
-library(shiny)
-library(DT)
-library(readr)
-library(rdrop2)
-library(dygraphs)
-library(xts)
-library(shinybusy)
-
 source("global.R")
 source("flag_sensors.R")
-
-# The server normally accesses the SERC Dropbox to download data
-# If we are TESTING, however, skip this and use local test data only
-if(!TESTING) {
-    datadir <- "TEMPEST_PNNL_Data/Current_Data"
-    token <- readRDS("droptoken.rds")
-    cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
-}
-last_update <- NA
 
 server <- function(input, output) {
 
@@ -414,7 +396,6 @@ server <- function(input, output) {
 
         reactive_df()$battery %>%
             select(Timestamp, BattV_Avg, Plot, Logger) %>%
-            filter(Timestamp > "2022-06-13", Timestamp < "2022-07-01") %>%
             group_by(Plot, Logger) %>%
             distinct() %>%
             slice_tail(n = 10) %>%

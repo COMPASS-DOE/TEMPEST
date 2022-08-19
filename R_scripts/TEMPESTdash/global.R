@@ -9,12 +9,26 @@ library(shiny)
 library(DT)
 library(readr)
 library(lubridate)
+library(rdrop2)
+library(dygraphs)
+library(xts)
+library(shinybusy)
 
-source("../process_sapflow.R", local = TRUE)
-source("../process_teros.R", local = TRUE)
-source("../process_aquatroll.R", local = TRUE)
+source("process_sapflow.R")
+source("process_teros.R")
+source("process_aquatroll.R")
 
 TESTING <- FALSE
+
+
+# The server normally accesses the SERC Dropbox to download data
+# If we are TESTING, however, skip this and use local test data only
+if(!TESTING) {
+    datadir <- "TEMPEST_PNNL_Data/Current_Data"
+    token <- readRDS("droptoken.rds")
+    cursor <- drop_dir(datadir, cursor = TRUE, dtoken = token)
+}
+last_update <- NA
 
 GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
