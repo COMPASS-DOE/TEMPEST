@@ -14,3 +14,4 @@ R_scripts/TDash/tempfile.dat
 R_scripts/TEMPESTdash/tempfile.dat
 R_scripts/TEMPESTdash/tempfile.dat
 *.dat
+*.rds
