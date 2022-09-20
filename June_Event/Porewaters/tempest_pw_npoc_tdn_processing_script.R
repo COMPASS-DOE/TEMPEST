@@ -1,9 +1,9 @@
 ## This script imports raw data for NPOC and TDN measured using a Shimadzu TOC-L
 ## at PNNL MCRL and exports clean, Level 0B QC'ed data. 
-## Data are read in from GitHub
+## Raw Data are read in from GitHub
 ## 
 ## Created: 2022-01-15 by Peter Regier for EXCHANGE
-## Updated: 2022-08-04 by Allison Myers-Pigg for TEMPEST
+## Updated: 2022-09-20 by Allison Myers-Pigg for TEMPEST
 ## 
 ##
 # #############
