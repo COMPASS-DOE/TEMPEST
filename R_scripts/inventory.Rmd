@@ -138,7 +138,7 @@ inv_long %>%
 
 ```{r bad-data}
 inv_long %>% 
-    filter(!Status %in% c("LI", "DS", "DC")) %>% 
+    filter(!Status %in% c("LI", "DS", "DC", "DN")) %>% 
     knitr::kable(caption = "Bad status")
 
 inv_long %>% 
@@ -195,8 +195,8 @@ species_mix %>%
               .groups = "drop") ->
     plot_totals
 
-ggplot(plot_totals, aes(Year, BA, color = Plot, group = Plot)) + geom_point() + geom_line()
-ggplot(plot_totals, aes(Year, n, color = Plot, group = Plot)) + geom_point() + geom_line()
+ggplot(plot_totals, aes(Year, BA, color = Plot, group = Plot)) + geom_point() + geom_line() + ggtitle("Live basal area")
+ggplot(plot_totals, aes(Year, n, color = Plot, group = Plot)) + geom_point() + geom_line() + ggtitle("Live number of trees")
 ```
 
 
