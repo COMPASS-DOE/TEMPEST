@@ -24,7 +24,7 @@ theme_set(theme_bw())
 
 ```{r process-inventory}
 inv <- read_csv("../Data/tree_inventory/inventory.csv",
-                col_types = "ccdcdDccdDcDdcDdclcc")
+                col_types = "ccdcdDccdDcDdcDdcDdclcc")
 
 genera <- read_csv("../Data/tree_inventory/species-genera.csv", 
                    col_types = "cc")
