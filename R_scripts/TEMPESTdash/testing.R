@@ -1,10 +1,11 @@
 
-PLOT <- "Fresh"
+PLOT <- "Salt"
 
 library(tibble)
 
 # The TEMPEST plots are all oriented slightly differently, and have different
-# layouts in terms of how the A-J and 1-8 axes are set up:
+# layouts in terms of how the A-J and 1-8 axes are set up, orientation wrt
+# magnetic north, and color of stakes:
 plot_info <- tribble(
     ~plot,     ~lower_left, ~upper_left, ~north_degrees, ~color,
     "Control", "A8",        "A1",         -50,            "green",
