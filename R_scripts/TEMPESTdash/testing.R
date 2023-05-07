@@ -1,5 +1,7 @@
 
-PLOT <- "Salt"
+PLOT <- "Fresh"
+show_rose <- TRUE
+show_trees <- TRUE
 
 library(tibble)
 
@@ -29,9 +31,9 @@ if(substr(pinfo$lower_left, 2, 2) != "1") {
 }
 
 library(ggplot2)
-theme_set(theme_bw())
 
 p <- ggplot(plot_dat, aes(x, y)) + ggtitle(PLOT) + geom_point(color = "white") +
+    theme_bw() +
     theme(axis.title = element_blank(),
           axis.text = element_text(face = "bold", size = 16),
           plot.title = element_text(face = "bold", size = 16))
@@ -41,19 +43,37 @@ if(substr(pinfo$lower_left, 1, 1) != substr(pinfo$upper_left, 1, 1)) {
     p <- p + coord_flip()
 }
 
-# Add a compass rose, rotated correctly to show magnetic north
-library(magick)
-library(cowplot)
-rose_file <- "TEMPESTdash/plot_plots/compass-rose.png"
+if(show_rose) {
+    # Add a compass rose, rotated correctly to show magnetic north
+    library(magick)
+    library(cowplot)
+    rose_file <- "TEMPESTdash/plot_plots/compass-rose.png"
 
-# Rotate the image and make its background transparent
-img <- magick::image_rotate(
-    magick::image_read(rose_file),
-    degrees = pinfo$north_degrees
-)
+    # Rotate the image and make its background transparent
+    img <- magick::image_rotate(
+        magick::image_read(rose_file),
+        degrees = pinfo$north_degrees
+    )
 
-# Draw into plot
-img <- magick::image_transparent(img, color = "white")
-p <- p + draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
+    # Draw into plot
+    img <- magick::image_transparent(img, color = "white")
+    p <- p + cowplot::draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
+}
+
+if(show_trees) {
+    # Trees
+    library(dplyr)
+    readr::read_csv("../Data/tree_inventory/inventory.csv") %>%
+        filter(In_Plot, Status_2023 %in% c("LI", "DS")) %>%
+        select(Plot, Grid, Species_code, Tag, DBH_2023) %>%
+        filter(Plot == PLOT) %>%
+        mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
+        inv
+
+    p <- p + geom_jitter(data = inv, aes(color = Species_code, size = DBH_2023), pch = 1) +
+        guides(size = "none")
+}
+
 
 print(p)
+
