@@ -3,6 +3,7 @@
 
 source("global.R")
 source("flag_sensors.R")
+source("maps.R")
 
 server <- function(input, output) {
 
@@ -405,6 +406,10 @@ server <- function(input, output) {
             ungroup() %>%
             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
             datatable()
+    })
+
+    output$map <- renderPlot({
+        make_plot_map(input$map_plot, map_items = input$mapitems)
     })
 
 

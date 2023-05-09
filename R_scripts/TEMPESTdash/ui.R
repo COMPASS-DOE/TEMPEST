@@ -117,7 +117,20 @@ ui <- dashboardPage(
                 # textOutput("number")
             ),
             tabItem(
-                tabName = "maps"
+                tabName = "maps",
+                selectInput("map_plot",
+                            "Plot:",
+                            choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
+                            selected = "Control"),
+                checkboxGroupInput("mapitems", "Data to show",
+                                   choices = c("Sapflow status" = "map_sapflow",
+                                     "TEROS status" = "map_teros",
+                                     "Aquatroll status" = "map_aquatroll",
+                                     "Tree locations" = "map_trees",
+                                     "Compass rose" = "map_rose"),
+                                   selected = c("map_rose"),
+                                   inline = TRUE),
+                plotOutput("map", height = "600px")
             )#,
             # tabItem(
             #     tabName = "alerts",
