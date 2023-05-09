@@ -134,11 +134,14 @@ server <- function(input, output) {
 
     observeEvent(autoInvalidate(), {
 
-        update_progress("circle", {
-            round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
-                                      EVENT_START,
-                                      units = "hours")) / EVENT_HOURS, 2)
-        })
+        circleval <- round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
+                                               EVENT_START,
+                                               units = "hours")) / EVENT_HOURS, 2)
+
+        # Don't show a flood progress indicator if too far beyond the end
+        if(circleval > 1.05) circleval <- NA
+
+        update_progress("circle", circleval)
     })
 
     output$sapflow_bad_sensors <- DT::renderDataTable({

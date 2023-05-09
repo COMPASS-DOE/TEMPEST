@@ -24,6 +24,7 @@ ui <- dashboardPage(
             menuItem("TEROS", tabName = "teros", icon = icon("temperature-high")),
             menuItem("AquaTroll", tabName = "troll", icon = icon("water")),
             menuItem("Battery", tabName = "battery", icon = icon("car-battery")),
+            menuItem("Maps", tabName = "maps", icon = icon("map-location-dot")),
             menuItem("Alerts", tabName = "alerts", icon = icon("comment-dots"))
         )
     ),
@@ -45,8 +46,8 @@ ui <- dashboardPage(
                                            color = "#00B0CA", stroke_width = 15,
                                            trail_color = "#BBE7E6"),
                            tags$h3("Flood Progress", align = "center")
-                           ),
-                    column(6,
+                    ),
+                    column(width = 6,
                            tabBox(width = 12,
                                   tabPanel(
                                       title = "Sapflow",
@@ -65,56 +66,59 @@ ui <- dashboardPage(
                                       title = "Battery",
                                       dataTableOutput("batt_bad_sensors")
                                   )
-                                  )
-
                            )
+
+                    )
                 ),
                 fluidRow(
-                           tabBox(width = 12,
-                                  tabPanel(
-                                      title = "Sapflow",
-                                      plotlyOutput("sapflow_plot", height = "400px")
-                                  ),
-                                  tabPanel(
-                                      title = "TEROS",
-                                      plotlyOutput("teros_plot", height = "400px")
-                                  ),
-                                  tabPanel(
-                                      title = "AquaTroll",
-                                      plotlyOutput("aquatroll_plot", height = "400px")
-                                  ),
-                                  tabPanel(
-                                      title = "Battery",
-                                      plotlyOutput("battery_plot", height = "400px")
-                                  )
+                    tabBox(width = 12,
+                           tabPanel(
+                               title = "Sapflow",
+                               plotlyOutput("sapflow_plot", height = "400px")
+                           ),
+                           tabPanel(
+                               title = "TEROS",
+                               plotlyOutput("teros_plot", height = "400px")
+                           ),
+                           tabPanel(
+                               title = "AquaTroll",
+                               plotlyOutput("aquatroll_plot", height = "400px")
+                           ),
+                           tabPanel(
+                               title = "Battery",
+                               plotlyOutput("battery_plot", height = "400px")
                            )
+                    )
                 )
 
             ),
-                      tabItem(
-                          tabName = "sapflow",
-                          DT::dataTableOutput("sapflow_table"),
-                          selectInput("plot",
-                                      "Plot:",
-                                      choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
-                                      selected = "Freshwater"),
-                          plotlyOutput("sapflow_detail_graph")
-                      ),
-                      tabItem(
-                          tabName = "teros",
-                          dataTableOutput("teros_table")
-                      ),
-                      tabItem(
-                          tabName = "aquatroll",
-                          dataTableOutput("troll600_table"),
-                          dataTableOutput("troll200_table")
-                      ),
-                      tabItem(
-                          tabName = "battery",
-                          dataTableOutput("btable")#,
-                          # actionButton("press", "press me"),
-                          # textOutput("number")
-                      )#,
+            tabItem(
+                tabName = "sapflow",
+                DT::dataTableOutput("sapflow_table"),
+                selectInput("plot",
+                            "Plot:",
+                            choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
+                            selected = "Freshwater"),
+                plotlyOutput("sapflow_detail_graph")
+            ),
+            tabItem(
+                tabName = "teros",
+                dataTableOutput("teros_table")
+            ),
+            tabItem(
+                tabName = "aquatroll",
+                dataTableOutput("troll600_table"),
+                dataTableOutput("troll200_table")
+            ),
+            tabItem(
+                tabName = "battery",
+                dataTableOutput("btable")#,
+                # actionButton("press", "press me"),
+                # textOutput("number")
+            ),
+            tabItem(
+                tabName = "maps"
+            )#,
             # tabItem(
             #     tabName = "alerts",
             #     textInput(inputId = "phone-number",
