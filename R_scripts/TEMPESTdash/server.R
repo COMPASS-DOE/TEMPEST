@@ -486,4 +486,22 @@ server <- function(input, output) {
         )
     })
 
-    }
+}
+
+# ------------------ Text alerts -----------------------------
+
+send_alert <- eventReactive(input$txt-alert, {
+
+    # library(gmailr)
+    # gm_auth_configure(path = "PATH TO JSON HERE")
+    # gm_oauth_app()
+
+    text_msg <- gm_mime() %>%
+        gm_to(paste0(input$phone-number, "@", )) %>%
+        gm_from("compassfme.tools@gmail.com") %>%
+        gm_text_body("Gmailr is a very handy package!")
+
+    # need to add how often to send, right now only once
+    gm_send_message(text_msg)
+
+})

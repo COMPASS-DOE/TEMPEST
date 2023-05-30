@@ -134,21 +134,20 @@ ui <- dashboardPage(
                                    selected = c("map_rose"),
                                    inline = TRUE),
                 plotOutput("map", height = "600px")
-            )#,
-            # tabItem(
-            #     tabName = "alerts",
-            #     textInput(inputId = "phone-number",
-            #               label = "Phone number:",
-            #               value = "(301) 555-5555"),
-            #
-            #     # Input: Selector for choosing dataset ----
-            #     selectInput(inputId = "carrier",
-            #                 label = "Select your carrier:",
-            #                 choices = c("Verizon", "AT&T", "T Mobile")),
-            #
-            #     submitButton("Receive Text Alerts")
-            # )
+            ),
+            tabItem(
+                tabName = "alerts",
+                textInput(inputId = "phone-number",
+                          label = "Phone number:",
+                          value = "(301) 555-5555"),
 
+                # Input: Selector for choosing carrier ----
+                selectInput(inputId = "carrier",
+                            label = "Select your carrier:",
+                            choices = c("Verizon", "AT&T", "T Mobile")),
+
+                actionButton("txt-alert","Receive Text Alerts")
+            )
         )
     )
 )
