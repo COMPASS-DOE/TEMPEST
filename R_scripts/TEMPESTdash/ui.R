@@ -103,18 +103,21 @@ ui <- dashboardPage(
             ),
             tabItem(
                 tabName = "teros",
-                dataTableOutput("teros_table")
+                DT::dataTableOutput("teros_table"),
+                selectInput("plot",
+                            "Plot:",
+                            choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
+                            selected = "Freshwater"),
+                plotlyOutput("teros_detail_graph")
             ),
             tabItem(
-                tabName = "aquatroll",
-                dataTableOutput("troll600_table"),
-                dataTableOutput("troll200_table")
+                tabName = "troll",
+                DT::dataTableOutput("troll_table"),
+                plotlyOutput("troll_detail_graph")
             ),
             tabItem(
                 tabName = "battery",
-                dataTableOutput("btable")#,
-                # actionButton("press", "press me"),
-                # textOutput("number")
+                dataTableOutput("btable")
             ),
             tabItem(
                 tabName = "maps",

@@ -298,55 +298,6 @@ server <- function(input, output) {
         plotly::ggplotly(b)
     })
 
-    # output$plotSelector <- renderUI({
-    #
-    # })
-
-
-    #
-    #     output$dataloggerSelector <- renderUI({
-    #
-    #         sapflow_data <- reactive_df()$sapflow
-    #
-    #         pickerInput("logger-filter", "Loggers",
-    #                     choices = unique(sapflow_data$Logger),
-    #                     selected = "11",
-    #                     multiple = TRUE)
-    #     })
-    #
-    #
-    #
-
-    #
-    #     output$sensorSelector <- renderUI({
-    #         autoInvalidate()
-    #         sapflow_data <- reactive_df()$sapflow
-    #
-    #         pickerInput("sensor", "Sensor",
-    #                     choices = unique(sapflow_data$Tree_Code),
-    #                     selected = "F11",
-    #                     multiple = TRUE)
-    #     })
-    #
-    #     output$plotSelectorT <- renderUI({
-    #         autoInvalidate()
-    #         teros_data <- reactive_df()$teros
-    #
-    #         selectInput("tPlot", "Plot:",
-    #                     choices = unique(substr(teros_data$Plot, 1, 1)),
-    #                     selected = "C")
-    #     })
-    #
-
-    # output$plotSelector <- renderUI({
-    #     sapflow_data <- reactive_df()$sapflow
-    #
-    #     selectInput("plot",
-    #                 "Plot:",
-    #                 choices = unique(sapflow_data$Plot),
-    #                 selected = "Freshwater")
-    # })
-
     output$sapflow_table <- DT::renderDataTable(datatable({
         autoInvalidate()
 
@@ -385,14 +336,105 @@ server <- function(input, output) {
             group_by(ID, variable) %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
-            select(Timestamp, ID, value, Logger, Grid_Square) %>%
-            pivot_wider(id_cols = c("variable", "ID"), names_from = "Timestamp", values_from = "value")
+            select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+            pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value")
         #}
     })
 
-    observeEvent(input$press, {
-        output$number <- print("testing")
-        #print(input$btable_rows_selected)
+    output$teros_detail_graph <- renderPlotly({
+
+        if(length(input$teros_table_rows_selected)) {
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
+
+            reactive_df()$teros %>%
+                group_by(ID, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+                pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value") %>%
+                slice(input$teros_table_rows_selected) %>%
+                select(variable, ID) ->
+                tsensor_selected
+
+            reactive_df()$teros %>%
+                filter(ID %in% tsensor_selected$ID, variable %in% tsensor_selected$variable) %>%
+                ggplot(aes(Timestamp, value, group = interaction(ID, variable), color = ID)) +
+                geom_line() +
+                xlab("") +
+                xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
+    })
+
+    output$troll_table <- renderDataTable({
+        autoInvalidate()
+
+        reactive_df()$aquatroll_200 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") %>%
+            group_by(Well_Name, variable) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
+            select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) -> aq200_long
+
+        reactive_df()$aquatroll_600 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+            group_by(Well_Name, variable) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
+            select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) %>%
+            bind_rows(aq200_long) -> trolls
+
+        trolls %>%
+            pivot_wider(id_cols = c("Well_Name", "variable", "Plot", "Instrument"), names_from = "Timestamp", values_from = "value")
+    })
+
+    output$troll_detail_graph <- renderPlotly({
+        if(length(input$troll_table_rows_selected)) {
+
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
+
+            reactive_df()$aquatroll_200 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") -> aq200
+
+            reactive_df()$aquatroll_600 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+                bind_rows(aq200) -> full_trolls_long
+
+            reactive_df()$aquatroll_200 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") %>%
+                group_by(Well_Name, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) -> aq200_long
+
+            reactive_df()$aquatroll_600 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+                group_by(Well_Name, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) %>%
+                bind_rows(aq200_long) -> trolls
+
+            trolls %>%
+                pivot_wider(id_cols = c("Well_Name", "variable", "Plot", "Instrument"), names_from = "Timestamp", values_from = "value") %>%
+                slice(input$troll_table_rows_selected) %>%
+                select(variable, Well_Name) ->
+                aqsensor_selected
+
+            full_trolls_long %>%
+                filter(Well_Name %in% aqsensor_selected$Well_Name, variable %in% aqsensor_selected$variable) %>%
+                ggplot(aes(Timestamp, value, group = interaction(Well_Name, variable), color = Well_Name)) +
+                geom_line() +
+                xlab("") +
+                xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
     })
 
     output$btable <- DT::renderDataTable({
