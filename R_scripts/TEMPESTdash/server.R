@@ -38,9 +38,21 @@ server <- function(input, output) {
         # Do limits testing and compute data needed for badges
         sapflow %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            sapflow_filtered
+
+        sapflow_filtered %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
+
+        sapflow_filtered %>%
+            mutate(bad_sensor = which_outside_limits(Value,
+                                                     left_limit = SAPFLOW_RANGE[1],
+                                                     right_limit = SAPFLOW_RANGE[2])) %>%
+            filter(bad_sensor) %>%
+            select(Plot, Tree_Code, Logger, Grid_Square) %>%
+            distinct(Tree_Code, Logger, .keep_all = TRUE) ->
+            sapflow_bad_sensors
 
         sapflow %>%
             group_by(Tree_Code) %>%
@@ -115,8 +127,10 @@ server <- function(input, output) {
 
         # Return data and badge information
         list(sapflow = sapflow,
+             sapflow_filtered = sapflow_filtered,
              sapflow_bdg = sapflow_bdg,
              sapflow_table_data = sapflow_table_data,
+             sapflow_bad_sensors = sapflow_bad_sensors,
 
              teros = teros,
              teros_bad_sensors = teros_bad_sensors,
@@ -412,6 +426,8 @@ server <- function(input, output) {
         make_plot_map(plot_name = input$map_plot,
                       map_rose = input$map_rose,
                       map_items = input$mapitems,
+                      sapflow_data = reactive_df()$sapflow_filtered,
+                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
                       teros_data = reactive_df()$teros,
                       teros_bad_sensors = reactive_df()$teros_bad_sensors)
     })

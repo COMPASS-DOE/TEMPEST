@@ -21,12 +21,15 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
 # Main plotting function
 make_plot_map <- function(plot_name, map_rose,
                           map_items,
-                          teros_data,
-                          teros_bad_sensors # TEROS data loaded by the reactive d.f.
+                          sapflow_data,
+                          sapflow_bad_sensors,
+                          teros_data, # TEROS data loaded by the reactive d.f.
+                          teros_bad_sensors
 ) {
     show_rose <- map_rose
     show_trees <- "map_trees" %in% map_items
     show_teros <- "map_teros" %in% map_items
+    show_sapflow <- "map_sapflow" %in% map_items
 
     # Construct plotting grid, flipping things around as needed
     plot_dat <- expand.grid(plot = plot_name,
@@ -83,6 +86,7 @@ make_plot_map <- function(plot_name, map_rose,
         teros_data %>%
             distinct(Plot, ID, Grid_Square) %>%
             filter(Plot == plot_name) %>%
+            filter(!ID %in% tbs$ID) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             td
 
@@ -93,6 +97,33 @@ make_plot_map <- function(plot_name, map_rose,
             geom_label(data = tbs,
                        position = position_jitter(seed = 1234),
                        aes(label = ID), color = "red", fontface = "bold")
+    }
+
+    if(show_sapflow) {
+        # Trees
+        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
+
+        # Note to self: ideally we would merge the sapflow data with tree inventory
+        # data, so as to plot trees at the same time. But I'm not sure where the
+        # sapflow ID -> tree tag mapping is
+
+        sapflow_bad_sensors %>%
+            filter(Plot == plot_name) %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            sbs
+        sapflow_data %>%
+            distinct(Plot, Tree_Code, Grid_Square) %>%
+            filter(Plot == plot_name) %>%
+            filter(!Tree_Code %in% sbs$Tree_Code) %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            sd
+        p <- p + geom_text(data = sd,
+                          position = position_jitter(seed = 1234),
+                          aes(label = Tree_Code), color = "green") +
+            # We draw bad sensors second, so they're on top of the good sensors
+            geom_label(data = sbs,
+                       position = position_jitter(seed = 1234),
+                       aes(label = Tree_Code), color = "red", fontface = "bold")
     }
 
     if(show_trees) {
