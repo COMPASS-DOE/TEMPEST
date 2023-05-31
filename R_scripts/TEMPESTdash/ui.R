@@ -9,6 +9,8 @@ library(dygraphs)
 library(shinyWidgets)
 library(dygraphs)
 library(shinybusy)
+library(shinyalert)
+library(gmailr)
 
 ui <- dashboardPage(
 
@@ -78,7 +80,7 @@ ui <- dashboardPage(
                            ),
                            tabPanel(
                                title = "TEROS",
-                               plotlyOutput("teros_plot", height = "400px")
+                               plotlyOutput("teros_plot")
                            ),
                            tabPanel(
                                title = "AquaTroll",
@@ -137,16 +139,16 @@ ui <- dashboardPage(
             ),
             tabItem(
                 tabName = "alerts",
-                textInput(inputId = "phone-number",
+                textInput(inputId = "phone_number",
                           label = "Phone number:",
-                          value = "(301) 555-5555"),
+                          placeholder = "301-555-5555"),
 
                 # Input: Selector for choosing carrier ----
                 selectInput(inputId = "carrier",
                             label = "Select your carrier:",
-                            choices = c("Verizon", "AT&T", "T Mobile")),
+                            choices = c("Verizon", "AT&T", "T-Mobile", "Sprint")),
 
-                actionButton("txt-alert","Receive Text Alerts")
+                actionButton("txt_alert","Receive Text Alerts")
             )
         )
     )

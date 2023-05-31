@@ -31,7 +31,7 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp) %>%
                 summarise(BattV_Avg = mean(BattV_Avg), .groups = "drop") ->
                 battery
-        }
+       }
 
         latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
@@ -146,6 +146,7 @@ server <- function(input, output) {
     })
 
     output$sapflow_bad_sensors <- DT::renderDataTable({
+
         reactive_df()$sapflow %>%
             filter(Timestamp > with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < with_tz(Sys.time(), tzone = "EST")) -> sapflow
@@ -244,27 +245,32 @@ server <- function(input, output) {
         # variables, in which case the badge status computation would be like
         # that of TEROS
         # This graph is shown when users click the "Battery" tab on the dashboard
-        aquatroll <- reactive_df()$aquatroll_temp
+        reactive_df()$aquatroll_200 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") -> aq200
 
-        if(nrow(aquatroll) > 1) {
+        reactive_df()$aquatroll_600 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+            bind_rows(aq200) -> full_trolls_long
+
+        if(nrow(full_trolls_long) > 1) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
-            aquatroll %>%
+            full_trolls_long %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
-                group_by(Logger_ID, Well_Name, Timestamp_rounded) %>%
+                group_by(Logger_ID, Well_Name, Timestamp_rounded, variable) %>%
                 summarise(Well_Name = Well_Name,
-                          Temp = mean(Temp, na.rm = TRUE), .groups = "drop") %>%
-                ggplot(aes(Timestamp_rounded, Temp, color = Logger_ID, group = Well_Name)) +
-                annotate("rect", fill = "#BBE7E6", alpha = 0.7,
-                         xmin = EVENT_START, xmax = EVENT_STOP,
-                         ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
-                geom_line() +
+                          value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+                ggplot(aes(Timestamp_rounded, value, color = Well_Name)) +
+                geom_line() + facet_wrap(~variable, scales = "free") +
+                # annotate("rect", fill = "#BBE7E6", alpha = 0.7,
+                #          xmin = EVENT_START, xmax = EVENT_STOP,
+                #          ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
                 xlab("") +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
-                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, color = "grey", linetype = 2)  ->
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
+
         } else {
             b <- NO_DATA_GRAPH
         }
@@ -486,22 +492,38 @@ server <- function(input, output) {
         )
     })
 
-}
-
 # ------------------ Text alerts -----------------------------
 
-send_alert <- eventReactive(input$txt-alert, {
+    observeEvent(input$txt_alert, {
 
-    # library(gmailr)
-    # gm_auth_configure(path = "PATH TO JSON HERE")
-    # gm_oauth_app()
 
-    text_msg <- gm_mime() %>%
-        gm_to(paste0(input$phone-number, "@", )) %>%
-        gm_from("compassfme.tools@gmail.com") %>%
-        gm_text_body("Gmailr is a very handy package!")
+        # gm_auth_configure(path = "PATH TO JSON HERE")
+        # gm_oauth_app()
 
-    # need to add how often to send, right now only once
-    gm_send_message(text_msg)
+        carrier_email <- if(input$carrier == "Verizon") {
+            carrier_email <- "@vtext.com"
+        } else if(input$carrier == "AT&T") {
+            carrier_email <- "@txt.att.net"
+        } else if(input$carrier == "Sprint") {
+            carrier_email <- "@messaging.sprintpcs.com"
+        } else if(input$carrier == "T-Mobile") {
+            carrier_email <- "@tmomail.net"
+        }
 
-})
+        phone_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
+
+        text_msg <- gm_mime() %>%
+            gm_to(paste0(phone_number, carrier_email)) %>%
+            gm_from("compassfme.tools@gmail.com") %>%
+            gm_text_body("Gmailr is a very handy package!")
+
+        # need to add how often to send, right now only once
+        gm_send_message(text_msg)
+
+        shinyalert("Message sent", type = "success")
+
+    })
+
+
+
+}
