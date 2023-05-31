@@ -11,7 +11,13 @@ plot_info <- tribble(
     "Seawater",   "Salt",          "J1",        "A1",         -25,           "red"
 )
 
+# Tree data - read it only once
+readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
+    filter(In_Plot, Status_2023 %in% c("LI", "DS")) %>%
+    select(Plot, Grid, Species_code, Tag, DBH_2023) ->
+    map_tree_data
 
+# Main plotting function
 make_plot_map <- function(plot_name, map_rose,
                           map_items,
                           teros_data,
@@ -21,6 +27,7 @@ make_plot_map <- function(plot_name, map_rose,
     show_trees <- "map_trees" %in% map_items
     show_teros <- "map_teros" %in% map_items
 
+    # Construct plotting grid, flipping things around as needed
     plot_dat <- expand.grid(plot = plot_name,
                             x = as.factor(LETTERS[1:10]),
                             y = as.factor(1:8))
@@ -36,8 +43,8 @@ make_plot_map <- function(plot_name, map_rose,
         plot_dat$y <- factor(plot_dat$y, levels = rev(levels(plot_dat$y)))
     }
 
+    # Set up initial plot
     library(ggplot2)
-
     p <- ggplot(plot_dat, aes(x, y)) + ggtitle(plot_name) + geom_point(color = "white") +
         theme_bw() +
         theme(axis.title = element_blank(),
@@ -67,6 +74,7 @@ make_plot_map <- function(plot_name, map_rose,
     }
 
     if(show_teros) {
+        # Filter the sensors and bad sensors for the current plot and visualize
         teros_bad_sensors %>%
             filter(Plot == plot_name) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
@@ -78,9 +86,9 @@ make_plot_map <- function(plot_name, map_rose,
             td
 
         p <- p + geom_text(data = td,
-                            position = position_jitter(seed = 1234),
-                            aes(label = ID), color = "green") +
-            # We do bad sensors second, so they're drawn on top of the good sensors
+                           position = position_jitter(seed = 1234),
+                           aes(label = ID), color = "green") +
+            # We draw bad sensors second, so they're on top of the good sensors
             geom_label(data = tbs,
                        position = position_jitter(seed = 1234),
                        aes(label = ID), color = "red", fontface = "bold")
@@ -88,15 +96,13 @@ make_plot_map <- function(plot_name, map_rose,
 
     if(show_trees) {
         # Trees
-        library(dplyr)
-        readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
-            filter(In_Plot, Status_2023 %in% c("LI", "DS")) %>%
-            select(Plot, Grid, Species_code, Tag, DBH_2023) %>%
+        map_tree_data %>%
             filter(Plot == pinfo$inventory_name) %>%
             mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
             inv
 
-        p <- p + geom_jitter(data = inv, aes(color = Species_code, size = DBH_2023), pch = 1) +
+        p <- p + geom_jitter(data = inv, seed = 1234,
+                             aes(color = Species_code, size = DBH_2023), pch = 1) +
             guides(size = "none")
     }
 
