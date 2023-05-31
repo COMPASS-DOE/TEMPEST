@@ -76,8 +76,9 @@ server <- function(input, output) {
                                                      right_limit = high[1]),
                    .keep = "all") %>%
             filter(bad_sensor) %>%
-            select(ID, Logger, Grid_Square) %>%
-            distinct(ID, Logger) -> teros_bad_sensors
+            select(Plot, ID, Logger, Grid_Square) %>%
+            distinct(ID, Logger, .keep_all = TRUE) ->
+            teros_bad_sensors
 
         # Aquatroll is similar: one badge, two datasets
         aquatroll$aquatroll_600 %>%
@@ -387,7 +388,6 @@ server <- function(input, output) {
             ungroup() %>%
             select(Timestamp, ID, value, Logger, Grid_Square) %>%
             pivot_wider(id_cols = c("variable", "ID"), names_from = "Timestamp", values_from = "value")
-        #}
     })
 
     observeEvent(input$press, {
@@ -409,7 +409,11 @@ server <- function(input, output) {
     })
 
     output$map <- renderPlot({
-        make_plot_map(input$map_plot, map_items = input$mapitems)
+        make_plot_map(plot_name = input$map_plot,
+                      map_rose = input$map_rose,
+                      map_items = input$mapitems,
+                      teros_data = reactive_df()$teros,
+                      teros_bad_sensors = reactive_df()$teros_bad_sensors)
     })
 
 

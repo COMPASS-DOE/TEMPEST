@@ -12,9 +12,14 @@ plot_info <- tribble(
 )
 
 
-make_plot_map <- function(plot_name, map_items) {
-    show_rose <- "map_rose" %in% map_items
+make_plot_map <- function(plot_name, map_rose,
+                          map_items,
+                          teros_data,
+                          teros_bad_sensors # TEROS data loaded by the reactive d.f.
+) {
+    show_rose <- map_rose
     show_trees <- "map_trees" %in% map_items
+    show_teros <- "map_teros" %in% map_items
 
     plot_dat <- expand.grid(plot = plot_name,
                             x = as.factor(LETTERS[1:10]),
@@ -59,6 +64,26 @@ make_plot_map <- function(plot_name, map_items) {
         # Draw into plot
         img <- magick::image_transparent(img, color = "white")
         p <- p + cowplot::draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
+    }
+
+    if(show_teros) {
+        teros_bad_sensors %>%
+            filter(Plot == plot_name) %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            tbs
+        teros_data %>%
+            distinct(Plot, ID, Grid_Square) %>%
+            filter(Plot == plot_name) %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            td
+
+        p <- p + geom_text(data = td,
+                            position = position_jitter(seed = 1234),
+                            aes(label = ID), color = "green") +
+            # We do bad sensors second, so they're drawn on top of the good sensors
+            geom_label(data = tbs,
+                       position = position_jitter(seed = 1234),
+                       aes(label = ID), color = "red", fontface = "bold")
     }
 
     if(show_trees) {
