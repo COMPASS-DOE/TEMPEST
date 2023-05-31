@@ -14,7 +14,8 @@ plot_info <- tribble(
 # Tree data - read it only once
 readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
     filter(In_Plot, Status_2023 %in% c("LI", "DS")) %>%
-    select(Plot, Grid, Species_code, Tag, DBH_2023) ->
+    select(Plot, Grid, Species_code, Tag, DBH_2023) %>%
+    mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
     map_tree_data
 
 # Main plotting function
@@ -96,13 +97,12 @@ make_plot_map <- function(plot_name, map_rose,
 
     if(show_trees) {
         # Trees
-        map_tree_data %>%
-            filter(Plot == pinfo$inventory_name) %>%
-            mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
-            inv
+        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
 
-        p <- p + geom_jitter(data = inv, seed = 1234,
-                             aes(color = Species_code, size = DBH_2023), pch = 1) +
+        p <- p + geom_point(data = inv,
+                            position = position_jitter(seed = 1234),
+                            na.rm = TRUE,
+                            aes(color = Species_code, size = DBH_2023), pch = 1) +
             guides(size = "none")
     }
 
