@@ -134,8 +134,8 @@ ui <- dashboardPage(
                               inline = TRUE),
                 plotOutput("status_map", height = "600px"),
                 selectInput("data_map_variable",
-                            "Variable:",
-                            choices = c("TSOIL", "VWC", "EC", "xxx"),
+                            "TEROS variable:",
+                            choices = c("TSOIL", "VWC", "EC"),
                             selected = "VWC"),
                 plotOutput("data_map", height = "600px")
             )#,

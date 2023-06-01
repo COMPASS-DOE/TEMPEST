@@ -18,6 +18,10 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
     mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
     map_tree_data
 
+# Mapping from sapflow to trees
+sapflow_inv <- readr::read_csv("../../Design/sapflow_inventory.csv") %>%
+    select(Tree_Code, Tag)
+
 # Do the compass rose transparency and rotation calculations (plot-specific) once and store
 library(magick)
 library(cowplot)
@@ -83,13 +87,12 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
         p <- p + cowplot::draw_image(roses[[plot_name]], x = 5, y = 4, scale = 8) # centered, easy
     }
 
+    inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
     if(show_trees) {
         # Trees
-        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
-
         p <- p + geom_point(data = inv,
-                            position = position_jitter(seed = 1234),
                             na.rm = TRUE,
+                            position = position_jitter(seed = 1234),
                             aes(size = DBH_2023), pch = 1) +
             guides(size = "none")
     }
@@ -109,11 +112,13 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
             td
 
         p <- p + geom_text(data = td,
+                           na.rm = TRUE,
                            position = position_jitter(seed = 1234),
                            aes(label = ID), color = "green")
 
         # We draw bad sensors second, so they're on top of the good sensors
         p <- p + geom_label(data = tbs,
+                            na.rm = TRUE,
                             position = position_jitter(seed = 1234),
                             aes(label = ID), color = "red", fontface = "bold")
     }
@@ -128,6 +133,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
             td
         p <- p + ggtitle(paste(plot_name, unique(td$Timestamp)))
         p <- p + geom_point(data = td,
+                            na.rm = TRUE,
                             position = position_jitter(seed = 1234),
                             aes(color = value, shape = variable), size = 6) +
             facet_wrap(~variable)
@@ -149,16 +155,39 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
             distinct(Plot, Tree_Code, Grid_Square) %>%
             filter(Plot == plot_name, !Tree_Code %in% sbs$Tree_Code) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
-            sd
-        p <- p + geom_text(data = sd,
+            sdat
+        p <- p + geom_text(data = sdat,
+                           na.rm = TRUE,
                            position = position_jitter(seed = 1234),
                            aes(label = Tree_Code), color = "green")
 
         # We draw bad sensors second, so they're on top of the good sensors
         p <- p + geom_label(data = sbs,
+                            na.rm = TRUE,
                             position = position_jitter(seed = 1234),
                             aes(label = Tree_Code), color = "red", fontface = "bold")
 
+    }
+
+    if(show_sapflow && !STATUS_MAP) {
+        # Isolate the latest sapflow data for this plot...
+        sapflow_data %>%
+            # These need to be two separate filter steps, because timestamps can vary between plots
+            filter(Plot == plot_name) %>%
+            filter(Timestamp == max(Timestamp)) %>%
+            select(Timestamp, Tree_Code, Grid_Square, Value) %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            sdat
+        # ...and join with tree-code-to-tag mapping, and then to inventory data
+        # inv %>%
+        #     left_join(sapflow_inv, by = "Tag") %>%
+        #     left_join(sdat, by = "Tree_Code") ->
+        #     sdat
+        p <- p + ggtitle(paste(plot_name, unique(sdat$Timestamp)))
+        p <- p + geom_point(data = sdat,
+                            na.rm = TRUE,
+                            position = position_jitter(seed = 1234),
+                            aes(color = Value), size = 6)
     }
 
     p
