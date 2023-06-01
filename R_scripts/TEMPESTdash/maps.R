@@ -19,7 +19,7 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
     map_tree_data
 
 # Main plotting function
-make_plot_map <- function(plot_name, map_rose,
+make_plot_map <- function(STATUS_MAP, plot_name, map_rose,
                           map_items,
                           sapflow_data,
                           sapflow_bad_sensors,
@@ -80,7 +80,7 @@ make_plot_map <- function(plot_name, map_rose,
         p <- p + cowplot::draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
     }
 
-    if(show_teros) {
+    if(show_teros && STATUS_MAP) {
         # Filter the sensors and bad sensors for the current plot and visualize
         teros_bad_sensors %>%
             filter(Plot == plot_name) %>%
@@ -102,7 +102,22 @@ make_plot_map <- function(plot_name, map_rose,
                             aes(label = ID), color = "red", fontface = "bold")
     }
 
-    if(show_sapflow) {
+    if(show_teros && !STATUS_MAP) {
+        teros_data %>%
+            # These need to be two separate filter steps, because timestamps can vary between plots
+            filter(Plot == plot_name) %>%
+            filter(Timestamp == max(Timestamp)) %>%
+            #filter(variable == "VWC") %>%
+            mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            td
+        p <- p + ggtitle(paste(plot_name, unique(td$Timestamp)))
+        p <- p + geom_point(data = td,
+                            position = position_jitter(seed = 1234),
+                            aes(color = value, shape = variable), size = 6) +
+            facet_wrap(~variable)
+    }
+
+    if(show_sapflow && STATUS_MAP) {
         # Trees
         inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
 
@@ -130,7 +145,7 @@ make_plot_map <- function(plot_name, map_rose,
 
     }
 
-    if(show_aquatroll) {
+    if(show_aquatroll && STATUS_MAP) {
         # Filter the sensors and bad sensors for the current plot and visualize
         # aquatroll_data %>%
         #     distinct(Plot, ID, Grid_Square) %>%

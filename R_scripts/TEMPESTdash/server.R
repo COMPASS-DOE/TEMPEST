@@ -60,8 +60,8 @@ server <- function(input, output) {
             ungroup() %>%
             select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
             pivot_wider(id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
-                names_from = "Timestamp",
-                values_from = "Value") ->
+                        names_from = "Timestamp",
+                        values_from = "Value") ->
             sapflow_table_data
 
         # TEROS is awkward, because we only have one badge, but three
@@ -120,7 +120,10 @@ server <- function(input, output) {
 
         battery %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            battery_filtered
+
+        battery_filtered %>%
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
@@ -390,7 +393,7 @@ server <- function(input, output) {
             b <- NO_DATA_GRAPH
         }
         plotly::ggplotly(b)
-})
+    })
 
     output$teros_table <- renderDataTable({
         autoInvalidate()
@@ -423,8 +426,9 @@ server <- function(input, output) {
 
     # ------------------ Maps tab -----------------------------
 
-    output$map <- renderPlot({
-        make_plot_map(plot_name = input$map_plot,
+    output$status_map <- renderPlot({
+        make_plot_map(STATUS_MAP = TRUE,
+                      plot_name = input$map_plot,
                       map_rose = input$map_rose,
                       map_items = input$mapitems,
                       sapflow_data = reactive_df()$sapflow_filtered,
@@ -434,7 +438,18 @@ server <- function(input, output) {
                       aquatroll_data = reactive_df()$aquatroll_filtered,
                       aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
     })
-
+    output$data_map <- renderPlot({
+        make_plot_map(STATUS_MAP = FALSE,
+                      plot_name = input$map_plot,
+                      map_rose = input$map_rose,
+                      map_items = input$mapitems,
+                      sapflow_data = reactive_df()$sapflow_filtered,
+                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
+                      teros_data = reactive_df()$teros,
+                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
+                      aquatroll_data = reactive_df()$aquatroll_filtered,
+                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
+    })
 
     # ------------------ Dashboard badges -----------------------------
 
@@ -467,4 +482,4 @@ server <- function(input, output) {
         )
     })
 
-    }
+}

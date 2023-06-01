@@ -133,7 +133,8 @@ ui <- dashboardPage(
                 checkboxInput("map_rose",
                               label = "Show compass rose",
                               value = TRUE),
-                plotOutput("map", height = "600px")
+                plotOutput("status_map", height = "600px"),
+                plotOutput("data_map", height = "600px")
             )#,
             # tabItem(
             #     tabName = "alerts",
