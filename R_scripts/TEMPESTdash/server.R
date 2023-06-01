@@ -428,6 +428,7 @@ server <- function(input, output) {
 
     output$status_map <- renderPlot({
         make_plot_map(STATUS_MAP = TRUE,
+                      data_map_variable = input$data_map_variable,
                       plot_name = input$map_plot,
                       map_rose = input$map_rose,
                       map_items = input$mapitems,
@@ -440,6 +441,7 @@ server <- function(input, output) {
     })
     output$data_map <- renderPlot({
         make_plot_map(STATUS_MAP = FALSE,
+                      data_map_variable = input$data_map_variable,
                       plot_name = input$map_plot,
                       map_rose = input$map_rose,
                       map_items = input$mapitems,

@@ -134,6 +134,10 @@ ui <- dashboardPage(
                               label = "Show compass rose",
                               value = TRUE),
                 plotOutput("status_map", height = "600px"),
+                selectInput("data_map_variable",
+                            "Variable:",
+                            choices = c("TSOIL", "VWC", "EC", "xxx"),
+                            selected = "VWC"),
                 plotOutput("data_map", height = "600px")
             )#,
             # tabItem(

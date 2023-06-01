@@ -19,7 +19,9 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
     map_tree_data
 
 # Main plotting function
-make_plot_map <- function(STATUS_MAP, plot_name, map_rose,
+make_plot_map <- function(STATUS_MAP, data_map_variable,
+                          plot_name,
+                          map_rose,
                           map_items,
                           sapflow_data,
                           sapflow_bad_sensors,
@@ -107,7 +109,7 @@ make_plot_map <- function(STATUS_MAP, plot_name, map_rose,
             # These need to be two separate filter steps, because timestamps can vary between plots
             filter(Plot == plot_name) %>%
             filter(Timestamp == max(Timestamp)) %>%
-            #filter(variable == "VWC") %>%
+            filter(variable == data_map_variable) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             td
         p <- p + ggtitle(paste(plot_name, unique(td$Timestamp)))
