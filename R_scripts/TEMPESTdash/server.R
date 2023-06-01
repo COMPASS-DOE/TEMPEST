@@ -100,11 +100,12 @@ server <- function(input, output) {
         aquatroll$aquatroll_200 %>%
             select(Timestamp, Logger_ID, Well_Name, Temp) %>%
             mutate(Sensor = 200) %>%
-            bind_rows(a600) -> aquatroll_temp
-
-        aquatroll_temp %>%
+            bind_rows(a600) %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            aquatroll_filtered
+
+        aquatroll_filtered %>%
             mutate(bad_sensor = which_outside_limits(Temp,
                                                      left_limit = AQUATROLL_TEMP_RANGE[1],
                                                      right_limit = AQUATROLL_TEMP_RANGE[2])) %>%
@@ -113,9 +114,7 @@ server <- function(input, output) {
             arrange(Well_Name, Logger_ID) ->
             aquatroll_bad_sensors
 
-        aquatroll_temp %>%
-            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+        aquatroll_filtered %>%
             summarise(flag_sensors(Temp, limits = AQUATROLL_TEMP_RANGE)) ->
             aquatroll_bdg
 
@@ -138,7 +137,7 @@ server <- function(input, output) {
 
              aquatroll_600 = aquatroll$aquatroll_600,
              aquatroll_200 = aquatroll$aquatroll_200,
-             aquatroll_temp = aquatroll_temp,
+             aquatroll_filtered = aquatroll_filtered,
              aquatroll_bad_sensors = aquatroll_bad_sensors,
              aquatroll_bdg = aquatroll_bdg,
 
@@ -259,7 +258,7 @@ server <- function(input, output) {
         # variables, in which case the badge status computation would be like
         # that of TEROS
         # This graph is shown when users click the "Battery" tab on the dashboard
-        aquatroll <- reactive_df()$aquatroll_temp
+        aquatroll <- reactive_df()$aquatroll_filtered
 
         if(nrow(aquatroll) > 1) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
@@ -422,6 +421,8 @@ server <- function(input, output) {
             datatable()
     })
 
+    # ------------------ Maps tab -----------------------------
+
     output$map <- renderPlot({
         make_plot_map(plot_name = input$map_plot,
                       map_rose = input$map_rose,
@@ -429,7 +430,9 @@ server <- function(input, output) {
                       sapflow_data = reactive_df()$sapflow_filtered,
                       sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
                       teros_data = reactive_df()$teros,
-                      teros_bad_sensors = reactive_df()$teros_bad_sensors)
+                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
+                      aquatroll_data = reactive_df()$aquatroll_filtered,
+                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
     })
 
 

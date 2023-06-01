@@ -24,12 +24,15 @@ make_plot_map <- function(plot_name, map_rose,
                           sapflow_data,
                           sapflow_bad_sensors,
                           teros_data, # TEROS data loaded by the reactive d.f.
-                          teros_bad_sensors
+                          teros_bad_sensors,
+                          aquatroll_data,
+                          aquatroll_bad_sensors
 ) {
     show_rose <- map_rose
     show_trees <- "map_trees" %in% map_items
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
+    show_aquatroll <- "map_aquatroll" %in% map_items
 
     # Construct plotting grid, flipping things around as needed
     plot_dat <- expand.grid(plot = plot_name,
@@ -85,18 +88,18 @@ make_plot_map <- function(plot_name, map_rose,
             tbs
         teros_data %>%
             distinct(Plot, ID, Grid_Square) %>%
-            filter(Plot == plot_name) %>%
-            filter(!ID %in% tbs$ID) %>%
+            filter(Plot == plot_name, !ID %in% tbs$ID) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             td
 
         p <- p + geom_text(data = td,
                            position = position_jitter(seed = 1234),
-                           aes(label = ID), color = "green") +
-            # We draw bad sensors second, so they're on top of the good sensors
-            geom_label(data = tbs,
-                       position = position_jitter(seed = 1234),
-                       aes(label = ID), color = "red", fontface = "bold")
+                           aes(label = ID), color = "green")
+
+        # We draw bad sensors second, so they're on top of the good sensors
+        p <- p + geom_label(data = tbs,
+                            position = position_jitter(seed = 1234),
+                            aes(label = ID), color = "red", fontface = "bold")
     }
 
     if(show_sapflow) {
@@ -113,17 +116,44 @@ make_plot_map <- function(plot_name, map_rose,
             sbs
         sapflow_data %>%
             distinct(Plot, Tree_Code, Grid_Square) %>%
-            filter(Plot == plot_name) %>%
-            filter(!Tree_Code %in% sbs$Tree_Code) %>%
+            filter(Plot == plot_name, !Tree_Code %in% sbs$Tree_Code) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             sd
         p <- p + geom_text(data = sd,
-                          position = position_jitter(seed = 1234),
-                          aes(label = Tree_Code), color = "green") +
-            # We draw bad sensors second, so they're on top of the good sensors
-            geom_label(data = sbs,
-                       position = position_jitter(seed = 1234),
-                       aes(label = Tree_Code), color = "red", fontface = "bold")
+                           position = position_jitter(seed = 1234),
+                           aes(label = Tree_Code), color = "green")
+
+        # We draw bad sensors second, so they're on top of the good sensors
+        p <- p + geom_label(data = sbs,
+                            position = position_jitter(seed = 1234),
+                            aes(label = Tree_Code), color = "red", fontface = "bold")
+
+    }
+
+    if(show_aquatroll) {
+        # Filter the sensors and bad sensors for the current plot and visualize
+        # aquatroll_data %>%
+        #     distinct(Plot, ID, Grid_Square) %>%
+        #     filter(Plot == plot_name) %>%
+        #     filter(!ID %in% tbs$ID) %>%
+        #     mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+        #     ad
+        #
+        # p <- p + geom_text(data = ad,
+        #                    position = position_jitter(seed = 1234),
+        #                    aes(label = ID), color = "green")
+
+        # We draw bad sensors second, so they're on top of the good sensors
+        if(nrow(aquatroll_bad_sensors)) {
+            # aquatroll_bad_sensors %>%
+            #     filter(Plot == plot_name) %>%
+            #     mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
+            #     abs
+            # p <- p + geom_label(data = abs,
+            #                     position = position_jitter(seed = 1234),
+            #                     aes(label = ID), color = "red", fontface = "bold")
+        }
+
     }
 
     if(show_trees) {
