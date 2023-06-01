@@ -47,6 +47,7 @@ server <- function(input, output) {
             slice_tail(n = 10) %>%
             ungroup() %>%
             select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
+            arrange(desc(Timestamp)) %>%
             pivot_wider(id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
                 names_from = "Timestamp",
                 values_from = "Value") ->
@@ -343,6 +344,7 @@ server <- function(input, output) {
             slice_tail(n = 10) %>%
             ungroup() %>%
             select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+            arrange(desc(Timestamp)) %>%
             pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value")
         #}
     })
@@ -357,6 +359,7 @@ server <- function(input, output) {
                 slice_tail(n = 10) %>%
                 ungroup() %>%
                 select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+                arrange(desc(Timestamp)) %>%
                 pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value") %>%
                 slice(input$teros_table_rows_selected) %>%
                 select(variable, ID) ->
@@ -394,6 +397,7 @@ server <- function(input, output) {
             bind_rows(aq200_long) -> trolls
 
         trolls %>%
+            arrange(desc(Timestamp)) %>%
             pivot_wider(id_cols = c("Well_Name", "variable", "Plot", "Instrument"), names_from = "Timestamp", values_from = "value")
     })
 
@@ -452,6 +456,7 @@ server <- function(input, output) {
             distinct() %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
+            arrange(desc(Timestamp)) %>%
             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
             datatable()
     })
