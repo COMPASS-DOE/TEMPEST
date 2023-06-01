@@ -18,6 +18,18 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
     mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
     map_tree_data
 
+# Do the compass rose transparency and rotation calculations (plot-specific) once and store
+library(magick)
+library(cowplot)
+rose_dat <- magick::image_read("map_data/compass-rose.png")
+roses <- list()
+for(i in seq_len(nrow(plot_info))) {
+    img <- magick::image_rotate(rose_dat,
+                                degrees = plot_info$north_degrees[i]
+    )
+    roses[[plot_info$plot[i]]] <- magick::image_transparent(img, color = "white")
+}
+
 # Main plotting function
 make_plot_map <- function(STATUS_MAP, data_map_variable,
                           plot_name,
@@ -67,20 +79,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
     # Overlays
 
     if(show_rose) {
-        # Add a compass rose, rotated correctly to show magnetic north
-        library(magick)
-        library(cowplot)
-        rose_file <- "map_data/compass-rose.png"
-
-        # Rotate the image and make its background transparent
-        img <- magick::image_rotate(
-            magick::image_read(rose_file),
-            degrees = pinfo$north_degrees
-        )
-
         # Draw into plot
-        img <- magick::image_transparent(img, color = "white")
-        p <- p + cowplot::draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
+        p <- p + cowplot::draw_image(roses[[plot_name]], x = 5, y = 4, scale = 8) # centered, easy
     }
 
     if(show_trees) {
