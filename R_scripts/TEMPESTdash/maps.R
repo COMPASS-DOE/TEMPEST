@@ -21,7 +21,7 @@ readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
 # Main plotting function
 make_plot_map <- function(STATUS_MAP, data_map_variable,
                           plot_name,
-                          map_rose,
+                          map_overlays,
                           map_items,
                           sapflow_data,
                           sapflow_bad_sensors,
@@ -30,11 +30,10 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                           aquatroll_data,
                           aquatroll_bad_sensors
 ) {
-    show_rose <- map_rose
-    show_trees <- "map_trees" %in% map_items
+    show_rose <- "map_rose" %in% map_overlays
+    show_trees <- "map_trees" %in% map_overlays
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
-    show_aquatroll <- "map_aquatroll" %in% map_items
 
     # Construct plotting grid, flipping things around as needed
     plot_dat <- expand.grid(plot = plot_name,
@@ -65,6 +64,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
         p <- p + coord_flip()
     }
 
+    # Overlays
+
     if(show_rose) {
         # Add a compass rose, rotated correctly to show magnetic north
         library(magick)
@@ -81,6 +82,19 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
         img <- magick::image_transparent(img, color = "white")
         p <- p + cowplot::draw_image(img, x = 5, y = 4, scale = 8) # centered, easy
     }
+
+    if(show_trees) {
+        # Trees
+        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
+
+        p <- p + geom_point(data = inv,
+                            position = position_jitter(seed = 1234),
+                            na.rm = TRUE,
+                            aes(size = DBH_2023), pch = 1) +
+            guides(size = "none")
+    }
+
+    # Data layers
 
     if(show_teros && STATUS_MAP) {
         # Filter the sensors and bad sensors for the current plot and visualize
@@ -145,43 +159,6 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                             position = position_jitter(seed = 1234),
                             aes(label = Tree_Code), color = "red", fontface = "bold")
 
-    }
-
-    if(show_aquatroll && STATUS_MAP) {
-        # Filter the sensors and bad sensors for the current plot and visualize
-        # aquatroll_data %>%
-        #     distinct(Plot, ID, Grid_Square) %>%
-        #     filter(Plot == plot_name) %>%
-        #     filter(!ID %in% tbs$ID) %>%
-        #     mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
-        #     ad
-        #
-        # p <- p + geom_text(data = ad,
-        #                    position = position_jitter(seed = 1234),
-        #                    aes(label = ID), color = "green")
-
-        # We draw bad sensors second, so they're on top of the good sensors
-        if(nrow(aquatroll_bad_sensors)) {
-            # aquatroll_bad_sensors %>%
-            #     filter(Plot == plot_name) %>%
-            #     mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
-            #     abs
-            # p <- p + geom_label(data = abs,
-            #                     position = position_jitter(seed = 1234),
-            #                     aes(label = ID), color = "red", fontface = "bold")
-        }
-
-    }
-
-    if(show_trees) {
-        # Trees
-        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
-
-        p <- p + geom_point(data = inv,
-                            position = position_jitter(seed = 1234),
-                            na.rm = TRUE,
-                            aes(color = Species_code, size = DBH_2023), pch = 1) +
-            guides(size = "none")
     }
 
     p
