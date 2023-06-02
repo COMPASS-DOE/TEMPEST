@@ -217,16 +217,19 @@ server <- function(input, output) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
             teros %>%
                 left_join(TEROS_RANGE, by = "variable") %>%
+                # Certain versions of plotly seem to have a bug and produce
+                # a tidyr::pivot error when there's a 'variable' column; rename
+                rename(var = variable) %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
-                group_by(Plot, variable, Logger, Timestamp_rounded) %>%
-                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> t
+                group_by(Plot, var, Logger, Timestamp_rounded) %>%
+                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> tdat
 
-            ggplot(t) +
+            ggplot(tdat) +
                 geom_rect(data = TEROS_RANGE, group = 1,
                           aes(xmin = EVENT_START, xmax = EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
-                facet_grid(variable~., scales = "free") +
+                facet_grid(var~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
