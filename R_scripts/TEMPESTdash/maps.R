@@ -44,12 +44,15 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                           teros_data, # TEROS data loaded by the reactive d.f.
                           teros_bad_sensors,
                           aquatroll_data,
-                          aquatroll_bad_sensors
-) {
+                          aquatroll_bad_sensors) {
+
     show_rose <- "map_rose" %in% map_overlays
     show_trees <- "map_trees" %in% map_overlays
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
+
+    # Current time
+    current_time <- with_tz(Sys.time(), tzone = "EST")
 
     # Construct plotting grid, flipping things around as needed
     plot_dat <- expand.grid(plot = plot_name,
@@ -124,13 +127,25 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
     }
 
     if(show_teros && !STATUS_MAP) {
+
         teros_data %>%
-            # These need to be two separate filter steps, because timestamps can vary between plots
-            filter(Plot == plot_name) %>%
+            # Isolate plot and variable user wants, and then all data in last hour
+            filter(Plot == plot_name, variable == data_map_variable) %>%
+            filter(Timestamp >= current_time - 1 * 60 * 60) %>%
+            # For each sensor, get its last timestamp of data
+            group_by(ID) %>%
             filter(Timestamp == max(Timestamp)) %>%
-            filter(variable == data_map_variable) %>%
+            select(Plot, ID, Logger, Grid_Square, variable, value) ->
+            td_with_data
+        teros_bad_sensors %>%
+            # Bad sensors: isolate to plot and variable...
+            filter(Plot == plot_name, variable == data_map_variable,
+                   # ...and IDs not in our good sensor list
+                   !ID %in% td_with_data$ID) %>%
+            bind_rows(td_with_data) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             td
+
         p <- p + ggtitle(paste(plot_name, unique(td$Timestamp)))
         p <- p + geom_point(data = td,
                             na.rm = TRUE,
@@ -170,21 +185,31 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
     }
 
     if(show_sapflow && !STATUS_MAP) {
-        # Isolate the latest sapflow data for this plot...
+
         sapflow_data %>%
-            # These need to be two separate filter steps, because timestamps can vary between plots
+            # Isolate plot and variable user wants, and then all data in last hour
             filter(Plot == plot_name) %>%
+            filter(Timestamp >= current_time - 1 * 60 * 60) %>%
+            # For each sensor, get its last timestamp of data
+            group_by(Tree_Code) %>%
             filter(Timestamp == max(Timestamp)) %>%
-            select(Timestamp, Tree_Code, Grid_Square, Value) %>%
+            filter(is.finite(Value)) %>%
+            select(Plot, Tree_Code, Logger, Grid_Square, Value) ->
+            sd_with_data
+        sapflow_bad_sensors %>%
+            # Bad sensors: isolate to plot and IDs not in our good sensor list
+            filter(Plot == plot_name, !Tree_Code %in% sd_with_data$Tree_Code) %>%
+            bind_rows(sd_with_data) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
-            sdat
+            sd_all
+
         # ...and join with tree-code-to-tag mapping, and then to inventory data
         # inv %>%
         #     left_join(sapflow_inv, by = "Tag") %>%
         #     left_join(sdat, by = "Tree_Code") ->
         #     sdat
-        p <- p + ggtitle(paste(plot_name, unique(sdat$Timestamp)))
-        p <- p + geom_point(data = sdat,
+        p <- p + ggtitle(paste(plot_name, unique(sd_all$Timestamp)))
+        p <- p + geom_point(data = sd_all,
                             na.rm = TRUE,
                             position = position_jitter(seed = 1234),
                             aes(color = Value), size = 6)
