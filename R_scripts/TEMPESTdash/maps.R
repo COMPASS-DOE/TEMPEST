@@ -35,7 +35,7 @@ for(i in seq_len(nrow(plot_info))) {
 }
 
 # Main plotting function
-make_plot_map <- function(STATUS_MAP, data_map_variable,
+make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
                           plot_name,
                           map_overlays,
                           map_items,
@@ -102,6 +102,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
 
     # Data layers
 
+    # ------ TEROS status map ------
+
     if(show_teros && STATUS_MAP) {
         # Filter the sensors and bad sensors for the current plot and visualize
         teros_bad_sensors %>%
@@ -126,7 +128,14 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                             aes(label = ID), color = "red", fontface = "bold")
     }
 
+    # ------ TEROS values map ------
+
     if(show_teros && !STATUS_MAP) {
+        # If user has selected a particular depth, filter to that
+        if(teros_depth != "All") {
+            teros_data <- filter(teros_data, Depth == as.numeric(teros_depth))
+            teros_bad_sensors <- filter(teros_bad_sensors, Depth == as.numeric(teros_depth))
+        }
 
         teros_data %>%
             # Isolate plot and variable user wants, and then all data in last hour
@@ -153,6 +162,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                             aes(color = value, shape = variable), size = 6) +
             facet_wrap(~variable)
     }
+
+    # ------ Sapflow status map ------
 
     if(show_sapflow && STATUS_MAP) {
         # Trees
@@ -183,6 +194,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
                             aes(label = Tree_Code), color = "red", fontface = "bold")
 
     }
+
+    # ------ Sapflow values map ------
 
     if(show_sapflow && !STATUS_MAP) {
 

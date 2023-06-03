@@ -88,7 +88,7 @@ server <- function(input, output) {
                                                      right_limit = high[1]),
                    .keep = "all") %>%
             filter(bad_sensor) %>%
-            select(Plot, ID, Logger, Grid_Square) %>%
+            select(Plot, ID, Depth, Logger, Grid_Square) %>%
             distinct(ID, Logger, .keep_all = TRUE) ->
             teros_bad_sensors
 
@@ -429,6 +429,7 @@ server <- function(input, output) {
     output$status_map <- renderPlot({
         make_plot_map(STATUS_MAP = TRUE,
                       data_map_variable = input$data_map_variable,
+                      teros_depth = input$teros_depth,
                       plot_name = input$map_plot,
                       map_overlays = input$map_overlays,
                       map_items = input$mapitems,
@@ -442,6 +443,7 @@ server <- function(input, output) {
     output$data_map <- renderPlot({
         make_plot_map(STATUS_MAP = FALSE,
                       data_map_variable = input$data_map_variable,
+                      teros_depth = input$teros_depth,
                       plot_name = input$map_plot,
                       map_overlays = input$map_overlays,
                       map_items = input$mapitems,

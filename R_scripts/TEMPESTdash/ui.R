@@ -137,6 +137,10 @@ ui <- dashboardPage(
                             "TEROS variable:",
                             choices = c("TSOIL", "VWC", "EC"),
                             selected = "VWC"),
+                selectInput("teros_depth",
+                            "TEROS depth:",
+                            choices = c("All", "5", "15", "30"),
+                            selected = "All"),
                 plotOutput("data_map", height = "600px")
             )#,
             # tabItem(
