@@ -146,7 +146,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             td
 
-        p <- p + ggtitle(paste(plot_name, unique(td$Timestamp)))
+        p <- p + ggtitle(paste(plot_name, current_time))
         p <- p + geom_point(data = td,
                             na.rm = TRUE,
                             position = position_jitter(seed = 1234),
@@ -208,7 +208,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable,
         #     left_join(sapflow_inv, by = "Tag") %>%
         #     left_join(sdat, by = "Tree_Code") ->
         #     sdat
-        p <- p + ggtitle(paste(plot_name, unique(sd_all$Timestamp)))
+        p <- p + ggtitle(paste(plot_name, current_time))
         p <- p + geom_point(data = sd_all,
                             na.rm = TRUE,
                             position = position_jitter(seed = 1234),
