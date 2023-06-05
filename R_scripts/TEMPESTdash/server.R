@@ -132,13 +132,25 @@ server <- function(input, output) {
              battery_bdg = battery_bdg)
     })
 
+    progress <- reactive({
+        EVENT_START <- as_datetime(paste(input$event_date, input$event_start), tz = "EST")
+        EVENT_STOP <- EVENT_START + hours(10)
+        EVENT_HOURS <- as.numeric(difftime(EVENT_STOP, EVENT_START, units = "hours"))
+
+        list(EVENT_START = EVENT_START,
+             EVENT_STOP = EVENT_STOP,
+             EVENT_HOURS = EVENT_HOURS)
+    })
+
     # ------------------ Dashboard graphs -----------------------------
 
-    observeEvent(autoInvalidate(), {
-
+    observeEvent({
+        input$prog_button
+        autoInvalidate() # for actual app, we can have multiple triggers
+    }, {
         circleval <- round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
-                                               EVENT_START,
-                                               units = "hours")) / EVENT_HOURS, 2)
+                                               progress()$EVENT_START,
+                                               units = "hours")) / progress()$EVENT_HOURS, 2)
 
         # Don't show a flood progress indicator if too far beyond the end
         if(circleval > 1.05) circleval <- NA
@@ -194,7 +206,11 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp_rounded) %>%
                 summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
-                SAPFLOW_EVENT_RECT +
+                geom_rect(aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                              ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
+                          fill = "#BBE7E6",
+                          alpha = 0.7,
+                          col = "#BBE7E6") +
                 geom_line() +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
@@ -228,7 +244,7 @@ server <- function(input, output) {
 
             ggplot(tdat) +
                 geom_rect(data = TEROS_RANGE, group = 1,
-                          aes(xmin = EVENT_START, xmax = EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
+                          aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
                 facet_grid(var~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
@@ -268,9 +284,9 @@ server <- function(input, output) {
                           value = mean(value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, value, color = Well_Name)) +
                 geom_line() + facet_wrap(~variable, scales = "free") +
-                # annotate("rect", fill = "#BBE7E6", alpha = 0.7,
-                #          xmin = EVENT_START, xmax = EVENT_STOP,
-                #          ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
+                annotate("rect", fill = "#BBE7E6", alpha = 0.7,
+                         xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                         ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
@@ -294,7 +310,7 @@ server <- function(input, output) {
                        Timestamp < latest_ts) %>%
                 ggplot(aes(Timestamp, BattV_Avg, color = as.factor(Logger))) +
                 annotate("rect", fill = "#BBE7E6", alpha = 0.7,
-                         xmin = EVENT_START, xmax = EVENT_STOP,
+                         xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
                          ymin = min(VOLTAGE_RANGE), ymax = max(VOLTAGE_RANGE)) +
                 geom_line() +
                 labs(x = "", y = "Battery (V)") +
@@ -327,7 +343,11 @@ server <- function(input, output) {
             reactive_df()$sapflow %>%
                 filter(Tree_Code %in% trees_selected) %>%
                 ggplot(aes(Timestamp, Value, group = Tree_Code, color = Plot)) +
-                SAPFLOW_EVENT_RECT +
+                geom_rect(aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                              ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
+                          fill = "#BBE7E6",
+                          alpha = 0.7,
+                          col = "#BBE7E6") +
                 geom_line() +
                 xlab("") +
                 xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
