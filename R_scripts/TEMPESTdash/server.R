@@ -38,9 +38,21 @@ server <- function(input, output) {
         # Do limits testing and compute data needed for badges
         sapflow %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            sapflow_filtered
+
+        sapflow_filtered %>%
             summarise(flag_sensors(Value, limits = SAPFLOW_RANGE)) ->
             sapflow_bdg
+
+        sapflow_filtered %>%
+            mutate(bad_sensor = which_outside_limits(Value,
+                                                     left_limit = SAPFLOW_RANGE[1],
+                                                     right_limit = SAPFLOW_RANGE[2])) %>%
+            filter(bad_sensor) %>%
+            select(Plot, Tree_Code, Logger, Grid_Square) %>%
+            distinct(Tree_Code, Logger, .keep_all = TRUE) ->
+            sapflow_bad_sensors
 
         sapflow %>%
             group_by(Tree_Code) %>%
@@ -49,8 +61,8 @@ server <- function(input, output) {
             select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
             arrange(Timestamp) %>%
             pivot_wider(id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
-                names_from = "Timestamp",
-                values_from = "Value") ->
+                        names_from = "Timestamp",
+                        values_from = "Value") ->
             sapflow_table_data
 
         # TEROS is awkward, because we only have one badge, but three
@@ -77,8 +89,9 @@ server <- function(input, output) {
                                                      right_limit = high[1]),
                    .keep = "all") %>%
             filter(bad_sensor) %>%
-            select(ID, Logger, Grid_Square) %>%
-            distinct(ID, Logger) -> teros_bad_sensors
+            select(Plot, ID, Depth, Logger, Grid_Square) %>%
+            distinct(ID, Logger, .keep_all = TRUE) ->
+            teros_bad_sensors
 
         # Aquatroll is similar: one badge, two datasets
         aquatroll$aquatroll_600 %>%
@@ -88,11 +101,12 @@ server <- function(input, output) {
         aquatroll$aquatroll_200 %>%
             select(Timestamp, Logger_ID, Well_Name, Temp) %>%
             mutate(Sensor = 200) %>%
-            bind_rows(a600) -> aquatroll_temp
-
-        aquatroll_temp %>%
+            bind_rows(a600) %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            aquatroll_filtered
+
+        aquatroll_filtered %>%
             mutate(bad_sensor = which_outside_limits(Temp,
                                                      left_limit = AQUATROLL_TEMP_RANGE[1],
                                                      right_limit = AQUATROLL_TEMP_RANGE[2])) %>%
@@ -101,22 +115,25 @@ server <- function(input, output) {
             arrange(Well_Name, Logger_ID) ->
             aquatroll_bad_sensors
 
-        aquatroll_temp %>%
-            filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+        aquatroll_filtered %>%
             summarise(flag_sensors(Temp, limits = AQUATROLL_TEMP_RANGE)) ->
             aquatroll_bdg
 
         battery %>%
             filter(Timestamp > latest_ts - FLAG_TIME_WINDOW * 60 * 60,
-                   Timestamp < latest_ts) %>%
+                   Timestamp < latest_ts) ->
+            battery_filtered
+
+        battery_filtered %>%
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
         # Return data and badge information
         list(sapflow = sapflow,
+             sapflow_filtered = sapflow_filtered,
              sapflow_bdg = sapflow_bdg,
              sapflow_table_data = sapflow_table_data,
+             sapflow_bad_sensors = sapflow_bad_sensors,
 
              teros = teros,
              teros_bad_sensors = teros_bad_sensors,
@@ -124,7 +141,7 @@ server <- function(input, output) {
 
              aquatroll_600 = aquatroll$aquatroll_600,
              aquatroll_200 = aquatroll$aquatroll_200,
-             aquatroll_temp = aquatroll_temp,
+             aquatroll_filtered = aquatroll_filtered,
              aquatroll_bad_sensors = aquatroll_bad_sensors,
              aquatroll_bdg = aquatroll_bdg,
 
@@ -268,6 +285,8 @@ server <- function(input, output) {
         reactive_df()$aquatroll_200 %>%
             pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") -> aq200
 
+        aquatroll <- reactive_df()$aquatroll_filtered
+
         reactive_df()$aquatroll_600 %>%
             pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
             bind_rows(aq200) -> full_trolls_long
@@ -357,7 +376,7 @@ server <- function(input, output) {
             b <- NO_DATA_GRAPH
         }
         plotly::ggplotly(b)
-})
+    })
 
     output$teros_table <- renderDataTable({
         autoInvalidate()
@@ -484,10 +503,36 @@ server <- function(input, output) {
             datatable()
     })
 
-    output$map <- renderPlot({
-        make_plot_map(input$map_plot, map_items = input$mapitems)
-    })
+    # ------------------ Maps tab -----------------------------
 
+    output$status_map <- renderPlot({
+        make_plot_map(STATUS_MAP = TRUE,
+                      data_map_variable = input$data_map_variable,
+                      teros_depth = input$teros_depth,
+                      plot_name = input$map_plot,
+                      map_overlays = input$map_overlays,
+                      map_items = input$mapitems,
+                      sapflow_data = reactive_df()$sapflow_filtered,
+                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
+                      teros_data = reactive_df()$teros,
+                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
+                      aquatroll_data = reactive_df()$aquatroll_filtered,
+                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
+    })
+    output$data_map <- renderPlot({
+        make_plot_map(STATUS_MAP = FALSE,
+                      data_map_variable = input$data_map_variable,
+                      teros_depth = input$teros_depth,
+                      plot_name = input$map_plot,
+                      map_overlays = input$map_overlays,
+                      map_items = input$mapitems,
+                      sapflow_data = reactive_df()$sapflow_filtered,
+                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
+                      teros_data = reactive_df()$teros,
+                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
+                      aquatroll_data = reactive_df()$aquatroll_filtered,
+                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
+    })
 
     # ------------------ Dashboard badges -----------------------------
 
@@ -551,7 +596,4 @@ server <- function(input, output) {
         shinyalert("Message sent", type = "success")
 
     })
-
-
-
 }

@@ -15,6 +15,9 @@ if(!require("compasstools")) {
 library(compasstools)
 
 set.seed(7)
+# This only needs to be done once
+sf_inventory <- read_csv("../../Design/sapflow_inventory.csv", col_types = "cdcdddcD")
+
 
 process_sapflow <- function(token, datadir) {
 
@@ -25,9 +28,7 @@ process_sapflow <- function(token, datadir) {
     }
 
     sf_raw <- compasstools::process_sapflow_dir(datadir, tz = "EST",
-                                                      token, progress)
-    sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
-
+                                                token, progress)
     sf_raw %>%
         left_join(sf_inventory, by = c("Logger", "Port")) %>%
         filter(!is.na(Tree_Code)) %>% #remove ports that dont have any sensors
@@ -54,6 +55,4 @@ process_sapflow <- function(token, datadir) {
                                 Plot == "C" ~ "Control",
                                 Plot == "S" ~ "Saltwater",
                                 Plot == "L" ~ "Shoreline"))
-
-    #write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
 }
