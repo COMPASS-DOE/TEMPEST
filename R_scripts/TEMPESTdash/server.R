@@ -8,6 +8,7 @@ source("maps.R")
 server <- function(input, output) {
 
     autoInvalidate <- reactiveTimer(15 * 60 * 1000)
+    alertInvalidate <- reactiveTime(1 * 60 * 1000)
 
     reactive_df <- reactive({
 
@@ -128,6 +129,8 @@ server <- function(input, output) {
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
+
+
         # Return data and badge information
         list(sapflow = sapflow,
              sapflow_filtered = sapflow_filtered,
@@ -147,6 +150,8 @@ server <- function(input, output) {
 
              battery = battery,
              battery_bdg = battery_bdg)
+
+        browser()
     })
 
     progress <- reactive({
@@ -201,7 +206,11 @@ server <- function(input, output) {
             filter(Timestamp > with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < with_tz(Sys.time(), tzone = "EST"))  -> battery
 
-        bad_sensors(battery, battery$BattV_Avg, "Logger", limits = VOLTAGE_RANGE) -> vals
+        battery[!between(battery$BattV_Avg, min(VOLTAGE_RANGE), max(VOLTAGE_RANGE)), ] %>% select(Logger) -> bounds
+
+        battery[is.na(battery$BattV_Avg), ] %>% select(Logger) -> nas
+
+        unique(bind_rows(nas, bounds)) -> vals
 
         datatable(vals, options = list(searching = FALSE, pageLength = 5))
     })
@@ -257,17 +266,19 @@ server <- function(input, output) {
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
                 group_by(Plot, var, Logger, Timestamp_rounded) %>%
-                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> tdat
+                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+                left_join(TEROS_RANGE, by = c("var" = "variable")) -> tdat
 
             ggplot(tdat) +
-                geom_rect(data = TEROS_RANGE, group = 1,
-                          aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
+                geom_rect(group = 1,
+                          aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                              ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
                 facet_grid(var~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
-                geom_hline(data = TEROS_RANGE, aes(yintercept = low), color = "grey", linetype = 2) +
-                geom_hline(data = TEROS_RANGE, aes(yintercept = high), color = "grey", linetype = 2) ->
+                geom_hline(aes(yintercept = low), color = "grey", linetype = 2) +
+                geom_hline(aes(yintercept = high), color = "grey", linetype = 2) ->
                 b
         } else {
             b <- NO_DATA_GRAPH
@@ -332,7 +343,7 @@ server <- function(input, output) {
                          xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
                          ymin = min(VOLTAGE_RANGE), ymax = max(VOLTAGE_RANGE)) +
                 geom_line() +
-                labs(x = "", y = "Battery (V)") +
+                labs(x = "", y = "Battery (V)", color = "Logger") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
                 geom_hline(yintercept = VOLTAGE_RANGE, color = "grey", linetype = 2) ->
                 b
@@ -385,9 +396,9 @@ server <- function(input, output) {
             group_by(ID, variable) %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
-            select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+            select(Timestamp, ID, Plot, variable, value, Logger, Grid_Square) %>%
             arrange(Timestamp) %>%
-            pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value")
+            pivot_wider(id_cols = c("ID", "Plot", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value")
         #}
     })
 
@@ -481,6 +492,7 @@ server <- function(input, output) {
                 ggplot(aes(Timestamp, value, group = interaction(Well_Name, variable), color = Well_Name)) +
                 geom_line() +
                 xlab("") +
+                labs(color = "Well Name") +
                 xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
         } else {
@@ -567,8 +579,55 @@ server <- function(input, output) {
 
 # ------------------ Text alerts -----------------------------
 
-    observeEvent(input$txt_alert, {
+    initial_alert <- observeEvent(input$txt_alert,{
+        #only sent to input number when user first inputs information
 
+        phone_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
+
+        text_msg <- gm_mime() %>%
+            gm_to(paste0(phone_number, carrier_email)) %>% #change to link with df
+            gm_from("compassfme.tools@gmail.com") %>%
+            gm_text_body("Thank you for signing up for hourly alerts!")
+
+        # need to add how often to send, right now only once
+        gm_send_message(text_msg)
+
+    })
+
+    alerts <- observeEvent({
+
+        #this will calculate values and send out messages to everyone in "new_user" df
+        # could just have people not choose what they want alerts for?
+        initial_alert()
+        alertInvalidate()
+        }, {
+
+        # cat(paste0("System status as of: ",
+        #            with_tz(Sys.time(), tzone = "America/New_York"), "EDT", "\n","\n",
+        #     "Sapflow: ", reactive()$sapflow_bdg$percent_in, "\n",
+        #     "TEROS: ", reactive()$teros_bdg$percent_in, "\n",
+        #     "Aquatroll: ", reactive()$aquatroll_bdg$percent_in, "\n",
+        #     "Battery: ", reactive()$battery_bdg$percent_in))
+        #
+        # cat("Sapflow:", reactive()$sapflow_bdg$percent_in, "\n",
+        #     "TEROS:", reactive()$teros_bdg$percent_in, "\n",
+        #     "Aquatroll:", reactive()$aquatroll_bdg$percent_in, "\n",
+        #     "Battery:", reactive()$battery_bdg$percent_in)
+
+        text_msg <- gm_mime() %>%
+            gm_to(paste0(phone_number, carrier_email)) %>%
+            gm_from("compassfme.tools@gmail.com") %>%
+            gm_text_body("Another text update") # CHANGE THIS
+
+        # need to add how often to send, right now only once
+        gm_send_message(text_msg)
+
+    })
+
+    new_user <- reactiveValues(data = data_frame(phone_number = numeric(), choices = character()))
+
+    observeEvent(input$txt_alert, {
+# this call will append a df with information of choices
 
         # gm_auth_configure(path = "PATH TO JSON HERE")
         # gm_oauth_app()
@@ -583,15 +642,11 @@ server <- function(input, output) {
             carrier_email <- "@tmomail.net"
         }
 
-        phone_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
+        p_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
 
-        text_msg <- gm_mime() %>%
-            gm_to(paste0(phone_number, carrier_email)) %>%
-            gm_from("compassfme.tools@gmail.com") %>%
-            gm_text_body("Gmailr is a very handy package!")
+        email <- paste0(phone_number, carrier_email)
 
-        # need to add how often to send, right now only once
-        gm_send_message(text_msg)
+        new_user$data <- rbind(new_user$data, data_frame(phone_number = email, choices = input$number)) # need to figure out how to paste choices
 
         shinyalert("Message sent", type = "success")
 

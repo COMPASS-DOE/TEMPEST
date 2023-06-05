@@ -30,7 +30,7 @@ if(!TESTING) {
 }
 last_update <- NA
 
-GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
+GRAPH_TIME_WINDOW <- 15 * 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
 
