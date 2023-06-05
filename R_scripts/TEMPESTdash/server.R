@@ -31,7 +31,7 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp) %>%
                 summarise(BattV_Avg = mean(BattV_Avg), .groups = "drop") ->
                 battery
-        }
+       }
 
         latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
@@ -59,6 +59,7 @@ server <- function(input, output) {
             slice_tail(n = 10) %>%
             ungroup() %>%
             select(Timestamp, Plot, Tree_Code, Value, Logger, Grid_Square) %>%
+            arrange(Timestamp) %>%
             pivot_wider(id_cols = c("Tree_Code", "Plot", "Grid_Square") ,
                         names_from = "Timestamp",
                         values_from = "Value") ->
@@ -148,13 +149,25 @@ server <- function(input, output) {
              battery_bdg = battery_bdg)
     })
 
+    progress <- reactive({
+        EVENT_START <- as_datetime(paste(input$event_date, input$event_start), tz = "EST")
+        EVENT_STOP <- EVENT_START + hours(10)
+        EVENT_HOURS <- as.numeric(difftime(EVENT_STOP, EVENT_START, units = "hours"))
+
+        list(EVENT_START = EVENT_START,
+             EVENT_STOP = EVENT_STOP,
+             EVENT_HOURS = EVENT_HOURS)
+    })
+
     # ------------------ Dashboard graphs -----------------------------
 
-    observeEvent(autoInvalidate(), {
-
+    observeEvent({
+        input$prog_button
+        autoInvalidate() # for actual app, we can have multiple triggers
+    }, {
         circleval <- round(as.numeric(difftime(with_tz(Sys.time(), tzone = "EST"),
-                                               EVENT_START,
-                                               units = "hours")) / EVENT_HOURS, 2)
+                                               progress()$EVENT_START,
+                                               units = "hours")) / progress()$EVENT_HOURS, 2)
 
         # Don't show a flood progress indicator if too far beyond the end
         if(circleval > 1.05) circleval <- NA
@@ -163,6 +176,7 @@ server <- function(input, output) {
     })
 
     output$sapflow_bad_sensors <- DT::renderDataTable({
+
         reactive_df()$sapflow %>%
             filter(Timestamp > with_tz(Sys.time(), tzone = "EST") - FLAG_TIME_WINDOW * 60 * 60,
                    Timestamp < with_tz(Sys.time(), tzone = "EST")) -> sapflow
@@ -209,7 +223,11 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp_rounded) %>%
                 summarise(Value = mean(Value, na.rm = TRUE), .groups = "drop") %>%
                 ggplot(aes(Timestamp_rounded, Value, color = Plot, group = Logger)) +
-                SAPFLOW_EVENT_RECT +
+                geom_rect(aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                              ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
+                          fill = "#BBE7E6",
+                          alpha = 0.7,
+                          col = "#BBE7E6") +
                 geom_line() +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
@@ -232,16 +250,19 @@ server <- function(input, output) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
             teros %>%
                 left_join(TEROS_RANGE, by = "variable") %>%
+                # Certain versions of plotly seem to have a bug and produce
+                # a tidyr::pivot error when there's a 'variable' column; rename
+                rename(var = variable) %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
-                group_by(Plot, variable, Logger, Timestamp_rounded) %>%
-                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> t
+                group_by(Plot, var, Logger, Timestamp_rounded) %>%
+                summarise(value = mean(value, na.rm = TRUE), .groups = "drop") -> tdat
 
-            ggplot(t) +
+            ggplot(tdat) +
                 geom_rect(data = TEROS_RANGE, group = 1,
-                          aes(xmin = EVENT_START, xmax = EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
-                facet_grid(variable~., scales = "free") +
+                          aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP, ymin = low, ymax = high), fill = "#BBE7E6", alpha = 0.7, col = "#BBE7E6") +
+                facet_grid(var~., scales = "free") +
                 geom_line(aes(Timestamp_rounded, value, color = Plot, group = Logger)) +
                 xlab("") +
                 coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
@@ -261,27 +282,34 @@ server <- function(input, output) {
         # variables, in which case the badge status computation would be like
         # that of TEROS
         # This graph is shown when users click the "Battery" tab on the dashboard
+        reactive_df()$aquatroll_200 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") -> aq200
+
         aquatroll <- reactive_df()$aquatroll_filtered
 
-        if(nrow(aquatroll) > 1) {
+        reactive_df()$aquatroll_600 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+            bind_rows(aq200) -> full_trolls_long
+
+        if(nrow(full_trolls_long) > 1) {
             latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
-            aquatroll %>%
+            full_trolls_long %>%
                 filter(Timestamp > latest_ts - GRAPH_TIME_WINDOW * 60 * 60,
                        Timestamp < latest_ts) %>%
                 mutate(Timestamp_rounded = round_date(Timestamp, GRAPH_TIME_INTERVAL)) %>%
-                group_by(Logger_ID, Well_Name, Timestamp_rounded) %>%
+                group_by(Logger_ID, Well_Name, Timestamp_rounded, variable) %>%
                 summarise(Well_Name = Well_Name,
-                          Temp = mean(Temp, na.rm = TRUE), .groups = "drop") %>%
-                ggplot(aes(Timestamp_rounded, Temp, color = Logger_ID, group = Well_Name)) +
+                          value = mean(value, na.rm = TRUE), .groups = "drop") %>%
+                ggplot(aes(Timestamp_rounded, value, color = Well_Name)) +
+                geom_line() + facet_wrap(~variable, scales = "free") +
                 annotate("rect", fill = "#BBE7E6", alpha = 0.7,
-                         xmin = EVENT_START, xmax = EVENT_STOP,
+                         xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
                          ymin = min(AQUATROLL_TEMP_RANGE), ymax = max(AQUATROLL_TEMP_RANGE)) +
-                geom_line() +
                 xlab("") +
-                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
-                geom_hline(yintercept = AQUATROLL_TEMP_RANGE, color = "grey", linetype = 2)  ->
+                coord_cartesian(xlim = c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
                 b
+
         } else {
             b <- NO_DATA_GRAPH
         }
@@ -301,7 +329,7 @@ server <- function(input, output) {
                        Timestamp < latest_ts) %>%
                 ggplot(aes(Timestamp, BattV_Avg, color = as.factor(Logger))) +
                 annotate("rect", fill = "#BBE7E6", alpha = 0.7,
-                         xmin = EVENT_START, xmax = EVENT_STOP,
+                         xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
                          ymin = min(VOLTAGE_RANGE), ymax = max(VOLTAGE_RANGE)) +
                 geom_line() +
                 labs(x = "", y = "Battery (V)") +
@@ -314,55 +342,6 @@ server <- function(input, output) {
 
         plotly::ggplotly(b)
     })
-
-    # output$plotSelector <- renderUI({
-    #
-    # })
-
-
-    #
-    #     output$dataloggerSelector <- renderUI({
-    #
-    #         sapflow_data <- reactive_df()$sapflow
-    #
-    #         pickerInput("logger-filter", "Loggers",
-    #                     choices = unique(sapflow_data$Logger),
-    #                     selected = "11",
-    #                     multiple = TRUE)
-    #     })
-    #
-    #
-    #
-
-    #
-    #     output$sensorSelector <- renderUI({
-    #         autoInvalidate()
-    #         sapflow_data <- reactive_df()$sapflow
-    #
-    #         pickerInput("sensor", "Sensor",
-    #                     choices = unique(sapflow_data$Tree_Code),
-    #                     selected = "F11",
-    #                     multiple = TRUE)
-    #     })
-    #
-    #     output$plotSelectorT <- renderUI({
-    #         autoInvalidate()
-    #         teros_data <- reactive_df()$teros
-    #
-    #         selectInput("tPlot", "Plot:",
-    #                     choices = unique(substr(teros_data$Plot, 1, 1)),
-    #                     selected = "C")
-    #     })
-    #
-
-    # output$plotSelector <- renderUI({
-    #     sapflow_data <- reactive_df()$sapflow
-    #
-    #     selectInput("plot",
-    #                 "Plot:",
-    #                 choices = unique(sapflow_data$Plot),
-    #                 selected = "Freshwater")
-    # })
 
     output$sapflow_table <- DT::renderDataTable(datatable({
         autoInvalidate()
@@ -383,7 +362,11 @@ server <- function(input, output) {
             reactive_df()$sapflow %>%
                 filter(Tree_Code %in% trees_selected) %>%
                 ggplot(aes(Timestamp, Value, group = Tree_Code, color = Plot)) +
-                SAPFLOW_EVENT_RECT +
+                geom_rect(aes(xmin = progress()$EVENT_START, xmax = progress()$EVENT_STOP,
+                              ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
+                          fill = "#BBE7E6",
+                          alpha = 0.7,
+                          col = "#BBE7E6") +
                 geom_line() +
                 xlab("") +
                 xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) +
@@ -402,13 +385,108 @@ server <- function(input, output) {
             group_by(ID, variable) %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
-            select(Timestamp, ID, value, Logger, Grid_Square) %>%
-            pivot_wider(id_cols = c("variable", "ID"), names_from = "Timestamp", values_from = "value")
+            select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+            arrange(Timestamp) %>%
+            pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value")
+        #}
     })
 
-    observeEvent(input$press, {
-        output$number <- print("testing")
-        #print(input$btable_rows_selected)
+    output$teros_detail_graph <- renderPlotly({
+
+        if(length(input$teros_table_rows_selected)) {
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
+
+            reactive_df()$teros %>%
+                group_by(ID, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, ID, variable, value, Logger, Grid_Square) %>%
+                arrange(Timestamp) %>%
+                pivot_wider(id_cols = c("ID", "variable", "Grid_Square"), names_from = "Timestamp", values_from = "value") %>%
+                slice(input$teros_table_rows_selected) %>%
+                select(variable, ID) ->
+                tsensor_selected
+
+            reactive_df()$teros %>%
+                filter(ID %in% tsensor_selected$ID, variable %in% tsensor_selected$variable) %>%
+                ggplot(aes(Timestamp, value, group = interaction(ID, variable), color = ID)) +
+                geom_line() +
+                xlab("") +
+                xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
+    })
+
+    output$troll_table <- renderDataTable({
+        autoInvalidate()
+
+        reactive_df()$aquatroll_200 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") %>%
+            group_by(Well_Name, variable) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
+            select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) -> aq200_long
+
+        reactive_df()$aquatroll_600 %>%
+            pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+            group_by(Well_Name, variable) %>%
+            slice_tail(n = 10) %>%
+            ungroup() %>%
+            select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) %>%
+            bind_rows(aq200_long) -> trolls
+
+        trolls %>%
+            arrange(Timestamp) %>%
+            pivot_wider(id_cols = c("Well_Name", "variable", "Plot", "Instrument"), names_from = "Timestamp", values_from = "value")
+    })
+
+    output$troll_detail_graph <- renderPlotly({
+        if(length(input$troll_table_rows_selected)) {
+
+            latest_ts <- with_tz(Sys.time(), tzone = "EST")
+
+            reactive_df()$aquatroll_200 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") -> aq200
+
+            reactive_df()$aquatroll_600 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+                bind_rows(aq200) -> full_trolls_long
+
+            reactive_df()$aquatroll_200 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity"), names_to = "variable", values_to = "value") %>%
+                group_by(Well_Name, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) -> aq200_long
+
+            reactive_df()$aquatroll_600 %>%
+                pivot_longer(cols = c("Temp", "Pressure_psi", "Salinity", "DO_mgl"), names_to = "variable", values_to = "value") %>%
+                group_by(Well_Name, variable) %>%
+                slice_tail(n = 10) %>%
+                ungroup() %>%
+                select(Timestamp, Well_Name, Instrument, variable, value, Logger_ID, Plot) %>%
+                bind_rows(aq200_long) -> trolls
+
+            trolls %>%
+                pivot_wider(id_cols = c("Well_Name", "variable", "Plot", "Instrument"), names_from = "Timestamp", values_from = "value") %>%
+                slice(input$troll_table_rows_selected) %>%
+                select(variable, Well_Name) ->
+                aqsensor_selected
+
+            full_trolls_long %>%
+                filter(Well_Name %in% aqsensor_selected$Well_Name, variable %in% aqsensor_selected$variable) %>%
+                ggplot(aes(Timestamp, value, group = interaction(Well_Name, variable), color = Well_Name)) +
+                geom_line() +
+                xlab("") +
+                xlim(c(latest_ts - GRAPH_TIME_WINDOW * 60 * 60, latest_ts)) ->
+                b
+        } else {
+            b <- NO_DATA_GRAPH
+        }
+        plotly::ggplotly(b)
     })
 
     output$btable <- DT::renderDataTable({
@@ -420,6 +498,7 @@ server <- function(input, output) {
             distinct() %>%
             slice_tail(n = 10) %>%
             ungroup() %>%
+            arrange(Timestamp) %>%
             pivot_wider(id_cols = c("Plot", "Logger"), names_from = "Timestamp", values_from = "BattV_Avg") %>%
             datatable()
     })
@@ -486,4 +565,35 @@ server <- function(input, output) {
         )
     })
 
+# ------------------ Text alerts -----------------------------
+
+    observeEvent(input$txt_alert, {
+
+
+        # gm_auth_configure(path = "PATH TO JSON HERE")
+        # gm_oauth_app()
+
+        carrier_email <- if(input$carrier == "Verizon") {
+            carrier_email <- "@vtext.com"
+        } else if(input$carrier == "AT&T") {
+            carrier_email <- "@txt.att.net"
+        } else if(input$carrier == "Sprint") {
+            carrier_email <- "@messaging.sprintpcs.com"
+        } else if(input$carrier == "T-Mobile") {
+            carrier_email <- "@tmomail.net"
+        }
+
+        phone_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
+
+        text_msg <- gm_mime() %>%
+            gm_to(paste0(phone_number, carrier_email)) %>%
+            gm_from("compassfme.tools@gmail.com") %>%
+            gm_text_body("Gmailr is a very handy package!")
+
+        # need to add how often to send, right now only once
+        gm_send_message(text_msg)
+
+        shinyalert("Message sent", type = "success")
+
+    })
 }
