@@ -614,13 +614,31 @@ server <- function(input, output) {
         #     "Aquatroll:", reactive()$aquatroll_bdg$percent_in, "\n",
         #     "Battery:", reactive()$battery_bdg$percent_in)
 
-        text_msg <- gm_mime() %>%
-            gm_to(paste0(phone_number, carrier_email)) %>%
-            gm_from("compassfme.tools@gmail.com") %>%
-            gm_text_body("Another text update") # CHANGE THIS
+            for(i in seq_len(nrow(TEXT_MSG_USERS))) {
+                phone_number <- TEXT_MSG_USERS$number[i]
+                carrier <- TEXT_MSG_USERS$carrier[i]
 
-        # need to add how often to send, right now only once
-        gm_send_message(text_msg)
+                carrier_email <- if(carrier == "Verizon") {
+                    carrier_email <- "@vtext.com"
+                } else if(carrier == "AT&T") {
+                    carrier_email <- "@txt.att.net"
+                } else if(carrier == "Sprint") {
+                    carrier_email <- "@messaging.sprintpcs.com"
+                } else if(carrier == "T-Mobile") {
+                    carrier_email <- "@tmomail.net"
+                }
+
+                email <- paste0(phone_number, carrier_email)
+
+                text_msg <- gm_mime() %>%
+                    gm_to(email) %>%
+                    gm_from("compassfme.tools@gmail.com") %>%
+                    gm_text_body("Another text update") # CHANGE THIS
+
+                # need to add how often to send, right now only once
+                gm_send_message(text_msg)
+            }
+
 
     })
 

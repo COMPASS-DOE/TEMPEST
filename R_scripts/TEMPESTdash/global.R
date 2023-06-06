@@ -20,6 +20,11 @@ source("process_aquatroll.R")
 
 TESTING <- FALSE
 
+TEXT_MSG_USERS <- tribble(
+    ~name,     ~number,       ~carrier,
+    "SP",      "3016063322",  "Verizon",
+    "BBL",     "6086582217",  "T-Mobile"
+)
 
 # The server normally accesses the SERC Dropbox to download data
 # If we are TESTING, however, skip this and use local test data only
