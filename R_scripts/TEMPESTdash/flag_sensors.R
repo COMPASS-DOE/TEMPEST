@@ -6,7 +6,7 @@ library(dplyr)
 # For TEROS, these are all 1%/99% quantiles of test data
 # This one is a tibble because TEROS is three variables in a single dataset
 TEROS_RANGE <- tribble(~variable, ~low, ~high,
-                       "EC",      10,   225,
+                       "EC",      10,   4500, #225 normally
                        "TSOIL",   5,   25,
                        "VWC",     2000, 4000)
 SAPFLOW_RANGE <- c(0.2, 0.8) # roughly the 10%/90% quantiles of test data

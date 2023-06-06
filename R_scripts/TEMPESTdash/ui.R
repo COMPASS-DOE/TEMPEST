@@ -96,7 +96,7 @@ ui <- dashboardPage(
                            ),
                            tabPanel(
                                title = "TEROS",
-                               plotlyOutput("teros_plot")
+                               plotlyOutput("teros_plot", height = "400px")
                            ),
                            tabPanel(
                                title = "AquaTroll",
@@ -158,23 +158,24 @@ ui <- dashboardPage(
             ),
             tabItem(
                 tabName = "alerts",
-                textInput(inputId = "phone_number",
-                          label = "Phone number:",
-                          placeholder = "301-555-5555"),
-                selectInput(inputId = "carrier",
-                            label = "Select your carrier:",
-                            choices = c("Verizon", "AT&T", "T-Mobile", "Sprint")),
-                materialSwitch("system_alert", label = "System Alerts", status = "success", right = TRUE),
-                materialSwitch("value_alert", label = "Value Alerts", status = "success", right = TRUE),
-                # Only show this panel if Custom is selected
-                conditionalPanel(
-                    condition = "input.value_alert == 1",
-                    awesomeCheckboxGroup("value_alert_type",
-                                         label = "Choose dataset to receive alerts about:",
-                                         choices = c("Sapflow", "TEROS", "AquaTroll", "Battery"),
-                                         inline = TRUE)
-                ),
-                actionButton("txt_alert","Receive Text Alerts")
+                h3("Coming Soon!!")
+                # textInput(inputId = "phone_number",
+                #           label = "Phone number:",
+                #           placeholder = "301-555-5555"),
+                # selectInput(inputId = "carrier",
+                #             label = "Select your carrier:",
+                #             choices = c("Verizon", "AT&T", "T-Mobile", "Sprint")),
+                # materialSwitch("system_alert", label = "System Alerts", status = "success", right = TRUE),
+                # materialSwitch("value_alert", label = "Value Alerts", status = "success", right = TRUE),
+                # # Only show this panel if Custom is selected
+                # conditionalPanel(
+                #     condition = "input.value_alert == 1",
+                #     awesomeCheckboxGroup("value_alert_type",
+                #                          label = "Choose dataset to receive alerts about:",
+                #                          choices = c("Sapflow", "TEROS", "AquaTroll", "Battery"),
+                #                          inline = TRUE)
+                # ),
+                # actionButton("txt_alert","Receive Text Alerts")
             )
         )
     )

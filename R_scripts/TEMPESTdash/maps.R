@@ -12,14 +12,14 @@ plot_info <- tribble(
 )
 
 # Tree data - read it only once
-readr::read_csv("../../Data/tree_inventory/inventory.csv") %>%
+readr::read_csv("inventory copy.csv") %>%
     filter(In_Plot, Status_2023 %in% c("LI", "DS")) %>%
     select(Plot, Grid, Species_code, Tag, DBH_2023) %>%
     mutate(x = substr(Grid, 1, 1), y = substr(Grid, 2, 2)) ->
     map_tree_data
 
 # Mapping from sapflow to trees
-sapflow_inv <- readr::read_csv("../../Design/sapflow_inventory.csv") %>%
+sapflow_inv <- readr::read_csv("sapflow_inventory copy.csv") %>%
     select(Tree_Code, Tag)
 
 # Do the compass rose transparency and rotation calculations (plot-specific) once and store

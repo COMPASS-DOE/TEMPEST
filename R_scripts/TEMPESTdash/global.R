@@ -23,7 +23,9 @@ TESTING <- FALSE
 TEXT_MSG_USERS <- tribble(
     ~name,     ~number,       ~carrier,
     "SP",      "3016063322",  "Verizon",
-    "BBL",     "6086582217",  "T-Mobile"
+    "BBL",     "6086582217",  "T-Mobile",
+    "AMP",     "5203491898",  "Verizon",
+    "Julia",   "8644205609",  "Verizon"
 )
 
 # The server normally accesses the SERC Dropbox to download data
@@ -35,7 +37,7 @@ if(!TESTING) {
 }
 last_update <- NA
 
-GRAPH_TIME_WINDOW <- 15 * 24   # hours back from present
+GRAPH_TIME_WINDOW <- 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
 
