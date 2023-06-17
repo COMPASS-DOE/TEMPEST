@@ -14,10 +14,6 @@ library(dygraphs)
 library(xts)
 library(shinybusy)
 
-source("process_sapflow.R")
-source("process_teros.R")
-source("process_aquatroll.R")
-
 TESTING <- FALSE
 
 TEXT_MSG_USERS <- tribble(
