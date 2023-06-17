@@ -102,7 +102,7 @@ print(p %+% filter(teros_data, Data_Logger_ID == "23")) %+% labs(title = "Logger
 
 ## Salt
 ```{r Salt}
-print(p %+% filter(teros_data, Plot == "Seawater")) %+% labs(title = "Logger: 41")
+print(p %+% filter(teros_data, Plot == "Saltwater")) %+% labs(title = "Logger: 41")
 ```
 
 # Tests - Last Online Date

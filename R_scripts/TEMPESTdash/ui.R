@@ -133,7 +133,7 @@ ui <- dashboardPage(
                 tabName = "maps",
                 selectInput("map_plot",
                             "Plot:",
-                            choices = c("Control", "Freshwater", "Seawater", "Shoreline"),
+                            choices = c("Control", "Freshwater", "Saltwater", "Shoreline"),
                             selected = "Control"),
                 radioGroupButtons("mapitems",
                                   label = "Data to show:",

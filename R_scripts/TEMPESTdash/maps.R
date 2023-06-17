@@ -5,10 +5,10 @@ library(tibble)
 # layouts in terms of how the A-J and 1-8 axes are set up, orientation wrt
 # magnetic north, and color of stakes:
 plot_info <- tribble(
-    ~plot,        ~inventory_name, ~lower_left, ~upper_left, ~north_degrees, ~color,
-    "Control",    "Control",       "A8",        "A1",         -50,           "green",
-    "Freshwater", "Fresh",         "A8",        "A1",         -20,           "blue",
-    "Seawater",   "Salt",          "J1",        "A1",         -25,           "red"
+    ~plot,        ~lower_left, ~upper_left, ~north_degrees, ~color,
+    "Control",    "A8",        "A1",         -50,           "green",
+    "Freshwater", "A8",        "A1",         -20,           "blue",
+    "Saltwater",  "J1",        "A1",         -25,           "red"
 )
 
 # Tree data - read it only once
@@ -91,7 +91,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
         p <- p + cowplot::draw_image(roses[[plot_name]], x = 5, y = 4, scale = 8) # centered, easy
     }
 
-    inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
+    inv <- filter(map_tree_data, Plot == plot_name)
     if(show_trees) {
         # Trees
         p <- p + geom_point(data = inv,
@@ -168,7 +168,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
 
     if(show_sapflow && STATUS_MAP) {
         # Trees
-        inv <- filter(map_tree_data, Plot == pinfo$inventory_name)
+        inv <- filter(map_tree_data, Plot == plot_name)
 
         # Note to self: ideally we would merge the sapflow data with tree inventory
         # data, so as to plot trees at the same time. But I'm not sure where the
