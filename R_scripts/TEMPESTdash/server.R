@@ -32,7 +32,7 @@ server <- function(input, output) {
                 group_by(Plot, Logger, Timestamp) %>%
                 summarise(BattV_Avg = mean(BattV_Avg), .groups = "drop") ->
                 battery
-       }
+        }
 
         latest_ts <- with_tz(Sys.time(), tzone = "EST")
 
@@ -577,7 +577,7 @@ server <- function(input, output) {
         )
     })
 
-# ------------------ Text alerts -----------------------------
+    # ------------------ Text alerts -----------------------------
 
     # initial_alert <- observeEvent(input$txt_alert,{
     #     #only sent to input number when user first inputs information
@@ -593,14 +593,14 @@ server <- function(input, output) {
     #     gm_send_message(text_msg)
     #
     # })
-#
+    #
     observeEvent({
 
         #this will calculate values and send out messages to everyone in "new_user" df
         # could just have people not choose what they want alerts for?
         #initial_alert()
         alertInvalidate()
-        }, {
+    }, {
 
         #     reactive_df()$teros_filtered %>%
         #         filter(!ID %in% reactive_df()$teros_bad_sensors$ID) %>%
@@ -650,63 +650,63 @@ server <- function(input, output) {
         #     "Aquatroll:", reactive()$aquatroll_bdg$percent_in, "\n",
         #     "Battery:", reactive()$battery_bdg$percent_in)
 
-            for(i in seq_len(nrow(TEXT_MSG_USERS))) {
-                phone_number <- TEXT_MSG_USERS$number[i]
-                carrier <- TEXT_MSG_USERS$carrier[i]
+        for(i in seq_len(nrow(TEXT_MSG_USERS))) {
+            phone_number <- TEXT_MSG_USERS$number[i]
+            carrier <- TEXT_MSG_USERS$carrier[i]
 
-                carrier_email <- if(carrier == "Verizon") {
-                    carrier_email <- "@vtext.com"
-                } else if(carrier == "AT&T") {
-                    carrier_email <- "@txt.att.net"
-                } else if(carrier == "Sprint") {
-                    carrier_email <- "@messaging.sprintpcs.com"
-                } else if(carrier == "T-Mobile") {
-                    carrier_email <- "@tmomail.net"
-                }
-
-                email <- paste0(phone_number, carrier_email)
-
-               # Wrap this in a try so that if not authorized the app doesn't stop
-               try({
-                   text_msg <- gm_mime() %>%
-                       gm_to(email) %>%
-                       gm_from("compassfme.tools@gmail.com") %>%
-                       gm_text_body(msg) # CHANGE THIS
-
-                   # need to add how often to send, right now only once
-
-                   gm_send_message(text_msg)
-               })
+            carrier_email <- if(carrier == "Verizon") {
+                carrier_email <- "@vtext.com"
+            } else if(carrier == "AT&T") {
+                carrier_email <- "@txt.att.net"
+            } else if(carrier == "Sprint") {
+                carrier_email <- "@messaging.sprintpcs.com"
+            } else if(carrier == "T-Mobile") {
+                carrier_email <- "@tmomail.net"
             }
+
+            email <- paste0(phone_number, carrier_email)
+
+            # Wrap this in a try so that if not authorized the app doesn't stop
+            try({
+                text_msg <- gm_mime() %>%
+                    gm_to(email) %>%
+                    gm_from("compassfme.tools@gmail.com") %>%
+                    gm_text_body(msg) # CHANGE THIS
+
+                # need to add how often to send, right now only once
+
+                gm_send_message(text_msg)
+            })
+        }
 
 
     })
-#
-#     new_user <- reactiveValues(data = data_frame(phone_number = numeric(), choices = character()))
+    #
+    #     new_user <- reactiveValues(data = data_frame(phone_number = numeric(), choices = character()))
 
-#     observeEvent(input$txt_alert, {
-# # this call will append a df with information of choices
-#
-#         # gm_auth_configure(path = "PATH TO JSON HERE")
-#         # gm_oauth_app()
-#
-#         carrier_email <- if(input$carrier == "Verizon") {
-#             carrier_email <- "@vtext.com"
-#         } else if(input$carrier == "AT&T") {
-#             carrier_email <- "@txt.att.net"
-#         } else if(input$carrier == "Sprint") {
-#             carrier_email <- "@messaging.sprintpcs.com"
-#         } else if(input$carrier == "T-Mobile") {
-#             carrier_email <- "@tmomail.net"
-#         }
-#
-#         p_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
-#
-#         email <- paste0(phone_number, carrier_email)
-#
-#         new_user$data <- rbind(new_user$data, data_frame(phone_number = email, choices = input$number)) # need to figure out how to paste choices
-#
-#         shinyalert("Message sent", type = "success")
-#
-#     })
+    #     observeEvent(input$txt_alert, {
+    # # this call will append a df with information of choices
+    #
+    #         # gm_auth_configure(path = "PATH TO JSON HERE")
+    #         # gm_oauth_app()
+    #
+    #         carrier_email <- if(input$carrier == "Verizon") {
+    #             carrier_email <- "@vtext.com"
+    #         } else if(input$carrier == "AT&T") {
+    #             carrier_email <- "@txt.att.net"
+    #         } else if(input$carrier == "Sprint") {
+    #             carrier_email <- "@messaging.sprintpcs.com"
+    #         } else if(input$carrier == "T-Mobile") {
+    #             carrier_email <- "@tmomail.net"
+    #         }
+    #
+    #         p_number <- parse_number(input$phone_number, locale = locale(grouping_mark = "-"))
+    #
+    #         email <- paste0(phone_number, carrier_email)
+    #
+    #         new_user$data <- rbind(new_user$data, data_frame(phone_number = email, choices = input$number)) # need to figure out how to paste choices
+    #
+    #         shinyalert("Message sent", type = "success")
+    #
+    #     })
 }
