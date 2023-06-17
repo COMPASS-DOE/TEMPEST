@@ -666,13 +666,17 @@ server <- function(input, output) {
 
                 email <- paste0(phone_number, carrier_email)
 
-                text_msg <- gm_mime() %>%
-                    gm_to(email) %>%
-                    gm_from("compassfme.tools@gmail.com") %>%
-                    gm_text_body(msg) # CHANGE THIS
+               # Wrap this in a try so that if not authorized the app doesn't stop
+               try({
+                   text_msg <- gm_mime() %>%
+                       gm_to(email) %>%
+                       gm_from("compassfme.tools@gmail.com") %>%
+                       gm_text_body(msg) # CHANGE THIS
 
-                # need to add how often to send, right now only once
-                gm_send_message(text_msg)
+                   # need to add how often to send, right now only once
+
+                   gm_send_message(text_msg)
+               })
             }
 
 
