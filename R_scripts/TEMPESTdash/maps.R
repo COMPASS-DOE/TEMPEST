@@ -19,8 +19,9 @@ readr::read_csv("design_doc_copies/inventory copy.csv") %>%
     map_tree_data
 
 # Mapping from sapflow to trees
-sapflow_inv <- readr::read_csv("design_doc_copies/sapflow_inventory copy.csv") %>%
-    select(Tree_Code, Tag)
+readr::read_csv("design_doc_copies/sapflow_inventory copy.csv", col_types = "ccdcdddclc") %>%
+    select(Tree_Code, Tag) ->
+    sapflow_inv
 
 # Do the compass rose transparency and rotation calculations (plot-specific) once and store
 library(magick)
@@ -177,11 +178,15 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
             filter(Plot == plot_name) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             sbs
+        sbs$Tree_Code[sbs$Out_Of_Plot] <- paste(sbs$Tree_Code[sbs$Out_Of_Plot], "\n[OUT]")
+
         sapflow_data %>%
-            distinct(Plot, Tree_Code, Grid_Square) %>%
+            distinct(Plot, Tree_Code, Grid_Square, Out_Of_Plot) %>%
             filter(Plot == plot_name, !Tree_Code %in% sbs$Tree_Code) %>%
             mutate(x = substr(Grid_Square, 1, 1), y = substr(Grid_Square, 2, 2)) ->
             sdat
+        sdat$Tree_Code[sdat$Out_Of_Plot] <- paste(sdat$Tree_Code[sdat$Out_Of_Plot], "\n[OUT]")
+
         p <- p + geom_text(data = sdat,
                            na.rm = TRUE,
                            position = position_jitter(seed = 1234),

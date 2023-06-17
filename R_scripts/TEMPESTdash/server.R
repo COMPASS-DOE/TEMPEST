@@ -51,7 +51,7 @@ server <- function(input, output) {
                                                      left_limit = SAPFLOW_RANGE[1],
                                                      right_limit = SAPFLOW_RANGE[2])) %>%
             filter(bad_sensor) %>%
-            select(Plot, Tree_Code, Logger, Grid_Square) %>%
+            select(Plot, Tree_Code, Logger, Grid_Square, Out_Of_Plot) %>%
             distinct(Tree_Code, Logger, .keep_all = TRUE) ->
             sapflow_bad_sensors
 
