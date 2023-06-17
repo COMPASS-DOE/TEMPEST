@@ -10,7 +10,7 @@ set.seed(7)
 
 process_teros <- function(token, datadir) {
 
-    teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
+    teros_inventory <- read_csv("design_doc_copies/TEROS_Network_Location copy.csv")
 
     if(!is.null(getDefaultReactiveDomain())) {
         progress <- incProgress

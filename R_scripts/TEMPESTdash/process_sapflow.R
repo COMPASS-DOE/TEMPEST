@@ -16,7 +16,7 @@ library(compasstools)
 
 set.seed(7)
 # This only needs to be done once
-sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "ccdcdddcc")
+sf_inventory <- read_csv("design_doc_copies/sapflow_inventory copy.csv", col_types = "ccdcdddcc")
 
 process_sapflow <- function(token, datadir) {
 

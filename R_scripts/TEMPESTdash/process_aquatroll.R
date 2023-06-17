@@ -23,7 +23,7 @@ process_aquatroll <- function(token, datadir) {
     change_IDs <- c("PNNL_13", "PNNL_23", "PNNL_32")
     change_instrument <- "TROLL600"
 
-    troll_inventory <- read_csv("aquatroll_inventory copy.csv")
+    troll_inventory <- read_csv("design_doc_copies/aquatroll_inventory copy.csv")
 
     atroll <- compasstools::process_aquatroll_dir(datadir, "EST",
                                                   dropbox_token = token,
