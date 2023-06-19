@@ -129,7 +129,7 @@ ui <- dashboardPage(
                 tabName = "battery",
                 dataTableOutput("btable")
             ),
-            mapsTabUI("mapsTab"),
+            mapsUI("mapsTab"),
             tabItem(
                 tabName = "alerts",
                 h3("Coming Soon!!")

@@ -128,8 +128,6 @@ server <- function(input, output) {
             summarise(flag_sensors(BattV_Avg, limits = VOLTAGE_RANGE)) ->
             battery_bdg
 
-
-
         # Return data and badge information
         list(sapflow = sapflow,
              sapflow_filtered = sapflow_filtered,
@@ -515,35 +513,11 @@ server <- function(input, output) {
     })
 
     # ------------------ Maps tab -----------------------------
+    statusmap <- mapsServer("mapsTab", STATUS_MAP = TRUE)
+    output$status_map <- renderPlot(statusmap())
+    datamap <- mapsServer("mapsTab", STATUS_MAP = FALSE)
+    output$data_map <- renderPlot(datamap())
 
-    output$status_map <- renderPlot({
-        make_plot_map(STATUS_MAP = TRUE,
-                      data_map_variable = input$data_map_variable,
-                      teros_depth = input$teros_depth,
-                      plot_name = input$map_plot,
-                      map_overlays = input$map_overlays,
-                      map_items = input$mapitems,
-                      sapflow_data = reactive_df()$sapflow_filtered,
-                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
-                      teros_data = reactive_df()$teros,
-                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
-                      aquatroll_data = reactive_df()$aquatroll_filtered,
-                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
-    })
-    output$data_map <- renderPlot({
-        make_plot_map(STATUS_MAP = FALSE,
-                      data_map_variable = input$data_map_variable,
-                      teros_depth = input$teros_depth,
-                      plot_name = input$map_plot,
-                      map_overlays = input$map_overlays,
-                      map_items = input$mapitems,
-                      sapflow_data = reactive_df()$sapflow_filtered,
-                      sapflow_bad_sensors = reactive_df()$sapflow_bad_sensors,
-                      teros_data = reactive_df()$teros,
-                      teros_bad_sensors = reactive_df()$teros_bad_sensors,
-                      aquatroll_data = reactive_df()$aquatroll_filtered,
-                      aquatroll_bad_sensors = reactive_df()$aquatroll_bad_sensors)
-    })
 
     # ------------------ Dashboard badges -----------------------------
 

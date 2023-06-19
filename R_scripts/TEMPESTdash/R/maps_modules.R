@@ -1,32 +1,31 @@
 # Test modules
 
-mapsTabUI <- function(id) {
-    # `NS(id)` returns a namespace function, which was save as `ns` and will
-    # invoke later.
+mapsUI <- function(id) {
+    # `NS(id)` returns a namespace function
     ns <- NS(id)
 
     tabItem(
         tabName = "maps",
-        selectInput("map_plot",
+        selectInput(ns("plot_name"),
                     "Plot:",
                     choices = c("Control", "Freshwater", "Saltwater", "Shoreline"),
                     selected = "Control"),
-        radioGroupButtons("mapitems",
+        radioGroupButtons(ns("map_items"),
                           label = "Data to show:",
                           choices = c("Sapflow status" = "map_sapflow",
                                       "TEROS status" = "map_teros"),
                           selected = "map_teros"),
-        checkboxGroupInput("map_overlays",
+        checkboxGroupInput(ns("map_overlays"),
                            label = "Overlay:",
                            choices = c("Compass rose" = "map_rose", "Trees" = "map_trees"),
                            selected = "map_rose",
                            inline = TRUE),
         plotOutput("status_map", height = "600px"),
-        selectInput("data_map_variable",
+        selectInput(ns("data_map_variable"),
                     "TEROS variable:",
                     choices = c("TSOIL", "VWC", "EC"),
                     selected = "VWC"),
-        selectInput("teros_depth",
+        selectInput(ns("teros_depth"),
                     "TEROS depth:",
                     choices = c("All", "5", "15", "30"),
                     selected = "All"),
@@ -34,6 +33,37 @@ mapsTabUI <- function(id) {
     )
 }
 
+
+# id, STATUS_MAP (a flag), and dd (dashboard data, outside of the maps namespace)
+# see https://shiny.posit.co/r/articles/improve/modules/
+mapsServer <- function(id, STATUS_MAP) {
+    moduleServer(
+        id,
+        ## Below is the module function
+        function(input, output, session) {
+            x <- reactive({
+                input$plot_name
+            })
+            plt <- reactive({
+                ggplot(cars, aes(speed, dist)) + ggtitle(paste(x(), STATUS_MAP))
+
+            })
+
+            return(plt)
+            # make_plot_map(STATUS_MAP,
+            #               data_map_variable = reactive(input$data_map_variable()),
+            #               teros_depth = reactive(input$teros_depth()),
+            #               plot_name = reactive(input$plot_name()),
+            #               map_overlays = input$map_overlays,
+            #               map_items = reactive(input$map_items()))#,
+                          # sapflow_data = dd$sapflow_data,
+                          # sapflow_bad_sensors = dd$sapflow_bad_sensors,
+                          # teros_data = dd$teros_data,
+                          # teros_bad_sensors = dd$teros_bad_sensors,
+                          # aquatroll_data = dd$aquatroll_data,
+                          # aquatroll_bad_sensors = dd$aquatroll_bad_sensors)
+        })
+}
 
 
 library(tibble)
@@ -72,6 +102,7 @@ for(i in seq_len(nrow(plot_info))) {
     roses[[plot_info$plot[i]]] <- magick::image_transparent(img, color = "white")
 }
 
+
 # Main plotting function
 make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
                           plot_name,
@@ -79,7 +110,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
                           map_items,
                           sapflow_data,
                           sapflow_bad_sensors,
-                          teros_data, # TEROS data loaded by the reactive d.f.
+                          teros_data,
                           teros_bad_sensors,
                           aquatroll_data,
                           aquatroll_bad_sensors) {
@@ -88,6 +119,8 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
     show_trees <- "map_trees" %in% map_overlays
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
+
+    return(ggplot())
 
     # Current time
     current_time <- with_tz(Sys.time(), tzone = "EST")
