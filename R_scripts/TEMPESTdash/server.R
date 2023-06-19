@@ -3,7 +3,6 @@
 
 source("global.R")
 source("flag_sensors.R")
-source("maps.R")
 
 server <- function(input, output) {
 
