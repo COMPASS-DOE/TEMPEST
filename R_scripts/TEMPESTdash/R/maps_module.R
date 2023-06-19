@@ -41,30 +41,45 @@ mapsServer <- function(id, STATUS_MAP) {
         id,
         ## Below is the module function
         function(input, output, session) {
-            x <- reactive({
+            data_map_variable <- reactive({
+                input$data_map_variable
+            })
+            teros_depth <- reactive({
+                input$teros_depth
+            })
+            plot_name <- reactive({
                 input$plot_name
             })
-            plt <- reactive({
-                ggplot(cars, aes(speed, dist)) + ggtitle(paste(x(), STATUS_MAP))
-
+            map_overlays <- reactive({
+                input$map_overlays
             })
+            map_items <- reactive({
+                input$map_items
+            })
+            # plt <- reactive({
+            #     ggplot(cars, aes(speed, dist)) + ggtitle(paste(plot_name(), STATUS_MAP))
+            #
+            # })
 
+            plt <- reactive({
+                make_plot_map(STATUS_MAP,
+                              data_map_variable = data_map_variable(),
+                              teros_depth = teros_depth(),
+                              plot_name = plot_name(),
+                              map_overlays = map_overlays(),
+                              map_items = map_items())
+                # sapflow_data = dd$sapflow_data,
+                # sapflow_bad_sensors = dd$sapflow_bad_sensors,
+                # teros_data = dd$teros_data,
+                # teros_bad_sensors = dd$teros_bad_sensors,
+                # aquatroll_data = dd$aquatroll_data,
+                # aquatroll_bad_sensors = dd$aquatroll_bad_sensors)
+                #})
+            })
             return(plt)
-            # make_plot_map(STATUS_MAP,
-            #               data_map_variable = reactive(input$data_map_variable()),
-            #               teros_depth = reactive(input$teros_depth()),
-            #               plot_name = reactive(input$plot_name()),
-            #               map_overlays = input$map_overlays,
-            #               map_items = reactive(input$map_items()))#,
-                          # sapflow_data = dd$sapflow_data,
-                          # sapflow_bad_sensors = dd$sapflow_bad_sensors,
-                          # teros_data = dd$teros_data,
-                          # teros_bad_sensors = dd$teros_bad_sensors,
-                          # aquatroll_data = dd$aquatroll_data,
-                          # aquatroll_bad_sensors = dd$aquatroll_bad_sensors)
+
         })
 }
-
 
 library(tibble)
 
@@ -120,7 +135,7 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
 
-    return(ggplot())
+    return(ggplot() + ggtitle(paste(STATUS_MAP, plot_name, show_rose)))
 
     # Current time
     current_time <- with_tz(Sys.time(), tzone = "EST")
@@ -132,11 +147,11 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
 
     pinfo <- plot_info[plot_info$plot == plot_name,]
 
-    # If A is not lower left reverse x factor levels
+    # If A is not lower left, reverse x factor levels
     if(substr(pinfo$lower_left, 1, 1) != "A") {
         plot_dat$x <- factor(plot_dat$x, levels = rev(levels(plot_dat$x)))
     }
-    # If 1 is not lower left reverse y factor levels
+    # If 1 is not lower left, reverse y factor levels
     if(substr(pinfo$lower_left, 2, 2) != "1") {
         plot_dat$y <- factor(plot_dat$y, levels = rev(levels(plot_dat$y)))
     }
