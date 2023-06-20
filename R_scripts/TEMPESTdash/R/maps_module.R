@@ -1,4 +1,4 @@
-# Test modules
+# Maps module
 
 mapsUI <- function(id) {
     # `NS(id)` returns a namespace function
@@ -34,19 +34,14 @@ mapsUI <- function(id) {
 }
 
 
-# id, STATUS_MAP (a flag), and dd (dashboard data, outside of the maps namespace)
+# Parameters: id, STATUS_MAP (a flag), and dd (dashboard data, outside of the maps namespace)
 # see https://shiny.posit.co/r/articles/improve/modules/
-mapsServer <- function(id, STATUS_MAP) {
+mapsServer <- function(id, STATUS_MAP, dd) {
     moduleServer(
         id,
         ## Below is the module function
         function(input, output, session) {
-            data_map_variable <- reactive({
-                input$data_map_variable
-            })
-            teros_depth <- reactive({
-                input$teros_depth
-            })
+            # Get the reactive inputs
             plot_name <- reactive({
                 input$plot_name
             })
@@ -56,30 +51,35 @@ mapsServer <- function(id, STATUS_MAP) {
             map_items <- reactive({
                 input$map_items
             })
-            # plt <- reactive({
-            #     ggplot(cars, aes(speed, dist)) + ggtitle(paste(plot_name(), STATUS_MAP))
-            #
-            # })
+            data_map_variable <- reactive({
+                input$data_map_variable
+            })
+            teros_depth <- reactive({
+                input$teros_depth
+            })
 
+            # Generate the plot and return it
             plt <- reactive({
                 make_plot_map(STATUS_MAP,
                               data_map_variable = data_map_variable(),
                               teros_depth = teros_depth(),
                               plot_name = plot_name(),
                               map_overlays = map_overlays(),
-                              map_items = map_items())
-                # sapflow_data = dd$sapflow_data,
-                # sapflow_bad_sensors = dd$sapflow_bad_sensors,
-                # teros_data = dd$teros_data,
-                # teros_bad_sensors = dd$teros_bad_sensors,
-                # aquatroll_data = dd$aquatroll_data,
-                # aquatroll_bad_sensors = dd$aquatroll_bad_sensors)
-                #})
+                              map_items = map_items(),
+                              sapflow_data = dd$sapflow_filtered,
+                              sapflow_bad_sensors = dd$sapflow_bad_sensors,
+                              teros_data = dd$teros_filtered,
+                              teros_bad_sensors = dd$teros_bad_sensors,
+                              aquatroll_data = dd$aquatroll_filtered,
+                              aquatroll_bad_sensors = dd$aquatroll_bad_sensors)
             })
             return(plt)
 
         })
 }
+
+
+# Below here is the code from the old maps.R file
 
 library(tibble)
 
@@ -134,8 +134,6 @@ make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
     show_trees <- "map_trees" %in% map_overlays
     show_teros <- "map_teros" %in% map_items
     show_sapflow <- "map_sapflow" %in% map_items
-
-    return(ggplot() + ggtitle(paste(STATUS_MAP, plot_name, show_rose)))
 
     # Current time
     current_time <- with_tz(Sys.time(), tzone = "EST")

@@ -513,9 +513,9 @@ server <- function(input, output) {
     })
 
     # ------------------ Maps tab -----------------------------
-    statusmap <- mapsServer("mapsTab", STATUS_MAP = TRUE)
+    statusmap <- mapsServer("mapsTab", STATUS_MAP = TRUE, dd = reactive_df())
     output$status_map <- renderPlot(statusmap())
-    datamap <- mapsServer("mapsTab", STATUS_MAP = FALSE)
+    datamap <- mapsServer("mapsTab", STATUS_MAP = FALSE, dd = reactive_df())
     output$data_map <- renderPlot(datamap())
 
 
