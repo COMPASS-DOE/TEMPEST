@@ -1,5 +1,9 @@
 # Maps module
 
+# The module’s UI function
+# The first argument to a UI function should always be `id`.
+# This is the namespace for the module.
+# https://shiny.posit.co/r/articles/improve/modules/
 mapsUI <- function(id) {
     # `NS(id)` returns a namespace function
     ns <- NS(id)
@@ -34,7 +38,8 @@ mapsUI <- function(id) {
 }
 
 
-# Parameters: id, STATUS_MAP (a flag), and dd (dashboard data, outside of the maps namespace)
+# Module server function - a fragment of server logic
+# Parameters: id, STATUS_MAP (a flag), and dd (dashboard data, outside of the maps module namespace)
 # see https://shiny.posit.co/r/articles/improve/modules/
 mapsServer <- function(id, STATUS_MAP, dd) {
     moduleServer(
@@ -61,11 +66,13 @@ mapsServer <- function(id, STATUS_MAP, dd) {
             # Generate the plot and return it
             plt <- reactive({
                 make_plot_map(STATUS_MAP,
+                              # inputs from the UI
                               data_map_variable = data_map_variable(),
                               teros_depth = teros_depth(),
                               plot_name = plot_name(),
                               map_overlays = map_overlays(),
                               map_items = map_items(),
+                              # inputs from the Dropbox data
                               sapflow_data = dd$sapflow_filtered,
                               sapflow_bad_sensors = dd$sapflow_bad_sensors,
                               teros_data = dd$teros_filtered,
@@ -119,10 +126,14 @@ for(i in seq_len(nrow(plot_info))) {
 
 
 # Main plotting function
-make_plot_map <- function(STATUS_MAP, data_map_variable, teros_depth,
+make_plot_map <- function(STATUS_MAP,
+                          # inputs from the UI
+                          data_map_variable,
+                          teros_depth,
                           plot_name,
                           map_overlays,
                           map_items,
+                          # inputs from the Dropbox data
                           sapflow_data,
                           sapflow_bad_sensors,
                           teros_data,
