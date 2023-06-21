@@ -15,6 +15,8 @@ if(!require("compasstools")) {
 library(compasstools)
 
 set.seed(7)
+# This only needs to be done once
+sf_inventory <- read_csv("design_doc_copies/sapflow_inventory copy.csv", col_types = "ccdcdddclc")
 
 process_sapflow <- function(token, datadir) {
 
@@ -25,13 +27,11 @@ process_sapflow <- function(token, datadir) {
     }
 
     sf_raw <- compasstools::process_sapflow_dir(datadir, tz = "EST",
-                                                      token, progress)
-    sf_inventory <- read_csv("sapflow_inventory copy.csv", col_types = "cdcdddcD")
-
+                                                token, progress)
     sf_raw %>%
         left_join(sf_inventory, by = c("Logger", "Port")) %>%
-        filter(!is.na(Tree_Code)) %>% #remove ports that dont have any sensors
-        select(Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid_Square, Species, Installation_Date) %>%
+        filter(!is.na(Tree_Code)) %>% # remove ports that don't have any sensors
+        select(Plot, Timestamp, Record, BattV_Avg, Port, Value, Logger, Tree_Code, Grid_Square, Out_Of_Plot, Species, Installation_Date) %>%
         mutate(Deep_Sensor = grepl("D", Tree_Code),
                Grid_Letter = substring(Grid_Square, 1, 1),
                Grid_Number = substring(Grid_Square, 2, 2)) -> sapflow
@@ -48,12 +48,5 @@ process_sapflow <- function(token, datadir) {
     # Add some extra time information
     sapflow %>%
         mutate(Date = as.Date(Timestamp),
-               Hour = hour(Timestamp) + minute(Timestamp) / 60,
-               Plot = substr(Tree_Code, 1, 1),
-               Plot = case_when(Plot == "F" ~ "Freshwater",
-                                Plot == "C" ~ "Control",
-                                Plot == "S" ~ "Saltwater",
-                                Plot == "L" ~ "Shoreline"))
-
-    #write_csv(sapflow, "~/Documents/GitHub/COMPASS-DOE/TEMPEST/Data/sapflow/sapflow.csv")
+               Hour = hour(Timestamp) + minute(Timestamp) / 60)
 }

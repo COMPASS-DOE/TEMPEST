@@ -20,6 +20,13 @@ source("process_aquatroll.R")
 
 TESTING <- FALSE
 
+TEXT_MSG_USERS <- tribble(
+    ~name,     ~number,       ~carrier,
+    "SP",      "3016063322",  "Verizon",
+    "BBL",     "6086582217",  "T-Mobile",
+    "AMP",     "5203491898",  "Verizon",
+    "Julia",   "8644205609",  "Verizon"
+)
 
 # The server normally accesses the SERC Dropbox to download data
 # If we are TESTING, however, skip this and use local test data only
@@ -30,12 +37,9 @@ if(!TESTING) {
 }
 last_update <- NA
 
-GRAPH_TIME_WINDOW <- 3 * 24   # hours back from present
+GRAPH_TIME_WINDOW <- 24   # hours back from present
 GRAPH_TIME_INTERVAL <- "15 minutes"  # used by round_date in graphs
 FLAG_TIME_WINDOW <- 1         # hours back from present
-EVENT_START <- as_datetime("2022-12-02 06:30:00", tz = "EST")
-EVENT_STOP <- as_datetime("2022-12-02 16:30:00", tz = "EST")
-EVENT_HOURS <- as.numeric(difftime(EVENT_STOP, EVENT_START, units = "hours"))
 
 NO_DATA_GRAPH <- ggplot() +
     annotate("text", x = 1, y = 1, label = "(No data)", size = 12) +
@@ -43,8 +47,3 @@ NO_DATA_GRAPH <- ggplot() +
           axis.text  = element_blank(),
     )
 
-SAPFLOW_EVENT_RECT <- geom_rect(aes(xmin = EVENT_START, xmax = EVENT_STOP,
-                                    ymin = min(SAPFLOW_RANGE), ymax = max(SAPFLOW_RANGE)),
-                                fill = "#BBE7E6",
-                                alpha = 0.7,
-                                col = "#BBE7E6")

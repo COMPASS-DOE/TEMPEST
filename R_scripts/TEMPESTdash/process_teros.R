@@ -10,7 +10,7 @@ set.seed(7)
 
 process_teros <- function(token, datadir) {
 
-    teros_inventory <- read_csv("TEROS_Network_Location copy.csv")
+    teros_inventory <- read_csv("design_doc_copies/TEROS_Network_Location copy.csv")
 
     if(!is.null(getDefaultReactiveDomain())) {
         progress <- incProgress
@@ -26,7 +26,8 @@ process_teros <- function(token, datadir) {
                                           "Data_Table_ID" = "Terosdata table channel")) %>%
         select(- `Date of Last Field Check`) %>%
         rename("Active_Date" = "Date Online (2020)",
-               "Grid_Square" = "Grid Square") ->
+               "Grid_Square" = "Grid Square") %>%
+        filter(!is.na(ID)) ->
         teros
 
     nomatch <- anti_join(teros, teros_inventory, by = c("Logger" = "Data Logger ID",
