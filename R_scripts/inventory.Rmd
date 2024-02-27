@@ -24,8 +24,36 @@ theme_set(theme_bw())
 
 ```{r process-inventory}
 inv <- read_csv("../Data/tree_inventory/inventory.csv",
-                col_types = "ccdcdDccdDcDdcDdcDdclcc")
-
+                col_types = cols(
+                    Plot = col_character(),
+                    Section = col_character(),
+                    Tag = col_double(),
+                    Grid = col_character(),
+                    DBH_2019 = col_double(),
+                    Date_2019 = col_date(format = ""),
+                    Species_code = col_character(),
+                    Status_2019 = col_character(),
+                    DBH_2020 = col_double(),
+                    Date_2020 = col_date(format = ""),
+                    Status_2020 = col_character(),
+                    Date_2021 = col_date(format = ""),
+                    DBH_2021 = col_double(),
+                    Status_2021 = col_character(),
+                    Date_2022 = col_date(format = ""),
+                    DBH_2022 = col_double(),
+                    Status_2022 = col_character(),
+                    Date_2023 = col_date(format = ""),
+                    DBH_2023 = col_double(),
+                    Status_2023 = col_character(),
+                    Date_2024 = col_date(format = ""),
+                    DBH_2024 = col_double(),
+                    Status_2024 = col_character(),
+                    In_Plot = col_logical(),
+                    Notes = col_character(),
+                    JS_codes = col_character()
+                )
+)
+                
 genera <- read_csv("../Data/tree_inventory/species-genera.csv", 
                    col_types = "cc")
 
