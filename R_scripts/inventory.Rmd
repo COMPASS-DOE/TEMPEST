@@ -207,6 +207,12 @@ inv_long %>%
               .groups = "drop") ->
     species_mix
 
+species_mix %>% 
+    filter(Year == max(Year)) %>% 
+    group_by(Plot) %>% 
+    mutate(BA_frac = BA / sum(BA)) %>% 
+    knitr::kable(caption = "Basal area by plot and species")
+
 # Live trees DBH
 ggplot(species_mix, aes(Year, BA, fill = Genus)) +
     geom_area(position="stack") +
