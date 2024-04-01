@@ -8,15 +8,15 @@ name: Render Rmarkdown files
 jobs:
   render:
     name: Render Rmarkdown files
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: r-lib/actions/setup-r@v1
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-pandoc@v2
       - name: Install needed packages
         run: |
           install.packages(c("remotes", "readr", "lubridate", "dplyr", "readr", "tidyr", "ggplot2", "plotly", "kableExtra", "skimr", "Kendall", "DT"))
