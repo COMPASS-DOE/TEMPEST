@@ -207,7 +207,7 @@ inv_long %>%
               .groups = "drop") ->
     species_mix
 
-# A table
+# Make a table of fractional BA
 species_mix %>% 
     filter(Year == max(Year)) %>% 
     group_by(Plot) %>% 
