@@ -214,7 +214,7 @@ species_mix %>%
     mutate(BA_frac = BA / sum(BA)) %>% 
     knitr::kable(caption = "Basal area by plot and species")
 
-# Live trees DBH
+# Live trees BA
 ggplot(species_mix, aes(Year, BA, fill = Genus)) +
     geom_area(position="stack") +
     facet_grid(Plot~.)
