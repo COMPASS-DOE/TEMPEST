@@ -12,6 +12,12 @@ library(tidyverse)
 library(googlesheets4)
 theme_set(theme_bw())
 
+recode_days <- function(dat){
+    dat %>%
+        mutate(timepoint = str_replace(timepoint, "T", "day "),
+               timepoint = recode(timepoint, "day 3A" = "day 3 (am)", "day 3B" = "day 3 (pm)"))
+}
+
 # set a dataframe for labelling the flood events
 flood_label <-
     tribble(
@@ -23,16 +29,12 @@ flood_label <-
     ) %>%
     recode_days(.)
 
-recode_days <- function(dat){
-    dat %>%
-        mutate(timepoint = str_replace(timepoint, "T", "day "),
-               timepoint = recode(timepoint, "day 3A" = "day 3 (am)", "day 3B" = "day 3 (pm)"))
-}
+
 
 
 #
 # Tree GHG fluxes ---------------------------------------------------------
-tree_flux <- read_sheet("1IsnDv34SwgniJIkGiV7zRldr6zyIoZXjRXI7mmVFWwI")
+tree_flux <- read_sheet("https://docs.google.com/spreadsheets/d/1IsnDv34SwgniJIkGiV7zRldr6zyIoZXjRXI7mmVFWwI/edit#gid=0")
 tree_flux2 <-
     tree_flux %>%
     mutate(plot = tolower(plot),
