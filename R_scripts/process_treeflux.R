@@ -20,8 +20,6 @@ read_file <- function(f) {
 lapply(files, read_file) %>%
   bind_rows() -> tree_data_raw
 
-tree_data_one <- tree_data_raw[1:650,]
-
 #read in metadata
 meta22 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata22.csv ")
 meta23 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata23.csv ")
@@ -47,15 +45,76 @@ meta23 %>%
            collection_date = date(start_timestamp),
            obs_lengths = 600) -> meta_dat23
 
+#plot one slope
+library(ggplot2)
+
+#create single licor file for testing
+tree_data_raw %>%
+    filter(File == "TG10-01028-2022-06-19T000000_Nick.data") -> Nick
+
+head(Nick$TIMESTAMP)
+
+#try to filter to first sampling window
+Nick %>%
+    filter(TIMESTAMP < "2022-06-20 9:20:00 EDT",
+           TIMESTAMP > "2022-06-20 9:45:00 EDT") -> Nick_org_morning
+#this data does not exist in the original data
+ggplot(Nick_org_morning, aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() + ggtitle("org Morning")
+
+#believe the scanned sheet which says instrument was on Pacific time
+
+Nick %>%
+    mutate(TIMESTAMP = TIMESTAMP - hours(3)) %>%
+    filter(TIMESTAMP < "2022-06-20 10:00:00 EDT",
+           TIMESTAMP > "2022-06-20 9:20:00 EDT") -> Nick_adj_morning
+
+ggplot(Nick_adj_morning, aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() + ggtitle("Adj Morning")
+
+#believe the licor data which says instrument is in EDT
+#AND the scanned sheet which says start and stop times are in EST
+
+Nick %>%
+    mutate(TIMESTAMP = TIMESTAMP - hours(1)) %>%
+    filter(TIMESTAMP < "2022-06-20 10:00:00 EDT",
+           TIMESTAMP > "2022-06-20 9:20:00 EDT") -> Nick_adj2_morning
+
+ggplot(Nick_adj2_morning, aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() + ggtitle("Adj2 Morning")
+
+
+
+
+#filter metadata
+meta_dat %>%
+    filter(collection_date == "2022-06-20",
+           end_timestamp < "2022-06-20 12:00:00 EDT",
+           plot == "Seawater") -> first_day22_seawater
+
+
+ggplot(Nick[1:11000,], aes(x = TIMESTAMP, y = CH4)) +
+    ylim(1950, 2100) +
+    geom_point() + ggtitle("Warm-Up?")
+
+
+ggplot(Nick_EST[10000:11800,], aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() + ggtitle("Warm-Up?")
+
+ggplot(Nick_EST[11875:12500,], aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() + ggtitle("First Slope?")
+
+
+
 #this would be a good place for some defensive programming
 #script should stop is start/end_timestamp and collection_date aren't correctly converted
 
 meta_dat <- bind_rows(meta_dat22, meta_dat23)
 
+meta_dat %>%
+    arrange(start_timestamp) -> meta_dat
 
-#create single licor file for testing
-tree_data_raw %>%
-    filter(File == "TG10-01448-2023-06-04T050000_Mike.data") -> mike
+
 
 #mike_w_meta <-
 ffi_metadata_match(
