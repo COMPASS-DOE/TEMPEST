@@ -24,26 +24,39 @@ lapply(files, read_file) %>%
 meta22 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata22.csv ")
 meta23 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata23.csv ")
 
+library(stringr)
+
 meta22 %>%
     mutate(start_string = paste(collection_date, start_time),
            start_timestamp = as.POSIXct(start_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
-           start_clock = hm(start_time),
+           start_clock = paste0(start_time, ":00"),
+           start_clock = str_pad(start_clock, width=8, side="left", pad="0"),
            end_string = paste(collection_date, end_time),
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            collection_date = date(start_timestamp),
-           obs_lengths = 600) -> meta_dat22
+           obs_lengths = 240) -> meta_dat22
 
 meta23 %>%
     mutate(start_string = paste(collection_date, start_time),
            start_timestamp = as.POSIXct(start_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            start_timestamp = start_timestamp - hours(1), #2023 metadata recorded in EDT
-           start_clock = hm(start_time),
-           start_clock = start_clock - hours(1),
+           start_clock = paste0(start_time, ":00"),
+           start_clock = str_pad(start_clock, width=8, side="left", pad="0"),
+           #start_clock = hms(start_clock),
+           #start_clock = start_clock - hours(1),
            end_string = paste(collection_date, end_time),
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            end_timestamp = end_timestamp - hours(1),
            collection_date = date(start_timestamp),
-           obs_lengths = 600) -> meta_dat23
+           obs_lengths = 240) -> meta_dat23
+
+#this would be a good place for some defensive programming
+#script should stop is start/end_timestamp and collection_date aren't correctly converted
+
+meta_dat <- bind_rows(meta_dat22, meta_dat23)
+meta_dat %>%
+    arrange(start_timestamp) -> meta_dat
+
 
 #plot one slope
 library(ggplot2)
@@ -54,74 +67,32 @@ tree_data_raw %>%
 
 head(Nick$TIMESTAMP)
 
-#try to filter to first sampling window
+# filter to one day
 Nick %>%
-    filter(TIMESTAMP < "2022-06-20 9:20:00 EDT",
-           TIMESTAMP > "2022-06-20 9:45:00 EDT") -> Nick_org_morning
-#this data does not exist in the original data
-ggplot(Nick_org_morning, aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() + ggtitle("org Morning")
+    filter(date(TIMESTAMP) == "2022-06-20"
+           #TIMESTAMP < "2022-06-20 13:10:00 EDT",
+           #TIMESTAMP > "2022-06-20 12:45:00 EDT"
+           ) -> Nick_pre_treatment
 
-#believe the scanned sheet which says instrument was on Pacific time
-
-Nick %>%
-    mutate(TIMESTAMP = TIMESTAMP - hours(3)) %>%
-    filter(TIMESTAMP < "2022-06-20 10:00:00 EDT",
-           TIMESTAMP > "2022-06-20 9:20:00 EDT") -> Nick_adj_morning
-
-ggplot(Nick_adj_morning, aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() + ggtitle("Adj Morning")
-
-#believe the licor data which says instrument is in EDT
-#AND the scanned sheet which says start and stop times are in EST
-
-Nick %>%
-    mutate(TIMESTAMP = TIMESTAMP - hours(1)) %>%
-    filter(TIMESTAMP < "2022-06-20 10:00:00 EDT",
-           TIMESTAMP > "2022-06-20 9:20:00 EDT") -> Nick_adj2_morning
-
-ggplot(Nick_adj2_morning, aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() + ggtitle("Adj2 Morning")
-
-
+ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() +
+    ylim(1950, 2050) +
+    ggtitle("Seawater PreTreatment")
 
 
 #filter metadata
 meta_dat %>%
     filter(collection_date == "2022-06-20",
-           end_timestamp < "2022-06-20 12:00:00 EDT",
            plot == "Seawater") -> first_day22_seawater
 
 
-ggplot(Nick[1:11000,], aes(x = TIMESTAMP, y = CH4)) +
-    ylim(1950, 2100) +
-    geom_point() + ggtitle("Warm-Up?")
 
-
-ggplot(Nick_EST[10000:11800,], aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() + ggtitle("Warm-Up?")
-
-ggplot(Nick_EST[11875:12500,], aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() + ggtitle("First Slope?")
-
-
-
-#this would be a good place for some defensive programming
-#script should stop is start/end_timestamp and collection_date aren't correctly converted
-
-meta_dat <- bind_rows(meta_dat22, meta_dat23)
-
-meta_dat %>%
-    arrange(start_timestamp) -> meta_dat
-
-
-
-#mike_w_meta <-
+nick_first_day_w_meta <-
 ffi_metadata_match(
-    data_timestamps = mike$TIMESTAMP,
-    start_dates = meta_dat[meta_dat$collection_date == "2023-06-04",]$start_timestamp,
-    start_times = meta_dat[meta_dat$collection_date == "2023-06-04",]$start_clock,
-    obs_lengths = meta_dat[meta_dat$collection_date == "2023-06-04",]$obs_lengths
+    data_timestamps = Nick_pre_treatment$TIMESTAMP,
+    start_dates = first_day22_seawater$start_timestamp,
+    start_times = first_day22_seawater$start_clock,
+    obs_lengths = first_day22_seawater$obs_lengths
 )
 #returns
 #Error in ffi_metadata_match(data_timestamps = mike$TIMESTAMP, start_dates = meta_dat[meta_dat$collection_date ==  :
