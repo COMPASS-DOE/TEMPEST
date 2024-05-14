@@ -34,7 +34,7 @@ meta22 %>%
            end_string = paste(collection_date, end_time),
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            collection_date = date(start_timestamp),
-           obs_lengths = 240) -> meta_dat22
+           obs_lengths = 120) -> meta_dat22
 
 meta23 %>%
     mutate(start_string = paste(collection_date, start_time),
@@ -48,7 +48,7 @@ meta23 %>%
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            end_timestamp = end_timestamp - hours(1),
            collection_date = date(start_timestamp),
-           obs_lengths = 240) -> meta_dat23
+           obs_lengths = 120) -> meta_dat23
 
 #this would be a good place for some defensive programming
 #script should stop is start/end_timestamp and collection_date aren't correctly converted
@@ -79,7 +79,6 @@ ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
     ylim(1950, 2050) +
     ggtitle("Seawater PreTreatment")
 
-
 #filter metadata
 meta_dat %>%
     filter(collection_date == "2022-06-20",
@@ -87,60 +86,21 @@ meta_dat %>%
 
 
 
-nick_first_day_w_meta <-
+Nick_pre_treatment$match <-
 ffi_metadata_match(
     data_timestamps = Nick_pre_treatment$TIMESTAMP,
-    start_dates = first_day22_seawater$start_timestamp,
+    start_dates = as.character(first_day22_seawater$collection_date),
     start_times = first_day22_seawater$start_clock,
     obs_lengths = first_day22_seawater$obs_lengths
 )
-#returns
-#Error in ffi_metadata_match(data_timestamps = mike$TIMESTAMP, start_dates = meta_dat[meta_dat$collection_date ==  :
-#start_timestamps overlaps: 2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 36, 37, 38, 40, 41, 42, 43, 45, 46, 47, 48, 49
 
-meta_dat %>%
-    filter(plot == "Freshwater") -> f_dat
+Nick_pre_treatment %>%
+    filter(! is.na(match)) -> matched_example
 
-#mike_w_meta <-
-ffi_metadata_match(
-    data_timestamps = mike$TIMESTAMP,
-    start_dates = f_dat[f_dat$collection_date == "2023-06-04",]$start_timestamp,
-    start_times = f_dat[f_dat$collection_date == "2023-06-04",]$start_clock,
-    obs_lengths = f_dat[f_dat$collection_date == "2023-06-04",]$obs_lengths
-) -> wtf
-#returns a large numeric element and a warning that there are 18 entries with no matches
-#element converted into a dataframe is a single column of NA the length of "mike"
-
-meta_dat %>%
-    filter(plot == "Control") -> c_dat
-
-#mike_w_meta <-
-ffi_metadata_match(
-    data_timestamps = mike$TIMESTAMP,
-    start_dates = c_dat[c_dat$collection_date == "2023-06-04",]$start_timestamp,
-    start_times = c_dat[c_dat$collection_date == "2023-06-04",]$start_clock,
-    obs_lengths = c_dat[c_dat$collection_date == "2023-06-04",]$obs_lengths
-) -> ugh
-#returns a large numeric element and a warning that there are 18 entries with no matches
-#element converted into a dataframe is a single column of NA the length of "mike"
-
-
-meta_dat %>%
-    filter(plot == "Seawater") -> s_dat
-
-#mike_w_meta <-
-ffi_metadata_match(
-    data_timestamps = mike$TIMESTAMP,
-    start_dates = s_dat[s_dat$collection_date == "2023-06-04",]$start_timestamp,
-    start_times = s_dat[s_dat$collection_date == "2023-06-04",]$start_clock,
-    obs_lengths = s_dat[s_dat$collection_date == "2023-06-04",]$obs_lengths
-) -> fingers_crossed
-
-#Error in ffi_metadata_match(data_timestamps = mike$TIMESTAMP, start_dates = s_dat[s_dat$collection_date ==  :
-#  start_timestamps overlaps: 5
-
-
-
+ggplot(matched_example, aes(x = TIMESTAMP, y = CH4, color = as.factor(match))) +
+    geom_point() +
+    ylim(1950, 2050) +
+    ggtitle("Seawater PreTreatment")
 
 
 
@@ -150,11 +110,11 @@ split(tree_data_raw, f = tree_data_raw$File) -> grouped_tree_data
 match_data <- function(m) {
     message("Matching ", m)
     ffi_metadata_match(data_timestamps = m$TIMESTAMP,
-                       start_dates = meta_dat$start_timestamp,
-                       start_times = hms(meta_dat$start_timestamp),
+                       start_dates = as.character(meta_dat$collection_date),
+                       start_times = meta_dat$start_clock,
                        obs_lengths = meta_dat$obs_lengths)
 }
 
-lapply(grouped_tree_data, match_data) -> tree_data_matched
+lapply(grouped_tree_data, match_data) -> tree_data_raw$matched
 
 #at some point will need to pull air temperature data
