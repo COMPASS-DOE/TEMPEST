@@ -14,3 +14,6 @@ R_scripts/TDash/tempfile.dat
 R_scripts/TEMPESTdash/tempfile.dat
 R_scripts/TEMPESTdash/tempfile.dat
 *.dat
+Data/tree_flux_licor/metadata & excel files/2022-06 TEMPEST Flood GHG Tree Flux.xlsx
+Data/tree_flux_licor/metadata & excel files/tree_flux_metadata22.csv
+Data/tree_flux_licor/metadata & excel files/tree_flux_metadata23.csv
