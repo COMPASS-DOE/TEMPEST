@@ -34,7 +34,7 @@ meta22 %>%
            end_string = paste(collection_date, end_time),
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            collection_date = date(start_timestamp),
-           obs_lengths = 120) -> meta_dat22
+           obs_lengths = 100) -> meta_dat22
 
 meta23 %>%
     mutate(start_string = paste(collection_date, start_time),
@@ -48,7 +48,7 @@ meta23 %>%
            end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
            end_timestamp = end_timestamp - hours(1),
            collection_date = date(start_timestamp),
-           obs_lengths = 120) -> meta_dat23
+           obs_lengths = 100) -> meta_dat23
 
 #this would be a good place for some defensive programming
 #script should stop is start/end_timestamp and collection_date aren't correctly converted
@@ -69,10 +69,10 @@ head(Nick$TIMESTAMP)
 
 # filter to one day
 Nick %>%
-    filter(date(TIMESTAMP) == "2022-06-20"
+    filter(#date(TIMESTAMP) == "2022-06-20"
            #TIMESTAMP < "2022-06-20 13:10:00 EDT",
            #TIMESTAMP > "2022-06-20 12:45:00 EDT"
-           ) -> Nick_pre_treatment
+           ) -> Nick_event1 #pre_treatment
 
 ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
     geom_point() +
@@ -81,10 +81,10 @@ ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
 
 #filter metadata
 meta_dat %>%
-    filter(collection_date == "2022-06-20",
-           plot == "Seawater") -> first_day22_seawater
-
-
+    filter(year(collection_date) == "2022",
+           plot == "Seawater") -> Event1_seawater
+Event1_seawater <- Event1_seawater[-80,]
+Event1_seawater <- Event1_seawater[-1,]
 
 Nick_pre_treatment$match <-
 ffi_metadata_match(
@@ -94,14 +94,40 @@ ffi_metadata_match(
     obs_lengths = first_day22_seawater$obs_lengths
 )
 
+Nick_event1$match <-
+    ffi_metadata_match(
+        data_timestamps = Nick_event1$TIMESTAMP,
+        start_dates = as.character(Event1_seawater$collection_date),
+        start_times = Event1_seawater$start_clock,
+        obs_lengths = Event1_seawater$obs_lengths
+    )
+
+Nick_event1 %>%
+    filter(! is.na(match)) -> Seawater_Event1_matched
+
+#need to add tree ids to each flux chunk
+Event1_seawater %>%
+    select(ID) %>%
+    mutate(match = 1:142) %>%
+    right_join(Seawater_Event1_matched, by = "match") -> Seawater_Event1_matched
+
 Nick_pre_treatment %>%
     filter(! is.na(match)) -> matched_example
+
 
 ggplot(matched_example, aes(x = TIMESTAMP, y = CH4, color = as.factor(match))) +
     geom_point() +
     ylim(1950, 2050) +
-    ggtitle("Seawater PreTreatment")
+    ggtitle("Seawater PreTreatment") +
+    facet_wrap(~as.factor(match), scales = "free_x")
 
+
+ggplot(Seawater_Event1_matched[Seawater_Event1_matched$ID == "S1",],
+       aes(x = TIMESTAMP, y = CH4)) +
+    geom_point() +
+    ylim(1950, 2050) +
+    ggtitle("Seawater TEMPEST II") +
+    facet_wrap(~date(TIMESTAMP), scales = "free")
 
 
 split(tree_data_raw, f = tree_data_raw$File) -> grouped_tree_data
