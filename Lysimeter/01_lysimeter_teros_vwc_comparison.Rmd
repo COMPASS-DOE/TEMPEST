@@ -1,0 +1,87 @@
+---
+title: "TEROS VWC at Lysimeter Locations"
+author: "AMP & SP"
+date: "`r Sys.Date()`"
+output: html_document
+---
+This script is to download from dropbox L0 TEROS data at the lysimeter locations and plot for the previous two weeks from date we're interested in sampling. It will also plot the VWC vs rain for a period of time. 
+
+Note, the dropbox refreshes each month. You will also need the TEMPEST github page mapped to your local drive.
+https://github.com/COMPASS-DOE/TEMPEST
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(googledrive)
+
+knitr::opts_chunk$set(echo = F, 
+                      message = F,
+                      warning = F)
+
+common_tz = "Etc/GMT+5"
+```
+
+# 1. Set timeframe of interest
+
+Change these for your start and end dates. The start date should be the start of the period you want to look at and the end date should be the end of that period. 
+
+```{r date ranges}
+
+START_DATE = lubridate::as_date("2025-04-01")
+END_DATE = lubridate::as_date("2025-04-08")
+
+```
+
+# 2. Bring in the TEROS inventory sheet 
+
+Filter to needed columns: plot, grid square, id, depth, Data Logger ID,and Terosdata table channel
+```{r teros inventory}
+inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
+
+directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
+file_path = file.path(directory,"TEROSinventory.xlsx")
+
+drive_download(inventory_directory, path= file_path, overwrite = TRUE)
+
+teros_inv <- readxl::read_excel(file_path, sheet="Sheet1") %>%
+    select(Plot, 'Grid Square', 'Data Logger ID', ID, Depth, 'Terosdata table channel') %>% 
+    rename(Logger = 'Data Logger ID',
+           Data_Table_ID = 'Terosdata table channel',
+           Grid = 'Grid Square') %>%
+  drop_na()
+```
+# 3. Bring in dropbox data
+```{r dropbox}
+```
+
+# 4. Merge TEROS inventory with dropbox downloads 
+
+Only want the 15 cm VWC for this analysis. 
+```{r merge}
+
+```
+
+# 5. Bring in porewater inventory 
+
+```{r porewater inventory}
+pwsite_key <- readxl::read_excel("~/GitHub/TEMPEST/Lysimeter/porewater_sites_complete_key.xlsx") 
+
+```
+
+# 6. Filter the VWC for those plots/grids that have lysimeter data
+
+```{r filter}
+```
+
+# 7. Bring in GCREW loggernet rain data
+
+```{r gcrew rain}
+
+```
+
+# 8. Plot VWC through time
+for study period and by plot/grid facet wrap
+Note, add thresholds for VWC where we are getting water later - may be able to base this off the DOC Fluxes datasets AMP is using for the Porewater DOC paper. 
+
+```{r plot}
+
+```
