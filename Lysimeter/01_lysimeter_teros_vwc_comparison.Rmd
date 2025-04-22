@@ -18,10 +18,14 @@ if(!require("compasstools")) {
 library(tidyverse)
 library(googledrive)
 library(compasstools)
+library(rdrop2)
 
 knitr::opts_chunk$set(echo = F, 
                       message = F,
                       warning = F)
+
+token <- drop_auth()
+saveRDS(token, file = "token.rds")
 
 common_tz = "Etc/GMT+5"
 ```
@@ -58,9 +62,9 @@ teros_inv <- readxl::read_excel("TEROSinventory.xlsx", sheet="Sheet1") %>%
 # 3. Bring in dropbox data, merge with inventory sheet
 ```{r dropbox}
 
-datadir <- "~/Dropbox (Smithsonian)/TEMPEST_PNNL_Data/Current_data/"
+datadir <- "TEMPEST_PNNL_Data/Current_Data"
 
-teros_primitive <- compasstools::process_teros_dir(datadir, tz = "EST")
+teros_primitive <- compasstools::process_teros_dir(datadir, tz = "EST", dropbox_token = token)
 
 teros_primitive %>%
   left_join(teros_inv,
@@ -77,9 +81,9 @@ teros_primitive %>%
 ```{r porewater inventory}
 pwsite_key <- readxl::read_excel("porewater_sites_complete_key.xlsx") 
 
-#right or left join here??
 teros %>% 
   right_join(pwsite_key, by = c("Plot", "Grid")) -> df
+
 ```
 
 # 5. Filter the VWC for those plots/grids that have lysimeter data
@@ -98,7 +102,14 @@ read_csv("sample_data/GCREW_MET_GCREW_MET_15min.dat", skip = 1, col_types = "Tdc
 read_csv("sample_data/GCREW_MET_GCREW_MET_15min_20250415005900.dat", skip = 1, col_types = "Tdcd") %>% 
   select(TIMESTAMP, Rain_in_Tot) %>% 
   rbind(rain1) %>% 
-  filter(!is.na(Rain_in_Tot)) -> rain
+  filter(!is.na(Rain_in_Tot)) %>% 
+  rename(Timestamp = TIMESTAMP) -> rain
+
+rain %>% 
+  ggplot(aes(x = Timestamp, y = Rain_in_Tot)) +
+  geom_point()
+
+df %>% left_join(rain, by = "Timestamp") -> full_df
 
 ```
 
@@ -106,14 +117,44 @@ read_csv("sample_data/GCREW_MET_GCREW_MET_15min_20250415005900.dat", skip = 1, c
 for study period and by plot/grid facet wrap
 Note, add thresholds for VWC where we are getting water later - may be able to base this off the DOC Fluxes datasets AMP is using for the Porewater DOC paper. 
 
-```{r plot}
+```{r plot-control}
 library(paletteer)
 
-df %>% 
+full_df %>% 
+  filter(Plot == "Control") %>% 
   ggplot(aes(x = Timestamp, y = value, group = ID, color = Grid)) +
   geom_line() +
-  facet_wrap(~Plot, ncol = 1, scales = "free_y") +
+#  facet_wrap(~Grid, scales = "free", ncol = 1) +
   scale_colour_paletteer_d("ggthemes::Tableau_10") +
-  theme_minimal() -> p
+  labs(title = paste("Control Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  theme_minimal()
+
+```
+
+```{r plot-saltwater}
+library(paletteer)
+
+full_df %>% 
+  filter(Plot == "Seawater") %>% 
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
+  geom_line() +
+  facet_wrap(~Grid, scales = "free") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  labs(title = paste("Seawater Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  theme_minimal()
+
+```
+
+```{r plot-freshwater}
+library(paletteer)
+
+full_df %>% 
+  filter(Plot == "Freshwater") %>% 
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
+  geom_line() +
+  facet_wrap(~Grid, scales = "free") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  labs(title = paste("Freshwater Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  theme_minimal()
 
 ```
