@@ -15,6 +15,10 @@ if(!require("compasstools")) {
     stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
 }
 
+if(!require("rdrop2")) {
+    stop("Need to devtools::install_github('karthik/rdrop2')")
+}
+
 library(tidyverse)
 library(googledrive)
 library(compasstools)
@@ -24,10 +28,21 @@ knitr::opts_chunk$set(echo = F,
                       message = F,
                       warning = F)
 
+common_tz = "Etc/GMT+5"
+```
+
+Change this chunk to eval = TRUE if you need a dropbox token.
+```{r dropbox token, eval=FALSE, include=FALSE}
+
 token <- drop_auth()
 saveRDS(token, file = "token.rds")
 
-common_tz = "Etc/GMT+5"
+```
+
+Run this chunk if you already have your token:
+```{r load dropbox token, include=FALSE, eval=TRUE}
+
+read_rds("token.rds")
 ```
 
 # 1. Set timeframe of interest
@@ -81,14 +96,15 @@ teros_primitive %>%
 ```{r porewater inventory}
 pwsite_key <- readxl::read_excel("porewater_sites_complete_key.xlsx") 
 
-teros %>% 
-  right_join(pwsite_key, by = c("Plot", "Grid")) -> df
-
 ```
 
 # 5. Filter the VWC for those plots/grids that have lysimeter data
 
 ```{r filter}
+
+teros %>% 
+  right_join(pwsite_key, by = c("Plot", "Grid")) -> df
+
 ```
 
 # 6. Bring in GCREW loggernet rain data
