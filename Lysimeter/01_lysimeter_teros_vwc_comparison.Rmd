@@ -10,8 +10,14 @@ Note, the dropbox refreshes each month. You will also need the TEMPEST github pa
 https://github.com/COMPASS-DOE/TEMPEST
 
 ```{r setup, include=FALSE}
+
+if(!require("compasstools")) {
+    stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
+}
+
 library(tidyverse)
 library(googledrive)
+library(compasstools)
 
 knitr::opts_chunk$set(echo = F, 
                       message = F,
@@ -35,53 +41,79 @@ END_DATE = lubridate::as_date("2025-04-08")
 
 Filter to needed columns: plot, grid square, id, depth, Data Logger ID,and Terosdata table channel
 ```{r teros inventory}
-inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
+#inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
 
-directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
-file_path = file.path(directory,"TEROSinventory.xlsx")
+# directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
+# file_path = file.path(directory,"TEROSinventory.xlsx")
 
-drive_download(inventory_directory, path= file_path, overwrite = TRUE)
+# drive_download(inventory_directory, path= file_path, overwrite = TRUE)
 
-teros_inv <- readxl::read_excel(file_path, sheet="Sheet1") %>%
+teros_inv <- readxl::read_excel("TEROSinventory.xlsx", sheet="Sheet1") %>%
     select(Plot, 'Grid Square', 'Data Logger ID', ID, Depth, 'Terosdata table channel') %>% 
     rename(Logger = 'Data Logger ID',
            Data_Table_ID = 'Terosdata table channel',
            Grid = 'Grid Square') %>%
   drop_na()
 ```
-# 3. Bring in dropbox data
+# 3. Bring in dropbox data, merge with inventory sheet
 ```{r dropbox}
+
+datadir <- "~/Dropbox (Smithsonian)/TEMPEST_PNNL_Data/Current_data/"
+
+teros_primitive <- compasstools::process_teros_dir(datadir, tz = "EST")
+
+teros_primitive %>%
+  left_join(teros_inv,
+            by = c("Logger", "Data_Table_ID")) %>%
+  mutate(Depth = as.factor(Depth)) %>%
+  filter(!is.na(ID), Depth == 15, variable == "VWC") %>% 
+  select(-c("Logger", "Data_Table_ID")) ->
+  teros
+
 ```
 
-# 4. Merge TEROS inventory with dropbox downloads 
-
-Only want the 15 cm VWC for this analysis. 
-```{r merge}
-
-```
-
-# 5. Bring in porewater inventory 
+# 4. Bring in porewater inventory 
 
 ```{r porewater inventory}
-pwsite_key <- readxl::read_excel("~/GitHub/TEMPEST/Lysimeter/porewater_sites_complete_key.xlsx") 
+pwsite_key <- readxl::read_excel("porewater_sites_complete_key.xlsx") 
 
+#right or left join here??
+teros %>% 
+  right_join(pwsite_key, by = c("Plot", "Grid")) -> df
 ```
 
-# 6. Filter the VWC for those plots/grids that have lysimeter data
+# 5. Filter the VWC for those plots/grids that have lysimeter data
 
 ```{r filter}
 ```
 
-# 7. Bring in GCREW loggernet rain data
+# 6. Bring in GCREW loggernet rain data
 
 ```{r gcrew rain}
+#temp dataset
+
+read_csv("sample_data/GCREW_MET_GCREW_MET_15min.dat", skip = 1, col_types = "Tdcd") %>% 
+  select(TIMESTAMP, Rain_in_Tot) -> rain1
+
+read_csv("sample_data/GCREW_MET_GCREW_MET_15min_20250415005900.dat", skip = 1, col_types = "Tdcd") %>% 
+  select(TIMESTAMP, Rain_in_Tot) %>% 
+  rbind(rain1) %>% 
+  filter(!is.na(Rain_in_Tot)) -> rain
 
 ```
 
-# 8. Plot VWC through time
+# 7. Plot VWC through time
 for study period and by plot/grid facet wrap
 Note, add thresholds for VWC where we are getting water later - may be able to base this off the DOC Fluxes datasets AMP is using for the Porewater DOC paper. 
 
 ```{r plot}
+library(paletteer)
+
+df %>% 
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Grid)) +
+  geom_line() +
+  facet_wrap(~Plot, ncol = 1, scales = "free_y") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  theme_minimal() -> p
 
 ```
