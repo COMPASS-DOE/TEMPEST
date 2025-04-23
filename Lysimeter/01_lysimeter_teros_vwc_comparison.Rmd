@@ -33,7 +33,8 @@ common_tz = "Etc/GMT+5"
 source("dropbox copy.R")
 ```
 
-Change this chunk to eval = TRUE if you need a dropbox token.
+Change this chunk to eval = TRUE if you need a dropbox token. Note, tokens expire in several hours. 
+
 ```{r dropbox token, eval=FALSE, include=FALSE}
 
 token <- drop_auth(new_user = T)
@@ -64,7 +65,7 @@ Run this chunk only if you need to bring in the inventory fresh from google driv
 ```{r load teros inventory, eval=FALSE, include=FALSE}
 inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
 
- directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
+ directory= file.path(here::here() %>% dirname(), '/Lysimeter')
  file_path = file.path(directory,"TEROSinventory.xlsx")
 
  drive_download(inventory_directory, path= file_path, overwrite = TRUE)
@@ -118,6 +119,7 @@ teros %>%
 
 ```{r gcrew rain}
 datadir_met <- "GCREW_LOGGERNET_DATA/current_data"
+
 rain <- process_dir(datadir = datadir_met, pattern = "GCREW_MET_GCREW_MET_15min", read_datalogger_file, dropbox_token = token) %>% 
   mutate(Timestamp = as_datetime(TIMESTAMP)) %>% 
   select(Timestamp, Rain_in_Tot)
