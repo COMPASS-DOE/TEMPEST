@@ -29,6 +29,8 @@ knitr::opts_chunk$set(echo = F,
                       warning = F)
 
 common_tz = "Etc/GMT+5"
+
+source("dropbox copy.R")
 ```
 
 Change this chunk to eval = TRUE if you need a dropbox token.
@@ -42,7 +44,7 @@ saveRDS(token, file = "token.rds")
 Run this chunk if you already have your token:
 ```{r load dropbox token, include=FALSE, eval=TRUE}
 
-read_rds("token.rds")
+read_rds("token.rds") -> token
 ```
 
 # 1. Set timeframe of interest
@@ -77,9 +79,9 @@ teros_inv <- readxl::read_excel("TEROSinventory.xlsx", sheet="Sheet1") %>%
 # 3. Bring in dropbox data, merge with inventory sheet
 ```{r dropbox}
 
-datadir <- "TEMPEST_PNNL_Data/Current_Data"
+datadir_teros <- "TEMPEST_PNNL_Data/Current_Data"
 
-teros_primitive <- compasstools::process_teros_dir(datadir, tz = "EST", dropbox_token = token)
+teros_primitive <- compasstools::process_teros_dir(datadir_teros, tz = "EST", dropbox_token = token)
 
 teros_primitive %>%
   left_join(teros_inv,
@@ -110,16 +112,10 @@ teros %>%
 # 6. Bring in GCREW loggernet rain data
 
 ```{r gcrew rain}
-#temp dataset
-
-read_csv("sample_data/GCREW_MET_GCREW_MET_15min.dat", skip = 1, col_types = "Tdcd") %>% 
-  select(TIMESTAMP, Rain_in_Tot) -> rain1
-
-read_csv("sample_data/GCREW_MET_GCREW_MET_15min_20250415005900.dat", skip = 1, col_types = "Tdcd") %>% 
-  select(TIMESTAMP, Rain_in_Tot) %>% 
-  rbind(rain1) %>% 
-  filter(!is.na(Rain_in_Tot)) %>% 
-  rename(Timestamp = TIMESTAMP) -> rain
+datadir_met <- "GCREW_LOGGERNET_DATA/current_data"
+rain <- process_dir(datadir = datadir_met, pattern = "GCREW_MET_GCREW_MET_15min", read_datalogger_file, dropbox_token = token) %>% 
+  mutate(Timestamp = as_datetime(TIMESTAMP)) %>% 
+  select(Timestamp, Rain_in_Tot)
 
 rain %>% 
   ggplot(aes(x = Timestamp, y = Rain_in_Tot)) +
