@@ -36,7 +36,7 @@ source("dropbox copy.R")
 Change this chunk to eval = TRUE if you need a dropbox token.
 ```{r dropbox token, eval=FALSE, include=FALSE}
 
-token <- drop_auth()
+token <- drop_auth(new_user = T)
 saveRDS(token, file = "token.rds")
 
 ```
@@ -60,14 +60,18 @@ END_DATE = lubridate::as_date("2025-04-08")
 
 # 2. Bring in the TEROS inventory sheet 
 
+Run this chunk only if you need to bring in the inventory fresh from google drive. 
+```{r load teros inventory, eval=FALSE, include=FALSE}
+inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
+
+ directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
+ file_path = file.path(directory,"TEROSinventory.xlsx")
+
+ drive_download(inventory_directory, path= file_path, overwrite = TRUE)
+```
+
 Filter to needed columns: plot, grid square, id, depth, Data Logger ID,and Terosdata table channel
 ```{r teros inventory}
-#inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
-
-# directory= file.path(here::here() %>% dirname(), 'TEMPEST/Lysimeter/')
-# file_path = file.path(directory,"TEROSinventory.xlsx")
-
-# drive_download(inventory_directory, path= file_path, overwrite = TRUE)
 
 teros_inv <- readxl::read_excel("TEROSinventory.xlsx", sheet="Sheet1") %>%
     select(Plot, 'Grid Square', 'Data Logger ID', ID, Depth, 'Terosdata table channel') %>% 
@@ -96,6 +100,7 @@ teros_primitive %>%
 # 4. Bring in porewater inventory 
 
 ```{r porewater inventory}
+
 pwsite_key <- readxl::read_excel("porewater_sites_complete_key.xlsx") 
 
 ```
