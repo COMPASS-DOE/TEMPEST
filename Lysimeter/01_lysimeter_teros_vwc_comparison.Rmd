@@ -9,6 +9,12 @@ This script is to download from dropbox L0 TEROS data at the lysimeter locations
 Note, the dropbox refreshes each month. You will also need the TEMPEST github page mapped to your local drive.
 https://github.com/COMPASS-DOE/TEMPEST
 
+To run this script you will need:
+1) access to the correct dropbox folders ('TEMPEST_PNNL_Data/Current_Data' and 'GCREW_LOGGERNET_DATA/current_data')
+2) access to the google drive
+
+You will be prompted in the script to grant permissions for the R packages to be able to access these datasets. 
+
 ```{r setup, include=FALSE}
 
 if(!require("compasstools")) {
