@@ -147,9 +147,9 @@ library(paletteer)
 
 full_df %>% 
   filter(Plot == "Control") %>% 
-  ggplot(aes(x = Timestamp, y = value, group = ID, color = Grid)) +
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
   geom_line() +
-#  facet_wrap(~Grid, scales = "free", ncol = 1) +
+  facet_wrap(~Grid, scales = "free") +
   scale_colour_paletteer_d("ggthemes::Tableau_10") +
   labs(title = paste("Control Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
   theme_minimal()
