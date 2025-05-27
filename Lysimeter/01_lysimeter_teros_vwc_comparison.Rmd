@@ -60,8 +60,8 @@ Change these for your start and end dates. The start date should be the start of
 
 ```{r date ranges}
 
-START_DATE = lubridate::as_date("2025-04-01")
-END_DATE = lubridate::as_date("2025-04-08")
+START_DATE = lubridate::as_date("2025-05-01")
+END_DATE = lubridate::as_date("2025-05-12")
 
 ```
 
@@ -146,12 +146,12 @@ Note, add thresholds for VWC where we are getting water later - may be able to b
 library(paletteer)
 
 full_df %>% 
-  filter(Plot == "Control") %>% 
+  filter(Plot == "Control", !is.na(value)) %>% #remove the NA filter once dropbox is synced
   ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
   geom_line() +
   facet_wrap(~Grid, scales = "free") +
   scale_colour_paletteer_d("ggthemes::Tableau_10") +
-  labs(title = paste("Control Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  labs(title = paste("Control Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
   theme_minimal()
 
 ```
@@ -165,7 +165,7 @@ full_df %>%
   geom_line() +
   facet_wrap(~Grid, scales = "free") +
   scale_colour_paletteer_d("ggthemes::Tableau_10") +
-  labs(title = paste("Seawater Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  labs(title = paste("Seawater Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
   theme_minimal()
 
 ```
@@ -179,7 +179,7 @@ full_df %>%
   geom_line() +
   facet_wrap(~Grid, scales = "free") +
   scale_colour_paletteer_d("ggthemes::Tableau_10") +
-  labs(title = paste("Freshwater Plot VWC", min(df$Timestamp), "-", max(df$Timestamp))) +
+  labs(title = paste("Freshwater Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
   theme_minimal()
 
 ```
