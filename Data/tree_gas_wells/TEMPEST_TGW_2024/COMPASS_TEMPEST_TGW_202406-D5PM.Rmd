@@ -1,0 +1,288 @@
+---
+title: "COMPASS_TEMPEST_TGW_202406: TMP-III D5PM"
+author: "Stephanie J. Wilson"
+date: "2025-04-08"
+output: html_document
+---
+##Set Up
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(stringr)
+library(readxl)
+library(ggpmisc)
+```
+
+## Read in first data file and assess standard curves 
+```{r , echo=FALSE}
+
+#Read in  Data 
+raw <- read.csv("2024 Raw Data/TEMPEST_TGW_Event_D5PM_202406_entered_wMMcurves.csv")
+head(raw)
+
+#pull out methane standards
+stds_ch4 <-  raw %>%  
+   filter(str_detect(User, "Wegner")) %>% 
+  filter(str_detect(Sample_Type, "STD_CH4"))
+#head(stds_ch4)
+
+#split into high curve and low curve for CH4
+stds_ch4_low <- stds_ch4  %>%  
+  filter(!STD_Conc > 100)
+
+#Low curve for CH4
+CH4_Low <- ggplot(stds_ch4_low, aes(STD_Conc, CH4_Area)) + geom_point(size=4) + 
+  geom_smooth(method = "lm", se = FALSE) + stat_poly_eq() + labs(title="CH4 LOW Std Curve")
+CH4_Low
+
+CH4_Low_lm <- lm(stds_ch4_low$CH4_Area ~ stds_ch4_low$STD_Conc)
+summary(CH4_Low_lm)
+cf <- coef(CH4_Low_lm)
+
+#create data frame with 1 rows and 0 columns
+Slope_CH4_low <- data.frame(matrix(ncol = 0, nrow = 1))
+Slope_CH4_low$Curve <- "Slope_CH4_low"
+Slope_CH4_low$R2 <- summary(CH4_Low_lm)$adj.r.squared
+Slope_CH4_low$Slope <- cf[2]
+Slope_CH4_low$Intercept <- cf[1]
+#head(Slope_CH4_low)
+
+#High curve for CH4
+CH4_High <- ggplot(stds_ch4, aes(STD_Conc, CH4_Area)) + geom_point(size=4) + 
+  geom_smooth(method = "lm", se = FALSE) + stat_poly_eq() + labs(title="CH4 HIGH Std Curve")
+CH4_High
+
+stds_ch4_lm <- lm(stds_ch4$CH4_Area ~ stds_ch4$STD_Conc)
+summary(stds_ch4_lm)
+cf <- coef(stds_ch4_lm)
+
+#create data frame with 1 rows and 0 columns
+Slope_CH4_high <- data.frame(matrix(ncol = 0, nrow = 1))
+Slope_CH4_high$Curve <- "Slope_CH4_high"
+Slope_CH4_high$R2 <- summary(stds_ch4_lm)$adj.r.squared
+Slope_CH4_high$Slope <- cf[2]
+Slope_CH4_high$Intercept <- cf[1]
+#head(Slope_CH4_high)
+
+#pull out co2 standards
+stds_co2 <-  raw %>%  
+   filter(str_detect(User, "Wegner")) %>% 
+  filter(str_detect(Sample_Type, "STD_CO2"))
+#head(stds_co2)
+
+#CO2 Curve
+CO2_stds <- ggplot(stds_co2, aes(STD_Conc, CO2_Area)) + geom_point(size=4) + 
+  geom_smooth(method = "lm", se = FALSE, color="red") + stat_poly_eq() +  labs(title="CO2 Std Curve")
+CO2_stds
+
+stds_co2_lm <- lm(stds_co2$CO2_Area ~ stds_co2$STD_Conc)
+summary(stds_co2_lm)
+cf <- coef(stds_co2_lm)
+
+#create data frame with 1 rows and 0 columns
+Slope_CO2 <- data.frame(matrix(ncol = 0, nrow = 1))
+Slope_CO2$Curve <- "Slope_CO2"
+Slope_CO2$R2 <- summary(stds_co2_lm)$adj.r.squared
+Slope_CO2$Slope <- cf[2]
+Slope_CO2$Intercept <- cf[1]
+#head(Slope_CO2)
+
+#pull all the slopes together into one dataframe 
+Slopes <- rbind(Slope_CH4_low, Slope_CH4_high, Slope_CO2)
+#head(Slopes)
+
+Slopes$Run_Date <- c(20241029, 20241029, 20241029)
+
+log <- read.csv("2024 Raw Data/COMPASS_TEMPEST_Varian_TGAS_QAQC_2024.csv")
+head(log)
+log <- log[ ,-c(1)]
+log <- rbind(log, Slopes)
+
+Slopes_chk <- ggplot(log, aes(Run_Date, Slope, col=Curve)) + geom_point(size=4) + geom_line() + theme_bw()
+Slopes_chk
+
+write.csv(log, "2024 Raw Data/COMPASS_TEMPEST_Varian_TGAS_QAQC_2024.csv")
+```
+
+## Now calculate the CH4 & CO2 concentrations in ppm  
+```{r}
+
+#pull out methane standards
+Samples <-  raw %>%  
+  filter(!str_detect(Sample_Type, "STD_CH4")) %>%  
+  filter(!str_detect(Sample_Type, "STD_CO2")) %>%  
+  filter(!str_detect(Sample_Type, "Blank")) %>%  
+  filter(!str_detect(Sample_Type, "Chk_STD")) %>%  
+   filter(!str_detect(Sample_Type, "CHKSTD")) %>%
+  filter(!str_detect(Sample_Type, "CHK_STD")) %>%
+  filter(!str_detect(Sample_Type, "NA"))
+
+
+#Now flag any areas that are above the 100ppm area for CH4
+Samples$CH4_Curve <- ifelse(Samples$CH4_Area >71000, "High", "Low")
+
+
+#Calculate CH4 concentrations in ppm
+Samples$CH4_Conc_ppm <- ifelse(Samples$CH4_Area >71000, (Samples$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (Samples$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+
+#Calculate CO2 concentrations in ppm 
+Samples$CO2_Conc_ppm <- ((Samples$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope) 
+
+
+##########make flags for any dilutions needed 
+#highest CH4 standard = 10000
+#highest CO2 standard = 50000
+
+Samples$CH4_Flag <- ifelse(Samples$CH4_Conc_ppm >10000, "Needs Dilution", "Within Range")
+Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >50000, "Needs Dilution", "Within Range")
+
+
+```
+
+## Check the Check Standards 
+```{r, echo=FALSE}
+
+chks <-  raw %>%  
+  filter(!str_detect(Sample_Type, "STD_CH4")) %>%  
+  filter(!str_detect(Sample_Type, "STD_CO2")) %>%  
+  filter(!str_detect(Sample_Type, "Blank")) %>%  
+  filter(!str_detect(Sample_Type, "Unknown")) %>%  
+  filter(!str_detect(Sample_Type, "NA"))
+
+
+#Calculate CH4 concentrations in ppm
+chks$CH4_Conc_ppm <- ifelse(chks$CH4_Area >71000, 
+                      (chks$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (chks$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+
+#Calculate CO2 concentrations in ppm 
+chks$CO2_Conc_ppm <- ((chks$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
+
+
+#change this if check standard concentrations are different 
+level_ch4 <- 5      #ppm
+level_co2 <- 1000   #ppm
+
+#calculate percent difference of check standards 
+chks$Ch4_diff <- ((chks$CH4_Conc_ppm - level_ch4)/((chks$CH4_Conc_ppm + level_ch4)/2)) * 100
+chks$CH4_diff_flag <-  ifelse(chks$Ch4_diff >-10 & chks$Ch4_diff <10 , 'YES', 'NO, rerun')
+
+chks$CO2_diff <- ((chks$CO2_Conc_ppm - level_co2)/((chks$CO2_Conc_ppm + level_co2)/2)) * 100
+chks$CO2_diff_flag <-  ifelse(chks$Ch4_diff >-10 & chks$Ch4_diff <10 , 'YES', 'NO, rerun')
+
+#now plot the Ch4 concentrations and the CO2 concentrations vs. the expected concentration 
+#then also make the color the percent difference between the expected and observed concentration 
+
+ch4_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c( "darkgrey","darkgreen"))+
+        theme_classic() + labs(x= " ", y="CH4  (ppm)", title="Check Stds: CH4") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=level_ch4, linetype="dashed", 
+                color = "black", size=1)
+
+
+co2_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c( "darkgrey", "darkgreen"))+
+        theme_classic() + labs(x= " ", y="CO2  (ppm)", title="Check Stds: CO2") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=level_co2, linetype="dashed", 
+                color = "black", size=1)
+
+ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
+
+
+```
+
+## Dilution correct samples - note same sample IDs mean that they plot together in some cases 
+```{r}
+
+#multiply the concentration by the dilution factor
+Samples$CH4_Conc_ppm_dilcorr <- (Samples$CH4_Conc_ppm * Samples$Dilution_Factor)
+
+Samples$CO2_Conc_ppm_dilcorr <- (Samples$CO2_Conc_ppm * Samples$Dilution_Factor)
+
+#quick first look at the samples 
+ch4_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_Flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("red", "darkgreen"))+
+        theme_classic() + labs(x= " ", y="CH4 (ppm)", title="CH4: Green = Within Range") + 
+        theme(legend.position="none") 
+
+
+co2_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_Flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("darkgreen","red"))+
+        theme_classic() + labs(x= " ", y="CO2 (ppm)", title="CO2: Green = Within Range") + 
+        theme(legend.position="none") 
+
+ggarrange(ch4_samples, co2_samples, nrow=1, ncol=2)
+
+
+```
+
+
+## If samples are water calculate gas in water  
+```{r, echo=FALSE}
+
+# Convert ppm CH4 to total umol CH4 in the sample headspace
+# use Ideal Gas Law:  
+#   hdsp umol CH4 = ppm CH4*(PV/RT) 
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#set the volume used for the sample
+volume = 0.02  #in Liters (samples are 20mL so 0.02mL )
+TempC <-  25 #I am assuming 25C not sure how we want to handle this
+IdealGas <- 0.08206
+
+#Calculate CH4 concentrations in ppm
+Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
+                    ((Samples$CH4_Conc_ppm_dilcorr*((1*volume)/(0.08206*(TempC+273.15))))/(volume)),
+                    (Samples$CH4_Conc_ppm_dilcorr*((1*volume)/(0.08206*(TempC+273.15)))))
+Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
+                    ((Samples$CO2_Conc_ppm_dilcorr*((1*volume)/(0.08206*(TempC+273.15))))/(volume)),
+                    (Samples$CO2_Conc_ppm_dilcorr*((1*volume)/(0.08206*(TempC+273.15)))))
+
+Samples$CH4_Conc_nmol <- Samples$CH4_Conc_umol * 1000
+Samples$CO2_Conc_nmol <- Samples$CO2_Conc_umol * 1000
+
+#quick first look at the samples 
+ch4_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_nmol, fill=G_W)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("darkgrey","purple", "darkblue"))+
+        theme_classic() + labs(x= " ", y="CH4 (uM)", title="CH4: Blue = PW Sample") + 
+        theme(legend.position="none") 
+
+
+co2_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_nmol, fill=G_W)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("darkgrey","purple", "darkblue"))+ 
+        theme_classic() + labs(x= " ", y="CO2 (uM)", title="CO2: Blue = PW Sample") + 
+        theme(legend.position="none") 
+
+ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
+
+```
+
+
+
+## Write out processed data & slopes    
+```{r}
+
+#check results
+#head(Samples)
+
+#pull out what we need 
+Samples1 <- Samples[ ,c(1:3,6:18,22, 27:34)]
+#head(Samples1)
+
+#write out the data to a csv in the processed data folder
+write.csv(Samples1, "2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D5PM_Processed.csv")
+
+```
+
+
+#end

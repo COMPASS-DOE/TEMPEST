@@ -1,0 +1,17 @@
+"","X","Machine","User","Run_Date","Sample_Year","Sample_Month","Sample_Day","Event_Stamp","Sample_Time","Time_Zone","G_W","Sample_Plot","Sapflux_Tree_ID","Sample_Grid","Sample_ID","Sample_Vol_mL","Dilution_Factor","Field_Notes","CH4_Flag","CO2_Flag","CH4_Conc_ppm_dilcorr","CO2_Conc_ppm_dilcorr"
+"40",40,"Varian GC","A. Stearns",20240327,2022,"June",22,"3",1839,"EDT","G","Control","C1","F5",40,2,7,"","Needs Dilution","Within Range",97156.9813399684,67629.9616677575
+"75",12,"Varian GC","A. Stearns",20240328,2022,"June",21,"Pre",1300,"EDT","G","Freshwater","F8_H","B4",75,2,7,"","Needs Dilution","Within Range",79842.2862619075,52344.8456915578
+"84",21,"Varian GC","A. Stearns",20240328,2022,"June",22,"0",847,"EDT","G","Freshwater","F8_H","B4",84,2,7,"","Needs Dilution","Within Range",84166.7179911065,58497.5542805607
+"92",29,"Varian GC","A. Stearns",20240328,2022,"June",22,"1",1214,"EDT","G","Freshwater","F8_H","B4",92,2,7,"","Needs Dilution","Within Range",81130.4983605535,58306.1558108637
+"101",38,"Varian GC","A. Stearns",20240328,2022,"June",22,"2",1552,"EDT","G","Freshwater","F8_H","B4",101,2,7,"","Needs Dilution","Within Range",112776.269941067,79917.5191587984
+"110",47,"Varian GC","A. Stearns",20240328,2022,"June",22,"3",1856,"EDT","G","Freshwater","F8_H","B4",110,2,7,"","Needs Dilution","Within Range",130459.078189081,90174.278033902
+"119",56,"Varian GC","A. Stearns",20240328,2022,"June",23,"Post",1147,"EDT","G","Freshwater","F8_H","B4",119,2,7,"","Needs Dilution","Within Range",89659.6292833935,63037.7595296716
+"126",63,"Varian GC","A. Stearns",20240328,2022,"June",24,"Post",1049,"EDT","G","Freshwater","F8_H","B4",126,2,7,"","Needs Dilution","Within Range",82241.2863386587,54700.9092854695
+"130",4,"Varian GC","A. Stearns",20240401,2022,"June",20,"Pre",1034,"EDT","G","Seawater","S7_H","D7",130,2,7,"","Needs Dilution","Within Range",254658.086605322,37051.3897096556
+"139",13,"Varian GC","A. Stearns",20240401,2022,"June",21,"Pre",1348,"EDT","G","Seawater","S7_H","D7",139,2,7,"","Needs Dilution","Within Range",284755.269856045,43791.6217535857
+"148",22,"Varian GC","A. Stearns",20240401,2022,"June",22,"0",934,"EDT","G","Seawater","S7_H","D7",148,2,7,"","Needs Dilution","Within Range",320419.212697971,53972.382538789
+"157",31,"Varian GC","A. Stearns",20240401,2022,"June",22,"1",1318,"EDT","G","Seawater","S7_H","D7",157,2,7,"","Needs Dilution","Within Range",305644.550483407,49697.7437041157
+"166",40,"Varian GC","A. Stearns",20240401,2022,"June",22,"2",1709,"EDT","G","Seawater","S7_H","D7",166,2,7,"","Needs Dilution","Within Range",327119.572608664,53773.772749001
+"175",49,"Varian GC","A. Stearns",20240401,2022,"June",22,"3",1951,"EDT","G","Seawater","S7_H","D7",175,2,7,"","Needs Dilution","Within Range",330187.010938713,55346.068361671
+"184",58,"Varian GC","A. Stearns",20240401,2022,"June",23,"Post",1244,"EDT","G","Seawater","S7_H","D7",184,2,7,"","Needs Dilution","Within Range",329809.26724117,48804.4035877709
+"193",67,"Varian GC","A. Stearns",20240401,2022,"June",24,"Post",1147,"EDT","G","Seawater","S7_H","D7",193,2,7,"pipe w/water","Needs Dilution","Within Range",369782.210667825,53786.613715928

@@ -1,0 +1,138 @@
+---
+title: "COMPASS_TEMPEST_TGW_2024_DataViz"
+author: "Stephanie J. Wilson"
+date: "2025-04-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+```
+
+## Read in all processed files and combine
+```{r}
+#read all non-event files and add an event time point 
+april_may <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202404-05_Processed.csv")
+july_aug <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202407-08_Processed.csv")
+sept_oct <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202409-10_Processed.csv")
+nov <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202411_Processed.csv")
+
+#add event time stamp
+april_may$Event_Stamp <- NA
+july_aug$Event_Stamp <- NA
+sept_oct$Event_Stamp <- NA
+nov$Event_Stamp <- NA
+
+#read in all event files 
+june1 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D1PM-D2AM_Processed.csv")
+june2 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D2PM-D3AM_Processed.csv")
+june3 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D3PM-D4AM_Processed.csv")
+june4 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D4PM-D5AM_Processed.csv")
+june5 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D5PM_Processed.csv")
+
+#need to rename sapflux ID and tree ID to sapflux_or_tree_ID in all dataframes 
+names(april_may)[names(april_may) == 'Tree_ID'] <- 'Sapflux_Tree_ID'
+names(july_aug)[names(july_aug) == 'Tree_ID'] <- 'Sapflux_Tree_ID'
+names(sept_oct)[names(sept_oct) == 'Tree_ID'] <- 'Sapflux_Tree_ID'
+names(nov)[names(nov) == 'Tree_ID'] <- 'Sapflux_Tree_ID'
+names(june1)[names(june1) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+names(june2)[names(june2) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+names(june3)[names(june3) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+names(june4)[names(june4) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+names(june5)[names(june5) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+
+#combine into one dataframe 
+alldat <- rbind(april_may, june1, june2, june3, june4, june5, july_aug, sept_oct, nov )
+head(alldat)
+
+
+alldat1 <- alldat[, -c(1:3) ]
+alldat1 <- alldat1 %>%  
+  filter(!str_detect(Sample_ID, "MSM_TR"))
+
+#add sample Tree spp to the data frame 
+loci <- read.csv("TEMPEST_TGW_Sample_Locations.csv")
+head(loci)
+
+names(loci)[names(loci) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
+
+alldat2 <- merge(loci, alldat1, by=c("Sapflux_Tree_ID"), all.x=TRUE)
+head(alldat2)
+
+write.csv(alldat2, "2024 Processed Data/TEMPEST_TGW_2024_AllData.csv")
+
+```
+
+## Make list of those that need diluted and write out
+```{r}
+
+
+#subset by those that need to be diluted
+dilutions <- subset(alldat, CH4_Flag == "Needs Dilution")
+
+#write out file of the list 
+write.csv(dilutions, "2024 Processed Data/TEMPEST_TGW_2024_SamplesToDilute.csv")
+
+
+```
+
+
+## Viz March and May  
+```{r}
+april_may <- subset(april_may, Sample_Month == c("April", "May"))
+
+ggplot(data=april_may, aes(x=Sapflux_Tree_ID, y=CH4_Conc_ppm_dilcorr))+
+  geom_point()+ 
+  facet_grid(~Sample_Month)+ 
+  theme_bw()
+
+
+
+```
+
+## Viz All data 
+```{r}
+
+alldata <- read.csv("2024 Processed Data/TEMPEST_TGW_2024_AllData.csv")
+head(alldata)
+
+alldata1 <- alldata %>%  
+  filter(!str_detect(Sapflux_Tree_ID, "ATM"))
+
+
+#visualize data through time 
+plot <- ggplot()+
+  geom_point(data=alldata1, aes(x=Sample_Month, y=CH4_Conc_ppm_dilcorr, color=Sapflux_Tree_ID), size=2)+ 
+  facet_wrap(~Sample_Plot, ncol=1, scales="free")+ 
+  theme_bw()+ labs(x="Month", y="CH4 (ppm)", title="2024") + theme(legend.title = element_blank())
+plot
+
+plota <- ggplot()+
+  geom_point(data=alldata1, aes(x=Sample_Month, y=CH4_Conc_ppm_dilcorr, color=spp), size=2)+ 
+  facet_wrap(~Sample_Plot, ncol=1, scales="free")+ 
+  scale_color_manual(values=c("darkcyan", "deeppink", "black")) +
+  theme_bw()+ labs(x="Month", y="CH4 (ppm)", title="2024") + theme(legend.title = element_blank())
+plota
+
+plot1 <- ggplot()+
+  geom_boxplot(data=alldata1, aes(x=Sample_Plot, y=CH4_Conc_ppm_dilcorr, color=Sample_Plot))+ 
+  scale_color_manual(values=c("darkgreen", "darkblue", "red")) +
+  theme_bw()+ labs(x="Plot", y="CH4 (ppm)", title="2024") + theme(legend.title = element_blank())
+plot1
+
+plot2 <- ggplot()+
+  geom_boxplot(data=alldata1, aes(x=spp, y=CH4_Conc_ppm_dilcorr, color=spp))+ 
+  facet_wrap(~Sample_Plot, ncol=1, scales="free")+ 
+  scale_color_manual(values=c("darkcyan", "deeppink", "black")) +
+  theme_bw()+ labs(x="Plot", y="CH4 (ppm)", title="2024") + theme(legend.title = element_blank())
+plot2
+
+```
+
