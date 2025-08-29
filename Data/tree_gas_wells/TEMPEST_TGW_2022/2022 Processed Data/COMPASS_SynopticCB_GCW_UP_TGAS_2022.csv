@@ -1,0 +1,3 @@
+"","Project","Year","Month","Day","Time","Time_Zone","Event_Stamp","Plot","Sapflux_Tree_ID","Sample_Grid","Sample_ID","Field_Notes","Sample_Matrix","CH4_ppm","CH4_Flag","CO2_ppm","CO2_Flag"
+"1","COMPASS: TEMPEST",2022,"June",21,1328,"EDT","Pre","Control","C7_H","B3",11,"","G",25.0841903272293,"Within Std Curve Range",62175.7115805493,"Within Std Curve Range"
+"2","COMPASS: TEMPEST",2022,"June",21,1211,"EDT","Pre","Control","C11_H","F2",12,"","G",30.8066456599496,"Within Std Curve Range",31151.463593999,"Within Std Curve Range"

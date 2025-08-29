@@ -1,0 +1,70 @@
+"","Machine","User","Run_Date","Sample_Year","Sample_Month","Sample_Day","Event_Stamp","Sample_Time","Time_Zone","G_W","Sample_Plot","Tree_ID","Sample_Grid","Sample_ID","Sample_Vol_mL","Dilution_Factor","Field_Notes","CH4_Flag","CO2_Flag","CH4_Conc_ppm_dilcorr","CO2_Conc_ppm_dilcorr"
+"1","Varian GC","Wegner",20240319,2023,"June",4,0,1322,"EDT","G","Control","C1","F5","1",2,7,"~0.1 mL liquid pulled w/gas","Needs Dilution","Within Range",81573.0879864901,49074.8269776976
+"2","Varian GC","Wegner",20240319,2023,"June",4,0,1310,"EDT","G","Control","C2","F5","2",2,7,"","Within Range","Within Range",21629.3742567067,52798.5273343268
+"3","Varian GC","Wegner",20240319,2023,"June",4,0,1408,"EDT","G","Control","C3","C5","3",2,7,"no septa; charring?; first pulls were liquid, then gas","Within Range","Within Range",705.863732827836,142828.889532462
+"4","Varian GC","Wegner",20240319,2023,"June",4,0,1520,"EDT","G","Control","C7_H","B3","4",2,7,"","Within Range","Within Range",116.613897193685,83765.8961356441
+"5","Varian GC","Wegner",20240319,2023,"June",4,0,1521,"EDT","G","Control","C7_L","B3","5",2,7,"","Within Range","Within Range",64.1833365679882,78505.5513008963
+"6","Varian GC","Wegner",20240319,2023,"June",4,0,1338,"EDT","G","Control","C11_H","F2","6",2,7,"","Within Range","Within Range",2170.19120701253,42049.6231383779
+"7","Varian GC","Wegner",20240319,2023,"June",4,0,1339,"EDT","G","Control","C11_L","F2","7",2,7,"","Within Range","Within Range",190.165678286492,85437.1871843701
+"8","Varian GC","Wegner",20240319,2023,"June",4,0,1510,"EDT","G","Control","C19_H","A1","8",2,7,"","Within Range","Within Range",497.792529484537,23376.5736086154
+"9","Varian GC","Wegner",20240319,2023,"June",4,0,1511,"EDT","G","Control","C19_L","A1","9",2,7,"","Within Range","Within Range",1401.07557535551,16424.0851821362
+"10","Varian GC","Wegner",20240319,2023,"June",4,0,1440,"EDT","G","Control","C13","B8","10",2,7,"","Needs Dilution","Within Range",84088.2499822088,58659.3896092712
+"11","Varian GC","Wegner",20240319,2023,"June",4,0,1430,"EDT","G","Control","C14","B7","11",2,7,"","Within Range","Within Range",3139.43890516547,56701.2194764094
+"12","Varian GC","Wegner",20240319,2023,"June",4,0,1455,"EDT","G","Control","C15","A4","12",1,7,"wet; only 1 mL gas","Within Range","Within Range",7228.9424251817,30995.5826961772
+"13","Varian GC","Wegner",20240319,2023,"June",4,0,1605,"EDT","G","Seawater","S1","F7","13",2,7,"","Within Range","Within Range",35665.838804198,64437.3339396042
+"14","Varian GC","Wegner",20240319,2023,"June",4,0,1533,"EDT","G","Seawater","S2","C5","14",2,7,"","Within Range","Within Range",107.452643320915,109187.338708522
+"15","Varian GC","Wegner",20240319,2023,"June",4,0,1525,"EDT","G","Seawater","S3","E5","15",2,7,"tree had water; removed water; sampled 10 min later","Within Range","Within Range",26.4812533223595,113165.699627906
+"16","Varian GC","Wegner",20240319,2023,"June",4,0,1549,"EDT","G","Seawater","S7_H","D7","16",2,7,"","Needs Dilution","Within Range",403130.176611011,55318.8211694054
+"17","Varian GC","Wegner",20240319,2023,"June",4,0,1548,"EDT","G","Seawater","S7_L","D7","17",2,7,"","Needs Dilution","Within Range",402659.316369009,57948.1210018252
+"18","Varian GC","Wegner",20240319,2023,"June",4,0,1539,"EDT","G","Seawater","S8_H","C6","18",2,7,"","Within Range","Within Range",738.282161980036,53820.9284128374
+"19","Varian GC","Wegner",20240319,2023,"June",4,0,1538,"EDT","G","Seawater","S8_L","C6","19",2,7,"","Within Range","Within Range",640.257620690415,28140.395230515
+"20","Varian GC","Wegner",20240319,2023,"June",4,0,1318,"EDT","G","Seawater","S9_H","F2","20",2,7,"","Within Range","Within Range",1057.58906548442,58418.6456578362
+"21","Varian GC","Wegner",20240319,2023,"June",4,0,1317,"EDT","G","Seawater","S9_L","F2","21",2,7,"","Within Range","Within Range",5055.67545366757,78434.8495456421
+"22","Varian GC","Wegner",20240319,2023,"June",4,0,1353,"EDT","G","Seawater","S13","A2","22",2,7,"","Needs Dilution","Within Range",80840.0826158165,64823.0164893103
+"23","Varian GC","Wegner",20240319,2023,"June",4,0,1305,"EDT","G","Seawater","S14","I2","23",2,7,"","Within Range","Within Range",615.147184863521,94594.0041966561
+"24","Varian GC","Wegner",20240319,2023,"June",4,0,1402,"EDT","G","Seawater","S15","E4","24",2,7,"","Within Range","Within Range",4740.01250355118,54775.8943361784
+"25","Varian GC","Wegner",20240319,2023,"June",4,0,1439,"EDT","G","Freshwater","F1","H5","25",2,7,"lots of sap","Within Range","Within Range",239.898199310099,86363.1116905213
+"26","Varian GC","Wegner",20240319,2023,"June",4,0,1457,"EDT","G","Freshwater","F2","G6","26",2,7,"lots of sap","Within Range","Within Range",50.4917923185743,91469.0761103154
+"27","Varian GC","Wegner",20240319,2023,"June",4,0,1354,"EDT","G","Freshwater","F3","D5","27",2,7,"lots of sap","Within Range","Within Range",200.524942281086,63545.999595992
+"28","Varian GC","Wegner",20240319,2023,"June",4,0,1325,"EDT","G","Freshwater","S7_H","B5","28",2,7,"","Within Range","Within Range",625.909141336038,21247.6005644846
+"29","Varian GC","Wegner",20240319,2023,"June",4,0,1325,"EDT","G","Freshwater","S7_L","B5","29",2,7,"","Within Range","Within Range",1373.75690070879,47448.910346584
+"30","Varian GC","Wegner",20240319,2023,"June",4,0,1300,"EDT","G","Freshwater","S8_H","B4","30",2,7,"","Within Range","Within Range",1768.36851564393,9932.50060319984
+"31","Varian GC","Wegner",20240319,2023,"June",4,0,1301,"EDT","G","Freshwater","S8_L","B4","31",2,7,"","Within Range","Within Range",13935.9020540977,38416.0451457247
+"32","Varian GC","Wegner",20240319,2023,"June",4,0,1439,"EDT","G","Freshwater","S9_H","G3","32",2,7,"installed upper septa","Within Range","Within Range",21.2059818615559,29918.5443751569
+"33","Varian GC","Wegner",20240319,2023,"June",4,0,1439,"EDT","G","Freshwater","S9_L","G3","33",2,7,"","Within Range","Within Range",80.4722473000116,60686.4715795325
+"34","Varian GC","Wegner",20240319,2023,"June",4,0,1335,"EDT","G","Freshwater","F13","D6","34",2,7,"","Within Range","Within Range",2947.47280650289,55701.7740943832
+"35","Varian GC","Wegner",20240319,2023,"June",4,0,1526,"EDT","G","Freshwater","F14","D7","35",2,7,"","Needs Dilution","Within Range",96815.2840264044,57372.5729156993
+"36","Varian GC","Wegner",20240319,2023,"June",4,0,1236,"EDT","G","Freshwater","F15","A6","36",2,7,"","Within Range","Within Range",45420.6471450357,57646.027615926
+"37","Varian GC","Wegner",20240319,2023,"June",5,1,1517,"EDT","G","Control","C1","F5","37",1,7,"replaced the rubber on the septa; extracted 1 mL","Within Range","Within Range",10474.6621963767,8358.35734602866
+"38","Varian GC","Wegner",20240319,2023,"June",5,1,1457,"EDT","G","Control","C2","F5","38",2,7,"","Within Range","Within Range",26801.4282785633,59587.3725209551
+"39","Varian GC","Wegner",20240319,2023,"June",5,1,1324,"EDT","G","Control","C3","C5","39",2,7,"","Within Range","Within Range",684.198877515528,121813.374506469
+"40","Varian GC","Wegner",20240319,2023,"June",5,1,1437,"EDT","G","Control","C7_H","B3","40",2,7,"","Within Range","Within Range",219.40115218377,114280.147232086
+"41","Varian GC","Wegner",20240319,2023,"June",5,1,1439,"EDT","G","Control","C7_L","B3","41",2,7,"","Within Range","Within Range",88.7677123452447,126964.579100036
+"42","Varian GC","Wegner",20240319,2023,"June",5,1,1246,"EDT","G","Control","C11_H","F2","42",2,7,"pressure; push back on syringe","Within Range","Within Range",97.8584950343776,51273.696314048
+"43","Varian GC","Wegner",20240319,2023,"June",5,1,1247,"EDT","G","Control","C11_L","F2","43",2,7,"","Within Range","Within Range",165.128273471572,91061.8250504622
+"44","Varian GC","Wegner",20240319,2023,"June",5,1,1423,"EDT","G","Control","C19_H","A1","44",2,7,"use the ""extra"" tube; the original tube has a misutre of gases from low and high","Within Range","Within Range",333.302719564556,22206.3700632665
+"45","Varian GC","Wegner",20240319,2023,"June",5,1,1448,"EDT","G","Control","C19_L","A1","45",2,7,"","Within Range","Within Range",1879.45421516159,17341.8655620492
+"46","Varian GC","Wegner",20240319,2023,"June",5,1,1348,"EDT","G","Control","C13","B8","46",2,7,"","Needs Dilution","Within Range",72885.1457818558,55284.3205027592
+"47","Varian GC","Wegner",20240319,2023,"June",5,1,1345,"EDT","G","Control","C14","B7","47",2,7,"pressure - hard to sample","Within Range","Needs Dilution",1271.82498771397,397220.20389322
+"48","Varian GC","Wegner",20240319,2023,"June",5,1,1428,"EDT","G","Seawater","S1","F7","48",2,7,"","Within Range","Within Range",9896.88704487892,56754.2010449037
+"49","Varian GC","Wegner",20240319,2023,"June",5,1,1301,"EDT","G","Seawater","S2","C5","49",2,7,"","Within Range","Within Range",460.321994413715,120573.76689631
+"50","Varian GC","Wegner",20240319,2023,"June",5,1,1342,"EDT","G","Seawater","S3","E5","50",2,7,"water in well; sampled until had gas","Within Range","Within Range",335.890018735218,159541.755271776
+"51","Varian GC","Wegner",20240319,2023,"June",5,1,1459,"EDT","G","Seawater","S7_H","D7","51",2,7,"","Needs Dilution","Within Range",441628.763670408,64045.0734417828
+"52","Varian GC","Wegner",20240319,2023,"June",5,1,1458,"EDT","G","Seawater","S7_L","D7","52",2,7,"","Needs Dilution","Within Range",414549.975304555,62228.7990468393
+"53","Varian GC","Wegner",20240319,2023,"June",5,1,1316,"EDT","G","Seawater","S8_H","C6","53",2,7,"","Within Range","Within Range",8246.93348778063,125261.4275135
+"54","Varian GC","Wegner",20240319,2023,"June",5,1,1315,"EDT","G","Seawater","S8_L","C6","54",2,7,"","Within Range","Within Range",1276.35797792253,58489.7053966612
+"55","Varian GC","Wegner",20240319,2023,"June",5,1,1226,"EDT","G","Seawater","S9_H","F2","55",2,7,"","Within Range","Within Range",508.471631745787,54516.3562472708
+"56","Varian GC","Wegner",20240319,2023,"June",5,1,1227,"EDT","G","Seawater","S9_L","F2","56",2,7,"","Within Range","Within Range",4651.53687626021,79301.5725187545
+"57","Varian GC","Wegner",20240319,2023,"June",5,1,1242,"EDT","G","Seawater","S13","A2","57",2,7,"","Needs Dilution","Within Range",83537.7715538313,72897.9624023686
+"58","Varian GC","Wegner",20240319,2023,"June",5,1,1234,"EDT","G","Seawater","S14","I2","58",2,7,"","Within Range","Within Range",681.636248017912,116189.005128055
+"59","Varian GC","Wegner",20240319,2023,"June",5,1,1250,"EDT","G","Seawater","S15","E4","59",2,7,"","Within Range","Within Range",5752.59251488421,64674.8560389011
+"60","Varian GC","Wegner",20240319,2023,"June",5,1,1314,"EDT","G","Freshwater","F3","D5","60",2,7,"sap","Within Range","Within Range",409.018972726205,92026.367034325
+"61","Varian GC","Wegner",20240319,2023,"June",5,1,1325,"EDT","G","Freshwater","S7_H","B5","61",2,7,"","Within Range","Within Range",1623.55429576091,57942.6170044225
+"62","Varian GC","Wegner",20240319,2023,"June",5,1,1325,"EDT","G","Freshwater","S7_L","B5","62",2,7,"","Within Range","Within Range",1550.44473697352,52015.125037343
+"63","Varian GC","Wegner",20240319,2023,"June",5,1,1340,"EDT","G","Freshwater","S8_H","B4","63",2,7,"","Within Range","Within Range",2786.96324521978,40500.8519667948
+"64","Varian GC","Wegner",20240319,2023,"June",5,1,1340,"EDT","G","Freshwater","S8_L","B4","64",2,7,"","Within Range","Within Range",41883.54281196,89794.6527053439
+"65","Varian GC","Wegner",20240319,2023,"June",5,1,1416,"EDT","G","Freshwater","S9_H","G3","65",2,7,"","Within Range","Within Range",452.388952598613,43012.0172208153
+"66","Varian GC","Wegner",20240319,2023,"June",5,1,1416,"EDT","G","Freshwater","S9_L","G3","66",2,7,"","Within Range","Within Range",100.043101727115,62285.2709551499
+"67","Varian GC","Wegner",20240319,2023,"June",5,1,1257,"EDT","G","Freshwater","F13","D6","67",2,7,"","Within Range","Within Range",6392.21609210893,64666.846156502
+"68","Varian GC","Wegner",20240319,2023,"June",5,1,1250,"EDT","G","Freshwater","F14","D7","68",2,7,"","Needs Dilution","Within Range",109904.638990151,66025.9755313971
+"69","Varian GC","Wegner",20240319,2023,"June",5,1,1332,"EDT","G","Freshwater","F15","A6","69",2,7,"","Within Range","Within Range",49711.0510349731,66828.1719658536

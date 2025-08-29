@@ -1,0 +1,199 @@
+"","Run_Date","Sample_Year","Sample_Month","Sample_Day","Event_Stamp","Sample_Time","Time_Zone","G_W","Sample_Plot","Sapflux_Tree_ID","Sample_Grid","Sample_ID","Sample_Vol_mL","Dilution_Factor","Field_Notes","CH4_Flag","CO2_Flag","CH4_Conc_ppm_dilcorr","CO2_Conc_ppm_dilcorr"
+"1",20240327,2022,"June",20,"Pre",NA,"EDT","G","Freshwater","F3","D5",1,2,7,"","Within Range","Within Range",79.1153571754805,76559.3545771206
+"2",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,2,2,7,"","Within Range","Within Range",8.49955908800116,1704.14856635107
+"3",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,3,2,7,"","Within Range","Within Range",7.85855085317506,1336.381614875
+"4",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,4,2,7,"","Within Range","Within Range",8.94243750479011,2771.81491765242
+"5",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,5,2,7,"","Within Range","Within Range",8.32473866032132,1352.00415862995
+"6",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,6,2,7,"","Within Range","Within Range",7.99840719531893,1530.64865443808
+"7",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,7,2,7,"","Within Range","Within Range",10.3759650117648,1588.93820591048
+"8",20240327,2022,"June",21,"Pre",913,"EDT","G","Control","C1","F5",8,2,7,"","Within Range","Within Range",19269.1950055121,29137.3825980624
+"9",20240327,2022,"June",21,"Pre",856,"EDT","G","Control","C2","F5",9,2,7,"","Within Range","Within Range",27859.3894424713,54298.5512708022
+"10",20240327,2022,"June",21,"Pre",1008,"EDT","G","Control","C3","C5",10,0.8,16,"","Within Range","Within Range",33.3332799343082,18945.4847449489
+"11",20240327,2022,"June",21,"Pre",1328,"EDT","G","Control","C7_H","B3",11,2,7,"","Within Range","Within Range",25.0841903272293,62175.7115805493
+"12",20240327,2022,"June",21,"Pre",1211,"EDT","G","Control","C11_H","F2",12,2,7,"","Within Range","Within Range",30.8066456599496,31151.463593999
+"13",20240327,2022,"June",21,"Pre",1057,"EDT","G","Control","C13","B8",13,2,7,"","Within Range","Within Range",5288.51436066855,57181.8309549297
+"14",20240327,2022,"June",21,"Pre",1043,"EDT","G","Control","C14","B7",14,2,7,"","Within Range","Within Range",32.3450654235322,41745.0113983948
+"15",20240327,2022,"June",21,"Pre",1112,"EDT","G","Control","C15","A4",15,2,7,"","Within Range","Within Range",172.993926839558,47740.1035668355
+"16",20240327,2022,"June",22,"0",825,"EDT","G","Control","C1","F5",16,2,7,"","Within Range","Within Range",49461.0913312757,36197.0732466744
+"17",20240327,2022,"June",22,"0",819,"EDT","G","Control","C2","F5",17,2,7,"","Within Range","Within Range",17158.6782701622,58337.7575987439
+"18",20240327,2022,"June",22,"0",804,"EDT","G","Control","C3","C5",18,2,7,"well has sap","Within Range","Within Range",18.13799200075,2657.17093342046
+"19",20240327,2022,"June",22,"0",708,"EDT","G","Control","C7_H","B3",19,2,7,"","Within Range","Within Range",31.9954245681725,98847.9103176622
+"20",20240327,2022,"June",22,"0",635,"EDT","G","Control","C11_H","F2",20,2,7,"","Within Range","Within Range",42.496304924142,38094.9055257879
+"21",20240327,2022,"June",22,"0",750,"EDT","G","Control","C13","B8",21,2,7,"","Within Range","Within Range",5507.34964784899,60688.9740328727
+"22",20240327,2022,"June",22,"0",750,"EDT","G","Control","C14","B7",22,2,7,"","Within Range","Within Range",34.151543176224,74316.221602807
+"23",20240327,2022,"June",22,"0",734,"EDT","G","Control","C15","A4",23,2,7,"","Within Range","Within Range",74.2320398956234,56778.9014805006
+"24",20240327,2022,"June",22,"1",1214,"EDT","G","Control","C1","F5",24,2,7,"","Within Range","Within Range",67170.0555482041,42722.6239325226
+"25",20240327,2022,"June",22,"1",1204,"EDT","G","Control","C2","F5",25,2,7,"","Within Range","Within Range",14338.3645592326,51831.8884861459
+"26",20240327,2022,"June",22,"1",1147,"EDT","G","Control","C3","C5",26,2,7,"well has sap","Within Range","Within Range",14.0705033833989,1447.3441537508
+"27",20240327,2022,"June",22,"1",1033,"EDT","G","Control","C7_H","B3",27,2,7,"","Within Range","Within Range",151.083099903684,100518.625737112
+"28",20240327,2022,"June",22,"1",1000,"EDT","G","Control","C11_H","F2",28,2,7,"","Within Range","Within Range",2275.34340275052,34465.3307907441
+"29",20240327,2022,"June",22,"1",1126,"EDT","G","Control","C13","B8",29,2,7,"","Within Range","Within Range",4063.08819412184,64335.4456581409
+"30",20240327,2022,"June",22,"1",1126,"EDT","G","Control","C14","B7",30,2,7,"","Within Range","Within Range",40.3168769257332,83815.2473840084
+"31",20240327,2022,"June",22,"1",1134,"EDT","G","Control","C15","A4",31,2,7,"","Within Range","Within Range",94.7093393245228,58555.9068351046
+"32",20240327,2022,"June",22,"2",1554,"EDT","G","Control","C1","F5",32,2,7,"","Within Range","Within Range",69390.8289161839,43828.1902917854
+"33",20240327,2022,"June",22,"2",1546,"EDT","G","Control","C2","F5",33,2,7,"","Within Range","Within Range",15120.4738164215,57063.552723359
+"34",20240327,2022,"June",22,"2",1505,"EDT","G","Control","C3","C5",34,0.5,25,"lot of sap/water","Within Range","Within Range",50.2934217092057,135700.428840707
+"35",20240327,2022,"June",22,"2",1436,"EDT","G","Control","C7_H","B3",35,2,7,"","Within Range","Within Range",21.4129613459525,3238.65050762287
+"36",20240327,2022,"June",22,"2",1407,"EDT","G","Control","C11_H","F2",36,2,7,"","Within Range","Within Range",31.0747036490587,32070.4561905327
+"37",20240327,2022,"June",22,"2",1531,"EDT","G","Control","C13","B8",37,2,7,"","Within Range","Within Range",6105.73867737199,62520.1155134191
+"38",20240327,2022,"June",22,"2",1523,"EDT","G","Control","C14","B7",38,2,7,"","Within Range","Within Range",25.7251985620554,69228.4169225881
+"39",20240327,2022,"June",22,"2",1452,"EDT","G","Control","C15","A4",39,2,7,"","Within Range","Within Range",66.9711647993205,57323.7553932111
+"40",20240327,2022,"June",22,"3",1839,"EDT","G","Control","C1","F5",40,2,7,"","Needs Dilution","Within Range",97156.9813399684,67629.9616677575
+"41",20240327,2022,"June",22,"3",1727,"EDT","G","Control","C2","F5",41,2,7,"","Within Range","Within Range",16487.0706059067,73230.7615989509
+"42",20240327,2022,"June",22,"3",1812,"EDT","G","Control","C3","C5",42,2,7,"","Within Range","Within Range",441.483139670266,182193.473280065
+"43",20240327,2022,"June",22,"3",1904,"EDT","G","Control","C7_H","B3",43,2,7,"","Within Range","Within Range",22.2171353132798,3332.05538403087
+"44",20240327,2022,"June",22,"3",1704,"EDT","G","Control","C11_H","F2",44,2,7,"","Within Range","Within Range",41.8552966893159,34346.0142027909
+"45",20240327,2022,"June",22,"3",1804,"EDT","G","Control","C13","B8",45,2,7,"","Within Range","Within Range",3595.88765516746,65590.7241285538
+"46",20240327,2022,"June",22,"3",1758,"EDT","G","Control","C14","B7",46,2,7,"","Within Range","Within Range",29.8159965697638,75888.6707500575
+"47",20240327,2022,"June",22,"3",1741,"EDT","G","Control","C15","A4",47,2,7,"","Within Range","Within Range",74.1038382486582,60761.7533756828
+"48",20240327,2022,"June",23,"Post",1109,"EDT","G","Control","C1","F5",48,2,7,"a little less than 2mL","Within Range","Within Range",60956.1842719819,91389.6324122208
+"49",20240327,2022,"June",23,"Post",1100,"EDT","G","Control","C2","F5",49,2,7,"","Within Range","Within Range",16019.845570922,66079.4124005742
+"50",20240327,2022,"June",23,"Post",1045,"EDT","G","Control","C3","C5",50,2,7,"","Within Range","Within Range",210.45211714376,75215.107843934
+"51",20240327,2022,"June",23,"Post",957,"EDT","G","Control","C7_H","B3",51,2,7,"","Within Range","Within Range",34.4778746412264,125237.643382974
+"52",20240327,2022,"June",23,"Post",925,"EDT","G","Control","C11_H","F2",52,2,7,"","Within Range","Within Range",43.0324209023602,44519.1220683072
+"53",20240327,2022,"June",23,"Post",1021,"EDT","G","Control","C13","B8",53,2,7,"a little less than 2mL","Within Range","Within Range",3028.2656397709,63769.9190138151
+"54",20240327,2022,"June",23,"Post",1028,"EDT","G","Control","C14","B7",54,2,7,"","Within Range","Within Range",47.076600129354,78328.4778628209
+"55",20240327,2022,"June",23,"Post",1013,"EDT","G","Control","C15","A4",55,2,7,"","Within Range","Within Range",128.810977417272,61401.0033231664
+"56",20240327,2022,"June",24,"Post",956,"EDT","G","Control","C1","F5",56,1.7,8.06,"sap","Within Range","Within Range",44958.3883023736,65715.0936060228
+"57",20240327,2022,"June",24,"Post",948,"EDT","G","Control","C2","F5",57,2,7,"","Within Range","Within Range",17797.4735017565,67345.4520189513
+"58",20240327,2022,"June",24,"Post",933,"EDT","G","Control","C3","C5",58,2,7,"a little less than 2mL","Within Range","Within Range",234.705537810544,85377.2657694166
+"59",20240327,2022,"June",24,"Post",839,"EDT","G","Control","C7_H","B3",59,2,7,"","Within Range","Within Range",32.3217560331749,124938.266358691
+"60",20240327,2022,"June",24,"Post",810,"EDT","G","Control","C11_H","F2",60,2,7,"","Within Range","Within Range",47.2048017763192,49873.7371408123
+"61",20240327,2022,"June",24,"Post",903,"EDT","G","Control","C13","B8",61,2,7,"","Within Range","Within Range",5192.52666572071,65989.1697913311
+"62",20240327,2022,"June",24,"Post",910,"EDT","G","Control","C14","B7",62,2,7,"","Within Range","Within Range",30.1772921203021,70262.7614736145
+"63",20240327,2022,"June",24,"Post",855,"EDT","G","Control","C15","A4",63,2,7,"","Within Range","Within Range",105.956120171926,58214.2875852607
+"64",20240328,2022,"June",20,"Pre",1156,"EDT","G","Freshwater","F1","H5",64,2,7,"","Within Range","Within Range",5755.56770810288,97054.8207501559
+"65",20240328,2022,"June",20,"Pre",1008,"EDT","G","Freshwater","F2","G6",65,2,7,"pipe with water","Within Range","Within Range",257.764726704396,54662.2545511085
+"66",20240328,2022,"June",20,"Pre",1221,"EDT","G","Freshwater","F3","D5",66,2,7,"pipe with water; exetainer with water","Within Range","Within Range",167.406913907437,35729.6600325666
+"67",20240328,2022,"June",20,"Pre",1302,"EDT","G","Freshwater","F7_H","B5",67,2,7,"","Within Range","Within Range",5384.48433511218,41196.4708323682
+"68",20240328,2022,"June",20,"Pre",1421,"EDT","G","Freshwater","F8_H","B4",68,2,7,"","Within Range","Within Range",24932.0955789994,16379.3642444856
+"69",20240328,2022,"June",20,"Pre",1057,"EDT","G","Freshwater","F9_H","G3",69,2,7,"","Within Range","Within Range",23.6205197417174,29591.4842599001
+"70",20240328,2022,"June",20,"Pre",1248,"EDT","G","Freshwater","F13","D6",70,2,7,"","Within Range","Within Range",24.9306969240769,34424.6046019141
+"71",20240328,2022,"June",20,"Pre",1320,"EDT","G","Freshwater","F14","D7",71,2,7,"","Within Range","Within Range",2091.42716742809,30157.3264959649
+"72",20240328,2022,"June",21,"Pre",926,"EDT","G","Freshwater","F2","G6",72,2,7,"","Within Range","Within Range",1290.54398595074,159508.426954416
+"73",20240328,2022,"June",21,"Pre",1220,"EDT","G","Freshwater","F3","D5",73,2,7,"","Within Range","Within Range",368.818897704051,60338.8748958485
+"74",20240328,2022,"June",21,"Pre",1233,"EDT","G","Freshwater","F7_H","B5",74,2,7,"","Within Range","Within Range",5414.1425091079,44654.6418469799
+"75",20240328,2022,"June",21,"Pre",1300,"EDT","G","Freshwater","F8_H","B4",75,2,7,"","Needs Dilution","Within Range",79842.2862619075,52344.8456915578
+"76",20240328,2022,"June",21,"Pre",1011,"EDT","G","Freshwater","F9_H","G3",76,2,7,"","Within Range","Within Range",273.431336910406,26747.7402632402
+"77",20240328,2022,"June",21,"Pre",1208,"EDT","G","Freshwater","F13","D6",77,2,7,"","Within Range","Within Range",110.425309671261,49176.2655479305
+"78",20240328,2022,"June",21,"Pre",1144,"EDT","G","Freshwater","F14","D7",78,2,7,"","Within Range","Within Range",1790.04612750698,39632.2539467552
+"79",20240328,2022,"June",21,"Pre",1246,"EDT","G","Freshwater","F15","A6",79,2,7,"","Within Range","Within Range",1929.07584833647,49627.9335465608
+"80",20240328,2022,"June",22,"0",627,"EDT","G","Freshwater","F1","H5",80,2,7,"","Within Range","Within Range",5025.79915369492,90942.0880606356
+"81",20240328,2022,"June",22,"0",607,"EDT","G","Freshwater","F2","G6",81,2,7,"","Within Range","Within Range",189.802061168615,52095.7847570423
+"82",20240328,2022,"June",22,"0",820,"EDT","G","Freshwater","F3","D5",82,2,7,"","Within Range","Within Range",350.98716418821,57972.7107814918
+"83",20240328,2022,"June",22,"0",828,"EDT","G","Freshwater","F7_H","B5",83,2,7,"","Within Range","Within Range",6353.96792417582,48914.8879450244
+"84",20240328,2022,"June",22,"0",847,"EDT","G","Freshwater","F8_H","B4",84,2,7,"","Needs Dilution","Within Range",84166.7179911065,58497.5542805607
+"85",20240328,2022,"June",22,"0",650,"EDT","G","Freshwater","F9_H","G3",85,2,7,"","Within Range","Within Range",254.18949744406,27716.4952431293
+"86",20240328,2022,"June",22,"0",811,"EDT","G","Freshwater","F13","D6",86,2,7,"","Within Range","Within Range",25.9521909984588,57345.413058163
+"87",20240328,2022,"June",22,"0",750,"EDT","G","Freshwater","F14","D7",87,2,7,"","Within Range","Within Range",3023.92865078025,54975.0297390636
+"88",20240328,2022,"June",22,"0",838,"EDT","G","Freshwater","F15","A6",88,2,7,"","Within Range","Within Range",1736.15398832891,59545.4513130499
+"89",20240328,2022,"June",22,"1",958,"EDT","G","Freshwater","F1","H5",89,0.5,25,"too much water in pipe","Within Range","Within Range",450.288631002896,99024.1651303325
+"90",20240328,2022,"June",22,"1",1144,"EDT","G","Freshwater","F3","D5",90,1.8,7,"","Within Range","Within Range",166.363213440134,29713.9264339013
+"91",20240328,2022,"June",22,"1",1154,"EDT","G","Freshwater","F7_H","B5",91,2,7,"","Within Range","Within Range",6904.10018071591,51549.8452342594
+"92",20240328,2022,"June",22,"1",1214,"EDT","G","Freshwater","F8_H","B4",92,2,7,"","Needs Dilution","Within Range",81130.4983605535,58306.1558108637
+"93",20240328,2022,"June",22,"1",1026,"EDT","G","Freshwater","F9_H","G3",93,2,7,"","Within Range","Within Range",68.1443375490174,43231.9601022851
+"94",20240328,2022,"June",22,"1",1135,"EDT","G","Freshwater","F13","D6",94,2,7,"","Within Range","Within Range",79.169811634466,64801.8132944672
+"95",20240328,2022,"June",22,"1",1115,"EDT","G","Freshwater","F14","D7",95,2,7,"","Within Range","Within Range",2877.41252193414,58400.7682808542
+"96",20240328,2022,"June",22,"1",1203,"EDT","G","Freshwater","F15","A6",96,2,7,"","Within Range","Within Range",3859.45677887207,120330.596441788
+"97",20240328,2022,"June",22,"2",1325,"EDT","G","Freshwater","F1","H5",97,1,13,"","Within Range","Within Range",431.300030648144,139768.070397196
+"98",20240328,2022,"June",22,"2",1305,"EDT","G","Freshwater","F2","G6",98,1.8,7.7,"","Within Range","Within Range",203.078555263629,150704.164062579
+"99",20240328,2022,"June",22,"2",1519,"EDT","G","Freshwater","F3","D5",99,2,7,"well with liquid","Within Range","Within Range",234.425807744061,53310.787868285
+"100",20240328,2022,"June",22,"2",1530,"EDT","G","Freshwater","F7_H","B5",100,2,7,"","Within Range","Within Range",6292.1644389635,48071.3027058389
+"101",20240328,2022,"June",22,"2",1552,"EDT","G","Freshwater","F8_H","B4",101,2,7,"","Needs Dilution","Within Range",112776.269941067,79917.5191587984
+"102",20240328,2022,"June",22,"2",1339,"EDT","G","Freshwater","F9_H","G3",102,2,7,"","Within Range","Within Range",59.4838443096922,36042.3499840622
+"103",20240328,2022,"June",22,"2",1502,"EDT","G","Freshwater","F13","D6",103,2,7,"","Within Range","Within Range",63.7918845364335,62321.5601791355
+"104",20240328,2022,"June",22,"2",1437,"EDT","G","Freshwater","F14","D7",104,2,7,"","Within Range","Within Range",2905.80838005393,63180.8289268599
+"105",20240328,2022,"June",22,"2",1542,"EDT","G","Freshwater","F15","A6",105,2,7,"","Within Range","Within Range",3324.7972654448,97746.1310545324
+"106",20240328,2022,"June",22,"3",1702,"EDT","G","Freshwater","F1","H5",106,1,13,"liquid in well","Within Range","Within Range",4060.31938985809,177043.362251695
+"107",20240328,2022,"June",22,"3",1620,"EDT","G","Freshwater","F2","G6",107,1,13,"liquid in well","Within Range","Within Range",180.619991813677,115994.18501317
+"108",20240328,2022,"June",22,"3",1814,"EDT","G","Freshwater","F3","D5",108,2,7,"liquid in well","Within Range","Within Range",166.951682852549,40603.693875117
+"109",20240328,2022,"June",22,"3",1824,"EDT","G","Freshwater","F7_H","B5",109,2,7,"","Within Range","Within Range",10148.6394253274,76456.7910504031
+"110",20240328,2022,"June",22,"3",1856,"EDT","G","Freshwater","F8_H","B4",110,2,7,"","Needs Dilution","Within Range",130459.078189081,90174.278033902
+"111",20240328,2022,"June",22,"3",1705,"EDT","G","Freshwater","F9_H","G3",111,2,7,"","Within Range","Within Range",69.5877530889049,52755.3444802733
+"112",20240328,2022,"June",22,"3",1824,"EDT","G","Freshwater","F13","D6",112,2,7,"","Within Range","Within Range",33.4801581987953,93662.4949004701
+"113",20240328,2022,"June",22,"3",1917,"EDT","G","Freshwater","F14","D7",113,2,7,"","Within Range","Within Range",3796.32848689888,54762.2795362741
+"114",20240328,2022,"June",22,"3",1844,"EDT","G","Freshwater","F15","A6",114,2,7,"","Within Range","Within Range",1544.15699341857,63914.5443698132
+"115",20240328,2022,"June",23,"Post",1157,"EDT","W","Freshwater","F1","H5",115,1,13,"1mL ATM; 1mL water","Within Range","Within Range",125.440277745976,58252.3711392147
+"116",20240328,2022,"June",23,"Post",915,"EDT","G","Freshwater","F2","G6",116,0.8,16,"liquid in well","Within Range","Within Range",47.594318248292,48768.1770347506
+"117",20240328,2022,"June",23,"Post",1107,"EDT","W","Freshwater","F3","D5",117,1,13,"1mL ATM; 1mL water","Within Range","Within Range",31.4326856553012,51913.3965330375
+"118",20240328,2022,"June",23,"Post",1126,"EDT","G","Freshwater","F7_H","B5",118,2,7,"","Within Range","Within Range",6702.84203665645,50248.7106807416
+"119",20240328,2022,"June",23,"Post",1147,"EDT","G","Freshwater","F8_H","B4",119,2,7,"","Needs Dilution","Within Range",89659.6292833935,63037.7595296716
+"120",20240328,2022,"June",23,"Post",1047,"EDT","G","Freshwater","F14","D7",120,2,7,"","Within Range","Within Range",3916.6734331293,81641.1282235845
+"121",20240328,2022,"June",23,"Post",1137,"EDT","G","Freshwater","F15","A6",121,2,7,"","Within Range","Within Range",3725.23885618348,59424.202449481
+"122",20240328,2022,"June",24,"Post",931,"EDT","W","Freshwater","F1","H5",122,1,13,"1mL ATM; 1mL water","Within Range","Within Range",179.588980713757,198264.878387375
+"123",20240328,2022,"June",24,"Post",811,"EDT","W","Freshwater","F2","G6",123,1,13,"1mL ATM; 1mL water","Within Range","Within Range",566.36248473762,177556.242204848
+"124",20240328,2022,"June",24,"Post",1020,"EDT","G","Freshwater","F3","D5",124,2,7,"","Within Range","Within Range",25.0750384780656,18585.8804702908
+"125",20240328,2022,"June",24,"Post",1032,"EDT","G","Freshwater","F7_H","B5",125,2,7,"","Within Range","Within Range",10049.6038708638,70891.191194098
+"126",20240328,2022,"June",24,"Post",1049,"EDT","G","Freshwater","F8_H","B4",126,2,7,"","Needs Dilution","Within Range",82241.2863386587,54700.9092854695
+"127",20240401,2022,"June",20,"Pre",1523,"EDT","G","Seawater","S1","F7",127,2,7,"","Within Range","Within Range",11394.0253576421,44295.6934851072
+"128",20240401,2022,"June",20,"Pre",1543,"EDT","G","Seawater","S2","C5",128,2,7,"","Within Range","Within Range",739.089905059115,33849.949567821
+"129",20240401,2022,"June",20,"Pre",1418,"EDT","G","Seawater","S3","E5",129,2,7,"","Within Range","Within Range",111.364330119478,47721.3828308258
+"130",20240401,2022,"June",20,"Pre",1034,"EDT","G","Seawater","S7_H","D7",130,2,7,"","Needs Dilution","Within Range",254658.086605322,37051.3897096556
+"131",20240401,2022,"June",20,"Pre",1557,"EDT","G","Seawater","S8_H","C6",131,2,7,"","Within Range","Within Range",2806.92847674416,24800.5119846921
+"132",20240401,2022,"June",20,"Pre",1635,"EDT","G","Seawater","S9_H","F2",132,2,7,"","Within Range","Within Range",3285.61879904994,47018.2761119359
+"133",20240401,2022,"June",20,"Pre",1642,"EDT","G","Seawater","S13","A2",133,2,7,"","Within Range","Within Range",9298.47828798115,40621.1359956015
+"134",20240401,2022,"June",20,"Pre",1451,"EDT","G","Seawater","S14","I2",134,2,7,"","Within Range","Within Range",29.1969216741454,28708.1627877533
+"135",20240401,2022,"June",20,"Pre",1655,"EDT","G","Seawater","S15","E4",135,2,7,"","Within Range","Within Range",32.4936914752398,32862.4707071837
+"136",20240401,2022,"June",21,"Pre",1412,"EDT","G","Seawater","S1","F7",136,2,7,"","Within Range","Within Range",15304.2609286755,59432.302148485
+"137",20240401,2022,"June",21,"Pre",1141,"EDT","G","Seawater","S2","C5",137,2,7,"","Within Range","Within Range",140.19961876169,78807.6204509955
+"138",20240401,2022,"June",21,"Pre",1218,"EDT","G","Seawater","S3","E5",138,2,7,"","Within Range","Within Range",284.410403324841,52671.8306997297
+"139",20240401,2022,"June",21,"Pre",1348,"EDT","G","Seawater","S7_H","D7",139,2,7,"","Needs Dilution","Within Range",284755.269856045,43791.6217535857
+"140",20240401,2022,"June",21,"Pre",1153,"EDT","G","Seawater","S8_H","C6",140,2,7,"","Within Range","Within Range",4630.40457749241,37167.8088071593
+"141",20240401,2022,"June",21,"Pre",1102,"EDT","G","Seawater","S9_H","F2",141,2,7,"","Within Range","Within Range",3277.95118782979,48490.0550166078
+"142",20240401,2022,"June",21,"Pre",1050,"EDT","G","Seawater","S13","A2",142,2,7,"","Within Range","Within Range",6549.46120590629,47916.2934016646
+"143",20240401,2022,"June",21,"Pre",1112,"EDT","G","Seawater","S14","I2",143,2,7,"","Within Range","Within Range",30.7537296357733,1747.3196515492
+"144",20240401,2022,"June",21,"Pre",1123,"EDT","G","Seawater","S15","E4",144,2,7,"","Within Range","Within Range",37.0725384212043,41144.3841379975
+"145",20240401,2022,"June",22,"0",944,"EDT","G","Seawater","S1","F7",145,2,7,"","Within Range","Within Range",21146.9806784296,61900.7867012882
+"146",20240401,2022,"June",22,"0",930,"EDT","G","Seawater","S2","C5",146,2,7,"","Within Range","Within Range",169.218061281739,81959.5675944757
+"147",20240401,2022,"June",22,"0",909,"EDT","G","Seawater","S3","E5",147,2,7,"","Within Range","Within Range",17.5552033140306,53016.2407398245
+"148",20240401,2022,"June",22,"0",934,"EDT","G","Seawater","S7_H","D7",148,2,7,"","Needs Dilution","Within Range",320419.212697971,53972.382538789
+"149",20240401,2022,"June",22,"0",913,"EDT","G","Seawater","S8_H","C6",149,2,7,"","Within Range","Within Range",4561.30992357601,37485.4313996912
+"150",20240401,2022,"June",22,"0",727,"EDT","G","Seawater","S9_H","F2",150,2,7,"","Within Range","Within Range",2833.43896561768,47932.1107516542
+"151",20240401,2022,"June",22,"0",719,"EDT","G","Seawater","S13","A2",151,2,7,"","Within Range","Within Range",5983.68257381916,53586.8133729149
+"152",20240401,2022,"June",22,"0",736,"EDT","G","Seawater","S14","I2",152,2,7,"","Within Range","Within Range",208.596145017034,56357.1031682605
+"153",20240401,2022,"June",22,"0",746,"EDT","G","Seawater","S15","E4",153,2,7,"","Within Range","Within Range",31.7038403770609,46085.6052194075
+"154",20240401,2022,"June",22,"1",1328,"EDT","G","Seawater","S1","F7",154,2,7,"","Within Range","Within Range",10.6525915429892,1812.07724303864
+"155",20240401,2022,"June",22,"1",1104,"EDT","G","Seawater","S2","C5",155,2,7,"","Within Range","Within Range",459.574193242713,82668.2018819104
+"156",20240401,2022,"June",22,"1",1236,"EDT","G","Seawater","S3","E5",156,2,7,"","Within Range","Within Range",30.9025421615171,117260.193552181
+"157",20240401,2022,"June",22,"1",1318,"EDT","G","Seawater","S7_H","D7",157,2,7,"","Needs Dilution","Within Range",305644.550483407,49697.7437041157
+"158",20240401,2022,"June",22,"1",1306,"EDT","G","Seawater","S8_H","C6",158,2,7,"","Within Range","Within Range",4239.38102038908,39604.4035414351
+"159",20240401,2022,"June",22,"1",1119,"EDT","G","Seawater","S9_H","F2",159,2,7,"","Within Range","Within Range",2866.44784730699,49064.7945859858
+"160",20240401,2022,"June",22,"1",1042,"EDT","G","Seawater","S13","A2",160,2,7,"","Within Range","Within Range",6303.83918805632,53220.080459851
+"161",20240401,2022,"June",22,"1",1135,"EDT","G","Seawater","S14","I2",161,2,7,"","Within Range","Within Range",185.083765949506,57154.348631443
+"162",20240401,2022,"June",22,"1",1148,"EDT","G","Seawater","S15","E4",162,2,7,"","Within Range","Within Range",33.0317059913906,50225.4989408635
+"163",20240401,2022,"June",22,"2",1657,"EDT","G","Seawater","S1","F7",163,2,7,"","Within Range","Within Range",14474.0789388958,64894.9005029373
+"164",20240401,2022,"June",22,"2",1516,"EDT","G","Seawater","S2","C5",164,2,7,"","Within Range","Within Range",194.710791653397,82568.1954110088
+"165",20240401,2022,"June",22,"2",1537,"EDT","G","Seawater","S3","E5",165,2,7,"","Within Range","Within Range",55.6969983739148,93237.5507358084
+"166",20240401,2022,"June",22,"2",1709,"EDT","G","Seawater","S7_H","D7",166,2,7,"","Needs Dilution","Within Range",327119.572608664,53773.772749001
+"167",20240401,2022,"June",22,"2",1526,"EDT","G","Seawater","S8_H","C6",167,2,7,"","Within Range","Within Range",4664.31191121876,44548.98368373
+"168",20240401,2022,"June",22,"2",1426,"EDT","G","Seawater","S9_H","F2",168,2,7,"","Within Range","Within Range",7049.41899560921,56476.7112476169
+"169",20240401,2022,"June",22,"2",1458,"EDT","G","Seawater","S13","A2",169,2,7,"","Within Range","Within Range",5730.5037128084,55089.3765824052
+"170",20240401,2022,"June",22,"2",1435,"EDT","G","Seawater","S14","I2",170,2,7,"","Within Range","Within Range",661.352531034003,59708.1278188672
+"171",20240401,2022,"June",22,"2",1507,"EDT","G","Seawater","S15","E4",171,2,7,"","Within Range","Within Range",29.6662534861067,44192.9232299332
+"172",20240401,2022,"June",22,"3",1922,"EDT","G","Seawater","S1","F7",172,2,7,"","Within Range","Within Range",12652.190513665,60231.0783229568
+"173",20240401,2022,"June",22,"3",1803,"EDT","G","Seawater","S2","C5",173,2,7,"","Within Range","Within Range",544.672063733463,86933.869047638
+"174",20240401,2022,"June",22,"3",1838,"EDT","G","Seawater","S3","E5",174,2,7,"","Within Range","Within Range",70.6125923003942,143054.379567383
+"175",20240401,2022,"June",22,"3",1951,"EDT","G","Seawater","S7_H","D7",175,2,7,"","Needs Dilution","Within Range",330187.010938713,55346.068361671
+"176",20240401,2022,"June",22,"3",1812,"EDT","G","Seawater","S8_H","C6",176,2,7,"","Within Range","Within Range",4487.77223972305,47152.4259485407
+"177",20240401,2022,"June",22,"3",1735,"EDT","G","Seawater","S9_H","F2",177,2,7,"","Within Range","Within Range",2786.80561262707,53348.575168637
+"178",20240401,2022,"June",22,"3",1752,"EDT","G","Seawater","S13","A2",178,2,7,"","Within Range","Within Range",5538.89958523972,56072.4759079648
+"179",20240401,2022,"June",22,"3",1726,"EDT","G","Seawater","S14","I2",179,2,7,"","Within Range","Within Range",1263.16634100448,55094.3513940955
+"180",20240401,2022,"June",22,"3",1742,"EDT","G","Seawater","S15","E4",180,2,7,"","Within Range","Within Range",27.2280174873806,48129.7425870074
+"181",20240401,2022,"June",23,"Post",1233,"EDT","G","Seawater","S1","F7",181,2,7,"","Within Range","Within Range",11917.7244347346,57480.8153336464
+"182",20240401,2022,"June",23,"Post",1157,"EDT","G","Seawater","S2","C5",182,2,7,"","Within Range","Within Range",141.48169590656,85159.4770250211
+"183",20240401,2022,"June",23,"Post",1136,"EDT","G","Seawater","S3","E5",183,2,7,"","Within Range","Within Range",153.69577013492,97483.9564511456
+"184",20240401,2022,"June",23,"Post",1244,"EDT","G","Seawater","S7_H","D7",184,2,7,"","Needs Dilution","Within Range",329809.26724117,48804.4035877709
+"185",20240401,2022,"June",23,"Post",1146,"EDT","G","Seawater","S8_H","C6",185,2,7,"","Within Range","Within Range",24956.5773137532,46524.7918001654
+"186",20240401,2022,"June",23,"Post",1015,"EDT","G","Seawater","S9_H","F2",186,2,7,"","Within Range","Within Range",6964.77989069594,50666.6839502491
+"187",20240401,2022,"June",23,"Post",1043,"EDT","G","Seawater","S13","A2",187,2,7,"","Within Range","Within Range",6006.42694867443,62039.613711277
+"188",20240401,2022,"June",23,"Post",1025,"EDT","G","Seawater","S14","I2",188,2,7,"","Within Range","Within Range",521.457309717423,55945.2567919199
+"189",20240401,2022,"June",23,"Post",1052,"EDT","G","Seawater","S15","E4",189,2,7,"","Within Range","Within Range",137.784276997693,53926.0785222874
+"190",20240401,2022,"June",24,"Post",1138,"EDT","G","Seawater","S1","F7",190,2,7,"pipe w/water","Within Range","Within Range",12206.5336881728,65728.2027209347
+"191",20240401,2022,"June",24,"Post",1027,"EDT","G","Seawater","S2","C5",191,2,7,"","Within Range","Within Range",160.17483856346,84864.6025030386
+"192",20240401,2022,"June",24,"Post",1054,"EDT","G","Seawater","S3","E5",192,2,7,"pipe w/water","Within Range","Within Range",33.7070859159204,101168.591123306
+"193",20240401,2022,"June",24,"Post",1147,"EDT","G","Seawater","S7_H","D7",193,2,7,"pipe w/water","Needs Dilution","Within Range",369782.210667825,53786.613715928
+"194",20240401,2022,"June",24,"Post",1018,"EDT","G","Seawater","S8_H","C6",194,2,7,"","Within Range","Within Range",5059.69234532359,45284.3628989695
+"195",20240401,2022,"June",24,"Post",913,"EDT","G","Seawater","S9_H","F2",195,2,7,"","Within Range","Within Range",2413.54186770781,55183.3027279076
+"196",20240401,2022,"June",24,"Post",939,"EDT","G","Seawater","S13","A2",196,2,7,"","Within Range","Within Range",3804.81330839507,54702.9995411285
+"197",20240401,2022,"June",24,"Post",904,"EDT","G","Seawater","S14","I2",197,2,7,"","Within Range","Within Range",728.318167618733,50810.23065338
+"198",20240401,2022,"June",24,"Post",946,"EDT","G","Seawater","S15","E4",198,2,7,"","Within Range","Within Range",35.5157304595763,51478.6412497122

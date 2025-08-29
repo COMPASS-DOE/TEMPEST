@@ -1,0 +1,64 @@
+"","Machine","User","Run_Date","Sample_Year","Sample_Month","Sample_Day","Event_Stamp","Sample_Time","Time_Zone","G_W","Sample_Plot","Tree_ID","Sample_Grid","Sample_ID","Sample_Vol_mL","Dilution_Factor","Field_Notes","CH4_Flag","CO2_Flag","CH4_Conc_ppm_dilcorr","CO2_Conc_ppm_dilcorr"
+"1","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Freshwater","F3","D5","1",2,7,"","Within Range","Within Range",79.1153571754805,76559.3545771206
+"2","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"2",2,7,"","Within Range","Within Range",8.49955908800116,1704.14856635107
+"3","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"3",2,7,"","Within Range","Within Range",7.85855085317506,1336.381614875
+"4","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"4",2,7,"","Within Range","Within Range",8.94243750479011,2771.81491765242
+"5","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"5",2,7,"","Within Range","Within Range",8.32473866032132,1352.00415862995
+"6","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"6",2,7,"","Within Range","Within Range",7.99840719531893,1530.64865443808
+"7","Varian GC","A. Stearns",20240327,2022,"June",20,"Pre",NA,"EDT","G","Control","C",NA,"7",2,7,"","Within Range","Within Range",10.3759650117648,1588.93820591048
+"8","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",913,"EDT","G","Control","C1","F5","8",2,7,"","Within Range","Within Range",19269.1950055121,29137.3825980624
+"9","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",856,"EDT","G","Control","C2","F5","9",2,7,"","Within Range","Within Range",27859.3894424713,54298.5512708022
+"10","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1008,"EDT","G","Control","C3","C5","10",0.8,16,"","Within Range","Within Range",33.3332799343082,18945.4847449489
+"11","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1328,"EDT","G","Control","C7_H","B3","11",2,7,"","Within Range","Within Range",25.0841903272293,62175.7115805493
+"12","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1211,"EDT","G","Control","C11_H","F2","12",2,7,"","Within Range","Within Range",30.8066456599496,31151.463593999
+"13","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1057,"EDT","G","Control","C13","B8","13",2,7,"","Within Range","Within Range",5288.51436066855,57181.8309549297
+"14","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1043,"EDT","G","Control","C14","B7","14",2,7,"","Within Range","Within Range",32.3450654235322,41745.0113983948
+"15","Varian GC","A. Stearns",20240327,2022,"June",21,"Pre",1112,"EDT","G","Control","C15","A4","15",2,7,"","Within Range","Within Range",172.993926839558,47740.1035668355
+"16","Varian GC","A. Stearns",20240327,2022,"June",22,"0",825,"EDT","G","Control","C1","F5","16",2,7,"","Within Range","Within Range",49461.0913312757,36197.0732466744
+"17","Varian GC","A. Stearns",20240327,2022,"June",22,"0",819,"EDT","G","Control","C2","F5","17",2,7,"","Within Range","Within Range",17158.6782701622,58337.7575987439
+"18","Varian GC","A. Stearns",20240327,2022,"June",22,"0",804,"EDT","G","Control","C3","C5","18",2,7,"well has sap","Within Range","Within Range",18.13799200075,2657.17093342046
+"19","Varian GC","A. Stearns",20240327,2022,"June",22,"0",708,"EDT","G","Control","C7_H","B3","19",2,7,"","Within Range","Within Range",31.9954245681725,98847.9103176622
+"20","Varian GC","A. Stearns",20240327,2022,"June",22,"0",635,"EDT","G","Control","C11_H","F2","20",2,7,"","Within Range","Within Range",42.496304924142,38094.9055257879
+"21","Varian GC","A. Stearns",20240327,2022,"June",22,"0",750,"EDT","G","Control","C13","B8","21",2,7,"","Within Range","Within Range",5507.34964784899,60688.9740328727
+"22","Varian GC","A. Stearns",20240327,2022,"June",22,"0",750,"EDT","G","Control","C14","B7","22",2,7,"","Within Range","Within Range",34.151543176224,74316.221602807
+"23","Varian GC","A. Stearns",20240327,2022,"June",22,"0",734,"EDT","G","Control","C15","A4","23",2,7,"","Within Range","Within Range",74.2320398956234,56778.9014805006
+"24","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1214,"EDT","G","Control","C1","F5","24",2,7,"","Within Range","Within Range",67170.0555482041,42722.6239325226
+"25","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1204,"EDT","G","Control","C2","F5","25",2,7,"","Within Range","Within Range",14338.3645592326,51831.8884861459
+"26","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1147,"EDT","G","Control","C3","C5","26",2,7,"well has sap","Within Range","Within Range",14.0705033833989,1447.3441537508
+"27","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1033,"EDT","G","Control","C7_H","B3","27",2,7,"","Within Range","Within Range",151.083099903684,100518.625737112
+"28","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1000,"EDT","G","Control","C11_H","F2","28",2,7,"","Within Range","Within Range",2275.34340275052,34465.3307907441
+"29","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1126,"EDT","G","Control","C13","B8","29",2,7,"","Within Range","Within Range",4063.08819412184,64335.4456581409
+"30","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1126,"EDT","G","Control","C14","B7","30",2,7,"","Within Range","Within Range",40.3168769257332,83815.2473840084
+"31","Varian GC","A. Stearns",20240327,2022,"June",22,"1",1134,"EDT","G","Control","C15","A4","31",2,7,"","Within Range","Within Range",94.7093393245228,58555.9068351046
+"32","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1554,"EDT","G","Control","C1","F5","32",2,7,"","Within Range","Within Range",69390.8289161839,43828.1902917854
+"33","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1546,"EDT","G","Control","C2","F5","33",2,7,"","Within Range","Within Range",15120.4738164215,57063.552723359
+"34","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1505,"EDT","G","Control","C3","C5","34",0.5,25,"lot of sap/water","Within Range","Within Range",50.2934217092057,135700.428840707
+"35","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1436,"EDT","G","Control","C7_H","B3","35",2,7,"","Within Range","Within Range",21.4129613459525,3238.65050762287
+"36","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1407,"EDT","G","Control","C11_H","F2","36",2,7,"","Within Range","Within Range",31.0747036490587,32070.4561905327
+"37","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1531,"EDT","G","Control","C13","B8","37",2,7,"","Within Range","Within Range",6105.73867737199,62520.1155134191
+"38","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1523,"EDT","G","Control","C14","B7","38",2,7,"","Within Range","Within Range",25.7251985620554,69228.4169225881
+"39","Varian GC","A. Stearns",20240327,2022,"June",22,"2",1452,"EDT","G","Control","C15","A4","39",2,7,"","Within Range","Within Range",66.9711647993205,57323.7553932111
+"40","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1839,"EDT","G","Control","C1","F5","40",2,7,"","Needs Dilution","Within Range",97156.9813399684,67629.9616677575
+"41","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1727,"EDT","G","Control","C2","F5","41",2,7,"","Within Range","Within Range",16487.0706059067,73230.7615989509
+"42","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1812,"EDT","G","Control","C3","C5","42",2,7,"","Within Range","Within Range",441.483139670266,182193.473280065
+"43","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1904,"EDT","G","Control","C7_H","B3","43",2,7,"","Within Range","Within Range",22.2171353132798,3332.05538403087
+"44","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1704,"EDT","G","Control","C11_H","F2","44",2,7,"","Within Range","Within Range",41.8552966893159,34346.0142027909
+"45","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1804,"EDT","G","Control","C13","B8","45",2,7,"","Within Range","Within Range",3595.88765516746,65590.7241285538
+"46","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1758,"EDT","G","Control","C14","B7","46",2,7,"","Within Range","Within Range",29.8159965697638,75888.6707500575
+"47","Varian GC","A. Stearns",20240327,2022,"June",22,"3",1741,"EDT","G","Control","C15","A4","47",2,7,"","Within Range","Within Range",74.1038382486582,60761.7533756828
+"48","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1109,"EDT","G","Control","C1","F5","48",2,7,"a little less than 2mL","Within Range","Within Range",60956.1842719819,91389.6324122208
+"49","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1100,"EDT","G","Control","C2","F5","49",2,7,"","Within Range","Within Range",16019.845570922,66079.4124005742
+"50","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1045,"EDT","G","Control","C3","C5","50",2,7,"","Within Range","Within Range",210.45211714376,75215.107843934
+"51","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",957,"EDT","G","Control","C7_H","B3","51",2,7,"","Within Range","Within Range",34.4778746412264,125237.643382974
+"52","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",925,"EDT","G","Control","C11_H","F2","52",2,7,"","Within Range","Within Range",43.0324209023602,44519.1220683072
+"53","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1021,"EDT","G","Control","C13","B8","53",2,7,"a little less than 2mL","Within Range","Within Range",3028.2656397709,63769.9190138151
+"54","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1028,"EDT","G","Control","C14","B7","54",2,7,"","Within Range","Within Range",47.076600129354,78328.4778628209
+"55","Varian GC","A. Stearns",20240327,2022,"June",23,"Post",1013,"EDT","G","Control","C15","A4","55",2,7,"","Within Range","Within Range",128.810977417272,61401.0033231664
+"56","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",956,"EDT","G","Control","C1","F5","56",1.7,8.06,"sap","Within Range","Within Range",44958.3883023736,65715.0936060228
+"57","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",948,"EDT","G","Control","C2","F5","57",2,7,"","Within Range","Within Range",17797.4735017565,67345.4520189513
+"58","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",933,"EDT","G","Control","C3","C5","58",2,7,"a little less than 2mL","Within Range","Within Range",234.705537810544,85377.2657694166
+"59","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",839,"EDT","G","Control","C7_H","B3","59",2,7,"","Within Range","Within Range",32.3217560331749,124938.266358691
+"60","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",810,"EDT","G","Control","C11_H","F2","60",2,7,"","Within Range","Within Range",47.2048017763192,49873.7371408123
+"61","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",903,"EDT","G","Control","C13","B8","61",2,7,"","Within Range","Within Range",5192.52666572071,65989.1697913311
+"62","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",910,"EDT","G","Control","C14","B7","62",2,7,"","Within Range","Within Range",30.1772921203021,70262.7614736145
+"63","Varian GC","A. Stearns",20240327,2022,"June",24,"Post",855,"EDT","G","Control","C15","A4","63",2,7,"","Within Range","Within Range",105.956120171926,58214.2875852607
