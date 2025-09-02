@@ -10,7 +10,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(ggplot2)
-library(ggpubr)
+#library(ggpubr)
 library(dplyr)
 library(plyr)
 library(tidyverse)
@@ -33,7 +33,7 @@ dat1 <- dat %>%
           Day = Sample_Day,
           Time = Sample_Time,
           Sample_Matrix = G_W,
-          Plot = Sample_Plot, 
+          Plot = Plot, 
           CH4_ppm = CH4_Conc_ppm_dilcorr, 
           CO2_ppm = CO2_Conc_ppm_dilcorr)  %>%
   mutate(CH4_Flag = case_when(
@@ -61,7 +61,7 @@ final <- dat1 %>%
 #read in all data: 
 head(final)
 
-write.csv(final, "COMPASS_TEMPEST_TGW_2022_AllData.csv")
+write.csv(final, "COMPASS_TEMPEST_TGW_2023_AllData.csv")
 
 ```
 
@@ -72,13 +72,16 @@ write.csv(final, "COMPASS_TEMPEST_TGW_2022_AllData.csv")
 
 head(final)
 
-syn_trees <- c("C7_H", "C9", "C10", "C11_H", "C12", "C19")
+final$Event_Stamp <- as.numeric(final$Event_Stamp)
+
+syn_trees <- c("C7_H", "C9", "C10", "C11_H", "C12", "C19_H")
 
 syn_dat <- final %>%
- filter(Event_Stamp %in% "Pre") %>%
+ filter(is.na(Event_Stamp)) %>%
+ #filter(Event_Stamp %in% "NA") %>%
  filter(Sapflux_Tree_ID %in% syn_trees)
 
-write.csv(syn_dat, "2022 Processed Data/COMPASS_SynopticCB_GCW_UP_TGAS_2022.csv")
+write.csv(syn_dat, "2023 Processed Data/COMPASS_SynopticCB_GCW_UP_TGAS_2023.csv")
 
 
 ```
