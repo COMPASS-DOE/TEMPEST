@@ -1,0 +1,41 @@
+---
+title: "COMPASS_TEMPEST_TGW_Collate_AllData"
+author: "Stephanie J. Wilson"
+date: "2025-09-02"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+#library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+```
+
+## Read in all processed file and clean up / add info
+```{r}
+#read in all data: 
+dat22 <- read.csv("TEMPEST_TGW_2022/COMPASS_TEMPEST_TGW_2022_AllData.csv")
+dat23 <- read.csv("TEMPEST_TGW_2023/COMPASS_TEMPEST_TGW_2023_AllData.csv")
+dat24 <- read.csv("TEMPEST_TGW_2024/COMPASS_TEMPEST_TGW_2024_AllData.csv")
+
+#combine all the data together into one file 
+alldat <- rbind(dat22, dat23)
+alldat <- rbind(alldat, dat24)
+
+```
+
+
+## Write out collated file 
+```{r}
+#read in all data: 
+head(alldat)
+
+write.csv(alldat, "COMPASS_TEMPEST_TGW_AllData.csv")
+
+```
