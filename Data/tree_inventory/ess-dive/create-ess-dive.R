@@ -6,8 +6,7 @@ if(basename(getwd()) != "ess-dive") {
     stop("Set working directory to ess-dive directory before running")
 }
 
-
-message("Copying data and species codes")
+message("Copying data and species codes...")
 file.copy("../species-genera.csv", ".")
 library(readr)
 x <- read_csv("../inventory.csv")
@@ -18,6 +17,11 @@ if(!all(x$Plot %in% names(codes))) {
 }
 x$Plot <- codes[x$Plot]
 x$JS_codes <- NULL
+
+message("Adding sapflow information...")
+sf <- read_csv("sapflow_map.csv", col_types = "ccd")
+x <- left_join(x, sf, by = c("Plot", "Tag"))
+
 write_csv(x, "inventory-wide.csv", na = "")
 
 message("Checking inventory-wide_dd.csv")
@@ -26,7 +30,7 @@ if(!identical(sort(dd$Column_or_Row_Name), sort(names(x)))) {
     stop("Column names and data dictionary entries are not identical!")
 }
 
-message("Creating inventory-long.csv")
+message("Creating inventory-long.csv...")
 library(dplyr)
 library(tidyr)
 
@@ -34,7 +38,7 @@ pivot_and_split <- function(df, col_prefix) {
     stopifnot(any(grepl(col_prefix, colnames(df)))) # not present
     newcol <- gsub("_", "", col_prefix)
     df %>%
-        select(Plot, Section, Tag, Grid, Species_code, In_Plot, Notes, starts_with(col_prefix)) %>%
+        select(Plot, Section, Tag, Grid, Species_code, Sapflux_ID, In_Plot, Notes, starts_with(col_prefix)) %>%
         pivot_longer(cols = starts_with(col_prefix), values_to = newcol) %>%
         separate(name, into = c("x", "Year")) %>%
         select(-x)
@@ -43,25 +47,25 @@ pivot_and_split <- function(df, col_prefix) {
 inv_long_dbh <- pivot_and_split(x, "DBH_")
 inv_long_date <- pivot_and_split(x, "Date_")
 inv_long_status <- pivot_and_split(x, "Status_")
-joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "In_Plot", "Notes", "Year")
+joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "Sapflux_ID", "In_Plot", "Notes", "Year")
 inv_long_dbh %>%
     left_join(inv_long_date, by = joincols) %>%
     left_join(inv_long_status, by = joincols) %>%
     # clean up
     mutate(Year = as.integer(Year)) %>%
-    select(Plot, Section, Tag, Grid, Species_code, In_Plot, Year, Date, DBH, Status, Notes) %>%
+    select(Plot, Section, Tag, Grid, Species_code, Sapflux_ID, In_Plot, Year, Date, DBH, Status, Notes) %>%
     arrange(Plot, Tag, Year) ->
     inv_long
 
 write_csv(inv_long, "inventory-long.csv", na = "")
 
-message("Checking inventory-long_dd.csv")
+message("Checking inventory-long_dd.csv...")
 dd <- read_csv("inventory-long_dd.csv")
 if(!identical(sort(dd$Column_or_Row_Name), sort(names(inv_long)))) {
     stop("Column names and data dictionary entries are not identical!")
 }
 
-message("Checking flmd.csv")
+message("Checking flmd.csv...")
 flmd <- read_csv("flmd.csv")
 if(!all(file.exists(flmd$File_Name))) {
     stop("One or more of the flmd files doesn't exist!")

@@ -4,6 +4,7 @@ Section,,,Section of plot,character,column_header
 Tag,,,Tree tag number,integer,column_header
 Grid,,,Grid square location within plot of tree,character,column_header
 Species_code,,,Species code (genus + species; https://plants.usda.gov/),character,column_header
+Sapflux_ID,,,"Sapflux tree code, if this is a sapflux tree",character,column_header
 Year,,,Year of inventory,integer,column_header
 Date,,,Date of inventory (YYYY-MM-DD),date,column_header
 DBH,cm,"""""",Diameter at breast height (DBH) of tree,numeric,column_header
