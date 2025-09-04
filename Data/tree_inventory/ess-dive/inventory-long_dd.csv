@@ -1,7 +1,7 @@
 Column_or_Row_Name,Unit,missing_value_code,Definition,Data_Type,Term_Type
 Plot,,,Plot code,character,column_header
 Section,,,Section of plot,character,column_header
-Tag,,,Tree tag number,integer,column_header
+Tree_ID,,,Tree tag number,integer,column_header
 Grid,,,Grid square location within plot of tree,character,column_header
 Species_code,,,Species code (genus + species; https://plants.usda.gov/),character,column_header
 Sapflux_ID,,,"Sapflux tree code, if this is a sapflux tree",character,column_header

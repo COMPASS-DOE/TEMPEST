@@ -6,6 +6,9 @@ if(basename(getwd()) != "ess-dive") {
     stop("Set working directory to ess-dive directory before running")
 }
 
+library(dplyr)
+library(tidyr)
+
 message("Copying data and species codes...")
 file.copy("../species-genera.csv", ".")
 library(readr)
@@ -20,7 +23,7 @@ x$JS_codes <- NULL
 
 message("Adding sapflow information...")
 sf <- read_csv("sapflow_map.csv", col_types = "ccd")
-x <- left_join(x, sf, by = c("Plot", "Tag"))
+x <- left_join(x, sf, by = c("Plot", "Tree_ID"))
 
 write_csv(x, "inventory-wide.csv", na = "")
 
@@ -31,14 +34,12 @@ if(!identical(sort(dd$Column_or_Row_Name), sort(names(x)))) {
 }
 
 message("Creating inventory-long.csv...")
-library(dplyr)
-library(tidyr)
-
+# helper function
 pivot_and_split <- function(df, col_prefix) {
     stopifnot(any(grepl(col_prefix, colnames(df)))) # not present
     newcol <- gsub("_", "", col_prefix)
     df %>%
-        select(Plot, Section, Tag, Grid, Species_code, Sapflux_ID, In_Plot, Notes, starts_with(col_prefix)) %>%
+        select(Plot, Section, Tree_ID, Grid, Species_code, Sapflux_ID, In_Plot, Notes, starts_with(col_prefix)) %>%
         pivot_longer(cols = starts_with(col_prefix), values_to = newcol) %>%
         separate(name, into = c("x", "Year")) %>%
         select(-x)
@@ -47,14 +48,14 @@ pivot_and_split <- function(df, col_prefix) {
 inv_long_dbh <- pivot_and_split(x, "DBH_")
 inv_long_date <- pivot_and_split(x, "Date_")
 inv_long_status <- pivot_and_split(x, "Status_")
-joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "Sapflux_ID", "In_Plot", "Notes", "Year")
+joincols <- c("Plot", "Section", "Tree_ID", "Grid", "Species_code", "Sapflux_ID", "In_Plot", "Notes", "Year")
 inv_long_dbh %>%
     left_join(inv_long_date, by = joincols) %>%
     left_join(inv_long_status, by = joincols) %>%
     # clean up
     mutate(Year = as.integer(Year)) %>%
-    select(Plot, Section, Tag, Grid, Species_code, Sapflux_ID, In_Plot, Year, Date, DBH, Status, Notes) %>%
-    arrange(Plot, Tag, Year) ->
+    select(Plot, Section, Tree_ID, Grid, Species_code, Sapflux_ID, In_Plot, Year, Date, DBH, Status, Notes) %>%
+    arrange(Plot, Tree_ID, Year) ->
     inv_long
 
 write_csv(inv_long, "inventory-long.csv", na = "")
