@@ -1,0 +1,12 @@
+Column_or_Row_Name,Unit,missing_value_code,Definition,Data_Type,Term_Type
+Plot,,,Plot code,character,column_header
+Section,,,Section of plot,character,column_header
+Tag,,,Tree tag number,integer,column_header
+Grid,,,Grid square location within plot of tree,character,column_header
+Species_code,,,Species code (genus + species; https://plants.usda.gov/),character,column_header
+Year,,,Year of inventory,integer,column_header
+Date,,,Date of inventory (YYYY-MM-DD),date,column_header
+DBH,cm,"""""",Diameter at breast height (DBH) of tree,numeric,column_header
+Status,,,"ForestGEO status code (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+In_Plot,,,Tree is inside the plot?,logical,column_header
+Notes,,,Notes,character,column_header
