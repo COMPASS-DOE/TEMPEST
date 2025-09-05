@@ -1,0 +1,65 @@
+---
+title: "TEMPEST_Aquifer_WellTest_202509"
+author: "Stephanie J. Wilson"
+date: "2025-09-05"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+```
+
+## Aquatroll (AQ600) Well Data
+
+```{r, echo=FALSE}
+
+well_dat <- read.csv("COMPASS_TEMPEST_WellTest_AQ600_Data.csv")
+head(well_dat)
+
+#change column names in well_dat
+colnames(well_dat) <- c("Date_Time","pH", "pH_mV" ,"ORP_mV", "DO_mgL", "DO_Sat", "DO_pp", "Actual_Conductivity_µScm" ,
+                        "Specific_Conductivity_µScm", "Salinity_psu", "Resistivity_Ωcm", "Density_gcm", "TDS_ppt", 
+                        "Temp_C", "Voltage_V", "Battery", "Baro_Press_mmHg", "Press_psi" ,"Depth_cm" ) 
+
+#well_dat$Date_Time <- lubridate(well_dat$Date_Time)
+
+#make date time actually a date and time with lubridate and remove extra data at the end 
+
+#plot Salinity 
+sal <- ggplot()+
+  geom_point(data=well_dat, aes(x=Date_Time, y=Salinity_psu), size=2)+ 
+    ylim(0.07, 0.110) + 
+  theme_bw()+ labs(x="Time", y="Salinity (psu)", title="Aquifer Salinity") + theme(legend.title = element_blank())
+sal
+
+#plot DO
+do <- ggplot()+
+  geom_point(data=well_dat, aes(x=Date_Time, y=DO_mgL), size=2)+ 
+  ylim(-0.10, 2) + 
+  theme_bw()+ labs(x="Time", y="Dissolved Oxygen (mg/L)", title="Aquifer Dissolved Oxygen") + theme(legend.title = element_blank())
+do
+
+
+#plot TDS 
+tds <- ggplot()+
+  geom_point(data=well_dat, aes(x=Date_Time, y=TDS_ppt), size=2)+ 
+  ylim(0.10, 0.15) + 
+  theme_bw()+ labs(x="Time", y="Total Dissolved Solids (ppt))", title="Aquifer TDS") + theme(legend.title = element_blank())
+tds
+
+
+
+```
+
+
+
+
+
+
