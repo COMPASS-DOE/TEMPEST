@@ -1,6 +1,6 @@
 # create-ess-dive.R
 # Create tree inventory data and metadata files for ESS-DIVE
-# BBL 2025-09-04
+# BBL 2025-09-06
 
 if(basename(getwd()) != "ess-dive") {
     stop("Set working directory to ess-dive directory before running")
@@ -10,7 +10,7 @@ library(dplyr)
 library(tidyr)
 
 message("Copying data and species codes...")
-file.copy("../species-genera.csv", ".")
+file.copy("../species_genera.csv", "./")
 library(readr)
 x <- read_csv("../inventory.csv")
 # Change the plot codes to match those used by sensor data, etc.
@@ -25,15 +25,15 @@ message("Adding sapflow information...")
 sf <- read_csv("sapflow_map.csv", col_types = "ccd")
 x <- left_join(x, sf, by = c("Plot", "Tree_ID"))
 
-write_csv(x, "inventory-wide.csv", na = "")
+write_csv(x, "inventory_wide.csv", na = "")
 
-message("Checking inventory-wide_dd.csv")
-dd <- read_csv("inventory-wide_dd.csv")
+message("Checking inventory_wide_dd.csv")
+dd <- read_csv("inventory_wide_dd.csv")
 if(!identical(sort(dd$Column_or_Row_Name), sort(names(x)))) {
     stop("Column names and data dictionary entries are not identical!")
 }
 
-message("Creating inventory-long.csv...")
+message("Creating inventory_long.csv...")
 # helper function
 pivot_and_split <- function(df, col_prefix) {
     stopifnot(any(grepl(col_prefix, colnames(df)))) # not present
@@ -58,10 +58,10 @@ inv_long_dbh %>%
     arrange(Plot, Tree_ID, Year) ->
     inv_long
 
-write_csv(inv_long, "inventory-long.csv", na = "")
+write_csv(inv_long, "inventory_long.csv", na = "")
 
-message("Checking inventory-long_dd.csv...")
-dd <- read_csv("inventory-long_dd.csv")
+message("Checking inventory_long_dd.csv...")
+dd <- read_csv("inventory_long_dd.csv")
 if(!identical(sort(dd$Column_or_Row_Name), sort(names(inv_long)))) {
     stop("Column names and data dictionary entries are not identical!")
 }

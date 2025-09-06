@@ -1,0 +1,30 @@
+Column_or_Row_Name,Unit,missing_value_code,Definition,Data_Type,Term_Type
+Plot,N/A,,Plot code,character,column_header
+Section,N/A,,Section of plot,character,column_header
+Tree_ID,N/A,,Tree tag number,integer,column_header
+Grid,N/A,,Grid square location within plot of tree,character,column_header
+Species_code,N/A,,Species code (genus + species; https://plants.usda.gov/),character,column_header
+Sapflux_ID,N/A,,"Sapflux tree code, if this is a sapflux tree",character,column_header
+Date_2019,N/A,,Date of 2019 inventory (YYYY-MM-DD),date,column_header
+DBH_2019,cm,"""""",Diameter at breast height (DBH) of tree in 2019,numeric,column_header
+Status_2019,N/A,,"ForestGEO status code in 2019 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2020,N/A,,Date of 2020 inventory (YYYY-MM-DD),date,column_header
+DBH_2020,cm,"""""",Diameter at breast height (DBH) of tree in 2020,numeric,column_header
+Status_2020,N/A,,"ForestGEO status code in 2020 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2021,N/A,,Date of 2021 inventory (YYYY-MM-DD),date,column_header
+DBH_2021,cm,"""""",Diameter at breast height (DBH) of tree in 2021,numeric,column_header
+Status_2021,N/A,,"ForestGEO status code in 2021 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2022,N/A,,Date of 2022 inventory (YYYY-MM-DD),date,column_header
+DBH_2022,cm,"""""",Diameter at breast height (DBH) of tree in 2022,numeric,column_header
+Status_2022,N/A,,"ForestGEO status code in 2020 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2023,N/A,,Date of 2023 inventory (YYYY-MM-DD),date,column_header
+DBH_2023,cm,"""""",Diameter at breast height (DBH) of tree in 2023,numeric,column_header
+Status_2023,N/A,,"ForestGEO status code in 2023 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2024,N/A,,Date of 2024 inventory (YYYY-MM-DD),date,column_header
+DBH_2024,cm,"""""",Diameter at breast height (DBH) of tree in 2024,numeric,column_header
+Status_2024,N/A,,"ForestGEO status code in 2024 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+Date_2025,N/A,,Date of 2025 inventory (YYYY-MM-DD),date,column_header
+DBH_2025,cm,"""""",Diameter at breast height (DBH) of tree in 2025,numeric,column_header
+Status_2025,N/A,,"ForestGEO status code in 2025 (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+In_Plot,N/A,,Tree is inside the plot?,logical,column_header
+Notes,N/A,,Notes,character,column_header

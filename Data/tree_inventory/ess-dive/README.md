@@ -10,4 +10,4 @@ The ESS-DIVE dataset is at:
 <DOI/URL>
 
 The sapflow table was extracted (2025-09-04) from:
-"TEMPEST_SF_Monitoring" on the project's Google Drive.
+"TEMPEST_SF_Monitoring.xlsx" on the project's Google Drive.
