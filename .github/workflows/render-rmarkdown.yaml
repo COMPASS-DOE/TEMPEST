@@ -20,7 +20,8 @@ jobs:
       - name: Install needed packages
         run: |
           install.packages(c("remotes", "readr", "lubridate", "dplyr", "plyr", "tidyverse", "readr", "tidyr",
-          "ggplot2", "plotly", "kableExtra", "skimr", "Kendall", "ggpubr", "DT", "stringr", "readxl", "ggpmisc"))
+          "ggplot2", "plotly", "kableExtra", "skimr", "Kendall", "ggpubr", "DT", "stringr", "readxl", "ggpmisc", 
+          "patchwork", "tibble", "knitr"))
           remotes::install_cran("rmarkdown")
         shell: Rscript {0}
       - name: Render Rmarkdown files
