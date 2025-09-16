@@ -14,6 +14,9 @@ library(dplyr)
 library(plyr)
 library(tidyverse)
 library(tidyr)
+library(lubridate)
+library(knitr)
+library(tibble)
 ```
 
 ## Aquatroll (AQ600) Well Data
@@ -28,33 +31,66 @@ colnames(well_dat) <- c("Date_Time","pH", "pH_mV" ,"ORP_mV", "DO_mgL", "DO_Sat",
                         "Specific_Conductivity_µScm", "Salinity_psu", "Resistivity_Ωcm", "Density_gcm", "TDS_ppt", 
                         "Temp_C", "Voltage_V", "Battery", "Baro_Press_mmHg", "Press_psi" ,"Depth_cm" ) 
 
-#well_dat$Date_Time <- lubridate(well_dat$Date_Time)
-
 #make date time actually a date and time with lubridate and remove extra data at the end 
+well_dat$Date_Time <- mdy_hm(well_dat$Date_Time)
+
+#remove data after aquatroll removed, remove salinity data lower than 0.001 and conductivity less than 1, 
+#remove DO over 1 which was when AQ600 removed from water and any TDS lower than 0.1 also from AQ600 removal 
+well_dat_filtered <- well_dat %>%
+    filter(Date_Time < ymd_hms("2025-09-04 13:30:00")) %>%
+    filter(Salinity_psu > 0.001) %>%
+    filter(Specific_Conductivity_µScm > 1) %>%
+    filter(DO_mgL < 1) %>%
+    filter(TDS_ppt > 0.10) 
+
 
 #plot Salinity 
 sal <- ggplot()+
-  geom_point(data=well_dat, aes(x=Date_Time, y=Salinity_psu), size=2)+ 
-    ylim(0.07, 0.110) + 
+  geom_point(data=well_dat_filtered, aes(x=Date_Time, y=Salinity_psu), size=2, color="blue")+ 
   theme_bw()+ labs(x="Time", y="Salinity (psu)", title="Aquifer Salinity") + theme(legend.title = element_blank())
 sal
 
+#plot Conductivity 
+cond <- ggplot()+
+  geom_point(data=well_dat_filtered, aes(x=Date_Time, y=Specific_Conductivity_µScm), size=2, color="darkblue")+ 
+  theme_bw()+ labs(x="Time", y="Specific Conductivity (µScm)", title="Aquifer Conductivity") + theme(legend.title = element_blank())
+cond
+
 #plot DO
 do <- ggplot()+
-  geom_point(data=well_dat, aes(x=Date_Time, y=DO_mgL), size=2)+ 
-  ylim(-0.10, 2) + 
+  geom_point(data=well_dat_filtered, aes(x=Date_Time, y=DO_mgL), size=2, color="darkred")+ 
   theme_bw()+ labs(x="Time", y="Dissolved Oxygen (mg/L)", title="Aquifer Dissolved Oxygen") + theme(legend.title = element_blank())
 do
 
 
 #plot TDS 
 tds <- ggplot()+
-  geom_point(data=well_dat, aes(x=Date_Time, y=TDS_ppt), size=2)+ 
-  ylim(0.10, 0.15) + 
+  geom_point(data=well_dat_filtered, aes(x=Date_Time, y=TDS_ppt), size=2, color="darkgreen")+ 
   theme_bw()+ labs(x="Time", y="Total Dissolved Solids (ppt))", title="Aquifer TDS") + theme(legend.title = element_blank())
 tds
 
 
+#create a table of average concentrations: 
+summary_stats <- well_dat_filtered %>%
+  summarise(
+    Salinity_psu_mean = mean(Salinity_psu, na.rm = TRUE),
+    Salinity_psu_sd = sd(Salinity_psu, na.rm = TRUE),
+    Sp_Conductivity_µScm_mean = mean(Specific_Conductivity_µScm, na.rm = TRUE),
+    Sp_Conductivity_µScm_sd = sd(Specific_Conductivity_µScm, na.rm = TRUE),
+    DO_mgL_mean = mean(DO_mgL, na.rm = TRUE),
+    DO_mgL_sd = sd(DO_mgL, na.rm = TRUE),
+    TDS_ppt_mean = mean(TDS_ppt, na.rm = TRUE),
+    TDS_ppt_sd = sd(TDS_ppt, na.rm = TRUE)
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("Measurement", ".value"),
+    names_sep = "_(?=[^_]+$)"  # Split at last underscore
+  ) %>%
+  mutate(mean = round(mean, 3), 
+         sd = round(sd, 3)) 
+
+kable(summary_stats)
 
 ```
 

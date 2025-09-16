@@ -1,0 +1,59 @@
+---
+title: "TEMPEST_FW_Well_TSS_20250904"
+author: "Stephanie J. Wilson"
+date: "2025-09-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(knitr)
+```
+
+## TSS Data
+
+```{r}
+
+#Read in the data 
+tss <- read.csv("COMPASS_TEMPEST_WellTest_TSS_Data.csv")
+head(tss)
+
+#Calculate an Avg. Sample Weight and caluclate TSS mg/L
+tss <- tss %>%
+  mutate(Avg_Sample_Weight_g = 
+           rowMeans(select(., Tin_Filter_Sample_Weight_Dry_g, 
+                           Tin_Filter_Sample_Weight_Dry1_g), na.rm = TRUE))
+
+tss$TSS_mgL <- ((tss$Avg_Sample_Weight_g - tss$Tin_Filter_Weight_g)*1000) /   
+  (tss$Filtered_Volume_mL/1000)
+
+
+
+#plot the TSS 
+tss_plot <- ggplot(tss, aes(x=Sample_ID, y=TSS_mgL, fill=Sample_ID)) + 
+  geom_bar(stat = "identity") + theme_minimal() + 
+  ylab("Total Dissolved Solids (mg/L)") + xlab(" ") + 
+  theme(legend.position = "none")
+
+print(tss_plot)
+
+##remove the DI blank and make a table 
+
+tss_table <- tss %>%
+  filter(Sample_ID != "DI_Blank") %>%
+  select("Sample_ID", "TSS_mgL") %>%
+  mutate(TSS_mgL = round(TSS_mgL, 2))
+
+
+kable(tss_table)
+
+
+```
+
+## DIC Data 
+
+## TOC/TN Data 
+
+## Sulfate / Chloride Data
+

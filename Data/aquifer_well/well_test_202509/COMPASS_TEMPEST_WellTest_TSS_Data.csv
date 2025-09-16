@@ -1,0 +1,5 @@
+﻿Sample_ID,Tin_ID,Tin_Weight_g,Tin_Filter_Weight_g,Tin_Filter_Sample_Weight_Dry_g,Tin_Filter_Sample_Weight_Dry1_g,Filtered_Volume_mL
+TMP_FW_Well_1230,86,1.81022,1.99738,2.00113,2.00101,950
+TMP_FW_Well_1300,87,1.79589,1.98429,1.99866,1.99887,1105
+TMP_FW_Well_1400,88,1.74777,1.9464,1.95921,1.95923,1060
+DI_Blank,89,1.81108,2.00673,2.00571,2.00567,980
