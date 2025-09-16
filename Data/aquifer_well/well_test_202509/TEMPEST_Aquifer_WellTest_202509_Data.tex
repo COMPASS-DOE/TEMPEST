@@ -1,0 +1,174 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={TEMPEST\_Aquifer\_WellTest\_202509},
+  pdfauthor={Stephanie J. Wilson},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{TEMPEST\_Aquifer\_WellTest\_202509}
+\author{Stephanie J. Wilson}
+\date{2025-09-05}
+
+\begin{document}
+\maketitle
+
+\hypertarget{aquatroll-aq600-well-data}{%
+\subsection{Aquatroll (AQ600) Well
+Data}\label{aquatroll-aq600-well-data}}
+
+\begin{verbatim}
+##        Date.Time pH..pH...944309. pH.mV..mV...944309. ORP..mV...944309.
+## 1 9/4/2025 11:17         6.495730           -18.05306          52.60867
+## 2 9/4/2025 11:18         6.647882           -26.98898          68.12972
+## 3 9/4/2025 11:19         6.682134           -29.02031          85.54858
+## 4 9/4/2025 11:20         6.633854           -26.22127          77.78805
+## 5 9/4/2025 11:21         6.560904           -21.94166          82.00092
+## 6 9/4/2025 11:22         6.654690           -27.51112          82.88068
+##   RDO.Concentration..mg.L...1147009. RDO.Saturation...Sat...1147009.
+## 1                           8.606227                        105.6606
+## 2                           8.534517                        104.2574
+## 3                           8.352296                        102.1634
+## 4                           8.202514                        101.0138
+## 5                           8.139626                        100.5348
+## 6                           8.077275                        100.3783
+##   Oxygen.Partial.Pressure..Torr...1147009. Actual.Conductivity..µS.cm...951425.
+## 1                                 164.3766                           2.58297180
+## 2                                 162.5227                           0.16385819
+## 3                                 159.4851                           0.14043684
+## 4                                 157.7733                           0.05494505
+## 5                                 157.2076                           0.05494505
+## 6                                 156.9583                           0.05494505
+##   Specific.Conductivity..µS.cm...951425. Salinity..PSU...951425.
+## 1                             2.41987160             0.000197676
+## 2                             0.15404756             0.000000000
+## 3                             0.13160895             0.000000000
+## 4                             0.05105140             0.000000000
+## 5                             0.05080564             0.000000000
+## 6                             0.05044154             0.000000000
+##   Resistivity..Ω.cm...951425. Density..g.cm....951425.
+## 1                      387151                0.9960858
+## 2                     6102838                0.9961417
+## 3                     7120639                0.9960905
+## 4                    18200000                0.9959506
+## 5                    18200000                0.9958704
+## 6                    18200000                0.9957489
+##   Total.Dissolved.Solids..ppt...951425. Temperature...C...951973.
+## 1                           0.001572917                  28.52881
+## 2                           0.000100131                  28.33433
+## 3                           0.000085500                  28.51187
+## 4                           0.000033200                  28.99316
+## 5                           0.000033000                  29.26573
+## 6                           0.000032800                  29.67444
+##   External.Voltage..V...951973. Battery.Capacity......951973.
+## 1                         0.198                            85
+## 2                         0.225                            85
+## 3                         0.252                            85
+## 4                         0.279                            85
+## 5                         0.279                            85
+## 6                         0.279                            85
+##   Barometric.Pressure..mm.Hg...951973. Pressure..psi...948746.
+## 1                             796.8252              -0.7291880
+## 2                             798.0554              -0.7513886
+## 3                             799.4504              -0.7792616
+## 4                             800.6805              -0.8005018
+## 5                             802.0531              -0.8337517
+## 6                             802.7581              -0.8441944
+##   Depth..cm...948746.
+## 1           -50.73192
+## 2           -33.94244
+## 3           -40.70903
+## 4           -42.28736
+## 5           -44.53247
+## 6           -45.24200
+\end{verbatim}
+
+\includegraphics{TEMPEST_Aquifer_WellTest_202509_Data_files/figure-latex/unnamed-chunk-1-1.pdf}
+\includegraphics{TEMPEST_Aquifer_WellTest_202509_Data_files/figure-latex/unnamed-chunk-1-2.pdf}
+\includegraphics{TEMPEST_Aquifer_WellTest_202509_Data_files/figure-latex/unnamed-chunk-1-3.pdf}
+\includegraphics{TEMPEST_Aquifer_WellTest_202509_Data_files/figure-latex/unnamed-chunk-1-4.pdf}
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule\noalign{}
+Measurement & mean & sd \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Salinity\_psu & 0.090 & 0.005 \\
+Sp\_Conductivity\_µScm & 188.638 & 10.162 \\
+DO\_mgL & 0.208 & 0.232 \\
+TDS\_ppt & 0.123 & 0.007 \\
+\end{longtable}
+
+\end{document}
