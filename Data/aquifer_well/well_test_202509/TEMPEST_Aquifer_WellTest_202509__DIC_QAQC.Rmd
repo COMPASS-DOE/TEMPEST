@@ -1,0 +1,523 @@
+---
+title: "Synoptic CB: Porewater DIC"
+author: "May 2025 Samples"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+output_dir: "To Be Reviewed/PDF"
+---
+\newpage
+
+##Setup - Change things here & write any notes
+```{r setup info}
+
+#identify section 
+cat("Setup Information")
+
+
+###### Run information - PLEASE CHANGE
+  Date_Run = "9/20/25"  #Date that instrument was run
+  Run_by = "Stephanie J. Wilson"  #Instrument user 
+  Script_run_by = "Stephanie J. Wilson" #Code user 
+  run_notes = " "  #any notes from the run
+  samples <- c("TMP") #whatever identifies your samples within the same names 
+  samples_pattern <- paste(samples, collapse = "|") 
+    #samples_pattern <- "GCW" #use this instead of the line above if you have only one site code 
+  chks_name = "Chk_Std_"  #what did you name your check standards? 
+  crm_name = "CRM|crm"    #what did you name your CRMS? 
+  
+###### File Names - PLEASE CHANGE 
+#file path and name for raw summary data file 
+    raw_file_name = "Raw Data/TMP_20250904_FW_WellTest_DIC.txt" 
+    
+#file path and name for raw all peaks file 
+    raw_allpeaks_name = "Raw Data/TMP_20250904_FW_WellTest_DIC_allpeaks.txt"
+
+#file path and name of processed data file 
+    processed_file_name = "Processed Data/TMP_20250904_FW_WellTest_DIC_Processed.csv"
+
+
+###### Log Files - PLEASE CHECK 
+#downloaded metadata csv - downloaded from Google drive as csv for this year
+ # Raw_Metadata = "Raw Data/COMPASS_SynopticCB_PW_SampleLog_2025.csv"
+  
+#qaqc log file path for this year 
+  Log_path = "Raw Data/COMPASS_Synoptic_DIC_QAQClog_2025.csv"
+
+```
+
+##Set Up Code
+```{r setup, include=FALSE}
+
+#identify section 
+cat("Setup")
+
+#Link to the protocol used for analysis 
+  #steph will add this soon 
+
+#Packages that are required 
+lapply(c(
+  "dplyr", "ggplot2", "ggpubr", "stringr",
+  "purrr", "tidyverse", "here", "broom",
+  "googledrive", "googlesheets4"), 
+  library, character.only = TRUE)
+
+#any coefficients / constants that are needed for calculations 
+  mw_c <- 12.011   #molecular weight of Carbon 
+  mw_n <- 14.0067  #molecular weight of Nitrogen
+  Con1 <- 1000       # conversion factor value
+  Con2 <- 1000000    # conversion factor value 
+
+#Flag that we 
+  r2_cutoff = 0.98  #this is the level below which we want to rerun or consider a curve 
+  chk_flag = 0.10   #for the RSD (relative standard deviation) 
+  chk_conc_flag = 15 #this is the level cutoff for percent difference of check standards vs. the concentration they are meant to be 
+  chks_flag = 50 #this is the percent of chks we want to have a CV less than 10, usually 60
+  rep_flag = 25 #this is a 25% error between samples
+  #blank_flag - calculated based on samples later in this code as lower 25% quantile of sample concentrations
+
+#critical reference material concentration - Update if running different checks: ** needs update 
+   ic_crm = 22.19
+   
+#Top standard Concentrations- Update if running different standard curve: 
+   top_std_c = 200
+
+#Set time zone 
+  common_tz = "Etc/GMT+5"
+  Sys.setenv(TZ = "America/New_York")
+  
+#plot indicators 
+  site_order <- c('GCW', 'MSM', 'GWI', 'SWH')
+  plot_order <- c('UP', 'SWAMP', 'TR', 'WC', 'SW')
+  plot_colors <- c("#20063B", "darkgrey", "#FFBC42", "#419973", "#25ABE6" )
+
+
+```
+
+
+## Import Data Functions  
+```{r create function to read in data, include=FALSE}
+
+## Create a function to read in data from summary file: 
+read_data <- function(data){
+  # Second, read in data
+  read_delim(file = data, skip = 10, delim = "\t", show_col_types = FALSE) %>% 
+    rename(sample_name = `Sample Name`, 
+           ic_raw = `Result(IC)`, 
+          # tdn_raw = `Result(TN)`,
+           run_datetime = `Date / Time`) %>% 
+    select(sample_name, ic_raw,run_datetime)
+}
+
+## Create a function to read in data from all peaks file:
+read_curve <- function(data){
+  # Second, read in data
+  read_delim(file = data, skip = 10, delim = "\t", show_col_types = FALSE) %>% 
+    rename(sample_name = `Sample Name`,
+           analyte = `Analysis(Inj.)`,
+           concentration = `Conc.`,
+           area = Area,
+           manual_dilution = `Manual Dilution`,
+           excluded = Excluded,
+           run_datetime = `Date / Time`) %>% 
+    filter(excluded == 0) %>% #filter to injections that are included in the analysis 
+    select(sample_name, analyte, concentration, area, run_datetime) %>%
+    pivot_wider(names_from= analyte, values_from = concentration) %>%
+    rename(dic_raw = IC)
+}
+```
+
+## Import Sample Data     
+```{r Import Data, echo=FALSE}
+
+cat("Import Sample Data")
+
+#Pull in data that from the raw data file based on the sample info input above 
+dat_raw <- raw_file_name %>%
+  map_df(read_data) %>%
+  filter(str_detect(sample_name, samples_pattern))
+
+head(dat_raw)
+```
+
+## Assessing Standard Curves 
+```{r Assess Standard Curves, echo=FALSE}
+
+cat("Assess the Standard Curves")
+
+#filter standards out of the raw data 
+stds_all <- raw_allpeaks_name %>% 
+  map_df(read_curve) %>% 
+  filter(grepl("CalCurve", sample_name)) %>% 
+  dplyr::rename(
+        standard_C_ppm = dic_raw) %>%
+  select(run_datetime,standard_C_ppm, area) %>%
+  bind_rows() 
+
+#separate by analyte 
+stds_C <- stds_all %>%
+  filter(!is.na(standard_C_ppm)) %>%
+  mutate(run_date = as.Date(strptime(run_datetime, format = "%m/%d/%Y %I:%M:%S %p")))
+
+#calculate slope and r2 of cal curves
+#ic curve
+lm_results_c <- stds_C %>%
+  group_by(run_date) %>%
+  do({
+    model = lm(area ~ standard_C_ppm, data = .)
+    tidy_model = tidy(model)             # coefficients
+    glance_model = glance(model)         # model metrics like R²
+    tibble(
+      slope = tidy_model$estimate[2],    # coefficient for standard_C_ppm
+      intercept = tidy_model$estimate[1],
+      r2 = glance_model$adj.r.squared
+    )
+  }) %>%
+  mutate(
+    analyte = "C", 
+    curve = "IC (mg/L)"
+  )
+
+#put the together in one dataframe to later add to log 
+Slopes <- rbind(lm_results_c)
+
+#store the r2's so they plot on the curve graphs
+r2_labels_c <- stds_C %>%
+  group_by(run_date) %>%
+  summarise(
+    x_pos = max(standard_C_ppm, na.rm = TRUE) * 0.8,
+    y_pos = max(area, na.rm = TRUE),
+    r_squared = round(summary(lm(area ~ standard_C_ppm))$adj.r.squared, 4),
+    .groups = "drop"
+  )
+
+##Plot standard Curve or Curves 
+#C Curve
+C_stds_plot <- ggplot(stds_C, aes(x = standard_C_ppm, y = area)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  facet_wrap(~ run_date) +
+  geom_text(
+    data = r2_labels_c,
+    aes(x = x_pos, y = y_pos, label = paste0("R² = ", r_squared)),
+    inherit.aes = FALSE,
+    hjust = 1, vjust = 1,
+    size = 4
+  ) +
+  labs(
+    title = "IC Std Curve by Date",
+    x = "Carbon Standard Concentration (ppm)",
+    y = "Peak Area"
+  ) +
+  theme_bw()
+
+C_stds_plot
+
+#compare slopes to previous runs (from log) in order to assess drift 
+log <- read.csv(Log_path)
+log <- log[ ,-c(1)]
+
+#make sure they both have dates as dates 
+log$run_date <- as.Date(log$run_date)
+log$analyte <- as.character(log$analyte)
+log$curve <- as.character(log$curve)
+Slopes$run_date <- as.Date(Slopes$run_date)
+
+# Filter to only rows in Slopes that are NOT already in log (by run_date + analyte)
+new_rows <- anti_join(Slopes, log, by = c("run_date", "analyte"))
+
+# Append the new, non-duplicate rows to log
+log <- bind_rows(log, new_rows)
+
+#plot the current slops with teh previous slopes 
+Slopes_chk <- ggplot(log, aes(run_date, slope, col=curve)) +
+  geom_point(size=4) + 
+  geom_line() + 
+  ylim(10,24) + 
+  theme_bw() + labs(title="Slope Drift Assessment", x="Run Date", y="Slope") +
+  scale_color_manual(values=c("darkred"))
+Slopes_chk
+
+#write out the log file with the added lines for this run  
+write.csv(log, Log_path)
+
+#Grab the highest r2 that is available for this run 
+r2_C = max(lm_results_c$r2)
+
+#Write out to the user whether or not the r2 is above the cutoff of 0.98
+  ifelse(r2_C <= r2_cutoff, 
+         "IC Curve r2 is below cutoff! - REASSESS", "IC Curve r2 GOOD")
+  
+#write out a flag to the sample dataframe if the r2 is above the cutoff of 0.98
+dat_raw <- dat_raw %>%
+  mutate(
+    ic_flag = if (r2_C <= r2_cutoff) {
+      "IC r2 low"
+    } else {
+      ""
+    }
+  )
+
+```
+
+## CRM Check - Don't run chunk if no CRMs run
+```{r CRM Check, echo = FALSE}
+
+cat("Assess the CRMs")
+
+#Pull out check standards from raw file 
+crm_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl(crm_name, sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+crm_raw <- crm_raw %>% 
+  filter(ic_raw > 10)
+
+crm_Chk <- crm_raw %>%
+  summarise(
+    Mean_crm = mean(ic_raw, na.rm = TRUE),
+    SD_crm = sd(ic_raw, na.rm = TRUE),
+    CV = (SD_crm / Mean_crm) * 100,
+    pct_diff_Chk = abs(Mean_crm - ic_crm) / ic_crm,
+    crm_flag = ifelse(abs(pct_diff_Chk) < 25, "YES, Pass", "NO, rerun"))
+  
+
+#flag write out 
+ifelse(crm_Chk$pct_diff_Chk >= chk_flag, 
+       "IC crm has a % Difference >25% of expected - REASSESS",  
+       "IC crm has a % Difference <25% of expected - PROCEED")
+cat("Run mean =", crm_Chk$Mean_crm, "\n")
+cat("Expected  =", ic_crm, "\n\n")
+
+
+
+```
+ 
+
+## Assess Check Standards 
+```{r Check Standards, echo=FALSE}
+
+cat("Assess the Check Standards")
+
+#Pull out check standards from raw file 
+chks_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl(chks_name, sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+#we don't always the same checks so we need to pull the concentration out of the name 
+chks_raw <- chks_raw %>%
+  mutate(chk_std_conc = str_extract(sample_name, "\\d+")) %>%  # extract the number
+  mutate(chk_std_conc = as.numeric(chk_std_conc)) %>%    # convert to numeric
+  filter(ic_raw > 1)
+  
+chks_raw <- chks_raw %>% 
+  mutate(rep = row_number())
+
+#no rsv calculated for DIC because they are all different concentrations
+
+#calculate percent difference between check standards & expected concentration 
+chks_raw$C_diff <- ((chks_raw$ic_raw - chks_raw$chk_std_conc)/((chks_raw$ic_raw + chks_raw$chk_std_conc)/2)) * 100
+chks_raw$C_diff_flag <-  ifelse(abs(chks_raw$C_diff) <= chk_conc_flag, 'YES', 'NO, rerun')
+
+#Plot the check standardsvs. the expected concentration 
+c_chks <-  ggplot(data = chks_raw, aes(x = rep, y = ic_raw, fill=C_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("YES" = "darkgreen", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="IC (mg/L)", title="Check Stds: IC") + 
+        theme(legend.position="bottom")  + 
+              guides(fill=guide_legend(title="% Difference <10%"))
+
+c_chks
+
+#calculate the percent of check standards that are within the range based on the flag 
+c_chks_percent <- (sum(chks_raw$C_diff_flag == "YES")/nrow(chks_raw))*100
+
+#report out if flags indicate need for rerun
+ifelse(c_chks_percent >= chk_flag, ">60% of IC Check Standards are within range of expected concentration",
+       "<60% of IC Check Standards are within range of expected concentration - REASSESS")
+
+#write out a flag to the sample dataframe if less than 60% of the checks are within the expected CV
+if (c_chks_percent <= chks_flag) {
+  dat_raw$ic_flag <- ifelse(
+    dat_raw$ic_flag != "",
+    paste0(dat_raw$ic_flag, "; IC checks out of range"),
+    "IC checks out of range"
+  )
+}
+
+
+```
+
+## Assess Blanks 
+```{r Check Blanks, echo=FALSE}
+
+cat("Assess Blanks")
+
+#Pull out the blanks from raw file 
+blks_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl("DI", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+blks_raw <- blks_raw %>% 
+  mutate(rep = row_number()) %>%    
+  filter(ic_raw > 0.2)
+
+#Check if the blanks are above the lower 25% quantile of your data 
+blk_flag_c <- quantile(dat_raw$ic_raw, prob=c(.25))   #this gives you the lower 25% quantile of the data 
+blks_raw$C_diff_flag <-  ifelse(blks_raw$ic_raw <= blk_flag_c, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag 
+c_blks_percent <- (sum(blks_raw$C_diff_flag == "YES")/nrow(blks_raw))*100
+
+#report out if flags indicate need for rerun
+ifelse(c_blks_percent >= chks_flag, ">60% of Carbon Blank concentrations are lower 25% quartile of samples",
+       "<60% of Carbon blaks are lower 25% quartile of samples - REASSESS")
+
+#Plot the blanks vs. the lower 25% quantile of your data in this run (black line)
+c_blks <-  ggplot(data = blks_raw, aes(x = rep, y = ic_raw, fill=C_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("YES" = "darkblue", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="IC  (mg/L)", title="Blanks: IC") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=blk_flag_c, linetype="dashed", 
+                color = "black", linewidth=1)  + 
+                guides(fill=guide_legend(title="Blank Conc <25% Quartile Samples"))
+
+c_blks
+
+#print out the average blank concentrations 
+blk_avg_c <- mean(blks_raw$ic_raw)
+cat("carbon blanks:")
+print(blk_avg_c)
+
+#write out a flag to the sample dataframe if more than 60% of the blanks are above the lower 25% quantile of samples
+if (c_blks_percent <= chks_flag) {
+  dat_raw$ic_flag <- ifelse(
+    dat_raw$ic_flag != "",
+    paste0(dat_raw$ic_flag, "; IC blanks out of range"),
+    "IC blanks out of range"
+  )
+}
+
+```
+
+## Sample Flagging - Are samples Within the range of the curve?  
+```{r Sample Flagging, echo=FALSE}
+
+cat("Sample Flagging")
+
+#Flagging data if the concentration is outside the standards range and based on blanks
+dat_flagged <- dat_raw %>%
+  mutate(
+    ic_flag = if_else(
+      ic_raw > top_std_c,
+      if_else(
+        ic_flag != "" & !is.na(ic_flag),
+        paste0(ic_flag, "; value above cal curve"),
+        "value above cal curve"
+      ),
+      ic_flag
+    ),
+    ic_flag = if_else(
+      blk_avg_c > 0.25 * ic_raw,
+      if_else(
+        ic_flag != "" & !is.na(ic_flag),
+        paste0(ic_flag, "; blank is ≥ 25% of sample value"),
+        "blank is ≥ 25% of sample value"
+      ),
+      ic_flag
+    )
+  )
+
+#lets make a dataframe with just the concentration flag for plotting 
+dat_flag_viz <- dat_raw %>% 
+  mutate(ic_flag = case_when(ic_raw > top_std_c ~ "value above cal curve",
+            blk_avg_c > 0.25*ic_raw ~ "blank is ≥ 25% of sample value")
+ )
+
+#Plot data and change colors based on flags to check it: 
+c_samples_flag <-  ggplot(data = dat_flag_viz, aes(x = sample_name, y = ic_raw, fill=ic_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("red", "orange"))+
+        theme_classic() + labs(x= " ", y="IC (mg/L)", title="C: Grey = Within Range of Curve") + 
+        theme(legend.position="bottom")  + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+c_samples_flag
+
+
+```
+
+## Visualize Data by Plot   
+```{r Visualize Data, echo=FALSE}
+
+cat("Visualize Data")
+
+#Plot data and change colors based on flags to check it: 
+viz_ic_plot <-  ggplot(data = dat_flagged, aes(x = sample_name, y = ic_raw)) +
+       geom_bar(stat = 'identity', fill="darkblue") + 
+        theme_classic() + labs(x= " ", y="IC (mg/L)", title="Well Dissolved Inorganic Carbon") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+viz_ic_plot
+
+
+```
+
+## Convert data from mg/L to uMoles/L 
+```{r, Unit Conversion, include=FALSE}
+
+#convert npoc and tdn from mg/L to uMoles/L 
+dat_flagged <- dat_flagged %>%
+  mutate(
+    ic_uM = (((as.numeric(dat_flagged$ic_raw))/Con1)/mw_c)*Con2
+  )
+
+```
+
+
+## Export Processed Data  
+```{r, Export Processed Data, echo=FALSE}
+
+#Prepare data to be exported - if there is anything else to add 
+#Add any necessary identifiers to the samples  ### VERY IMPORTANT AND STANDARD FOR PROJECT ####
+  #example read in sample IDs list and merge 
+  #create required ID columns in R, etc. 
+final_data <- dat_flagged %>% 
+  #select(Project, Plot, grid, sample_name, Vial_ID, date, ) %>%
+  mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-09-04",
+    Sample_Time = c("12:25", "12:25", "12:25", "13:00", "13:00", "13:00", "14:00", "14:00", "14:00"),
+    Replicate = c("A", "B", "C", "A", "B", "C","A", "B", "C"),
+    Run_notes = run_notes     # new column with notes about the run
+  ) 
+
+#this needs altered to match the tempest metadata and clean up 
+final_data <- final_data %>%
+  rename(
+    ic_mgL = ic_raw, 
+    Analysis_runtime = run_datetime, 
+    # add more rename pairs as needed
+  ) %>%
+  select(
+    Project, Experiment, Sample_Date, Sample_Time, Replicate, sample_name,
+    ic_mgL, ic_uM, ic_flag, Analysis_runtime,
+    Run_notes
+    # list columns in the order you want them
+  )
+
+head(final_data)
+
+#will put final data in processed data folder 
+  write.csv(final_data, processed_file_name)
+
+```
+
+
+#end
