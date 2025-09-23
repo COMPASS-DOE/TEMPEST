@@ -16,12 +16,13 @@ library(knitr)
 library(ggpubr)
 ```
 
-## TSS Data
+\newpage
 
+## TSS Data
 ```{r, echo=FALSE}
 
 #read out title
-cat("TSS Data: Samples filtered with GFF")
+cat("TSS Data: ~1L Samples filtered with GFF")
 
 #Read in the data 
 tss <- read.csv("Raw Data/COMPASS_TEMPEST_WellTest_TSS_Data.csv")
@@ -83,9 +84,9 @@ final_tss <- final_tss %>%
 
 ```
 
+\newpage
 
 ## GHG Data 
-
 ```{r, echo=FALSE}
 
 #read out title
@@ -98,7 +99,8 @@ ghg <- read.csv("Processed Data/TMP_20250904_FW_WellTest_GHG_Processed.csv")
 #Plot DOC data 
 viz_ch4_plot <-  ggplot(data = ghg, aes(x = sample_name, y = CH4_ppm, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
-        facet_grid(~Sample_Time, scales="free_x") + 
+        facet_grid(~Sample_Time, scales="free_x") +
+        scale_fill_manual(values = c("#619CFF")) + 
         theme_classic() + labs(x= " ", y="CH4 (ppm)", title="Well: Extractable Methane") + 
         theme(legend.position="right") 
 
@@ -126,11 +128,47 @@ kable(ghg_table)
 
 ```
 
+\newpage
 
 ## DIC Data 
+```{r, echo=FALSE}
+
+#read out title
+cat("DIC Data from Shimadzu TOC-V")
+
+#Read in the data 
+dic <- read.csv("Processed Data/TMP_20250904_FW_WellTest_DIC_Processed.csv")
+#head(doc)
+
+#Plot DOC data 
+viz_ic_plot <-  ggplot(data = dic, aes(x = Replicate, y = ic_mgL, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="DIC (mg/L)", title="Well: Dissolved Inorganic Carbon") + 
+        theme(legend.position="right") 
+
+print(viz_ic_plot)
+
+
+##Calculate an average DIC  
+# Calculate the averages
+avg_dic <- round(mean(dic$ic_mgL), 2)
+sd_dic <- round(sd(dic$ic_mgL), 2)
+
+
+# Create a dataframe with the results
+dic_table <- data.frame(
+  Analyte = c("DIC (mg/L)"),
+  Average = c(avg_dic),
+  Std_Deviation = c(sd_dic)
+)
+
+kable(dic_table)
+
+```
+
 
 ## TOC/TN Data 
-
 ```{r, echo=FALSE}
 
 #read out title
@@ -175,7 +213,6 @@ doc_table <- data.frame(
 kable(doc_table)
 
 ```
-
 
 
 ## Sulfate / Chloride Data
