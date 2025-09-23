@@ -1,0 +1,4 @@
+"","Project","Experiment","Sample_Date","Sample_Time","Replicate","sample_name","CH4_ppm","CH4_uM","CH4_Flag"
+"1","COMPASS","TEMPEST: Well Test","2025-09-04","14:00","A","Shakey_A",1060.63217508961,43.3509352473984,"Within Range"
+"2","COMPASS","TEMPEST: Well Test","2025-09-04","14:00","B","Shakey_B",858.797714077799,35.1014092990861,"Within Range"
+"3","COMPASS","TEMPEST: Well Test","2025-09-04","14:00","C","Shakey_C",1060.65862642842,43.3520163858959,"Within Range"

@@ -83,6 +83,50 @@ final_tss <- final_tss %>%
 
 ```
 
+
+## GHG Data 
+
+```{r, echo=FALSE}
+
+#read out title
+cat("Greenhouse Gas Data from Shimadzu GC - Shakey Samples")
+
+#Read in the data 
+ghg <- read.csv("Processed Data/TMP_20250904_FW_WellTest_GHG_Processed.csv")
+#head(doc)
+
+#Plot DOC data 
+viz_ch4_plot <-  ggplot(data = ghg, aes(x = sample_name, y = CH4_ppm, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="CH4 (ppm)", title="Well: Extractable Methane") + 
+        theme(legend.position="right") 
+
+viz_ch4_plot
+
+#ggarrange(viz_c_plot, viz_n_plot, nrow=2, ncol=1)
+#print(viz_c_plot)
+#print(viz_n_plot)
+
+##Calculate an average DOC and TN?  
+# Calculate the averages
+avg_ch4 <- round(mean(ghg$CH4_ppm), 2)
+#avg_tn <- round(mean(doc$tdn_mgL), 2)
+sd_ch4 <- round(sd(ghg$CH4_ppm), 2)
+#sd_tn <- round(sd(doc$tdn_mgL), 2)
+
+# Create a dataframe with the results
+ghg_table <- data.frame(
+  Analyte = c("CH4 (ppm)"), #, "CO2 (ppm)"),
+  Average = c(avg_ch4), #, avg_tn),
+  Std_Deviation = c(sd_ch4) #, sd_tn)
+)
+
+kable(ghg_table)
+
+```
+
+
 ## DIC Data 
 
 ## TOC/TN Data 
