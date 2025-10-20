@@ -18,10 +18,10 @@ files <- list.files("Data/tree_flux_licor/", pattern = "\\.data$", full.names = 
 
 # Helper function
 read_file <- function(f) {
-    message("Reading ", basename(f))
+    message("\nReading ", basename(f))
     ffi_read_LI7810(f) %>%
-      mutate(File = basename(f)) %>%
-      select(TIMESTAMP, TZ, CO2, CH4, SN, File)
+        mutate(File = basename(f)) %>%
+        select(TIMESTAMP, TZ, CO2, CH4, SN, File)
 }
 
 # Bind all data files into raw dataframe
@@ -55,59 +55,72 @@ if(any(is.na(md$end_timestamp))) {
 
 # OK, we've got the input files, now what?
 
-# Create single licor file for testing
+# Filter to one Licor file and one day for testing
 tree_data_raw %>%
-    filter(File == "TG10-01028-2022-06-19T000000_Nick.data") -> Nick
+    filter(File == "TG10-01028-2022-06-19T000000_Nick.data") %>%
+    filter(date(TIMESTAMP) == "2022-06-20") ->
+    Nick_pre_treatment
 
-# filter to one day
-Nick %>%
-    filter(date(TIMESTAMP) == "2022-06-20") -> Nick_pre_treatment
+# We have data, yes?
+# Here and below, we use CO2 for plotting because we *know* it has to be
+# emitted., not taken up, by tree stems, which makes diagnosing matching
+# problems easier
+ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CO2)) +
+    geom_point(na.rm = TRUE) +
+    ylim(300, 1000) +
+    ggtitle("Seawater PreTreatment 2022")
 
-# we have data, yes?
-ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
-         geom_point() +
-         ylim(1950, 2050) +
-         ggtitle("Seawater PreTreatment 2022")
-
-# filter metadata for the same day
+# Filter metadata for the same day
 md %>%
     filter(date(start_timestamp) == "2022-06-20",
-           plot == "Seawater") -> pretreatment_seawater
-# we know it's seawater because we used our human eyes
+           plot == "Seawater") %>%
+    mutate(start_times = paste(hour(start_timestamp),
+                               minute(start_timestamp),
+                               second(start_timestamp), sep = ":")) ->
+    md_pre_seawater
+# We know it's seawater because we used our human eyes
 # should think of a way to automate that matching
 
 # matchy match?
 Nick_pre_treatment$match <-
-ffi_metadata_match(
-    data_timestamps = Nick_pre_treatment$TIMESTAMP,
-    start_dates = as.character(pretreatment_seawater$collection_date),
-    start_times = pretreatment_seawater$start_clock,
-    obs_lengths = pretreatment_seawater$obs_lengths
-)
+    ffi_metadata_match(
+        data_timestamps = Nick_pre_treatment$TIMESTAMP,
+        start_dates = as.character(date(md_pre_seawater$start_timestamp)),
+        start_times = md_pre_seawater$start_times,
+        obs_lengths = md_pre_seawater$obs_lengths
+    )
 
-# we have pretty good match, only missing one!
+# We have pretty good match, only missing one!
+ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
+    geom_point(na.rm = TRUE) +
+    ylim(300, 1000) +
+    ggtitle("Seawater PreTreatment 2022 - matched")
+
 ggplot(data = Nick_pre_treatment,
-       aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() +
+       aes(x = TIMESTAMP, y = CO2)) +
+    geom_point(na.rm = TRUE) +
     facet_wrap(.~match, scales = "free") +
-    ylim(1950, 2050) +
-    ggtitle("Seawater PreTreatment One Day 2022")
+    ylim(300, 1000) +
+    ggtitle("Seawater PreTreatment 2022 - matched")
 
 # Summary thus far...
-# we have pretty good matching using the default settings
+# We have pretty good matching using the default settings
 # and one to one inputs
+
+stop("All done")
 
 
 # let's test another day or two
 
 # create single licor file for testing
 tree_data_raw %>%
-    filter(File == "TG10-01286-2023-06-04T050000_Louise.data") -> Louise
-head(Louise$TIMESTAMP)
+    filter(File == "TG10-01286-2023-06-04T050000_Louise.data") ->
+    Louise
 
 # filter to one day
 Louise %>%
-    filter(date(TIMESTAMP) == "2023-06-04") -> Louise_oneday
+    filter(date(TIMESTAMP) == "2023-06-04") ->
+    Louise_oneday
 
 # do we have data?
 ggplot(Louise_oneday, aes(x = TIMESTAMP, y = CH4)) +
