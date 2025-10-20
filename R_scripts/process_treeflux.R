@@ -1,3 +1,7 @@
+# process_treeflux.R
+# Script to process raw Licor files into
+# ready-for-analysis data matched with metadata
+# KAM 2025
 
 # install.packages("remotes")
 # remotes::install_github("COMPASS-DOE/fluxfinder")
@@ -14,55 +18,46 @@ files <- list.files("Data/tree_flux_licor/", pattern = "\\.data$", full.names = 
 
 # Helper function
 read_file <- function(f) {
-  message("Reading ", f)
-  ffi_read_LI7810(f) %>%
-    mutate(File = basename(f))
+    message("Reading ", basename(f))
+    ffi_read_LI7810(f) %>%
+      mutate(File = basename(f)) %>%
+      select(TIMESTAMP, TZ, CO2, CH4, SN, File)
 }
 
-#bind all files into raw dataframe
+# Bind all data files into raw dataframe
 lapply(files, read_file) %>%
-  bind_rows() -> tree_data_raw
+    bind_rows() ->
+    tree_data_raw
 
-#read in metadata
-meta22 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata22.csv ")
-meta23 <- read.csv("Data/tree_flux_licor/metadata & excel files/tree_flux_metadata23.csv ")
+# Read in metadata and construct start/end timestamps
+message("Reading metadata...")
+meta22 <- read_csv("Data/tree_flux_licor/metadata_excel_files/tree_flux_metadata22.csv",
+                   col_types = "cccccccc")
+meta23 <- read_csv("Data/tree_flux_licor/metadata_excel_files/tree_flux_metadata23.csv",
+                   col_types = "cccccccc")
 
 meta22 %>%
-    mutate(start_string = paste(collection_date, start_time),
-           start_timestamp = as.POSIXct(start_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
-           start_clock = paste0(start_time, ":00"),
-           start_clock = str_pad(start_clock, width=8, side="left", pad="0"),
-           end_string = paste(collection_date, end_time),
-           end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
-           collection_date = date(start_timestamp),
-           obs_lengths = 100) -> meta_dat22
+    bind_rows(meta23) %>%
+    mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
+           end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST"),
+           obs_lengths = 100) %>%
+    select(-start_time, -end_time, -collection_date, -notes) %>%
+    arrange(start_timestamp) ->
+    md
 
-meta23 %>%
-    mutate(start_string = paste(collection_date, start_time),
-           start_timestamp = as.POSIXct(start_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
-           start_timestamp = start_timestamp - hours(1), #2023 metadata recorded in EDT
-           start_clock = paste0(start_time, ":00"),
-           start_clock = str_pad(start_clock, width=8, side="left", pad="0"),
-           end_string = paste(collection_date, end_time),
-           end_timestamp = as.POSIXct(end_string, format = "%m/%d/%Y %H:%M", tz = "EST"),
-           end_timestamp = end_timestamp - hours(1),
-           collection_date = date(start_timestamp),
-           obs_lengths = 100) -> meta_dat23
-
-#this would be a good place for some defensive programming
-#script should stop is start/end_timestamp and collection_date aren't correctly converted
-
-meta_dat <- bind_rows(meta_dat22, meta_dat23)
-meta_dat %>%
-    arrange(start_timestamp) -> meta_dat
+# Check for missing/bad entries
+if(any(is.na(md$start_timestamp))) {
+    stop("Some start times not valid; missing info or not mm/dd/yyyy?")
+}
+if(any(is.na(md$end_timestamp))) {
+    stop("Some end times not valid; missing info or not mm/dd/yyyy?")
+}
 
 # OK, we've got the input files, now what?
 
-# create single licor file for testing
+# Create single licor file for testing
 tree_data_raw %>%
     filter(File == "TG10-01028-2022-06-19T000000_Nick.data") -> Nick
-# check timestamps
-head(Nick$TIMESTAMP)
 
 # filter to one day
 Nick %>%
@@ -75,8 +70,8 @@ ggplot(Nick_pre_treatment, aes(x = TIMESTAMP, y = CH4)) +
          ggtitle("Seawater PreTreatment 2022")
 
 # filter metadata for the same day
-meta_dat %>%
-    filter(collection_date == "2022-06-20",
+md %>%
+    filter(date(start_timestamp) == "2022-06-20",
            plot == "Seawater") -> pretreatment_seawater
 # we know it's seawater because we used our human eyes
 # should think of a way to automate that matching
@@ -121,7 +116,7 @@ ggplot(Louise_oneday, aes(x = TIMESTAMP, y = CH4)) +
     ggtitle("Louise Pretreatment 2023")
 
 # filter metadata
-meta_dat %>%
+md %>%
     filter(collection_date == "2023-06-04",
            plot == "Control") -> pretreatment_control
 # matching!
@@ -160,7 +155,7 @@ ggplot(Mike_oneday, aes(x = TIMESTAMP, y = CH4)) +
     ggtitle("Mike Posttreatment 2023")
 
 # filter metadata
-meta_dat %>%
+md %>%
     filter(collection_date == "2023-06-09",
            plot == "Freshwater") -> posttreatment_fw
 # matching!
