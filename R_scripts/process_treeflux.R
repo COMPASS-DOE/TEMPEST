@@ -27,7 +27,11 @@ read_file <- function(f) {
 
 # Bind all data files into raw dataframe
 lapply(files, read_file) %>%
-    bind_rows() ->
+    bind_rows() %>%
+    as_tibble() %>%
+    # although the Licor's timezone settings are "America/New_York" this
+    # is incorrect -- they're maintained at EST. So change this
+    mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST")) ->
     tree_data_raw
 
 # Read in metadata and construct start/end timestamps
@@ -106,7 +110,7 @@ tree_data_filtered$match <-
         data_timestamps = tree_data_filtered$TIMESTAMP,
         start_dates = as.character(date(md_filtered$start_timestamp)),
         start_times = md_filtered$start_times,
-        obs_lengths = md_filtered$obs_length
+        obs_lengths = rep(100, nrow(md_filtered)) # default
     )
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 
@@ -128,10 +132,10 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     facet_wrap(. ~ ID, scales = "free_x") +
     ylim(300, 1000) +
     geom_vline(data = md_filtered,
-               aes(xintercept = start_timestamp + start_adjust),
+               aes(xintercept = start_timestamp + dead_band),
                linetype = 2, color = "darkgreen") +
     geom_vline(data = md_filtered,
-               aes(xintercept = start_timestamp + start_adjust + obs_length),
+               aes(xintercept = start_timestamp + dead_band + obs_length),
                linetype = 2, color = "darkred") +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"))
 ggsave(file.path(DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png")), width = 10, height = 6)
