@@ -12,10 +12,13 @@ library(stringr)
 library(ggplot2)
 theme_set(theme_bw())
 library(lubridate)
+library(readr)
 
-# Get names of data files
-# from TEMPEST I and II (2022 and 2023)
-files <- list.files("Data/tree_flux_licor/", pattern = "\\.data$", full.names = TRUE)
+INPUT_DIR_ROOT <- "Data/tree_flux_licor/"
+OUTPUT_DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
+
+# Get names of data files from TEMPEST I and II (2022 and 2023)
+files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE)
 
 # Helper function
 read_file <- function(f) {
@@ -36,9 +39,9 @@ lapply(files, read_file) %>%
 
 # Read in metadata and construct start/end timestamps
 message("Reading metadata...")
-meta22 <- read_csv("Data/tree_flux_licor/metadata_excel_files/tree_flux_metadata22.csv",
+meta22 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata22.csv"),
                    col_types = "ccccccddcc")
-meta23 <- read_csv("Data/tree_flux_licor/metadata_excel_files/tree_flux_metadata23.csv",
+meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata23.csv"),
                    col_types = "ccccccddcc")
 
 meta22 %>%
@@ -62,17 +65,19 @@ if(any(is.na(md$end_timestamp))) {
 # We use a "treeflux-processing-info" file to step through the data. This
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
-tfpi <- read_csv("Data/tree_flux_licor/treeflux-processing-info.csv", col_types = "cDcc")
+tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
+                 col_types = "cDcc")
 
+# TODO: for(i in seq_len(nrow(tfpi)))
 i <- 1
 
+I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
 DATE <- tfpi$Date[i]
 PLOT <- tfpi$Plot[i]
-I_STR <- sprintf("%02s", i)
 NOTES <- tfpi$Notes[i]
 
-message(paste("Processing", i, FILE, DATE, PLOT))
+message(paste("Processing", I_STR, FILE, DATE, PLOT))
 
 # Filter to one Licor file and one day for testing
 tree_data_raw %>%
@@ -111,11 +116,12 @@ tree_data_filtered$match <-
         data_timestamps = tree_data_filtered$TIMESTAMP,
         start_dates = as.character(date(md_filtered$start_timestamp)),
         start_times = md_filtered$start_times,
-        obs_lengths = rep(100, nrow(md_filtered)) # default
+        # to start, match 100 seconds of data
+        # this will be refined using the dead_band and obs_length
+        # entries in the metadata files
+        obs_lengths = rep(100, nrow(md_filtered))
     )
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
-
-test <- tree_data_filtered %>% left_join(md_filtered, by = "ID")
 
 # Diagnostic plot 1: color data by match
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
@@ -124,9 +130,10 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "matched"),
             subtitle = NOTES)
 
-DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
 FN_ROOT <- paste(I_STR, FILE, DATE, PLOT, sep = "_")
-ggsave(file.path(DIR_ROOT, paste0(FN_ROOT, "_match.png")), width = 10, height = 6)
+fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.png"))
+message("Saving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 6)
 
 # Diagnostic plot 2: individual tree data with
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
@@ -141,7 +148,10 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
                linetype = 2, color = "darkred") +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
             subtitle = NOTES)
-ggsave(file.path(DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png")), width = 10, height = 6)
+
+fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png"))
+message("Saving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 6)
 
 
 stop("All done")
