@@ -5,7 +5,7 @@ Seawater,S3,Pre-Treatment,6/20/2022,13:18,13:26,10,90,EST,
 Seawater,S13,Pre-Treatment,6/20/2022,15:42,15:52,0,100,EST,
 Seawater,S14,Pre-Treatment,6/20/2022,13:51,14:01,0,100,EST,
 Seawater,S16,Pre-Treatment,6/20/2022,13:29,13:39,0,100,EST,
-Seawater,S7,Pre-Treatment,6/20/2022,9:34,9:47,0,100,EST,"Instrument was still on Pacific time zone, time logged on datasheet is EST"
+Seawater,S7,Pre-Treatment,6/20/2022,12:34,12:47,0,100,EST,"Instrument was still on Pacific time zone, time logged on datasheet is EST; BBL 2025: seems like instrument tz change changed this one too, so changing to 12:34-12:47"
 Seawater,S9,Pre-Treatment,6/20/2022,15:35,15:44,0,100,EST,
 Seawater,S10,Pre-Treatment,6/20/2022,12:54,13:04,10,90,EST,
 Seawater,S4,Pre-Treatment,6/20/2022,13:07,13:16,0,100,EST,

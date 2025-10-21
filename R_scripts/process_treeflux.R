@@ -70,6 +70,7 @@ FILE <- tfpi$File[i]
 DATE <- tfpi$Date[i]
 PLOT <- tfpi$Plot[i]
 I_STR <- sprintf("%02s", i)
+NOTES <- tfpi$Notes[i]
 
 message(paste("Processing", i, FILE, DATE, PLOT))
 
@@ -120,7 +121,8 @@ test <- tree_data_filtered %>% left_join(md_filtered, by = "ID")
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
-    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "matched"), subtitle = tfpi$Notes[i])
+    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "matched"),
+            subtitle = NOTES)
 
 DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
 FN_ROOT <- paste(I_STR, FILE, DATE, PLOT, sep = "_")
@@ -137,7 +139,8 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     geom_vline(data = md_filtered,
                aes(xintercept = start_timestamp + dead_band + obs_length),
                linetype = 2, color = "darkred") +
-    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"))
+    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
+            subtitle = NOTES)
 ggsave(file.path(DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png")), width = 10, height = 6)
 
 
