@@ -69,7 +69,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcc")
 
 # TODO: for(i in seq_len(nrow(tfpi)))
-i <- 1
+i <- 2
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]

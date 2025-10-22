@@ -1,22 +1,22 @@
 ﻿plot,ID,timepoint,collection_date,start_time,end_time,dead_band,obs_length,timezone,notes
 Control,C2,T0,6/4/2023,13:03,13:08,0,100,EDT,
-Control,C1,T0,6/4/2023,13:11,13:17,0,100,EDT,
+Control,C1,T0,6/4/2023,13:11,13:17,0,85,EDT,
 Control,C17,T0,6/4/2023,13:19,13:25,0,100,EDT,
-Control,C11,T0,6/4/2023,13:29,13:36,0,100,EDT,
-Control,C16,T0,6/4/2023,13:43,13:48,0,100,EDT,Louise #5 check data
+Control,C11,T0,6/4/2023,13:29,13:36,0,55,EDT,
+Control,C16,T0,6/4/2023,13:43,13:48,0,50,EDT,Louise #5 check data
 Control,C10,T0,6/4/2023,13:57,14:02,0,100,EDT,false start w/o tubing inserted
-Control,C3,T0,6/4/2023,14:07,14:13,0,100,EDT,
-Control,C6,T0,6/4/2023,14:16,14:21,0,100,EDT,
-Control,C14,T0,6/4/2023,14:26,14:31,0,100,EDT,Louise #5 check data
-Control,C13,T0,6/4/2023,14:33,14:39,0,100,EDT,
-Control,C15,T0,6/4/2023,14:42,14:48,0,100,EDT,
+Control,C3,T0,6/4/2023,14:07,14:13,25,75,EDT,
+Control,C6,T0,6/4/2023,14:16,14:21,0,50,EDT,
+Control,C14,T0,6/4/2023,14:26,14:31,0,75,EDT,Louise #5 check data
+Control,C13,T0,6/4/2023,14:33,14:39,0,90,EDT,
+Control,C15,T0,6/4/2023,14:42,14:48,0,75,EDT,
 Control,C9,T0,6/4/2023,14:50,14:57,0,100,EDT,
-Control,C19,T0,6/4/2023,15:01,15:06,0,100,EDT,Louise #5 check data
+Control,C19,T0,6/4/2023,15:01,15:06,0,25,EDT,Louise #5 check data
 Control,C7,T0,6/4/2023,15:11,15:16,0,100,EDT,
-Control,C18,T0,6/4/2023,15:18,15:32,0,100,EDT,
+Control,C18,T0,6/4/2023,15:18,15:32,0,70,EDT,
 Control,C4,T0,6/4/2023,12:30,12:37,0,100,EDT,
-Control,C5,T0,6/4/2023,12:44,12:50,0,100,EDT,
-Control,C12,T0,6/4/2023,12:56,13:01,0,100,EDT,"Louise #5 found to have a taped over pat on June 5, Check data"
+Control,C5,T0,6/4/2023,12:44,12:50,0,20,EDT,
+Control,C12,T0,6/4/2023,12:56,13:01,0,90,EDT,"Louise #5 found to have a taped over pat on June 5, Check data"
 Freshwater,F15,T0,6/4/2023,12:29,12:35,0,100,EDT,
 Freshwater,F8,T0,6/4/2023,12:41,12:46,0,100,EDT,
 Freshwater,F4,T0,6/4/2023,12:55,13:02,0,100,EDT,
