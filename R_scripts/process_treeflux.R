@@ -33,7 +33,7 @@ lapply(files, read_file) %>%
     bind_rows() %>%
     as_tibble() %>%
     # although the Licor's timezone settings are "America/New_York" this
-    # is incorrect -- they're maintained at EST. So change this
+    # is incorrect -- they *should be* maintained at EST. So change this
     mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST")) ->
     tree_data_raw
 
@@ -48,7 +48,8 @@ meta22 %>%
     bind_rows(meta23) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
-    select(-start_time, -end_time, -collection_date, -notes) %>%
+    # we will get time zone information from treeflux-processing-info.csv
+    select(-start_time, -end_time, -collection_date, -timezone, -notes) %>%
     arrange(start_timestamp) ->
     md
 
@@ -66,7 +67,7 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcc")
+                 col_types = "cDcccc")
 
 # TODO: for(i in seq_len(nrow(tfpi)))
 i <- 2
@@ -75,6 +76,8 @@ I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
 DATE <- tfpi$Date[i]
 PLOT <- tfpi$Plot[i]
+MD_TZ <- tfpi$Metadata_tz[i]
+INS_TZ <- tfpi$Instrument_tz[i]
 NOTES <- tfpi$Notes[i]
 
 message(paste("Processing", I_STR, FILE, DATE, PLOT))
@@ -86,6 +89,13 @@ tree_data_raw %>%
     tree_data_filtered
 message("\t", nrow(tree_data_filtered), " rows of data")
 
+# ---- Licor data time zone conversion, if needed ----
+if(INS_TZ != "EST") {
+    message("Converting instrument times from ", INS_TZ, " to EST")
+    tree_data_filtered$TIMESTAMP <- force_tz(tree_data_filtered$TIMESTAMP, tzone = INS_TZ)
+    tree_data_filtered$TIMESTAMP <- with_tz(tree_data_filtered$TIMESTAMP, tzone = "EST")
+}
+
 # Here and below, we use CO2 for plotting because we *know* it has
 # to be emitted, not taken up, by tree stems, which makes it easier
 # to diagnose matching problems
@@ -94,22 +104,33 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     ylim(300, 1000) +
     ggtitle("Seawater PreTreatment 2022")
 
-# Filter metadata for the same day
+# ---- Filter metadata for the same day ----
 md %>%
-    filter(date(start_timestamp) == DATE,
-           plot == PLOT) %>%
-    mutate(start_times = paste(hour(start_timestamp),
-                               minute(start_timestamp),
-                               second(start_timestamp), sep = ":")) ->
+    filter(date(start_timestamp) == DATE, plot == PLOT) ->
     md_filtered
 message("\t", nrow(md_filtered), " rows of metadata")
+
+# ---- Metadata time zone conversion, if needed ----
+if(MD_TZ != "EST") {
+    message("Converting metadata times from ", MD_TZ, " to EST")
+    md_filtered$start_timestamp <- force_tz(md_filtered$start_timestamp, tzone = MD_TZ)
+    md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
+    md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
+    md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
+}
 
 TIMEPOINT <- unique(md_filtered$timepoint)
 if(length(TIMEPOINT) > 1) {
     stop("Hmm, this should not happen!")
 }
 
-# matchy match?
+# Construct start timestamps needed by ffi_metadata_match
+md_filtered %>%
+    mutate(start_times = paste(hour(start_timestamp),
+                           minute(start_timestamp),
+                           second(start_timestamp), sep = ":")) ->
+    md_filtered
+# ---- matchy match? ----
 message("Matching...")
 tree_data_filtered$match <-
     ffi_metadata_match(
@@ -123,7 +144,7 @@ tree_data_filtered$match <-
     )
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 
-# Diagnostic plot 1: color data by match
+# ---- Diagnostic plot 1: color data by match ----
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
@@ -135,7 +156,7 @@ fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.png"))
 message("Saving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
-# Diagnostic plot 2: individual tree data with
+# ---- Diagnostic plot 2: individual tree data ----
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     geom_point(na.rm = TRUE) +
     facet_wrap(. ~ ID, scales = "free_x") +
