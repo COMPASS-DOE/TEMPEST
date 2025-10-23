@@ -1,4 +1,4 @@
 File,Date,Plot,Metadata_tz,Instrument_tz,Notes
 TG10-01028-2022-06-19T000000_Nick.data,2022-06-20,Seawater,EST,EST,S7 time changed from PST to EST
 TG10-01286-2023-06-04T050000_Louise.data,2023-06-04,Control,EDT,EST,C17 is super wonky
-,,,,,
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-09,Freshwater,EDT,EDT,

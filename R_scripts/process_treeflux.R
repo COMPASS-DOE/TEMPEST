@@ -70,7 +70,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccc")
 
 # TODO: for(i in seq_len(nrow(tfpi)))
-i <- 2
+i <- 3
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -176,82 +176,3 @@ ggsave(fn, width = 10, height = 6)
 
 
 stop("All done")
-
-
-# let's test another day or two
-
-# create single licor file for testing
-tree_data_raw %>%
-    filter(File == "TG10-01286-2023-06-04T050000_Louise.data") ->
-    Louise
-
-# filter to one day
-Louise %>%
-    filter(date(TIMESTAMP) == "2023-06-04") ->
-    Louise_oneday
-
-# do we have data?
-ggplot(Louise_oneday, aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() +
-    ylim(1950, 2050) +
-    ggtitle("Louise Pretreatment 2023")
-
-# filter metadata
-md %>%
-    filter(collection_date == "2023-06-04",
-           plot == "Control") -> pretreatment_control
-# matching!
-Louise_oneday$match <-
-    ffi_metadata_match(
-        data_timestamps = Louise_oneday$TIMESTAMP,
-        start_dates = as.character(pretreatment_control$collection_date),
-        start_times = pretreatment_control$start_clock,
-        obs_lengths = pretreatment_control$obs_lengths
-    )
-
-# did we match?
-ggplot(data = Louise_oneday,
-       aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() +
-    facet_wrap(.~match, scales = "free") +
-    ylim(1950, 2050) +
-    ggtitle("Control PreTreatment One Day 2023")
-
-# second test, passed!
-
-
-# create single licor file for testing
-tree_data_raw %>%
-    filter(File == "TG10-01448-2023-06-04T050000_Mike.data") -> Mike
-tail(Mike$TIMESTAMP)
-
-# filter to one day
-Mike %>%
-    filter(date(TIMESTAMP) == "2023-06-09") -> Mike_oneday
-
-# do we have data?
-ggplot(Mike_oneday, aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() +
-    ylim(1950, 2050) +
-    ggtitle("Mike Posttreatment 2023")
-
-# filter metadata
-md %>%
-    filter(collection_date == "2023-06-09",
-           plot == "Freshwater") -> posttreatment_fw
-# matching!
-Mike_oneday$match <-
-    ffi_metadata_match(
-        data_timestamps = Mike_oneday$TIMESTAMP,
-        start_dates = as.character(posttreatment_fw$collection_date),
-        start_times = posttreatment_fw$start_clock,
-        obs_lengths = posttreatment_fw$obs_lengths
-    )
-
-# did we match?
-ggplot(data = Mike_oneday,
-       aes(x = TIMESTAMP, y = CH4)) +
-    geom_point() +
-    facet_wrap(.~match, scales = "free") +
-    ylim(1950, 2050) +
-    ggtitle("Mike One Day 2023")
