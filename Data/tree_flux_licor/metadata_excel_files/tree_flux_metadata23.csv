@@ -17,25 +17,25 @@ Control,C9,T0,6/4/2023,14:54,14:57,0,100,EDT,Changed from 14:50
 Control,C19,T0,6/4/2023,15:05,15:06,0,100,EDT,Louise #5 check data; Changed from 15:01
 Control,C7,T0,6/4/2023,15:15,15:16,0,100,EDT,Changed from 15:11
 Control,C18,T0,6/4/2023,15:22,15:32,0,100,EDT,Changed from 15:18
-Freshwater,F15,T0,6/4/2023,12:29,12:35,0,100,EDT,
-Freshwater,F8,T0,6/4/2023,12:41,12:46,0,100,EDT,
-Freshwater,F4,T0,6/4/2023,12:55,13:02,0,100,EDT,
-Freshwater,F12,T0,6/4/2023,13:06,13:11,0,100,EDT,
-Freshwater,F7,T0,6/4/2023,13:17,13:22,0,100,EDT,
-Freshwater,F13,T0,6/4/2023,13:28,13:33,0,100,EDT,
-Freshwater,F6,T0,6/4/2023,13:38,13:43,0,100,EDT,
-Freshwater,F3,T0,6/4/2023,13:47,13:52,0,100,EDT,
-Freshwater,F5,T0,6/4/2023,14:02,14:08,0,100,EDT,
-Freshwater,F9,T0,6/4/2023,14:11,14:16,0,100,EDT,
-Freshwater,F16,T0,6/4/2023,14:20,14:28,0,100,EDT,
-Freshwater,F1,T0,6/4/2023,14:31,14:36,0,100,EDT,
-Freshwater,F17,T0,6/4/2023,14:39,14:46,0,100,EDT,
-Freshwater,F2,T0,6/4/2023,14:49,14:54,0,100,EDT,
-Freshwater,F18,T0,6/4/2023,14:57,15:02,0,100,EDT,
-Freshwater,F10,T0,6/4/2023,15:04,15:09,0,100,EDT,
-Freshwater,F11,T0,6/4/2023,15:13,15:18,0,100,EDT,
-Freshwater,F14,T0,6/4/2023,15:21,15:26,0,100,EDT,
-Seawater,S14,T0,6/4/2023,12:58,13:07,0,100,EDT,
+Freshwater,F15,T0,6/4/2023,12:31,12:37,0,100,EDT,Changed from 12:29
+Freshwater,F8,T0,6/4/2023,12:43,12:48,0,100,EDT,Changed from 12:41
+Freshwater,F4,T0,6/4/2023,12:57,13:04,0,100,EDT,Changed from 12:55
+Freshwater,F12,T0,6/4/2023,13:08,13:13,0,100,EDT,Changed from 13:06
+Freshwater,F7,T0,6/4/2023,13:19,13:24,0,100,EDT,Changed from 13:17
+Freshwater,F13,T0,6/4/2023,13:28,13:35,0,100,EDT,Changed from 13:28
+Freshwater,F6,T0,6/4/2023,13:40,13:45,0,100,EDT,Changed from 13:38
+Freshwater,F3,T0,6/4/2023,13:49,13:54,0,100,EDT,Changed from 13:47
+Freshwater,F5,T0,6/4/2023,14:04,14:10,0,100,EDT,Changed from 14:02
+Freshwater,F9,T0,6/4/2023,14:13,14:18,0,100,EDT,Changed from 14:11
+Freshwater,F16,T0,6/4/2023,14:22,14:30,0,100,EDT,Changed from 14:20
+Freshwater,F1,T0,6/4/2023,14:33,14:38,0,100,EDT,Changed from 14:31
+Freshwater,F17,T0,6/4/2023,14:41,14:48,0,100,EDT,Changed from 14:39
+Freshwater,F2,T0,6/4/2023,14:51,14:56,0,100,EDT,Changed from 14:49
+Freshwater,F18,T0,6/4/2023,14:59,15:04,0,100,EDT,Changed from 14:57
+Freshwater,F10,T0,6/4/2023,15:06,15:11,0,100,EDT,Changed from 15:04
+Freshwater,F11,T0,6/4/2023,15:15,15:20,0,100,EDT,Changed from 15:13
+Freshwater,F14,T0,6/4/2023,15:23,15:28,0,100,EDT,Changed from 15:21
+Seawater,S14,T0,6/4/2023,12:58,13:09,0,100,EDT,Changed from 12:58
 Seawater,S9,T0,6/4/2023,13:16,13:22,0,100,EDT,calculated in excel
 Seawater,S17,T0,6/4/2023,13:28,13:34,0,100,EDT,
 Seawater,S5,T0,6/4/2023,13:34,13:39,0,100,EDT,
