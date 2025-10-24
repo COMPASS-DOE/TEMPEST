@@ -70,7 +70,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 # TODO: for(i in seq_len(nrow(tfpi)))
-i <- 6
+i <- 7
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -103,7 +103,8 @@ if(INS_TZ != "EST") {
 ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
-    ggtitle("Seawater PreTreatment 2022")
+    ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT),
+            subtitle = NOTES)
 
 # ---- Filter metadata for the same day ----
 md %>%
@@ -146,7 +147,7 @@ tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
-    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "matched"),
+    ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
             subtitle = NOTES)
 print(p)
 
