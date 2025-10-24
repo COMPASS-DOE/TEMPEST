@@ -67,20 +67,21 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccc")
+                 col_types = "cDccccc")
 
 # TODO: for(i in seq_len(nrow(tfpi)))
-i <- 3
+i <- 6
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
 DATE <- tfpi$Date[i]
+TIMEPOINT <- tfpi$Timepoint[i]
 PLOT <- tfpi$Plot[i]
 MD_TZ <- tfpi$Metadata_tz[i]
 INS_TZ <- tfpi$Instrument_tz[i]
 NOTES <- tfpi$Notes[i]
 
-message(paste("Processing", I_STR, FILE, DATE, PLOT))
+message(paste("Processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
 # Filter to one Licor file and one day for testing
 tree_data_raw %>%
@@ -106,7 +107,9 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
 
 # ---- Filter metadata for the same day ----
 md %>%
-    filter(date(start_timestamp) == DATE, plot == PLOT) ->
+    filter(date(start_timestamp) == DATE,
+           timepoint == TIMEPOINT,
+           plot == PLOT) ->
     md_filtered
 message("\t", nrow(md_filtered), " rows of metadata")
 
@@ -117,11 +120,6 @@ if(MD_TZ != "EST") {
     md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
     md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
     md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
-}
-
-TIMEPOINT <- unique(md_filtered$timepoint)
-if(length(TIMEPOINT) > 1) {
-    stop("Hmm, this should not happen!")
 }
 
 # Construct start timestamps needed by ffi_metadata_match
@@ -145,19 +143,20 @@ tree_data_filtered$match <-
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 
 # ---- Diagnostic plot 1: color data by match ----
-ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
+p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "matched"),
             subtitle = NOTES)
+print(p)
 
-FN_ROOT <- paste(I_STR, FILE, DATE, PLOT, sep = "_")
+FN_ROOT <- paste(I_STR, FILE, DATE, TIMEPOINT, PLOT, sep = "_")
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.png"))
 message("Saving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
 # ---- Diagnostic plot 2: individual tree data ----
-ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     geom_point(na.rm = TRUE) +
     facet_wrap(. ~ ID, scales = "free_x") +
     ylim(300, 1000) +
@@ -169,6 +168,7 @@ ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
                linetype = 2, color = "darkred") +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
             subtitle = NOTES)
+print(p)
 
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png"))
 message("Saving ", basename(fn), "...")
