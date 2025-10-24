@@ -179,24 +179,24 @@ Control,C19,T3A,6/7/2023,10:07,10:08,0,100,EDT,Changed from 10:03
 Control,C7,T3A,6/7/2023,10:16,10:17,0,100,EDT,Changed from 10:12
 Control,C10,T3A,6/7/2023,10:23,10:24,0,100,EDT,Changed from 10:19
 Control,C16,T3A,6/7/2023,10:30,10:31,0,100,EDT,Changed from 10:26
-Freshwater,F10,T3A,6/7/2023,8:06,8:12,0,100,EDT,
-Freshwater,F18,T3A,6/7/2023,8:15,8:21,0,100,EDT,
-Freshwater,F2,T3A,6/7/2023,8:24,8:30,0,100,EDT,
-Freshwater,F1,T3A,6/7/2023,8:33,8:39,0,100,EDT,
-Freshwater,F16,T3A,6/7/2023,8:43,8:48,0,100,EDT,
-Freshwater,F5,T3A,6/7/2023,8:51,8:56,0,100,EDT,
-Freshwater,F9,T3A,6/7/2023,9:00,9:06,0,100,EDT,
-Freshwater,F11,T3A,6/7/2023,9:09,9:14,0,100,EDT,
-Freshwater,F3,T3A,6/7/2023,9:17,9:26,0,100,EDT,
-Freshwater,F6,T3A,6/7/2023,9:29,9:35,0,100,EDT,
-Freshwater,F13,T3A,6/7/2023,9:37,9:42,0,100,EDT,
-Freshwater,F7,T3A,6/7/2023,9:44,9:50,0,100,EDT,
-Freshwater,F15,T3A,6/7/2023,9:52,9:58,0,100,EDT,
-Freshwater,F8,T3A,6/7/2023,10:01,10:06,0,100,EDT,
-Freshwater,F17,T3A,6/7/2023,10:10,10:15,0,100,EDT,no visible ponding water near tree
-Freshwater,F14,T3A,6/7/2023,10:18,10:25,0,100,EDT,
-Freshwater,F12,T3A,6/7/2023,10:29,10:35,0,100,EDT,
-Freshwater,F4,T3A,6/7/2023,10:38,10:43,0,100,EDT,non linear
+Freshwater,F10,T3A,6/7/2023,8:08,8:12,0,100,EDT,Changed from 8:06
+Freshwater,F18,T3A,6/7/2023,8:16,8:21,0,100,EDT,Changed from 8:15
+Freshwater,F2,T3A,6/7/2023,8:26,8:30,0,100,EDT,Changed from 8:24
+Freshwater,F1,T3A,6/7/2023,8:35,8:39,0,100,EDT,Changed from 8:33
+Freshwater,F16,T3A,6/7/2023,8:45,8:48,0,100,EDT,Changed from 8:43
+Freshwater,F5,T3A,6/7/2023,8:53,8:56,0,100,EDT,Changed from 8:51
+Freshwater,F9,T3A,6/7/2023,9:02,9:06,0,100,EDT,Changed from 9:00
+Freshwater,F11,T3A,6/7/2023,9:11,9:14,0,100,EDT,Changed from 9:09
+Freshwater,F3,T3A,6/7/2023,9:19,9:26,0,100,EDT,Changed from 9:17
+Freshwater,F6,T3A,6/7/2023,9:31,9:35,0,100,EDT,Changed from 9:29
+Freshwater,F13,T3A,6/7/2023,9:39,9:42,0,100,EDT,Changed from 9:37
+Freshwater,F7,T3A,6/7/2023,9:46,9:50,0,100,EDT,Changed from 9:44
+Freshwater,F15,T3A,6/7/2023,9:54,9:58,0,100,EDT,Changed from 9:52
+Freshwater,F8,T3A,6/7/2023,10:03,10:06,0,100,EDT,Changed from 10:01
+Freshwater,F17,T3A,6/7/2023,10:12,10:15,0,100,EDT,no visible ponding water near tree; changed from 10:10
+Freshwater,F14,T3A,6/7/2023,10:20,10:25,0,100,EDT,Changed from 10:18
+Freshwater,F12,T3A,6/7/2023,10:31,10:35,0,100,EDT,Changed from 10:29
+Freshwater,F4,T3A,6/7/2023,10:40,10:43,0,100,EDT,non linear
 Seawater,S13,T3A,6/7/2023,8:12,8:17,0,100,EDT,flooded
 Seawater,S17,T3A,6/7/2023,8:21,8:26,0,100,EDT,
 Seawater,S9,T3A,6/7/2023,8:27,8:33,0,100,EDT,
