@@ -29,13 +29,16 @@ read_file <- function(f) {
 }
 
 # Bind all data files into raw dataframe
-lapply(files, read_file) %>%
-    bind_rows() %>%
-    as_tibble() %>%
-    # although the Licor's timezone settings are "America/New_York" this
-    # is incorrect -- they *should be* maintained at EST. So change this
-    mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST")) ->
-    tree_data_raw
+# Reading the files is a a bit slow so skip if possible
+if(!exists("tree_data_raw")) {
+    lapply(files, read_file) %>%
+        bind_rows() %>%
+        as_tibble() %>%
+        # although the Licor's timezone settings are "America/New_York" this
+        # is incorrect -- they *should be* maintained at EST. So change this
+        mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST")) ->
+        tree_data_raw
+}
 
 # Read in metadata and construct start/end timestamps
 message("Reading metadata...")
@@ -69,8 +72,8 @@ message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
-# TODO: for(i in seq_len(nrow(tfpi)))
-i <- 7
+for(i in seq_len(nrow(tfpi))) {
+#i <- 8
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -144,20 +147,20 @@ tree_data_filtered$match <-
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 
 # ---- Diagnostic plot 1: color data by match ----
-p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
+p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
     ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
             subtitle = NOTES)
-print(p)
+print(p1)
 
-FN_ROOT <- paste(I_STR, FILE, DATE, TIMEPOINT, PLOT, sep = "_")
-fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.png"))
+FN_ROOT <- paste(FILE, DATE, TIMEPOINT, PLOT, sep = "_")
+fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
 message("Saving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
 # ---- Diagnostic plot 2: individual tree data ----
-p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
     geom_point(na.rm = TRUE) +
     facet_wrap(. ~ ID, scales = "free_x") +
     ylim(300, 1000) +
@@ -169,11 +172,12 @@ p <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
                linetype = 2, color = "darkred") +
     ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
             subtitle = NOTES)
-print(p)
+print(p2)
 
-fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.png"))
+fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
 message("Saving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
+} # for
 
 stop("All done")
