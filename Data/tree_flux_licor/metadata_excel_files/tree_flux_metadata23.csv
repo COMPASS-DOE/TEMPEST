@@ -53,24 +53,24 @@ Seawater,S8,T0,6/4/2023,15:37,15:43,0,100,EDT,
 Seawater,S7,T0,6/4/2023,15:46,15:53,0,100,EDT,
 Seawater,S11,T0,6/4/2023,15:57,16:01,0,100,EDT,
 Seawater,S1,T0,6/4/2023,16:03,16:07,0,100,EDT,
-Control,C4,T1,6/5/2023,12:16,12:21,0,100,EDT,
-Control,C5,T1,6/5/2023,12:24,12:29,0,100,EDT,
-Control,C11,T1,6/5/2023,12:44,12:50,0,100,EDT,
-Control,C16,T1,6/5/2023,12:55,13:00,0,100,EDT,
-Control,C12,T1,6/5/2023,13:04,13:09,0,100,EDT,"redo b/c port seemed weird/plugged, found wasp nest in C12 AFTER measurement"
-Control,C10,T1,6/5/2023,13:13,13:18,0,100,EDT,
-Control,C3,T1,6/5/2023,13:21,13:26,0,100,EDT,frayed bungee on top box
+Control,C4,T1,6/5/2023,12:19,12:21,0,100,EDT,Changed from 12:16
+Control,C5,T1,6/5/2023,12:28,12:29,0,100,EDT,Changed from 12:24
+Control,C11,T1,6/5/2023,12:47,12:50,0,100,EDT,Changed from 12:44
+Control,C16,T1,6/5/2023,12:59,13:00,0,100,EDT,Changed from 12:55
+Control,C12,T1,6/5/2023,13:09,13:13,0,100,EDT,"redo b/c port seemed weird/plugged, found wasp nest in C12 AFTER measurement; changed from 13:09"
+Control,C10,T1,6/5/2023,13:17,13:18,0,100,EDT,Changed from 13:13
+Control,C3,T1,6/5/2023,13:25,13:26,0,100,EDT,frayed bungee on top box; changed from 13:21
 Control,C6,T1,6/5/2023,13:33,13:38,0,100,EDT,
 Control,C14,T1,6/5/2023,13:41,13:46,0,100,EDT,gas sample was hard to pull
 Control,C13,T1,6/5/2023,13:48,13:53,0,100,EDT,
-Control,C15,T1,6/5/2023,13:56,14:02,0,100,EDT,had to A...//No gas sample
-Control,C9,T1,6/5/2023,14:15,14:20,0,100,EDT,
-Control,C19,T1,6/5/2023,14:23,14:28,0,100,EDT,
-Control,C7,T1,6/5/2023,14:37,14:42,0,100,EDT,
-Control,C17,T1,6/5/2023,14:48,14:53,0,100,EDT,
-Control,C2,T1,6/5/2023,14:55,15:01,0,100,EDT,
-Control,C1,T1,6/5/2023,15:04,15:11,0,100,EDT,...1mL...
-Control,C18,T1,6/5/2023,15:22,15:27,0,100,EDT,
+Control,C15,T1,6/5/2023,13:56,14:02,0,60,EDT,had to A...//No gas sample
+Control,C9,T1,6/5/2023,14:18,14:20,0,100,EDT,Changed from 14:15
+Control,C19,T1,6/5/2023,14:27,14:28,0,100,EDT,Changed from 14:23
+Control,C7,T1,6/5/2023,14:41,14:42,0,100,EDT,Changed from 14:37
+Control,C17,T1,6/5/2023,14:51,14:53,0,100,EDT,Changed from 14:48
+Control,C2,T1,6/5/2023,14:59,15:01,0,100,EDT,Changed from 14:55
+Control,C1,T1,6/5/2023,15:08,15:11,0,100,EDT,...1mL...; changed from 15:04
+Control,C18,T1,6/5/2023,15:26,15:27,10,90,EDT,Changed from 15:22
 Freshwater,F18,T1,6/5/2023,12:10,12:15,0,100,EDT,
 Freshwater,F17,T1,6/5/2023,12:18,12:23,0,100,EDT,
 Freshwater,F2,T1,6/5/2023,12:27,12:35,0,100,EDT,

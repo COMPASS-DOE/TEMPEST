@@ -72,8 +72,8 @@ message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
-for(i in seq_len(nrow(tfpi))) {
-#i <- 8
+#for(i in seq_len(nrow(tfpi))) {
+i <- 25
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -178,6 +178,6 @@ fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
 message("Saving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
-} # for
+#} # for
 
 stop("All done")
