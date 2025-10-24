@@ -161,24 +161,24 @@ Seawater,S4,T2,6/6/2023,15:00,15:06,0,100,EDT,
 Seawater,S18,T2,6/6/2023,15:08,15:13,0,100,EDT,
 Seawater,S15,T2,6/6/2023,15:17,15:22,0,100,EDT,
 Seawater,S16,T2,6/6/2023,15:25,15:30,0,100,EDT,
-Control,C18,T3A,6/7/2023,8:09,8:14,0,100,EDT,
-Control,C11,T3A,6/7/2023,8:16,8:21,0,100,EDT,
-Control,C12,T3A,6/7/2023,8:23,8:28,0,100,EDT,
-Control,C5,T3A,6/7/2023,8:31,8:36,0,100,EDT,Data not plotting consistently
-Control,C4,T3A,6/7/2023,8:40,8:45,0,100,EDT,
-Control,C2,T3A,6/7/2023,8:48,8:53,0,100,EDT,
-Control,C1,T3A,6/7/2023,8:55,9:00,0,100,EDT,
-Control,C17,T3A,6/7/2023,9:02,9:07,0,100,EDT,
-Control,C3,T3A,6/7/2023,9:10,9:15,0,100,EDT,
-Control,C6,T3A,6/7/2023,9:26,9:31,0,100,EDT,
-Control,C14,T3A,6/7/2023,9:33,9:38,0,100,EDT,
-Control,C13,T3A,6/7/2023,9:40,9:45,0,100,EDT,
-Control,C15,T3A,6/7/2023,9:48,9:53,0,100,EDT,
-Control,C9,T3A,6/7/2023,9:56,10:01,0,100,EDT,
-Control,C19,T3A,6/7/2023,10:03,10:08,0,100,EDT,
-Control,C7,T3A,6/7/2023,10:12,10:17,0,100,EDT,
-Control,C10,T3A,6/7/2023,10:19,10:24,0,100,EDT,
-Control,C16,T3A,6/7/2023,10:26,10:31,0,100,EDT,
+Control,C18,T3A,6/7/2023,8:13,8:14,0,100,EDT,Changed from 8:09
+Control,C11,T3A,6/7/2023,8:21,8:21,0,100,EDT,Changed from 8:16
+Control,C12,T3A,6/7/2023,8:27,8:28,0,100,EDT,Changed from 8:23
+Control,C5,T3A,6/7/2023,8:35,8:36,0,100,EDT,Data not plotting consistently; changed from 8:31
+Control,C4,T3A,6/7/2023,8:44,8:45,0,100,EDT,Changed from 8:40
+Control,C2,T3A,6/7/2023,8:52,8:53,0,100,EDT,Changed from 8:48
+Control,C1,T3A,6/7/2023,8:59,9:00,0,100,EDT,Changed from 8:55
+Control,C17,T3A,6/7/2023,9:06,9:07,0,100,EDT,Changed from 9:02
+Control,C3,T3A,6/7/2023,9:14,9:15,0,100,EDT,Changed from 9:10
+Control,C6,T3A,6/7/2023,9:30,9:31,0,100,EDT,Changed from 9:26
+Control,C14,T3A,6/7/2023,9:37,9:38,0,100,EDT,Changed from 9:33
+Control,C13,T3A,6/7/2023,9:44,9:45,0,100,EDT,Changed from 9:40
+Control,C15,T3A,6/7/2023,9:52,9:53,0,100,EDT,Changed from 9:48
+Control,C9,T3A,6/7/2023,10:01,10:01,0,100,EDT,Changed from 9:56
+Control,C19,T3A,6/7/2023,10:07,10:08,0,100,EDT,Changed from 10:03
+Control,C7,T3A,6/7/2023,10:16,10:17,0,100,EDT,Changed from 10:12
+Control,C10,T3A,6/7/2023,10:23,10:24,0,100,EDT,Changed from 10:19
+Control,C16,T3A,6/7/2023,10:30,10:31,0,100,EDT,Changed from 10:26
 Freshwater,F10,T3A,6/7/2023,8:06,8:12,0,100,EDT,
 Freshwater,F18,T3A,6/7/2023,8:15,8:21,0,100,EDT,
 Freshwater,F2,T3A,6/7/2023,8:24,8:30,0,100,EDT,
