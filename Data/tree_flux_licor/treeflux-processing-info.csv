@@ -1,7 +1,7 @@
 File,Date,Timepoint,Plot,Metadata_tz,Instrument_tz,Notes
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,EST,
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,EST,C5 bad; C6 and C9 wonky
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,EST,"C13 (#12) has wrong time, erasure mark; changed"
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,EST,C13 (#12) had wrong time and erasure mark; changed
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,EST,
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,EST,
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,EST,"Poor quality; C1, C2, C12 esp. bad"
