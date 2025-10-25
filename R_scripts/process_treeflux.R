@@ -46,9 +46,23 @@ meta22 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
                    col_types = "ccccccddcc")
 meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata23.csv"),
                    col_types = "ccccccddcc")
+meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
+                   col_types = "ccccccccddddccc")
+# meta24 has a different format; make like the others
+meta24 %>%
+    select(-grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
+           collection_date = collection_date_YYYYMMDD,
+           start_time = start_time_24hr_EDT, end_time = end_time_24hr_EDT,
+           -licor_timezone, -flux_CO2_ppms, -flux_CH4_ppbs,
+           -instrument, -personnel) %>%
+    # make the date string into mm/dd/yyyy
+    mutate(collection_date = paste(substr(collection_date, 5, 6),
+                                   substr(collection_date, 7, 8),
+                                   substr(collection_date, 1, 4), sep = "/")) ->
+    meta24
 
 meta22 %>%
-    bind_rows(meta23) %>%
+    bind_rows(meta23, meta24) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
     # we will get time zone information from treeflux-processing-info.csv
@@ -73,7 +87,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 #for(i in seq_len(nrow(tfpi))) {
-i <- 25
+i <- 44
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
