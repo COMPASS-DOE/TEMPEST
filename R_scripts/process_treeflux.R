@@ -271,15 +271,24 @@ results %>%
            std.error_CH4 = std.error) ->
     slopes_CH4
 
-slopes <- left_join(slopes_CO2, slopes_CH4, by = c("Year", "Date", "plot", "timepoint", "ID"))
+slopes_CO2 %>%
+    left_join(slopes_CH4, by = c("Year", "Date", "plot", "timepoint", "ID")) %>%
+    group_by(Year, Date, plot, timepoint) %>%
+    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2)) / sd(slope_CO2),
+           z_CH4 = (slope_CH4 - mean(slope_CH4)) / sd(slope_CH4),
+           lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
+           lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
+    slopes
 
 fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_slopes.csv")
 message("Writing ", basename(fn))
 write_csv(slopes, fn)
 
 for(yr in 2022:2024) {
-    ggplot(filter(slopes, Year == yr), aes(1, slope_CO2)) +
+    ggplot(filter(slopes, Year == yr), aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
+        scale_color_distiller(type = "div") +
+        geom_text(aes(label = lab_CO2), size = 2) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
         ggtitle(paste(yr, "slope_CO2"))
@@ -287,8 +296,10 @@ for(yr in 2022:2024) {
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
-    ggplot(filter(slopes, Year == yr), aes(1, slope_CH4)) +
+    ggplot(filter(slopes, Year == yr), aes(1, slope_CH4, color = z_CH4)) +
         geom_jitter() +
+        scale_color_distiller(type = "div") +
+        geom_text(aes(label = lab_CH4), size = 2) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
         ggtitle(paste(yr, "slope_CH4"))
