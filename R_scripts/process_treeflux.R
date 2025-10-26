@@ -87,7 +87,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 #for(i in seq_len(nrow(tfpi))) {
-i <- 44
+i <- 63
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -107,9 +107,28 @@ tree_data_raw %>%
     tree_data_filtered
 message("\t", nrow(tree_data_filtered), " rows of data")
 
+# ---- Duplication check ----
+message("\tChecking for multiple observations per timestamp")
+if(any(duplicated(tree_data_filtered$TIMESTAMP))) {
+    # If the 7810's time zone settings gets changed during use,
+    # the instrument writes multiple observations per timestamp
+    # It *seems* that the last observation is the one we want to keep
+    tree_data_filtered %>%
+        group_by(TIMESTAMP) %>%
+        mutate(obsrep = 1:n()) -> x
+    message("\t", sum(x$obsrep > 1), " of ", nrow(tree_data_filtered), " timestamps with duplicate entries")
+    # Keep only the last observation
+    x %>%
+        group_by(TIMESTAMP) %>%
+        filter(obsrep == n()) ->
+        tree_data_filtered
+    warning("De-duplicated data because multiple obs per timestamp!")
+}
+
+
 # ---- Licor data time zone conversion, if needed ----
 if(INS_TZ != "EST") {
-    message("Converting instrument times from ", INS_TZ, " to EST")
+    message("\tConverting instrument times from ", INS_TZ, " to EST")
     tree_data_filtered$TIMESTAMP <- force_tz(tree_data_filtered$TIMESTAMP, tzone = INS_TZ)
     tree_data_filtered$TIMESTAMP <- with_tz(tree_data_filtered$TIMESTAMP, tzone = "EST")
 }
@@ -133,7 +152,7 @@ message("\t", nrow(md_filtered), " rows of metadata")
 
 # ---- Metadata time zone conversion, if needed ----
 if(MD_TZ != "EST") {
-    message("Converting metadata times from ", MD_TZ, " to EST")
+    message("\tConverting metadata times from ", MD_TZ, " to EST")
     md_filtered$start_timestamp <- force_tz(md_filtered$start_timestamp, tzone = MD_TZ)
     md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
     md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
@@ -143,11 +162,11 @@ if(MD_TZ != "EST") {
 # Construct start timestamps needed by ffi_metadata_match
 md_filtered %>%
     mutate(start_times = paste(hour(start_timestamp),
-                           minute(start_timestamp),
-                           second(start_timestamp), sep = ":")) ->
+                               minute(start_timestamp),
+                               second(start_timestamp), sep = ":")) ->
     md_filtered
 # ---- matchy match? ----
-message("Matching...")
+message("\tMatching...")
 tree_data_filtered$match <-
     ffi_metadata_match(
         data_timestamps = tree_data_filtered$TIMESTAMP,
@@ -170,7 +189,7 @@ print(p1)
 
 FN_ROOT <- paste(FILE, DATE, TIMEPOINT, PLOT, sep = "_")
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
-message("Saving ", basename(fn), "...")
+message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
 # ---- Diagnostic plot 2: individual tree data ----
@@ -189,7 +208,7 @@ p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
 print(p2)
 
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
-message("Saving ", basename(fn), "...")
+message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
 #} # for
