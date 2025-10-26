@@ -61,7 +61,7 @@ TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_AM,Freshwater,EDT,EST,
 TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_PM,Freshwater,EDT,EST,
 TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_AM,Freshwater,EDT,EST,Adjusted metadata times +2 min
 TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_PM,Freshwater,EDT,EST,"Adjusted metadata times +2 min; F10 7810 data missing (checked data sheets, all looks ok)"
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-10,D1PM,Seawater,EDT,Etc/GMT+9,DUPE PROBLEMS
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-10,D1PM,Seawater,EDT,Etc/GMT+9,Duplicate data removed; adjusted metadata times +1 min
 TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2AM,Seawater,EDT,Etc/GMT+9,
 TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2PM,Seawater,EDT,Etc/GMT+9,
 TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-12,D3AM,Seawater,EDT,Etc/GMT+9,Adjusted metadata times +1 min
