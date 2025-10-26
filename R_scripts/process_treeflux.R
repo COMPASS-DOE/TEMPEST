@@ -13,11 +13,12 @@ library(ggplot2)
 theme_set(theme_bw())
 library(lubridate)
 library(readr)
+library(broom)
 
 INPUT_DIR_ROOT <- "Data/tree_flux_licor/"
 OUTPUT_DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
 
-# Get names of data files from TEMPEST I and II (2022 and 2023)
+# Get names of data files from TEMPEST I and II (2022, 2023, 2024)
 files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE)
 
 # Helper function
@@ -36,7 +37,7 @@ if(!exists("tree_data_raw")) {
         as_tibble() %>%
         # although the Licor's timezone settings are "America/New_York" this
         # is incorrect -- they *should be* maintained at EST. So change this
-        mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST")) ->
+        mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST"), TZ = "EST") ->
         tree_data_raw
 }
 
@@ -48,7 +49,7 @@ meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
                    col_types = "ccccccddcc")
 meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
-# meta24 has a different format; make like the others
+# meta24 has a different format; rework it to match others
 meta24 %>%
     select(-grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
            collection_date = collection_date_YYYYMMDD,
@@ -86,8 +87,9 @@ message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
-#for(i in seq_len(nrow(tfpi))) {
-i <- 1
+results <- list()
+for(i in seq_len(nrow(tfpi))) {
+#i <- 1
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -106,25 +108,6 @@ tree_data_raw %>%
     filter(date(TIMESTAMP) == DATE) ->
     tree_data_filtered
 message("\t", nrow(tree_data_filtered), " rows of data")
-
-# ---- Duplication check ----
-message("\tChecking for multiple observations per timestamp")
-if(any(duplicated(tree_data_filtered$TIMESTAMP))) {
-    # If the 7810's time zone settings gets changed during use,
-    # the instrument writes multiple observations per timestamp
-    # It *seems* that the last observation is the one we want to keep
-    tree_data_filtered %>%
-        group_by(TIMESTAMP) %>%
-        mutate(obsrep = 1:n()) -> x
-    message("\t", sum(x$obsrep > 1), " of ", nrow(tree_data_filtered), " timestamps with duplicate entries")
-    # Keep only the last observation
-    x %>%
-        group_by(TIMESTAMP) %>%
-        filter(obsrep == n()) ->
-        tree_data_filtered
-    warning("De-duplicated data because multiple obs per timestamp!")
-}
-
 
 # ---- Licor data time zone conversion, if needed ----
 if(INS_TZ != "EST") {
@@ -179,6 +162,26 @@ tree_data_filtered$match <-
     )
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
 
+# ---- Duplication check ----
+message("\tChecking for multiple observations per timestamp")
+matched_data <- tree_data_filtered %>% filter(!is.na(match))
+if(any(duplicated(matched_data$TIMESTAMP))) {
+    # If the 7810's time zone settings gets changed during use,
+    # the instrument writes multiple observations per timestamp
+    # It *seems* that the last observation is the one we want to keep
+    tree_data_filtered %>%
+        group_by(TIMESTAMP) %>%
+        mutate(obsrep = 1:n()) -> x
+    message("\t", sum(x$obsrep > 1), " of ", nrow(tree_data_filtered), " timestamps with duplicate entries")
+    # Keep only the last observation
+    x %>%
+        group_by(TIMESTAMP) %>%
+        filter(obsrep == n()) %>%
+        select(-obsrep) ->
+        tree_data_filtered
+    warning("De-duplicated data in ", i, ": multiple obs per timestamp!")
+}
+
 # ---- Diagnostic plot 1: color data by match ----
 p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
     geom_point(na.rm = TRUE) +
@@ -187,7 +190,7 @@ p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(matc
             subtitle = NOTES)
 print(p1)
 
-FN_ROOT <- paste(FILE, DATE, TIMEPOINT, PLOT, sep = "_")
+FN_ROOT <- paste(DATE, TIMEPOINT, PLOT, sep = "_")
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
 message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
@@ -219,6 +222,79 @@ fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
 message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
 
-#} # for
+# Merge data with metadata
+tree_data_filtered %>%
+    filter(!is.na(match)) %>%
+    left_join(md_filtered, by = "ID") %>%
+    # Filter for dead_band and obs_length
+    group_by(ID) %>%
+    filter(TIMESTAMP - min(TIMESTAMP) > dead_band) %>%
+    group_by(ID) %>%
+    filter(TIMESTAMP - min(TIMESTAMP) <= obs_length) %>%
+    ungroup() %>%
+    select(-dead_band, -obs_length, -start_timestamp,
+           -end_timestamp, -start_times, -match) ->
+    results[[i]]
+
+} # for
+
+
+# ---- Wrap up ----
+message("Done with processing")
+results <- bind_rows(results)
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_concentrations.csv")
+message("Writing ", basename(fn))
+write_csv(results, fn)
+
+# CO2 slopes
+results %>%
+    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
+    group_by(Year, Date, plot, timepoint, ID) %>%
+    mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
+    group_modify(~ broom::tidy(lm(CO2 ~ secs, data = .x))) %>%
+    filter(term == "secs") %>%
+    select(-term, -statistic,
+           slope_CO2 = estimate,
+           p.value_CO2 = p.value,
+           std.error_CO2 = std.error) ->
+    slopes_CO2
+
+results %>%
+    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
+    group_by(Year, Date, plot, timepoint, ID) %>%
+    mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
+    group_modify(~ broom::tidy(lm(CH4 ~ secs, data = .x))) %>%
+    filter(term == "secs") %>%
+    select(-term, -statistic,
+           slope_CH4 = estimate,
+           p.value_CH4 = p.value,
+           std.error_CH4 = std.error) ->
+    slopes_CH4
+
+slopes <- left_join(slopes_CO2, slopes_CH4, by = c("Year", "Date", "plot", "timepoint", "ID"))
+
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_slopes.csv")
+message("Writing ", basename(fn))
+write_csv(slopes, fn)
+
+for(yr in 2022:2024) {
+    ggplot(filter(slopes, Year == yr), aes(1, slope_CO2)) +
+        geom_jitter() +
+        facet_grid(timepoint ~ plot) +
+        coord_flip() +
+        ggtitle(paste(yr, "slope_CO2"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CO2_slopes_", yr, ".pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
+
+    ggplot(filter(slopes, Year == yr), aes(1, slope_CH4)) +
+        geom_jitter() +
+        facet_grid(timepoint ~ plot) +
+        coord_flip() +
+        ggtitle(paste(yr, "slope_CH4"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CH4_slopes_", yr, ".pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
+}
 
 stop("All done")
