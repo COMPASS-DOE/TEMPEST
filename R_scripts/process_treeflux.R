@@ -14,6 +14,11 @@ theme_set(theme_bw())
 library(lubridate)
 library(readr)
 library(broom)
+library(arrow)
+
+now <- function() format(Sys.time(), "%a %b %d %X %Y")
+
+message(now(), " Welcome to process_treeflux.R")
 
 INPUT_DIR_ROOT <- "Data/tree_flux_licor/"
 OUTPUT_DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
@@ -100,7 +105,7 @@ MD_TZ <- tfpi$Metadata_tz[i]
 INS_TZ <- tfpi$Instrument_tz[i]
 NOTES <- tfpi$Notes[i]
 
-message(paste("Processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
+message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
 # Filter to one Licor file and one day for testing
 tree_data_raw %>%
@@ -160,7 +165,11 @@ tree_data_filtered$match <-
         # entries in the metadata files
         obs_lengths = rep(100, nrow(md_filtered))
     )
+
+# Add ID information to the Licor data
 tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
+tree_data_filtered$num_ID <- paste0(tree_data_filtered$match, " (", tree_data_filtered$ID, ")")
+tree_data_filtered$num_ID[is.na(tree_data_filtered$match)] <- NA
 
 # ---- Duplication check ----
 message("\tChecking for multiple observations per timestamp")
@@ -183,7 +192,7 @@ if(any(duplicated(matched_data$TIMESTAMP))) {
 }
 
 # ---- Diagnostic plot 1: color data by match ----
-p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = factor(match))) +
+p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
     geom_point(na.rm = TRUE) +
     ylim(300, 1000) +
     ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
@@ -232,8 +241,9 @@ tree_data_filtered %>%
     group_by(ID) %>%
     filter(TIMESTAMP - min(TIMESTAMP) <= obs_length) %>%
     ungroup() %>%
-    select(-dead_band, -obs_length, -start_timestamp,
-           -end_timestamp, -start_times, -match) ->
+    select(-dead_band, -obs_length,
+           -start_timestamp, -end_timestamp, -start_times,
+           -match, -num_ID) ->
     results[[i]]
 
 } # for
@@ -241,10 +251,15 @@ tree_data_filtered %>%
 
 # ---- Wrap up ----
 message("Done with processing")
+
+message("Writing concentration data")
 results <- bind_rows(results)
-fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_concentrations.csv")
-message("Writing ", basename(fn))
-write_csv(results, fn)
+conc_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_concentrations.csv")
+message("\tWriting ", basename(conc_fn))
+write_csv(results, conc_fn)
+conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
+message("\tWriting ", basename(conc_fn_pqt))
+arrow::write_parquet(results, conc_fn_pqt)
 
 # CO2 slopes
 results %>%
@@ -280,10 +295,15 @@ slopes_CO2 %>%
            lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
     slopes
 
-fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_slopes.csv")
-message("Writing ", basename(fn))
-write_csv(slopes, fn)
+message("Writing slope data")
+slopes_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_slopes.csv")
+message("\tWriting ", basename(slopes_fn))
+write_csv(slopes, slopes_fn)
+slopes_fn_pqt <- gsub("csv", "parquet", slopes_fn)
+message("\tWriting ", basename(slopes_fn_pqt))
+arrow::write_parquet(results, slopes_fn_pqt)
 
+message("Writing summary plots")
 for(yr in 2022:2024) {
     ggplot(filter(slopes, Year == yr), aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
@@ -291,6 +311,7 @@ for(yr in 2022:2024) {
         geom_text(aes(label = lab_CO2), size = 2) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
+        theme(axis.text.y = element_blank(), axis.title = element_blank()) +
         ggtitle(paste(yr, "slope_CO2"))
     fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CO2_slopes_", yr, ".pdf"))
     message("\tSaving ", basename(fn), "...")
@@ -302,10 +323,11 @@ for(yr in 2022:2024) {
         geom_text(aes(label = lab_CH4), size = 2) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
+        theme(axis.text.y = element_blank(), axis.title = element_blank()) +
         ggtitle(paste(yr, "slope_CH4"))
     fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CH4_slopes_", yr, ".pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 }
 
-stop("All done")
+message(now(), " All done")
