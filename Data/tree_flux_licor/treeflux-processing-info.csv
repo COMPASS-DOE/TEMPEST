@@ -1,11 +1,11 @@
 File,Date,Timepoint,Plot,Metadata_tz,Instrument_tz,Notes
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-20,Pre-Treatment,Freshwater,EST,EST,NOT DONE -- DUPE PROBLEMS
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-20,Pre-Treatment,Freshwater,EST,EDT,Kind of a mess; duplicate data removed; adjusted metadata times +10 min (per scanned data sheet there was a large gap)
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-21,Pre-Treatment,Freshwater,EST,EDT,
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T0,Freshwater,EST,EST,Clock discrepancies; adjusted all +3 minutes from sheet
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T1,Freshwater,EST,EST,Clock discrepancies; adjusted all +3 minutes from sheet
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T2,Freshwater,EST,EST,Clock discrepancies; adjusted all +3 minutes from sheet
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T3,Freshwater,EST,EST,Clock discrepancies; adjusted all +3 minutes from sheet
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,EST,EST,Clock discrepancies; adjusted all +3 minutes from sheet
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T0,Freshwater,EST,EST,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T1,Freshwater,EST,EST,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T2,Freshwater,EST,EST,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T3,Freshwater,EST,EST,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,EST,EST,Adjusted metadata times +3 min
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,EST,
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,EST,
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,EST,C5 bad; C6 and C9 wonky

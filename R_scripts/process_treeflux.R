@@ -87,7 +87,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 #for(i in seq_len(nrow(tfpi))) {
-i <- 63
+i <- 1
 
 I_STR <- sprintf("%02s", i)
 FILE <- tfpi$File[i]
@@ -191,6 +191,14 @@ FN_ROOT <- paste(FILE, DATE, TIMEPOINT, PLOT, sep = "_")
 fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
 message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 6)
+
+# Detail plot
+tree_data_filtered %>% filter(!is.na(match)) -> matches
+print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
+fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match_detail.pdf"))
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 6)
+
 
 # ---- Diagnostic plot 2: individual tree data ----
 p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +

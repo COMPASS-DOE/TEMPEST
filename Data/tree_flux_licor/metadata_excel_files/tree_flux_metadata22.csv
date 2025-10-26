@@ -262,24 +262,24 @@ Control,C18,Post-Treatment,6/24/2022,8:17,8:23,0,100,EST,
 Control,C7,Post-Treatment,6/24/2022,8:39,8:45,10,90,EST,
 Control,C9,Post-Treatment,6/24/2022,8:47,8:53,20,80,EST,
 Control,C11,Post-Treatment,6/24/2022,8:10,8:16,30,70,EST,
-Freshwater,F1,Pre-Treatment,6/20/2022,11:46,11:56,0,100,EST,
-Freshwater,F5,Pre-Treatment,6/20/2022,11:13,11:23,0,100,EST,
-Freshwater,F6,Pre-Treatment,6/20/2022,12:33,12:43,0,100,EST,
-Freshwater,F15,Pre-Treatment,6/20/2022,14:37,14:47,0,100,EST,
-Freshwater,F16,Pre-Treatment,6/20/2022,11:28,12:38,0,100,EST,
-Freshwater,F18,Pre-Treatment,6/20/2022,10:39,10:49,0,100,EST,I did this chamber twice because it was not sealed properly. Skyp the first slope.
-Freshwater,F7,Pre-Treatment,6/20/2022,13:02,13:12,0,100,EST,
-Freshwater,F11,Pre-Treatment,6/20/2022,12:05,12:15,0,100,EST,
-Freshwater,F12,Pre-Treatment,6/20/2022,13:54,14:04,0,100,EST,
-Freshwater,F2,Pre-Treatment,6/20/2022,10:08,10:18,0,100,EST,liquid in the well
-Freshwater,F3,Pre-Treatment,6/20/2022,12:21,12:31,0,100,EST,liquid in the well
-Freshwater,F4,Pre-Treatment,6/20/2022,14:07,14:17,0,100,EST,
-Freshwater,F13,Pre-Treatment,6/20/2022,12:48,12:58,0,100,EST,
-Freshwater,F14,Pre-Treatment,6/20/2022,13:20,13:30,0,100,EST,
-Freshwater,F17,Pre-Treatment,6/20/2022,9:54,10:04,0,100,EST,
-Freshwater,F8,Pre-Treatment,6/20/2022,14:21,14:32,0,100,EST,
-Freshwater,F9,Pre-Treatment,6/20/2022,10:57,11:07,0,100,EST,
-Freshwater,F10,Pre-Treatment,6/20/2022,13:34,13:44,0,100,EST,
+Freshwater,F1,Pre-Treatment,6/20/2022,11:56,11:56,0,100,EST,Changed from 11:46
+Freshwater,F5,Pre-Treatment,6/20/2022,11:23,11:23,0,100,EST,Changed from 11:13
+Freshwater,F6,Pre-Treatment,6/20/2022,12:43,12:43,0,100,EST,Changed from 12:33
+Freshwater,F15,Pre-Treatment,6/20/2022,12:47,14:47,50,50,EST,Changed from 14:37
+Freshwater,F16,Pre-Treatment,6/20/2022,11:38,12:38,0,100,EST,Changed from 11:28
+Freshwater,F18,Pre-Treatment,6/20/2022,10:49,10:49,0,100,EST,I did this chamber twice because it was not sealed properly. Skyp the first slope; Changed from 10:39
+Freshwater,F7,Pre-Treatment,6/20/2022,13:12,13:12,0,100,EST,Changed from 13:02
+Freshwater,F11,Pre-Treatment,6/20/2022,12:15,12:15,50,50,EST,Changed from 12:05
+Freshwater,F12,Pre-Treatment,6/20/2022,14:04,14:04,0,100,EST,Changed from 13:54
+Freshwater,F2,Pre-Treatment,6/20/2022,10:18,10:18,0,100,EST,liquid in the well; Changed from 10:08
+Freshwater,F3,Pre-Treatment,6/20/2022,12:31,12:31,50,50,EST,liquid in the well; Changed from 12:21
+Freshwater,F4,Pre-Treatment,6/20/2022,14:17,14:17,0,100,EST,Changed from 14:07
+Freshwater,F13,Pre-Treatment,6/20/2022,12:58,12:58,0,100,EST,Changed from 12:48
+Freshwater,F14,Pre-Treatment,6/20/2022,13:30,13:30,0,100,EST,Changed from 13:20
+Freshwater,F17,Pre-Treatment,6/20/2022,10:04,10:04,0,100,EST,Changed from 9:54
+Freshwater,F8,Pre-Treatment,6/20/2022,14:31,14:32,0,100,EST,Changed from 14:21
+Freshwater,F9,Pre-Treatment,6/20/2022,11:07,11:07,0,100,EST,Changed from 10:57
+Freshwater,F10,Pre-Treatment,6/20/2022,13:44,13:44,0,100,EST,Changed from 13:34
 Freshwater,F1,Pre-Treatment,6/21/2022,9:54,10:09,0,100,EST,
 Freshwater,F5,Pre-Treatment,6/21/2022,10:22,10:32,0,100,EST,
 Freshwater,F6,Pre-Treatment,6/21/2022,11:56,11:06,0,100,EST,
