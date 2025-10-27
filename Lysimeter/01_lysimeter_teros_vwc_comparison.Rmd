@@ -1,0 +1,185 @@
+---
+title: "TEROS VWC at Lysimeter Locations"
+author: "AMP & SP"
+date: "`r Sys.Date()`"
+output: html_document
+---
+This script is to download from dropbox L0 TEROS data at the lysimeter locations and plot for the previous two weeks from date we're interested in sampling. It will also plot the VWC vs rain for a period of time. 
+
+Note, the dropbox refreshes each month. You will also need the TEMPEST github page mapped to your local drive.
+https://github.com/COMPASS-DOE/TEMPEST
+
+To run this script you will need:
+1) access to the correct dropbox folders ('TEMPEST_PNNL_Data/Current_Data' and 'GCREW_LOGGERNET_DATA/current_data')
+2) access to the google drive
+
+You will be prompted in the script to grant permissions for the R packages to be able to access these datasets. 
+
+```{r setup, include=FALSE}
+
+if(!require("compasstools")) {
+    stop("Need to remotes::install_github('COMPASS-DOE/compasstools')")
+}
+
+if(!require("rdrop2")) {
+    stop("Need to devtools::install_github('karthik/rdrop2')")
+}
+
+library(tidyverse)
+library(googledrive)
+library(compasstools)
+library(rdrop2)
+
+knitr::opts_chunk$set(echo = F, 
+                      message = F,
+                      warning = F)
+
+common_tz = "Etc/GMT+5"
+
+source("dropbox copy.R")
+```
+
+Change this chunk to eval = TRUE if you need a dropbox token. Note, tokens expire in several hours. 
+
+```{r dropbox token, eval=FALSE, include=FALSE}
+
+token <- drop_auth(new_user = T)
+saveRDS(token, file = "token.rds")
+
+```
+
+Run this chunk if you already have your token:
+```{r load dropbox token, include=FALSE, eval=TRUE}
+
+read_rds("token.rds") -> token
+```
+
+# 1. Set timeframe of interest
+
+Change these for your start and end dates. The start date should be the start of the period you want to look at and the end date should be the end of that period. 
+
+```{r date ranges}
+
+START_DATE = lubridate::as_date("2025-05-01")
+END_DATE = lubridate::as_date("2025-05-12")
+
+```
+
+# 2. Bring in the TEROS inventory sheet 
+
+Run this chunk only if you need to bring in the inventory fresh from google drive. 
+```{r load teros inventory, eval=FALSE, include=FALSE}
+inventory_directory <- "https://docs.google.com/spreadsheets/d/10u29M5Dbkw54Z2DwkVBptVz6Td0SvSld/edit?gid=90806693#gid=90806693"
+
+ directory= file.path(here::here() %>% dirname(), '/Lysimeter')
+ file_path = file.path(directory,"TEROSinventory.xlsx")
+
+ drive_download(inventory_directory, path= file_path, overwrite = TRUE)
+```
+
+Filter to needed columns: plot, grid square, id, depth, Data Logger ID,and Terosdata table channel
+```{r teros inventory}
+
+teros_inv <- readxl::read_excel("TEROSinventory.xlsx", sheet="Sheet1") %>%
+    select(Plot, 'Grid Square', 'Data Logger ID', ID, Depth, 'Terosdata table channel') %>% 
+    rename(Logger = 'Data Logger ID',
+           Data_Table_ID = 'Terosdata table channel',
+           Grid = 'Grid Square') %>%
+  drop_na()
+```
+# 3. Bring in dropbox data, merge with inventory sheet
+```{r dropbox}
+
+datadir_teros <- "TEMPEST_PNNL_Data/Current_Data"
+
+teros_primitive <- compasstools::process_teros_dir(datadir_teros, tz = "EST", dropbox_token = token)
+
+teros_primitive %>%
+  left_join(teros_inv,
+            by = c("Logger", "Data_Table_ID")) %>%
+  mutate(Depth = as.factor(Depth)) %>%
+  filter(!is.na(ID), Depth == 15, variable == "VWC") %>% 
+  select(-c("Logger", "Data_Table_ID")) ->
+  teros
+
+```
+
+# 4. Bring in porewater inventory 
+
+```{r porewater inventory}
+
+pwsite_key <- readxl::read_excel("porewater_sites_complete_key.xlsx") 
+
+```
+
+# 5. Filter the VWC for those plots/grids that have lysimeter data
+
+```{r filter}
+
+teros %>% 
+  right_join(pwsite_key, by = c("Plot", "Grid")) -> df
+
+```
+
+# 6. Bring in GCREW loggernet rain data
+
+```{r gcrew rain}
+datadir_met <- "GCREW_LOGGERNET_DATA/current_data"
+
+rain <- process_dir(datadir = datadir_met, pattern = "GCREW_MET_GCREW_MET_15min", read_datalogger_file, dropbox_token = token) %>% 
+  mutate(Timestamp = as_datetime(TIMESTAMP)) %>% 
+  select(Timestamp, Rain_in_Tot)
+
+rain %>% 
+  ggplot(aes(x = Timestamp, y = Rain_in_Tot)) +
+  geom_point()
+
+df %>% left_join(rain, by = "Timestamp") -> full_df
+
+```
+
+# 7. Plot VWC through time
+for study period and by plot/grid facet wrap
+Note, add thresholds for VWC where we are getting water later - may be able to base this off the DOC Fluxes datasets AMP is using for the Porewater DOC paper. 
+
+```{r plot-control}
+library(paletteer)
+
+full_df %>% 
+  filter(Plot == "Control", !is.na(value)) %>% #remove the NA filter once dropbox is synced
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
+  geom_line() +
+  facet_wrap(~Grid, scales = "free") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  labs(title = paste("Control Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
+  theme_minimal()
+
+```
+
+```{r plot-saltwater}
+library(paletteer)
+
+full_df %>% 
+  filter(Plot == "Seawater") %>% 
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
+  geom_line() +
+  facet_wrap(~Grid, scales = "free") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  labs(title = paste("Seawater Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
+  theme_minimal()
+
+```
+
+```{r plot-freshwater}
+library(paletteer)
+
+full_df %>% 
+  filter(Plot == "Freshwater") %>% 
+  ggplot(aes(x = Timestamp, y = value, group = ID, color = Plot)) +
+  geom_line() +
+  facet_wrap(~Grid, scales = "free") +
+  scale_colour_paletteer_d("ggthemes::Tableau_10") +
+  labs(title = paste("Freshwater Plot VWC", min(df$Timestamp, na.rm = TRUE), "-", max(df$Timestamp, na.rm = TRUE))) +
+  theme_minimal()
+
+```

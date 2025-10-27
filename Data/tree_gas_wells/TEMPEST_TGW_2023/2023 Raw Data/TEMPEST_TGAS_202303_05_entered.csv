@@ -1,0 +1,85 @@
+﻿Machine,User,Run_Date,Sample_Type,Sample1,Sample_Year,Sample_Month,Sample_Day,Sample_Time,Time_Zone,G_W,Sample_Plot,Tree_ID,Sample_Grid,Sample_ID,Sample_Vol_mL,Dilution_Factor,STD_Conc,CO2_Area,CH4_Area,Field_Notes,Lab_Notes
+Varian GC,Wegner,20240311,Blank,Blank,NA,NA,NA,NA,NA,NA,NA,NA,NA,Blank_0,,1,0,8170,0,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,Blank_0_repeatforCH4,,1,0,8170,0,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,Blank_0_repeatforCO2,,1,0,8170,0,,
+Varian GC,Wegner,20240311,STD_CH4,CHKSTD,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_1ppm_CH4,,1,1,25120,642,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_2.5ppm_CH4,,1,2.5,69200,1664,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_5ppm_CH4,,1,5,141017,3228,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_10ppm_CH4,,1,10,262297,5985,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_25ppm_CH4,,1,25,706190,16394,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_50ppm_CH4,,1,50,1468169,33264,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_100ppm_CH4,,1,100,3351,66582,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_250ppm_CH4,,1,250,2534,166056,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_500ppm_CH4,,1,500,1582,323805,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_2500ppm_CH4,,1,2500,1650,1659233,,
+Varian GC,Wegner,20240311,STD_CH4,STD_CH4,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_5000ppm_CH4,,1,5000,4436,3395873,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_125ppm_CO2,,1,125,22733,909,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_500ppm_CO2,,1,500,79530,389,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_2500ppm_CO2,,1,2500,391165,226,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_5000ppm_CO2,,1,5000,768428,202,,
+Varian GC,Wegner,20240311,STD_CO2,STD_CO2,NA,NA,NA,NA,NA,NA,NA,NA,NA,STD_50000ppm_CO2,,1,50000,7608762,389,,
+Varian GC,Wegner,20240311,Blank,Blank,NA,NA,NA,NA,NA,NA,NA,NA,NA,Blank_1,,1,0,11886,0,,
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1213,EDT,G,Control,C1,F5,1,2,12,NA,397501,2435702,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1215,EDT,G,Control,C2,F5,2,2,12,NA,559716,896915,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1217,EDT,G,Control,C7_H,B3,4,2,12,NA,771254,85959,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1211,EDT,G,Control,C11_L,F2,5,2,12,NA,797584,46026,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1222,EDT,G,Control,C13,B8,7,2,12,NA,417471,4569611,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1223,EDT,G,Control,C14,B7,8,2,12,NA,401352,767666,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1219,EDT,G,Control,C15,A4,9,2,12,NA,336098,288738,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1221,EDT,G,Control,ATM,F4,10,2,12,NA,46853,24478,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1252,EDT,G,Freshwater,F1,H5,11,2,12,NA,679983,504058,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1249,EDT,G,Freshwater,F3,D5,13,2,12,NA,583984,624172,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1245,EDT,G,Freshwater,S7_H,B5,14,2,12,NA,443797,732363,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1244,EDT,G,Freshwater,S8_H,B4,15,2,12,NA,440309,2288329,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1251,EDT,G,Freshwater,S9_L,G3,16,2,12,NA,488782,11933,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1246,EDT,G,Freshwater,F13,D6,17,2,12,NA,444435,322720,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1248,EDT,G,Freshwater,F14,D7,18,2,12,NA,523884,5633498,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1242,EDT,G,Freshwater,F15,A6,19,2,12,NA,635709,1709042,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1250,EDT,G,Freshwater,ATM,F4,20,2,12,NA,58678,48898,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,CHKSTD,CHKSTD,NA,NA,,,,,,,,CHKSTD_5ppm_CH4_1,,1,5,137942,3383,,
+Varian GC,Wegner,20240311,Blank,Blank,NA,NA,,,,,,,,Blank_2,,1,0,4511,289,,
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1235,EDT,G,Seawater,S1,F7,21,2,12,NA,728880,1185572,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1239,EDT,G,Seawater,S2,C5,22,2,12,NA,1111196,233734,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1238,EDT,G,Seawater,S3,E5,23,2,12,NA,712248,2160015,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1237,EDT,G,Seawater,S7_H,D7,24,2,12,NA,379689,19418324,,checked; 10mL N2 added in lab
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1240,EDT,G,Seawater,S8_H,C6,25,2,12,NA,944458,142298,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1231,EDT,G,Seawater,S9_L,F2,26,2,12,NA,532533,449670,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1228,EDT,G,Seawater,S13,A2,27,2,12,NA,403016,3178279,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1233,EDT,G,Seawater,S14,I2,28,2,12,NA,821461,185332,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1229,EDT,G,Seawater,S15,E4,29,2,12,NA,440802,371853,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,March,2,1234,EDT,G,Seawater,ATM,F4,30,2,12,NA,72946,13746,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1229,EDT,G,Control,C1,F5,31,2,12,NA,708163,4693170,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1229,EDT,G,Control,C2,F5,32,2,12,NA,811632,1689375,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1227,EDT,G,Control,C7_H,B3,34,2,12,NA,1094525,5685,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1232,EDT,G,Control,C11_L,F2,35,2,12,NA,1191186,36585,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1222,EDT,G,Control,C13,B8,37,2,12,NA,836908,6996565,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1223,EDT,G,Control,C14,B7,38,2,12,NA,843872,938628,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1225,EDT,G,Control,C15,A4,39,2,12,NA,411676,271848,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1230,EDT,G,Control,ATM,F4,40,2,12,NA,49081,54049,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,CHKSTD,CHKSTD,NA,NA,,,,,,,,CHKSTD_5ppm_CH4_2,,1,5,147077,3508,,
+Varian GC,Wegner,20240311,Blank,Blank,NA,NA,,,,,,,,Blank_3,,1,0,5152,249,,
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1202,EDT,G,Seawater,S1,F7,41,2,12,NA,641651,757946,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1207,EDT,W,Seawater,S2,C5,42,2,12,NA,715121,270852,2:2 water:ATM,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1211,EDT,G,Seawater,S3,E5,43,2,12,NA,1617958,8152,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1201,EDT,G,Seawater,S7_H,D7,44,2,12,NA,264443,9397777,,checked; 10mL N2 added in lab
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1210,EDT,G,Seawater,S8_H,C6,45,2,12,NA,186828,6275,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1215,EDT,G,Seawater,S9_L,F2,46,2,12,NA,958148,583060,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1212,EDT,G,Seawater,S13,A2,47,2,12,NA,918489,5007361,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1216,EDT,G,Seawater,S14,I2,48,2,12,NA,1614846,46398,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1214,EDT,G,Seawater,S15,E4,49,2,12,NA,902143,391336,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1215,EDT,G,Seawater,ATM,F4,50,2,12,NA,18900,740,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1144,EDT,G,Freshwater,F1,H5,51,1,12,NA,435480,72837,1mL,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1156,EDT,G,Freshwater,F7_H,B5,54,2,12,NA,504334,38197,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1158,EDT,G,Freshwater,F8_H,B4,55,2,12,NA,1149589,415308,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1145,EDT,G,Freshwater,F9_L,G3,56,2,12,NA,946112,5001,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1155,EDT,G,Freshwater,F13,D6,57,2,12,NA,844372,245736,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1153,EDT,G,Freshwater,F14,D7,58,2,12,NA,891904,4961243,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1157,EDT,G,Freshwater,F15,A6,59,2,12,NA,424966,379426,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,May,16,1154,EDT,G,Freshwater,ATM,F4,60,2,12,NA,48019,159711,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,Nov,,,,,,,,MSM_TR_TGAS_ 2,,2.83,,178484,868,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,Nov,,,,,,,,MSM_TR_TGAS_ 3,,2.83,,374692,772,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,Nov,,,,,,,,MSM_TR_TGAS_ 4,,2.83,,112466,872,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,Nov,,,,,,,,MSM_TR_TGAS_ 5,,2.83,,114307,822,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,Unknown,TGAS,2023,Nov,,,,,,,,MSM_TR_TGAS_ 6,,2.83,,344017,815,,10mL N2 added in lab 
+Varian GC,Wegner,20240311,CHKSTD,CHKSTD,NA,NA,,,,,,,,CHKSTD_5ppm_CH4_3,,1,5,152391,3395,,
+Varian GC,Wegner,20240311,Blank,Blank,NA,NA,,,,,,,,Blank_4,,1,0,4748,0,,

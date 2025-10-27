@@ -1,0 +1,40 @@
+﻿Machine,User,Run_Date,Sample_Year,Sample_Month,Sample_Day,Event_Stamp,Sample_Time,Time_Zone,G_W,Sample_ID,Sample_Type,Conc_CO2,Conc_CH4,Conc_N2O,CO2_Area,CH4_Area,Dilution_Factor,Minutes
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,LabAir,Lab air,unknown,unknown,unknown,51622,1840,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank1,Blank,unknown,unknown,unknown,3532,179,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank2,Blank,unknown,unknown,unknown,3213,158,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,0ppm,Standard,0,0.00,NA,3171.00,117.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,2.5ppm,Standard,0.05,2.50,NA,33055.00,3091.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,5ppm,Standard,0.1,5.00,NA,63027.00,6168.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,10ppm,Standard,0.2,10.00,NA,122706.00,12350.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,25ppm,Standard,0.5,25.00,NA,902200.00,32138.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,50ppm,Standard,1,50.00,NA,1657600.00,63348.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,125ppm,Standard,0.68,125.00,NA,1171328.00,168108.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,250ppm,Standard,1,250.00,NA,2039855.00,318960.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,500ppm,Standard,2.5,500.00,NA,3693606.00,636719.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,1250ppm,Standard,NA,1250.00,NA,9284.00,1687828.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,2500ppm,Standard,NA,2500.00,NA,2787.00,3178620.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,5000ppm,Standard,NA,5000.00,NA,4041.00,6339935.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,10000ppm,Standard,NA,10000.00,NA,4268.00,12591823.00,NA,NA
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Standard,945,EST,G,Standard_B,Sample,unknown,unknown,unknown,1079138,114349,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Standard,945,EST,G,Standard_A,Sample,unknown,unknown,unknown,1060517,113715,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,945,EST,W,PreWater_B,Sample,unknown,unknown,unknown,46732,3440,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,945,EST,W,PreWater_A,Sample,unknown,unknown,unknown,45663,3212,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Lab Air,945,EST,G,LabAir_Pre,Sample,unknown,unknown,unknown,35251,3114,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1000,EST,G,Well_T0,Sample,unknown,unknown,unknown,945916,106337,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1000,EST,W,Water_T0,Sample,unknown,unknown,unknown,51770,4019,1,0
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1005,EST,G,Well_T1,Sample,unknown,unknown,unknown,809076,94927,1,5
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1005,EST,W,Water_T1,Sample,unknown,unknown,unknown,41937,3451,1,5
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1015,EST,G,Well_T2,Sample,unknown,unknown,unknown,780181,95530,1,15
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,CheckStd5%HighTri1,ChkStd,unknown,unknown,unknown,1372975,655047,1,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank3,Blank,unknown,unknown,unknown,2432,592,1,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank4,Blank,unknown,unknown,unknown,1521,176,1,NA
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1015,EST,W,Water_T2,Sample,unknown,unknown,unknown,35761,2878,1,15
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1030,EST,G,Well_T3,Sample,unknown,unknown,unknown,748864,95664,1,30
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1030,EST,W,Water_T3,Sample,unknown,unknown,unknown,35736,3004,1,30
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1100,EST,G,Well_T4,Sample,unknown,unknown,unknown,715446,96257,1,60
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1100,EST,W,Water_T4,Sample,unknown,unknown,unknown,33659,2938,1,60
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Well Sample,1415,EST,G,Well_T5,Sample,unknown,unknown,unknown,26665,2798,1,175
+Shimadzu GC,B. Blakley,20251006,2025,October,2,Water,1415,EST,W,Water_T5,Sample,unknown,unknown,unknown,33851,2799,1,175
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,CheckStd5%HighTri2,ChkStd,unknown,unknown,unknown,1317018,652417,1,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank5,Blank,unknown,unknown,unknown,3186,679,1,NA
+Shimadzu GC,B. Blakley,20251006,NA,NA,NA,NA,NA,NA,NA,Blank6,Blank,unknown,unknown,unknown,1054,164,1,NA

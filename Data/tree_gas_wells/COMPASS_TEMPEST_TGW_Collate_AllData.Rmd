@@ -1,0 +1,125 @@
+---
+title: "COMPASS_TEMPEST_TGW_Collate_AllData"
+author: "Stephanie J. Wilson"
+date: "2025-09-02"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+```
+
+## Read in all processed file and clean up / add info
+```{r}
+#read in all data: 
+dat22 <- read.csv("TEMPEST_TGW_2022/COMPASS_TEMPEST_TGW_2022_AllData.csv")
+dat23 <- read.csv("TEMPEST_TGW_2023/COMPASS_TEMPEST_TGW_2023_AllData.csv")
+dat24 <- read.csv("TEMPEST_TGW_2024/COMPASS_TEMPEST_TGW_2024_AllData.csv")
+
+#combine all the data together into one file 
+alldat <- rbind(dat22, dat23)
+alldat <- rbind(alldat, dat24)
+
+```
+
+
+## Clean up any columns that need it
+```{r}
+#read in all data: 
+head(alldat)
+
+alldat <- alldat %>%
+  mutate(Plot = str_replace(Plot, "Seawater", "Saltwater"))
+
+```
+
+
+## Make a metadata file that explains these data - THIS NEEDS UPDATED
+```{r}
+
+#create a dataframe as the metadata from the columns of alldat 
+metadat <- data.frame(Column_Names = colnames(all_dat))
+
+metadat$Description <- ""
+metadat$Units <- ""
+metadat$Instrument_ifapplicable <- ""
+
+#add information about each line: 
+
+metadat$Description <- c("Project name: Project component", 
+                         "Region samples originated from: CB = Chesapeake Bay",
+                         "Year (YYYY) of sample collection", 
+                         "Month of sample collection",
+                         "Name of sampling transect location (GCW, SWH, MSM, GWI), 
+                         see dataset locations for coordinates", 
+                         "Zone within space-for-time transect (UP=upland, TR=transition)",
+                         "Sap flow (SF) replicate tree id (1-8, 11, 19). The ID for the sap flow 
+                         sensor associated with the tree (only live trees)", 
+                         "USDA Species code for tree sampled", 
+                         "Diameter at breast height (DBH) for tree sampled in same year",
+                         "Tree status indicates if the tree was Living or Dead Standing", 
+                         "Tree Info indicates if the tree had sap flow monitoring during sampling, 
+                         dead trees were not monitored for sap flow",
+                         "Sample identifier used in laboratory and field", 
+                         "Methane concentration of sample from tree gas well", 
+                         "Methane concentration flag: NA (data within instrument and std curve range) or
+                         Out of Std Curve Range.", 
+                         "Carbon Dioxide concentration of sample from tree gas well", 
+                         "Carbon Dioxide concentration flag: NA (data within instrument and std curve 
+                         range) or Out of Std Curve Range." )
+
+metadat$Units <-      c("NA", 
+                         "NA",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "NA", 
+                         "cm",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "ppm", 
+                         "NA", 
+                         "ppm", 
+                         "NA" )
+
+metadat$Instrument_ifapplicable <-  c("NA", 
+                         "NA",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "NA", 
+                         "DBH tape",
+                         "NA", 
+                         "NA",
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies)", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies)", 
+                         "NA" )
+
+#write.csv(metadat, "COMPASS_TEMPEST_TGW_Metadata.csv")
+
+```
+
+
+## Write out collated file 
+```{r}
+#read in all data: 
+head(alldat)
+
+write.csv(alldat, "COMPASS_TEMPEST_TGW_AllData.csv")
+
+```

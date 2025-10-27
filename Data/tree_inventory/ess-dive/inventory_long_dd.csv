@@ -1,0 +1,13 @@
+Column_or_Row_Name,Unit,missing_value_code,Definition,Data_Type,Term_Type
+Plot,N/A,,Plot code,character,column_header
+Section,N/A,,Section of plot,character,column_header
+Tree_ID,N/A,,Tree tag number,integer,column_header
+Grid,N/A,,Grid square location within plot of tree,character,column_header
+Species_code,N/A,,Species code (genus + species; https://plants.usda.gov/),character,column_header
+Sapflux_ID,N/A,,"Sapflux tree code, if this is a sapflux tree",character,column_header
+Year,N/A,,Year of inventory,integer,column_header
+Date,N/A,,Date of inventory (YYYY-MM-DD),date,column_header
+DBH,cm,"""""",Diameter at breast height (DBH) of tree,numeric,column_header
+Status,N/A,,"ForestGEO status code (LI = living; DS = dead, stem standing; DC = dead, stem fallen)",character,column_header
+In_Plot,N/A,,Tree is inside the plot?,logical,column_header
+Notes,N/A,,Notes,character,column_header

@@ -1,0 +1,88 @@
+---
+title: "COMPASS_TEMPEST_TGW_2024_CollateData"
+author: "Stephanie J. Wilson"
+date: "2025-08-29"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+#library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+```
+
+## Read in all processed file and clean up / add info
+```{r}
+#read in all data: 
+dat <- read.csv("2024 Processed Data/TEMPEST_TGW_2024_AllData.csv")
+head(dat)
+
+#
+dat <- dat[ ,-1]
+
+dat1 <- dat %>%
+  mutate(Project = "COMPASS: TEMPEST") %>%
+  dplyr::rename( Year = Sample_Year,
+          Month = Sample_Month,
+          Day = Sample_Day,
+          Time = Sample_Time,
+          Sample_Matrix = G_W,
+          Plot = Plot, 
+          CH4_ppm = CH4_Conc_ppm_dilcorr, 
+          CO2_ppm = CO2_Conc_ppm_dilcorr)  %>%
+  mutate(CH4_Flag = case_when(
+    CH4_Flag == "Needs Dilution" ~ "Over Std Curve Range",
+    TRUE ~ "Within Std Curve Range"  
+  )) %>%
+  mutate(CO2_Flag = case_when(
+    CO2_Flag == "Needs Dilution" ~ "Over Std Curve Range",
+    TRUE ~ "Within Std Curve Range"  
+  ))
+  
+
+
+final <- dat1 %>%
+  select( "Project", "Year","Month" , "Day", "Time","Time_Zone", "Event_Stamp", "Plot", "Sapflux_Tree_ID", 
+          "Sample_Grid", "Sample_ID", "Field_Notes", "Sample_Matrix", 
+          "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag")
+
+
+```
+
+
+## Write out collated file 
+```{r}
+#read in all data: 
+head(final)
+
+write.csv(final, "COMPASS_TEMPEST_TGW_2024_AllData.csv")
+
+```
+
+## Pull out data for Synoptic TGAS Dataset  
+```{r}
+
+#need to pull out data from Maples (ACRU) in the control plot for this
+
+head(final)
+
+final$Event_Stamp <- as.numeric(final$Event_Stamp)
+
+syn_trees <- c("C7_H", "C9", "C10", "C11_H", "C12", "C19_H")
+
+syn_dat <- final %>%
+ filter(is.na(Event_Stamp)) %>%
+ #filter(Event_Stamp %in% "NA") %>%
+ filter(Sapflux_Tree_ID %in% syn_trees)
+
+write.csv(syn_dat, "2024 Processed Data/COMPASS_SynopticCB_GCW_UP_TGAS_2024.csv")
+
+
+```
+
