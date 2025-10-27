@@ -1,0 +1,408 @@
+﻿plot,ID,timepoint,collection_date,start_time,end_time,dead_band,obs_length,timezone,notes
+Seawater,S1,Pre-Treatment,6/20/2022,14:23,14:33,20,80,EST,
+Seawater,S2,Pre-Treatment,6/20/2022,14:43,14:52,0,100,EST,
+Seawater,S3,Pre-Treatment,6/20/2022,13:18,13:26,10,90,EST,
+Seawater,S13,Pre-Treatment,6/20/2022,15:42,15:52,0,100,EST,
+Seawater,S14,Pre-Treatment,6/20/2022,13:51,14:01,0,100,EST,
+Seawater,S16,Pre-Treatment,6/20/2022,13:29,13:39,0,100,EST,
+Seawater,S7,Pre-Treatment,6/20/2022,12:34,12:47,0,100,EST,"Instrument was still on Pacific time zone, time logged on datasheet is EST; BBL 2025: seems like instrument tz change changed this one too, so changing to 12:34-12:47"
+Seawater,S9,Pre-Treatment,6/20/2022,15:35,15:44,0,100,EST,
+Seawater,S10,Pre-Treatment,6/20/2022,12:54,13:04,10,90,EST,
+Seawater,S4,Pre-Treatment,6/20/2022,13:07,13:16,0,100,EST,
+Seawater,S5,Pre-Treatment,6/20/2022,15:28,15:38,0,100,EST,
+Seawater,S6,Pre-Treatment,6/20/2022,14:11,14:21,0,100,EST,
+Seawater,S15,Pre-Treatment,6/20/2022,15:55,16:05,0,70,EST,
+Seawater,S17,Pre-Treatment,6/20/2022,15:46,15:55,0,100,EST,
+Seawater,S18,Pre-Treatment,6/20/2022,15:00,15:10,0,100,EST,
+Seawater,S8,Pre-Treatment,6/20/2022,14:57,15:06,0,100,EST,
+Seawater,S11,Pre-Treatment,6/20/2022,15:14,15:24,0,100,EST,
+Seawater,S12,Pre-Treatment,6/20/2022,15:09,15:22,20,80,EST,
+Seawater,S1,Pre-Treatment,6/21/2022,13:12,13:23,20,80,EST,
+Seawater,S2,Pre-Treatment,6/21/2022,10:41,10:51,0,100,EST,
+Seawater,S3,Pre-Treatment,6/21/2022,11:18,11:28,0,100,EST,
+Seawater,S13,Pre-Treatment,6/21/2022,9:50,10:00,0,100,EST,
+Seawater,S14,Pre-Treatment,6/21/2022,10:12,10:21,25,75,EST,
+Seawater,S16,Pre-Treatment,6/21/2022,9:36,9:47,0,100,EST,
+Seawater,S7,Pre-Treatment,6/21/2022,12:48,12:58,0,100,EST,
+Seawater,S9,Pre-Treatment,6/21/2022,10:02,10:10,10,90,EST,
+Seawater,S10,Pre-Treatment,6/21/2022,12:00,12:10,0,100,EST,
+Seawater,S4,Pre-Treatment,6/21/2022,11:46,11:56,25,75,EST,
+Seawater,S5,Pre-Treatment,6/21/2022,12:22,12:31,25,75,EST,
+Seawater,S6,Pre-Treatment,6/21/2022,12:12,12:20,0,100,EST,
+Seawater,S15,Pre-Treatment,6/21/2022,10:23,10:35,0,100,EST,
+Seawater,S17,Pre-Treatment,6/21/2022,9:19,9:30,25,75,EST,
+Seawater,S18,Pre-Treatment,6/21/2022,11:30,11:44,0,100,EST,
+Seawater,S8,Pre-Treatment,6/21/2022,10:53,11:12,0,100,EST,
+Seawater,S11,Pre-Treatment,6/21/2022,13:02,13:10,0,100,EST,
+Seawater,S12,Pre-Treatment,6/21/2022,12:33,12:44,0,100,EST,
+Seawater,S1,T0,6/22/2022,8:44,8:54,0,100,EST,
+Seawater,S2,T0,6/22/2022,8:23,8:30,10,90,EST,
+Seawater,S3,T0,6/22/2022,8:00,8:09,0,100,EST,Pipe had water; Licor fell down at beginning of measurement
+Seawater,S13,T0,6/22/2022,6:19,6:24,0,100,EST,
+Seawater,S14,T0,6/22/2022,6:36,6:43,0,100,EST,
+Seawater,S16,T0,6/22/2022,6:12,6:16,0,100,EST,
+Seawater,S7,T0,6/22/2022,8:34,8:41,0,100,EST,
+Seawater,S9,T0,6/22/2022,6:27,6:33,0,100,EST,
+Seawater,S10,T0,6/22/2022,7:28,7:35,0,100,EST,
+Seawater,S4,T0,6/22/2022,7:51,7:57,0,100,EST,
+Seawater,S5,T0,6/22/2022,7:08,7:15,0,100,EST,
+Seawater,S6,T0,6/22/2022,7:18,7:25,0,100,EST,
+Seawater,S15,T0,6/22/2022,6:46,6:53,0,100,EST,
+Seawater,S17,T0,6/22/2022,6:03,6:10,30,70,EST,
+Seawater,S18,T0,6/22/2022,7:41,7:48,0,100,EST,
+Seawater,S8,T0,6/22/2022,8:13,8:21,0,100,EST,
+Seawater,S11,T0,6/22/2022,8:56,9:15,0,100,EST,
+Seawater,S12,T0,6/22/2022,7:56,7:03,0,70,EST,
+Seawater,S1,T1,6/22/2022,12:28,12:35,0,100,EST,
+Seawater,S2,T1,6/22/2022,9:55,10:04,20,80,EST,
+Seawater,S3,T1,6/22/2022,11:27,11:36,0,100,EST,Pipe had water
+Seawater,S13,T1,6/22/2022,9:42,9:51,0,100,EST,
+Seawater,S14,T1,6/22/2022,10:35,10:44,0,100,EST,
+Seawater,S16,T1,6/22/2022,9:30,9:38,0,100,EST,
+Seawater,S7,T1,6/22/2022,12:18,12:24,0,100,EST,
+Seawater,S9,T1,6/22/2022,10:19,10:29,0,100,EST,
+Seawater,S10,T1,6/22/2022,11:53,12:02,0,100,EST,
+Seawater,S4,T1,6/22/2022,10:08,10:16,0,100,EST,
+Seawater,S5,T1,6/22/2022,11:08,11:15,0,100,EST,
+Seawater,S6,T1,6/22/2022,11:40,11:50,0,100,EST,
+Seawater,S15,T1,6/22/2022,10:48,10:57,0,100,EST,
+Seawater,S17,T1,6/22/2022,9:19,9:27,0,100,EST,
+Seawater,S18,T1,6/22/2022,11:18,11:25,0,100,EST,
+Seawater,S8,T1,6/22/2022,12:06,12:14,0,100,EST,
+Seawater,S11,T1,6/22/2022,12:37,12:43,0,100,EST,
+Seawater,S12,T1,6/22/2022,10:59,11:06,0,100,EST,
+Seawater,S1,T2,6/22/2022,15:57,16:05,0,100,EST,
+Seawater,S2,T2,6/22/2022,14:16,14:24,40,60,EST,
+Seawater,S3,T2,6/22/2022,14:37,14:45,0,100,EST,
+Seawater,S13,T2,6/22/2022,13:58,14:04,0,100,EST,Major ponding around tree
+Seawater,S14,T2,6/22/2022,13:35,13:43,0,100,EST,
+Seawater,S16,T2,6/22/2022,13:47,13:54,0,100,EST,
+Seawater,S7,T2,6/22/2022,16:09,16:14,0,100,EST,
+Seawater,S9,T2,6/22/2022,13:26,13:32,0,100,EST,
+Seawater,S10,T2,6/22/2022,15:27,15:33,0,100,EST,
+Seawater,S4,T2,6/22/2022,14:57,15:06,0,100,EST,
+Seawater,S5,T2,6/22/2022,15:08,15:15,0,100,EST,
+Seawater,S6,T2,6/22/2022,15:35,15:42,0,100,EST,
+Seawater,S15,T2,6/22/2022,14:07,14:14,0,100,EST,
+Seawater,S17,T2,6/22/2022,13:17,13:23,0,100,EST,
+Seawater,S18,T2,6/22/2022,14:47,14:55,0,100,EST,
+Seawater,S8,T2,6/22/2022,14:26,14:33,0,100,EST,
+Seawater,S11,T2,6/22/2022,15:45,15:52,0,100,EST,
+Seawater,S12,T2,6/22/2022,15:17,15:25,0,100,EST,"BBL: changed, as typo in the data sheet"
+Seawater,S1,T3,6/22/2022,18:22,18:30,0,100,EST,
+Seawater,S2,T3,6/22/2022,17:03,17:09,0,100,EST,
+Seawater,S3,T3,6/22/2022,17:38,17:49,10,90,EST,
+Seawater,S13,T3,6/22/2022,16:52,16:58,0,100,EST,
+Seawater,S14,T3,6/22/2022,16:26,16:32,0,100,EST,
+Seawater,S16,T3,6/22/2022,18:59,19:03,0,100,EST,
+Seawater,S7,T3,6/22/2022,18:51,18:55,0,100,EST,
+Seawater,S9,T3,6/22/2022,16:35,16:39,0,100,EST,
+Seawater,S10,T3,6/22/2022,18:02,18:10,0,100,EST,
+Seawater,S4,T3,6/22/2022,17:31,17:36,0,100,EST,
+Seawater,S5,T3,6/22/2022,18:33,18:40,0,100,EST,
+Seawater,S6,T3,6/22/2022,17:54,18:00,0,100,EST,
+Seawater,S15,T3,6/22/2022,16:42,16:49,0,100,EST,
+Seawater,S17,T3,6/22/2022,16:19,16:23,0,100,EST,
+Seawater,S18,T3,6/22/2022,17:21,17:27,0,100,EST,
+Seawater,S8,T3,6/22/2022,17:12,17:17,0,100,EST,
+Seawater,S11,T3,6/22/2022,18:13,18:20,0,100,EST,
+Seawater,S12,T3,6/22/2022,18:43,18:48,0,100,EST,
+Seawater,S1,Post-Treatment,6/23/2022,11:33,11:38,0,100,EST,
+Seawater,S2,Post-Treatment,6/23/2022,10:57,11:03,0,100,EST,
+Seawater,S3,Post-Treatment,6/23/2022,10:36,10:42,10,90,EST,
+Seawater,S13,Post-Treatment,6/23/2022,9:43,9:48,0,100,EST,
+Seawater,S14,Post-Treatment,6/23/2022,9:25,9:31,0,100,EST,
+Seawater,S16,Post-Treatment,6/23/2022,9:34,9:39,0,100,EST,
+Seawater,S7,Post-Treatment,6/23/2022,11:44,11:49,0,100,EST,
+Seawater,S9,Post-Treatment,6/23/2022,9:15,9:20,0,100,EST,
+Seawater,S10,Post-Treatment,6/23/2022,11:07,11:15,0,100,EST,
+Seawater,S4,Post-Treatment,6/23/2022,10:20,10:26,10,90,EST,
+Seawater,S5,Post-Treatment,6/23/2022,10:02,10:08,0,100,EST,
+Seawater,S6,Post-Treatment,6/23/2022,11:17,11:22,0,100,EST,
+Seawater,S15,Post-Treatment,6/23/2022,9:52,9:57,0,100,EST,
+Seawater,S17,Post-Treatment,6/23/2022,9:07,9:13,0,100,EST,
+Seawater,S18,Post-Treatment,6/23/2022,10:28,10:34,0,100,EST,
+Seawater,S8,Post-Treatment,6/23/2022,10:46,10:53,0,100,EST,
+Seawater,S11,Post-Treatment,6/23/2022,11:24,11:30,0,100,EST,
+Seawater,S12,Post-Treatment,6/23/2022,10:11,10:18,0,100,EST,
+Seawater,S1,Post-Treatment,6/24/2022,10:38,10:45,10,90,EST,Pipe had water
+Seawater,S2,Post-Treatment,6/24/2022,9:27,9:34,0,100,EST,
+Seawater,S3,Post-Treatment,6/24/2022,9:54,10:07,15,85,EST,Pipe had water
+Seawater,S13,Post-Treatment,6/24/2022,8:39,8:44,0,100,EST,
+Seawater,S14,Post-Treatment,6/24/2022,8:04,8:10,0,100,EST,
+Seawater,S16,Post-Treatment,6/24/2022,8:31,8:36,0,100,EST,
+Seawater,S7,Post-Treatment,6/24/2022,10:47,10:57,30,70,EST,Pipe had water
+Seawater,S9,Post-Treatment,6/24/2022,8:13,8:18,0,100,EST,
+Seawater,S10,Post-Treatment,6/24/2022,10:09,10:19,0,100,EST,
+Seawater,S4,Post-Treatment,6/24/2022,9:37,9:43,0,100,EST,
+Seawater,S5,Post-Treatment,6/24/2022,9:11,9:16,0,100,EST,
+Seawater,S6,Post-Treatment,6/24/2022,10:21,10:29,0,100,EST,
+Seawater,S15,Post-Treatment,6/24/2022,8:46,8:54,10,90,EST,
+Seawater,S17,Post-Treatment,6/24/2022,8:20,8:26,0,100,EST,
+Seawater,S18,Post-Treatment,6/24/2022,9:45,9:52,0,100,EST,
+Seawater,S8,Post-Treatment,6/24/2022,9:18,9:24,15,85,EST,
+Seawater,S11,Post-Treatment,6/24/2022,9:31,9:36,0,100,EST,
+Seawater,S12,Post-Treatment,6/24/2022,9:02,9:09,0,100,EST,
+Control,C1,Pre-Treatment,6/21/2022,9:13,9:27,40,60,EST,
+Control,C2,Pre-Treatment,6/21/2022,8:56,9:07,0,100,EST,
+Control,C6,Pre-Treatment,6/21/2022,10:28,10:39,0,100,EST,
+Control,C14,Pre-Treatment,6/21/2022,10:43,10:53,10,90,EST,
+Control,C16,Pre-Treatment,6/21/2022,9:44,9:55,0,100,EST,
+Control,C17,Pre-Treatment,6/21/2022,9:34,9:40,20,80,EST,
+Control,C10,Pre-Treatment,6/21/2022,11:56,12:06,0,100,EST,
+Control,C12,Pre-Treatment,6/21/2022,12:48,12:58,0,100,EST,
+Control,C3,Pre-Treatment,6/21/2022,10:08,10:14,0,100,EST,liquid in the well - 0.8mL of air sample
+Control,C4,Pre-Treatment,6/21/2022,12:24,12:42,0,100,EST,
+Control,C5,Pre-Treatment,6/21/2022,13:01,13:11,0,100,EST,
+Control,C13,Pre-Treatment,6/21/2022,10:57,11:07,0,100,EST,
+Control,C15,Pre-Treatment,6/21/2022,11:12,11:22,20,80,EST,
+Control,C18,Pre-Treatment,6/21/2022,13:14,13:24,50,50,EST,
+Control,C7,Pre-Treatment,6/21/2022,11:27,11:41,0,100,EST,very slow re-connected and resampled in case of leak 11:43/11:53
+Control,C9,Pre-Treatment,6/21/2022,13:28,13:38,40,60,EST,
+Control,C11,Pre-Treatment,6/21/2022,12:11,12:21,0,100,EST,
+Control,C5,T0,6/22/2022,5:57,6:01,40,60,EST,Changed from 5:55
+Control,C12,T0,6/22/2022,6:15,6:21,0,100,EST,Changed from 6:13
+Control,C18,T0,6/22/2022,6:25,6:31,0,100,EST,Changed from 6:23
+Control,C11,T0,6/22/2022,6:37,6:46,0,100,EST,Changed from 6:35
+Control,C16,T0,6/22/2022,6:55,6:57,0,100,EST,Changed from 6:53
+Control,C10,T0,6/22/2022,7:02,7:03,0,100,EST,Changed from 7:00
+Control,C7,T0,6/22/2022,7:10,7:16,0,100,EST,Changed from 7:08
+Control,C9,T0,6/22/2022,7:26,7:31,0,100,EST,Changed from 7:20
+Control,C15,T0,6/22/2022,7:36,7:37,0,100,EST,Changed from 7:34
+Control,C6,T0,6/22/2022,7:44,7:43,40,60,EST,Changed from 7:42
+Control,C14,T0,6/22/2022,7:48,7:49,0,100,EST,Changed from 7:46
+Control,C13,T0,6/22/2022,7:52,7:56,10,90,EST,Changed from 7:50
+Control,C3,T0,6/22/2022,8:06,8:07,0,100,EST,liquid in the well; changed from 8:04
+Control,C17,T0,6/22/2022,8:12,8:16,0,100,EST,Changed from 8:10
+Control,C2,T0,6/22/2022,8:21,8:23,0,100,EST,Changed from 8:19
+Control,C1,T0,6/22/2022,8:27,8:30,0,100,EST,Changed from 8:25
+Control,C4,T0,6/22/2022,8:36,8:39,0,100,EST,Changed from 8:34
+Control,C1,T1,6/22/2022,12:44,12:20,0,100,EST,
+Control,C2,T1,6/22/2022,12:04,12:10,0,100,EST,
+Control,C6,T1,6/22/2022,11:17,11:54,0,100,EST,
+Control,C14,T1,6/22/2022,11:26,11:32,0,100,EST,
+Control,C16,T1,6/22/2022,10:14,10:17,0,100,EST,
+Control,C17,T1,6/22/2022,11:57,12:02,25,75,EST,
+Control,C10,T1,6/22/2022,10:20,10:29,45,55,EST,
+Control,C12,T1,6/22/2022,9:38,9:46,0,100,EST,
+Control,C3,T1,6/22/2022,11:47,11:53,0,100,EST,
+Control,C4,T1,6/22/2022,12:23,12:29,0,100,EST,
+Control,C5,T1,6/22/2022,9:22,9:32,15,85,EST,
+Control,C13,T1,6/22/2022,11:03,11:07,0,100,EST,Times changed from 11:26-11:32; seems clearly mistaken
+Control,C15,T1,6/22/2022,11:34,11:43,0,100,EST,
+Control,C18,T1,6/22/2022,9:52,9:57,10,90,EST,
+Control,C7,T1,6/22/2022,10:33,10:42,0,100,EST,
+Control,C9,T1,6/22/2022,10:46,11:00,0,100,EST,
+Control,C11,T1,6/22/2022,10:00,11:08,0,100,EST,
+Control,C1,T2,6/22/2022,15:54,15:59,10,90,EST,
+Control,C2,T2,6/22/2022,15:46,15:51,0,100,EST,
+Control,C6,T2,6/22/2022,15:16,15:22,0,100,EST,
+Control,C14,T2,6/22/2022,15:23,15:29,0,100,EST,
+Control,C16,T2,6/22/2022,16:01,16:07,40,60,EST,
+Control,C17,T2,6/22/2022,15:40,15:45,10,90,EST,
+Control,C10,T2,6/22/2022,14:25,14:32,0,60,EST,
+Control,C12,T2,6/22/2022,14:16,14:22,45,55,EST,
+Control,C3,T2,6/22/2022,15:05,15:13,60,40,EST,liquid in the well - only 5mL samples
+Control,C4,T2,6/22/2022,16:09,16:15,0,100,EST,
+Control,C5,T2,6/22/2022,13:44,13:54,0,100,EST,
+Control,C13,T2,6/22/2022,15:31,15:37,0,100,EST,
+Control,C15,T2,6/22/2022,14:52,14:58,0,100,EST,
+Control,C18,T2,6/22/2022,13:58,14:04,40,60,EST,
+Control,C7,T2,6/22/2022,14:36,14:41,25,75,EST,
+Control,C9,T2,6/22/2022,14:43,14:50,0,100,EST,
+Control,C11,T2,6/22/2022,14:07,14:12,50,50,EST,
+Control,C1,T3,6/22/2022,18:34,18:39,0,100,EST,
+Control,C2,T3,6/22/2022,17:27,17:32,0,100,EST,
+Control,C6,T3,6/22/2022,17:50,17:56,10,90,EST,
+Control,C14,T3,6/22/2022,17:58,18:03,20,80,EST,
+Control,C16,T3,6/22/2022,18:48,18:53,0,100,EST,
+Control,C17,T3,6/22/2022,18:21,18:26,40,60,EST,
+Control,C10,T3,6/22/2022,18:55,19:02,0,100,EST,
+Control,C12,T3,6/22/2022,16:55,17:02,0,100,EST,
+Control,C3,T3,6/22/2022,18:12,18:17,25,75,EST,
+Control,C4,T3,6/22/2022,18:41,18:46,40,60,EST,
+Control,C5,T3,6/22/2022,16:46,16:53,20,80,EST,
+Control,C13,T3,6/22/2022,18:04,18:10,0,100,EST,
+Control,C15,T3,6/22/2022,17:41,17:46,60,40,EST,
+Control,C18,T3,6/22/2022,17:14,17:20,50,50,EST,
+Control,C7,T3,6/22/2022,19:04,19:12,0,100,EST,
+Control,C9,T3,6/22/2022,17:25,17:31,0,100,EST,
+Control,C11,T3,6/22/2022,17:04,17:10,0,100,EST,
+Control,C1,Post-Treatment,6/23/2022,11:09,11:18,80,20,EST,Gas well a little less than 2mL
+Control,C2,Post-Treatment,6/23/2022,11:00,11:07,70,30,EST,
+Control,C6,Post-Treatment,6/23/2022,10:36,10:42,60,40,EST,
+Control,C14,Post-Treatment,6/23/2022,10:28,10:34,45,55,EST,
+Control,C16,Post-Treatment,6/23/2022,9:41,9:47,60,40,EST,
+Control,C17,Post-Treatment,6/23/2022,10:53,10:59,75,25,EST,
+Control,C10,Post-Treatment,6/23/2022,9:49,9:55,30,70,EST,
+Control,C12,Post-Treatment,6/23/2022,9:15,9:22,0,100,EST,
+Control,C3,Post-Treatment,6/23/2022,10:45,10:57,40,60,EST,
+Control,C4,Post-Treatment,6/23/2022,11:21,11:27,0,100,EST,
+Control,C5,Post-Treatment,6/23/2022,9:07,9:13,45,55,EST,
+Control,C13,Post-Treatment,6/23/2022,10:21,10:27,40,60,EST,Gas well a little less than 2mL
+Control,C15,Post-Treatment,6/23/2022,10:13,10:19,40,60,EST,
+Control,C18,Post-Treatment,6/23/2022,9:33,9:39,0,100,EST,
+Control,C7,Post-Treatment,6/23/2022,9:57,10:03,50,50,EST,
+Control,C9,Post-Treatment,6/23/2022,10:04,10:10,65,35,EST,
+Control,C11,Post-Treatment,6/23/2022,9:25,9:31,45,55,EST,
+Control,C1,Post-Treatment,6/24/2022,9:56,10:02,10,90,EST,Water in pipe; Got about 1.7mL
+Control,C2,Post-Treatment,6/24/2022,9:48,9:57,40,60,EST,
+Control,C6,Post-Treatment,6/24/2022,9:18,9:25,0,100,EST,
+Control,C14,Post-Treatment,6/24/2022,9:10,9:16,60,40,EST,Recorded CO2/CH4 late
+Control,C16,Post-Treatment,6/24/2022,8:25,8:30,60,40,EST,
+Control,C17,Post-Treatment,6/24/2022,9:40,9:46,0,100,EST,
+Control,C10,Post-Treatment,6/24/2022,8:32,8:38,40,60,EST,
+Control,C12,Post-Treatment,6/24/2022,10:03,10:09,10,90,EST,
+Control,C3,Post-Treatment,6/24/2022,9:33,9:38,55,45,EST,Gas well a little less than 2mL; Chamber was closed for ~10 minutes before measurement began
+Control,C4,Post-Treatment,6/24/2022,10:10,10:16,70,30,EST,
+Control,C5,Post-Treatment,6/24/2022,8:00,8:06,30,70,EST,
+Control,C13,Post-Treatment,6/24/2022,9:03,9:09,40,60,EST,
+Control,C15,Post-Treatment,6/24/2022,8:55,9:01,0,100,EST,
+Control,C18,Post-Treatment,6/24/2022,8:17,8:23,0,100,EST,
+Control,C7,Post-Treatment,6/24/2022,8:39,8:45,10,90,EST,
+Control,C9,Post-Treatment,6/24/2022,8:47,8:53,20,80,EST,
+Control,C11,Post-Treatment,6/24/2022,8:10,8:16,30,70,EST,
+Freshwater,F1,Pre-Treatment,6/20/2022,11:56,11:56,0,100,EST,Changed from 11:46
+Freshwater,F5,Pre-Treatment,6/20/2022,11:23,11:23,0,100,EST,Changed from 11:13
+Freshwater,F6,Pre-Treatment,6/20/2022,12:43,12:43,0,100,EST,Changed from 12:33
+Freshwater,F15,Pre-Treatment,6/20/2022,12:47,14:47,50,50,EST,Changed from 14:37
+Freshwater,F16,Pre-Treatment,6/20/2022,11:38,12:38,0,100,EST,Changed from 11:28
+Freshwater,F18,Pre-Treatment,6/20/2022,10:49,10:49,0,100,EST,I did this chamber twice because it was not sealed properly. Skyp the first slope; Changed from 10:39
+Freshwater,F7,Pre-Treatment,6/20/2022,13:12,13:12,0,100,EST,Changed from 13:02
+Freshwater,F11,Pre-Treatment,6/20/2022,12:15,12:15,50,50,EST,Changed from 12:05
+Freshwater,F12,Pre-Treatment,6/20/2022,14:04,14:04,0,100,EST,Changed from 13:54
+Freshwater,F2,Pre-Treatment,6/20/2022,10:18,10:18,0,100,EST,liquid in the well; Changed from 10:08
+Freshwater,F3,Pre-Treatment,6/20/2022,12:31,12:31,50,50,EST,liquid in the well; Changed from 12:21
+Freshwater,F4,Pre-Treatment,6/20/2022,14:17,14:17,0,100,EST,Changed from 14:07
+Freshwater,F13,Pre-Treatment,6/20/2022,12:58,12:58,0,100,EST,Changed from 12:48
+Freshwater,F14,Pre-Treatment,6/20/2022,13:30,13:30,0,100,EST,Changed from 13:20
+Freshwater,F17,Pre-Treatment,6/20/2022,10:04,10:04,0,100,EST,Changed from 9:54
+Freshwater,F8,Pre-Treatment,6/20/2022,14:31,14:32,0,100,EST,Changed from 14:21
+Freshwater,F9,Pre-Treatment,6/20/2022,11:07,11:07,0,100,EST,Changed from 10:57
+Freshwater,F10,Pre-Treatment,6/20/2022,13:44,13:44,0,100,EST,Changed from 13:34
+Freshwater,F1,Pre-Treatment,6/21/2022,9:54,10:09,0,100,EST,
+Freshwater,F5,Pre-Treatment,6/21/2022,10:22,10:32,0,100,EST,
+Freshwater,F6,Pre-Treatment,6/21/2022,11:56,11:06,0,100,EST,
+Freshwater,F15,Pre-Treatment,6/21/2022,12:56,12:57,0,100,EST,
+Freshwater,F16,Pre-Treatment,6/21/2022,10:35,10:45,0,100,EST,
+Freshwater,F18,Pre-Treatment,6/21/2022,9:10,9:21,0,100,EST,
+Freshwater,F7,Pre-Treatment,6/21/2022,12:33,12:43,0,100,EST,
+Freshwater,F11,Pre-Treatment,6/21/2022,11:15,11:25,0,100,EST,
+Freshwater,F12,Pre-Treatment,6/21/2022,10:50,11:00,0,100,EST,
+Freshwater,F2,Pre-Treatment,6/21/2022,9:26,9:39,0,100,EST,liquid in the well
+Freshwater,F3,Pre-Treatment,6/21/2022,12:20,12:30,0,100,EST,
+Freshwater,F4,Pre-Treatment,6/21/2022,11:02,11:12,0,100,EST,
+Freshwater,F13,Pre-Treatment,6/21/2022,12:08,12:18,0,100,EST,
+Freshwater,F14,Pre-Treatment,6/21/2022,11:44,11:54,0,100,EST,I did this chamber twice because it was not sealed properly. Skyp the first slope.
+Freshwater,F17,Pre-Treatment,6/21/2022,9:42,9:52,0,100,EST,
+Freshwater,F8,Pre-Treatment,6/21/2022,13:00,13:11,0,100,EST,
+Freshwater,F9,Pre-Treatment,6/21/2022,10:11,10:21,0,100,EST,
+Freshwater,F10,Pre-Treatment,6/21/2022,11:27,11:37,0,100,EST,
+Freshwater,F18,T0,6/22/2022,6:00,6:04,0,100,EST,Changed from 5:57
+Freshwater,F2,T0,6/22/2022,6:10,6:14,0,100,EST,Changed from 6:07
+Freshwater,F17,T0,6/22/2022,6:20,6:24,0,100,EST,Changed from 6:17
+Freshwater,F1,T0,6/22/2022,6:30,6:34,0,100,EST,Changed from 6:27
+Freshwater,F16,T0,6/22/2022,6:41,6:45,0,100,EST,Changed from 6:38
+Freshwater,F9,T0,6/22/2022,6:53,6:57,0,100,EST,Changed from 6:50
+Freshwater,F5,T0,6/22/2022,7:02,7:06,0,100,EST,Changed from 6:59
+Freshwater,F12,T0,6/22/2022,7:12,7:16,0,100,EST,Changed from 7:09
+Freshwater,F4,T0,6/22/2022,7:22,7:26,0,100,EST,Changed from 7:19
+Freshwater,F11,T0,6/22/2022,7:33,7:37,0,100,EST,Changed from 7:30
+Freshwater,F14,T0,6/22/2022,7:53,7:57,0,100,EST,Changed from 7:50
+Freshwater,F6,T0,6/22/2022,8:05,8:09,0,100,EST,Reestarted; changed from 8:02
+Freshwater,F13,T0,6/22/2022,8:14,8:18,0,100,EST,Changed from 8:11
+Freshwater,F3,T0,6/22/2022,8:23,8:27,0,100,EST,liquid in the well; changed from 8:20
+Freshwater,F7,T0,6/22/2022,8:33,8:35,0,100,EST,Changed from 8:28
+Freshwater,F15,T0,6/22/2022,8:41,8:45,0,100,EST,Changed from 8:38
+Freshwater,F8,T0,6/22/2022,8:50,8:54,0,100,EST,Changed from 8:47
+Freshwater,F10,T0,6/22/2022,7:43,7:47,0,100,EST,Changed from 7:40
+Freshwater,F16,T1,6/22/2022,10:19,10:23,0,100,EST,Changed from 10:16
+Freshwater,F9,T1,6/22/2022,10:29,10:33,0,100,EST,Changed from 10:26
+Freshwater,F5,T1,6/22/2022,10:38,10:42,0,100,EST,Changed from 10:35
+Freshwater,F12,T1,6/22/2022,10:48,10:52,0,100,EST,Changed from 10:45
+Freshwater,F11,T1,6/22/2022,10:59,11:03,0,100,EST,Changed from 10:56
+Freshwater,F10,T1,6/22/2022,11:08,11:12,0,100,EST,Changed from 11:05
+Freshwater,F14,T1,6/22/2022,11:18,11:22,0,100,EST,Changed from 11:15
+Freshwater,F6,T1,6/22/2022,11:28,11:32,0,100,EST,Changed from 11:25
+Freshwater,F13,T1,6/22/2022,11:38,11:42,0,100,EST,Changed from 11:35
+Freshwater,F3,T1,6/22/2022,11:47,11:51,0,100,EST,liquid in the well - only 1.8mL of air sample in the well; changed from 11:44
+Freshwater,F7,T1,6/22/2022,11:57,12:01,0,100,EST,Changed from 11:54
+Freshwater,F15,T1,6/22/2022,12:06,12:10,0,100,EST,Changed from 12:03
+Freshwater,F8,T1,6/22/2022,12:17,12:21,0,100,EST,Changed from 12:14
+Freshwater,F4,T1,6/22/2022,12:26,12:30,0,100,EST,Changed from 12:23
+Freshwater,F18,T1,6/22/2022,9:28,9:32,0,100,EST,Changed from 9:25
+Freshwater,F2,T1,6/22/2022,9:37,9:46,0,100,EST,Changed from 9:34
+Freshwater,F17,T1,6/22/2022,9:51,9:55,0,100,EST,Changed from 9:48
+Freshwater,F1,T1,6/22/2022,10:01,10:13,0,100,EST,liquid in the well - only 0.5mL of air sample in the well; changed from 9:58
+Freshwater,F1,T2,6/22/2022,13:28,13:32,0,100,EST,liquid in the well - only 1mL of air sample in the well; changed from 13:25
+Freshwater,F5,T2,6/22/2022,13:55,13:59,0,100,EST,Changed from 13:52
+Freshwater,F6,T2,6/22/2022,14:56,15:00,0,100,EST,Changed from 14:53
+Freshwater,F15,T2,6/22/2022,15:45,15:49,0,100,EST,Changed from 15:42
+Freshwater,F16,T2,6/22/2022,13:38,13:42,0,100,EST,Changed from 13:35
+Freshwater,F18,T2,6/22/2022,12:57,13:02,0,100,EST,Changed from 12:54
+Freshwater,F7,T2,6/22/2022,15:33,15:37,0,100,EST,Changed from 15:30
+Freshwater,F11,T2,6/22/2022,14:22,14:26,0,100,EST,Changed from 14:19
+Freshwater,F12,T2,6/22/2022,14:06,14:08,0,100,EST,Changed from 14:01
+Freshwater,F2,T2,6/22/2022,13:08,13:13,0,100,EST,liquid in the well - only 1.8mL of air sample in the well; changed from 13:05
+Freshwater,F3,T2,6/22/2022,15:22,15:26,0,100,EST,Changed from 15:19
+Freshwater,F4,T2,6/22/2022,14:13,14:17,0,100,EST,Changed from 14:10
+Freshwater,F13,T2,6/22/2022,15:05,15:13,0,100,EST,Changed from 15:02
+Freshwater,F14,T2,6/22/2022,14:40,14:44,0,100,EST,Changed from 14:37
+Freshwater,F17,T2,6/22/2022,13:19,13:23,0,100,EST,Changed from 13:16
+Freshwater,F8,T2,6/22/2022,15:55,15:59,0,100,EST,Changed from 15:52
+Freshwater,F9,T2,6/22/2022,13:42,13:49,0,100,EST,Changed from 13:39
+Freshwater,F10,T2,6/22/2022,14:31,14:35,0,100,EST,Changed from 14:28
+Freshwater,F18,T3,6/22/2022,16:11,16:15,0,100,EST,Changed from 16:08
+Freshwater,F2,T3,6/22/2022,16:23,16:27,0,100,EST,liquid in the well - only 1mL of air sample in the well; changed from 16:20
+Freshwater,F17,T3,6/22/2022,16:35,16:39,0,100,EST,Changed from 16:32
+Freshwater,F1,T3,6/22/2022,16:46,17:02,0,100,EST,liquid in the well - only 1mL of air sample in the well; changed from 16:43
+Freshwater,F9,T3,6/22/2022,17:08,17:12,0,100,EST,Changed from 17:05
+Freshwater,F5,T3,6/22/2022,17:17,17:21,0,100,EST,Changed from 17:14
+Freshwater,F16,T3,6/22/2022,17:26,17:30,0,100,EST,Changed from 17:23
+Freshwater,F4,T3,6/22/2022,17:36,17:40,0,100,EST,Changed from 17:33
+Freshwater,F11,T3,6/22/2022,17:48,17:52,0,100,EST,rain; changed from 17:45
+Freshwater,F10,T3,6/22/2022,17:57,18:01,0,100,EST,rain; changed from 17:54
+Freshwater,F12,T3,6/22/2022,18:07,18:11,0,100,EST,Changed from 18:04
+Freshwater,F3,T3,6/22/2022,18:17,18:21,0,100,EST,liquid in the well; changed from 18:14
+Freshwater,F13,T3,6/22/2022,18:27,18:31,0,100,EST,Changed from 18:24
+Freshwater,F7,T3,6/22/2022,18:37,18:41,0,100,EST,Changed from 18:34
+Freshwater,F15,T3,6/22/2022,18:47,18:55,0,100,EST,Changed from 18:44
+Freshwater,F8,T3,6/22/2022,18:59,19:03,0,100,EST,rain; changed from 18:56
+Freshwater,F6,T3,6/22/2022,19:10,19:14,0,100,EST,rain stoped; changed from 19:07
+Freshwater,F14,T3,6/22/2022,19:20,19:22,0,100,EST,no light; changed from 19:17
+Freshwater,F1,Post-Treatment,6/23/2022,12:00,12:04,0,100,EST,rain - liquid in the well - 1mL of air sample from headspace shaking (1mL - H2O/1mL air); chg+3
+Freshwater,F5,Post-Treatment,6/23/2022,9:52,9:56,0,100,EST,rain; chg+3
+Freshwater,F6,Post-Treatment,6/23/2022,10:57,11:01,30,70,EST,rain; chg+3
+Freshwater,F15,Post-Treatment,6/23/2022,11:40,11:42,0,100,EST,No rain; chg+3
+Freshwater,F16,Post-Treatment,6/23/2022,10:01,10:05,0,100,EST,rain; chg+3
+Freshwater,F18,Post-Treatment,6/23/2022,9:08,9:12,0,100,EST,rain; chg+3
+Freshwater,F7,Post-Treatment,6/23/2022,11:29,11:33,0,100,EST,No rain; chg+3
+Freshwater,F11,Post-Treatment,6/23/2022,10:30,10:34,0,100,EST,rain; chg+3
+Freshwater,F12,Post-Treatment,6/23/2022,10:20,10:24,0,100,EST,rain; chg+3
+Freshwater,F2,Post-Treatment,6/23/2022,9:18,9:22,0,100,EST,rain - liquid in the well - 0.8mL of air sample; chg+3
+Freshwater,F3,Post-Treatment,6/23/2022,11:10,11:15,0,100,EST,rain - liquid in the well - 1mL of air sample from headspace shaking (1mL - H2O/1mL air); chg+3
+Freshwater,F4,Post-Treatment,6/23/2022,10:11,10:15,0,100,EST,rain; chg+3
+Freshwater,F13,Post-Treatment,6/23/2022,11:20,11:24,0,100,EST,No rain; chg+3
+Freshwater,F14,Post-Treatment,6/23/2022,10:50,10:54,0,100,EST,rain; chg+3
+Freshwater,F17,Post-Treatment,6/23/2022,9:27,9:31,0,100,EST,rain; chg+3
+Freshwater,F8,Post-Treatment,6/23/2022,11:50,11:54,0,100,EST,No rain; chg+3
+Freshwater,F9,Post-Treatment,6/23/2022,9:43,9:47,0,100,EST,rain; chg+3
+Freshwater,F10,Post-Treatment,6/23/2022,10:41,10:45,0,100,EST,rain; chg+3
+Freshwater,F1,Post-Treatment,6/24/2022,8:34,8:38,0,100,EST,liquid in the well - 1mL of air sample from headspace shaking (1mL - H2O/1mL air); chg+3
+Freshwater,F5,Post-Treatment,6/24/2022,9:04,9:08,0,100,EST,Chg+3
+Freshwater,F6,Post-Treatment,6/24/2022,10:04,10:08,0,100,EST,Chg+3
+Freshwater,F15,Post-Treatment,6/24/2022,10:44,10:48,0,100,EST,Chg+3
+Freshwater,F16,Post-Treatment,6/24/2022,8:44,8:48,0,100,EST,Chg+3
+Freshwater,F18,Post-Treatment,6/24/2022,8:04,8:09,0,100,EST,Chg+3
+Freshwater,F7,Post-Treatment,6/24/2022,10:35,10:39,0,100,EST,Chg+3
+Freshwater,F11,Post-Treatment,6/24/2022,9:36,9:40,0,100,EST,Chg+3
+Freshwater,F12,Post-Treatment,6/24/2022,9:12,9:18,60,40,EST,Chg+3
+Freshwater,F2,Post-Treatment,6/24/2022,8:14,8:18,0,100,EST,liquid in the well - 1mL of air sample from headspace shaking (1mL - H2O/1mL air); chg+3
+Freshwater,F3,Post-Treatment,6/24/2022,10:23,10:27,0,100,EST,Chg+3
+Freshwater,F4,Post-Treatment,6/24/2022,9:25,9:29,0,100,EST,I did this chamber twice because it was leaking; chg+3
+Freshwater,F13,Post-Treatment,6/24/2022,10:14,10:18,0,100,EST,Chg+3
+Freshwater,F14,Post-Treatment,6/24/2022,9:54,9:58,0,100,EST,Chg+3
+Freshwater,F17,Post-Treatment,6/24/2022,8:24,8:28,0,100,EST,Chg+3
+Freshwater,F8,Post-Treatment,6/24/2022,10:52,11:06,0,100,EST,Chg+3
+Freshwater,F9,Post-Treatment,6/24/2022,8:54,8:58,0,100,EST,Chg+3
+Freshwater,F10,Post-Treatment,6/24/2022,9:45,9:49,0,100,EST,Chg+3

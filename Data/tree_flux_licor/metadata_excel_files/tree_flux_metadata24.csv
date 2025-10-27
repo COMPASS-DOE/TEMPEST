@@ -1,0 +1,487 @@
+plot,grid_cell,Sapflux_ID,Timepoint,collection_date_YYYYMMDD,start_time_24hr_EDT,end_time_24hr_EDT,licor_timezone,flux_CO2_ppms,flux_CH4_ppbs,dead_band,obs_length,notes,instrument,personnel
+Control,I3,C5,D1PM,20240610,12:58,13:03,EDT,0.27,0,0,100,,Louise,"Wright, Wegner "
+Control,H4,C4,D1PM,20240610,13:10,13:15,EDT,0.787,0,0,100,,Louise,"Wright, Wegner "
+Control,G3,C12,D1PM,20240610,13:25,13:31,EDT,0.102,0.043,5,95,,Louise,"Wright, Wegner "
+Control,F5,C2,D1PM,20240610,13:36,13:41,EDT,0.856,0.014,0,100,,Louise,"Wright, Wegner "
+Control,F5,C1,D1PM,20240610,13:54,13:59,EDT,0.766,0.17,0,100,Wavy beginning waited for straight slope,Louise,"Wright, Wegner "
+Control,E4,C16,D1PM,20240610,14:07,14:12,EDT,0.971,0,0,100,,Louise,"Wright, Wegner "
+Control,A1,C19,D1PM,20240610,14:21,14:26,EDT,0.107,0.016,0,100,,Louise,"Wright, Wegner "
+Control,B7,C14,D1PM,20240610,14:34,14:39,EDT,0.605,0.015,0,100,,Louise,"Wright, Wegner "
+Control,B8,C13,D1PM,20240610,14:47,14:52,EDT,0.507,0.018,0,100,,Louise,"Wright, Wegner "
+Control,F6,C17,D1PM,20240610,15:04,15:09,EDT,0.693,0.007,0,100,,Louise,"Wright, Wegner "
+Control,F2,C11,D1PM,20240610,15:15,15:20,EDT,0.559,0,0,100,,Louise,"Wright, Wegner "
+Control,C5,C3,D1PM,20240610,15:34,15:39,EDT,0.752,-0.002,0,100,,Louise,"Wright, Wegner "
+Control,B7,C6,D1PM,20240610,15:44,15:49,EDT,0.553,0.005,0,100,,Louise,"Wright, Wegner "
+Control,A4,C15,D1PM,20240610,16:10,16:15,EDT,0.478,0.039,0,100,,Louise,"Wright, Wegner "
+Control,W of A1,C9,D1PM,20240610,16:19,16:24,EDT,0.234,0.018,0,100,,Louise,"Wright, Wegner "
+Control,B3,C7,D1PM,20240610,16:30,16:35,EDT,0.527,0,0,100,,Louise,"Wright, Wegner "
+Control,D4,C10,D1PM,20240610,16:40,16:45,EDT,0.313,0.003,0,100,,Louise,"Wright, Wegner "
+Control,N of G1,C18,D1PM,20240610,16:49,16:54,EDT,0.611,0.014,0,100,,Louise,"Wright, Wegner "
+Freshwater,I6,F17,D1PM,20240610,12:58,13:02,EDT,0.576,0,0,100,Changed from 12:56,Nick,"Nick, Rodrigo, Max"
+Freshwater,H4,F16,D1PM,20240610,13:07,13:10,EDT,0.342,0.076,0,100,Changed from 13:05,Nick,"Nick, Rodrigo, Max"
+Freshwater,G3,F9,D1PM,20240610,13:15,13:18,EDT,0.38,0,0,100,Changed from 13:13,Nick,"Nick, Rodrigo, Max"
+Freshwater,G3,F5,D1PM,20240610,13:23,13:26,EDT,0.818,0.002,0,100,Changed from 13:21,Nick,"Nick, Rodrigo, Max"
+Freshwater,H5,F1,D1PM,20240610,13:30,13:33,EDT,0.81,0.002,0,100,Changed from 13:28,Nick,"Nick, Rodrigo, Max"
+Freshwater,G6,F2,D1PM,20240610,13:40,13:45,EDT,0.681,0.001,0,100,Changed from 13:38,Nick,"Nick, Rodrigo, Max"
+Freshwater,H8,F18,D1PM,20240610,13:52,13:57,EDT,0.387,0.032,0,100,Changed from 13:50,Nick,"Nick, Rodrigo, Max"
+Freshwater,F8,F10,D1PM,20240610,14:02,14:06,EDT,0.176,0.004,0,100,Changed from 14:00,Nick,"Nick, Rodrigo, Max"
+Freshwater,D5,F3,D1PM,20240610,14:15,14:19,EDT,0.829,-0.001,0,100,Changed from 14:13,Nick,"Nick, Rodrigo, Max"
+Freshwater,D6,F6,D1PM,20240610,14:24,14:29,EDT,0.478,0.017,0,100,Changed from 14:22,Nick,"Nick, Rodrigo, Max"
+Freshwater,D6,F13,D1PM,20240610,14:34,14:37,EDT,0.432,0.018,0,100,Changed from 14:32,Nick,"Nick, Rodrigo, Max"
+Freshwater,D7,F14,D1PM,20240610,14:43,14:51,EDT,0.231,0.003,0,100,Changed from 14:41,Nick,"Nick, Rodrigo, Max"
+Freshwater,F6,F11,D1PM,20240610,14:58,15:02,EDT,0.573,0.047,0,100,Changed from 14:56,Nick,"Nick, Rodrigo, Max"
+Freshwater,E2,F4,D1PM,20240610,15:08,15:15,EDT,0.812,0.001,0,100,Changed from 15:06,Nick,"Nick, Rodrigo, Max"
+Freshwater,A6,F15,D1PM,20240610,15:23,15:27,EDT,0.369,0.002,0,100,Changed from 15:21,Nick,"Nick, Rodrigo, Max"
+Freshwater,B5,F7,D1PM,20240610,15:32,15:36,EDT,0.283,0.002,0,100,Changed from 15:30,Nick,"Nick, Rodrigo, Max"
+Freshwater,B4,F8,D1PM,20240610,15:40,15:45,EDT,0.154,0.015,0,100,Changed from 15:38,Nick,"Nick, Rodrigo, Max"
+Freshwater,F2,F12,D1PM,20240610,15:52,15:56,EDT,0.557,0,0,100,Changed from 15:50,Nick,"Nick, Rodrigo, Max"
+Seawater,F7,S1,D1PM,20240610,13:22,13:26,EDT,0.499,0.003,0,100,Changed from 13:21,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C5,S2,D1PM,20240610,15:29,15:33,EDT,0.371,-0.002,0,100,Changed from 15:28,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E5,S3,D1PM,20240610,13:51,14:00,EDT,0.604,-0.001,0,100,First 8 minutes different trend vs last 2 mins; changed from 13:50,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,A2,S13,D1PM,20240610,15:14,15:19,EDT,0.49,-0.001,0,100,Changed from 15:13,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,I2,S14,D1PM,20240610,14:51,14:56,EDT,0.665,-0.001,0,100,Changed from 14:50,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C2,S16,D1PM,20240610,15:00,15:04,EDT,0.686,0.01,0,100,Changed from 14:59,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E6,S7,D1PM,20240610,15:44,15:50,EDT,0.548,0.575,0,100,Changed from 15:43,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F2,S9,D1PM,20240610,16:07,16:11,EDT,0.306,0.006,0,100,Changed from 16:06,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,G5,S10,D1PM,20240610,14:35,14:40,EDT,0.243,0.009,0,100,Changed from 14:34,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E6,S4,D1PM,20240610,13:31,13:36,EDT,0.47,0.005,0,100,Changed from 13:30,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F5,S5,D1PM,20240610,14:22,14:26,EDT,0.888,0.012,0,100,Changed from 14:21,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,G6,S6,D1PM,20240610,14:44,14:48,EDT,1.006,-0.003,0,100,Changed from 14:43,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E4,S15,D1PM,20240610,15:54,15:59,EDT,0.588,-0.003,0,100,Changed from 15:53,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,D1,S17,D1PM,20240610,15:07,15:11,EDT,0.114,0.03,0,100,Changed from 15:06,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E5,S18,D1PM,20240610,15:36,15:40,EDT,0.31,0.001,0,100,Changed from 15:35,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C6,S8,D1PM,20240610,13:40,13:45,EDT,0.331,0,0,100,Changed from 13:39,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F6,S11,D1PM,20240610,13:04,13:13,EDT,0.539,0.01,0,100,Changed from 13:03,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F4,S12,D1PM,20240610,14:06,14:17,EDT,0.565,0.009,0,100,CO2 slope irregular; changed from 14:05,AM UNI,"Kendal, Radha, Joaquin"
+Control,F5,C1,D2AM,20240611,8:55,9:00,EDT,0.717,0.136,0,100,,Louise,Wegner
+Control,F5,C2,D2AM,20240611,8:46,8:51,EDT,0.564,0.017,0,100,,Louise,Wegner
+Control,B7,C6,D2AM,20240611,10:48,10:53,EDT,0.412,0.003,0,100,Had to reset twice,Louise,Wegner
+Control,B7,C14,D2AM,20240611,10:58,11:03,EDT,0.6,0.014,0,100,,Louise,Wegner
+Control,E4,C16,D2AM,20240611,9:17,9:22,EDT,0.928,0,0,100,,Louise,Wegner
+Control,F6,C17,D2AM,20240611,9:04,9:10,EDT,0.595,0.008,0,100,,Louise,Wegner
+Control,A1,C19,D2AM,20240611,10:10,10:15,EDT,0.103,0.016,0,100,,Louise,Wegner
+Control,D4,C10,D2AM,20240611,9:34,9:39,EDT,0.273,0.003,0,100,,Louise,Wegner
+Control,G3,C12,D2AM,20240611,8:07,8:12,EDT,0.068,0.037,0,100,,Louise,Wegner
+Control,C5,C3,D2AM,20240611,9:52,9:57,EDT,0.59,0,0,100,"Had to reset, not good flux, perfect seal",Louise,Wegner
+Control,H4,C4,D2AM,20240611,8:37,8:42,EDT,0.738,-0.001,0,100,,Louise,Wegner
+Control,I3,C5,D2AM,20240611,8:26,8:32,EDT,0.22,-0.001,0,100,,Louise,Wegner
+Control,B8,C13,D2AM,20240611,11:07,11:12,EDT,0.411,0.019,0,100,,Louise,Wegner
+Control,A4,C15,D2AM,20240611,10:28,10:33,EDT,0.423,0.04,0,100,,Louise,Wegner
+Control,N of G1,C18,D2AM,20240611,9:26,9:31,EDT,0.54,0.016,0,100,,Louise,Wegner
+Control,B3,C7,D2AM,20240611,10:01,10:06,EDT,0.412,0,0,100,,Louise,Wegner
+Control,W of A1,C9,D2AM,20240611,10:19,10:24,EDT,0.147,0.015,0,100,,Louise,Wegner
+Control,F2,C11,D2AM,20240611,8:16,8:21,EDT,0.395,0,0,100,,Louise,Wegner
+Freshwater,H5,F1,D2AM,20240611,10:08,10:17,EDT,0.605,0.009,0,100,Changed from 10:06,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,G3,F5,D2AM,20240611,9:48,9:52,EDT,0.725,0.002,0,100,Changed from 9:46,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,D6,F6,D2AM,20240611,9:04,9:08,EDT,0.454,0.013,0,100,Changed from 9:02,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,A6,F15,D2AM,20240611,8:32,8:37,EDT,0.366,0.003,0,100,Changed from 8:30,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,H4,F16,D2AM,20240611,9:58,10:03,EDT,0.349,0.09,0,100,Changed from 9:54,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,H8,F18,D2AM,20240611,10:41,10:45,EDT,0.375,0.034,0,100,Changed from 10:39,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,B5,F7,D2AM,20240611,8:19,8:25,EDT,0.19,0.003,0,100,Changed from 8:17,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,F6,F11,D2AM,20240611,9:12,9:16,EDT,0.39,0.048,0,100,Changed from 9:10,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,F2,F12,D2AM,20240611,9:30,9:34,EDT,0.412,0.001,0,100,Changed from 9:28,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,G6,F2,D2AM,20240611,10:31,10:37,EDT,0.511,0.002,0,100,Changed from 10:29,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,D5,F3,D2AM,20240611,11:12,11:15,EDT,0.648,-0.001,0,100,"Repeated measurement, discard 11- 11:06; Changed from 11:10",Ward PNNL,"Rodrigo, Marissa"
+Freshwater,E2,F4,D2AM,20240611,9:22,9:25,EDT,0.697,0.001,0,100,Changed from 9:20,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,D6,F13,D2AM,20240611,8:52,8:57,EDT,0.282,0.018,0,100,Changed from 8:50,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,D7,F14,D2AM,20240611,10:50,10:57,EDT,0.223,0.005,0,100,Changed from 10:48,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,I6,F17,D2AM,20240611,10:21,10:25,EDT,0.517,-0.001,0,100,Changed from 10:19,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,B4,F8,D2AM,20240611,8:42,8:45,EDT,0.111,0.015,0,100,Changed from 8:40,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,G3,F9,D2AM,20240611,9:40,9:44,EDT,0.3,0,0,100,Changed from 9:38,Ward PNNL,"Rodrigo, Marissa"
+Freshwater,F8,F10,D2AM,20240611,8:07,8:13,EDT,0.131,0.007,0,100,Changed from 8:05,Ward PNNL,"Rodrigo, Marissa"
+Seawater,F7,S1,D2AM,20240611,10:23,10:30,EDT,0.464,0.002,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,C5,S2,D2AM,20240611,8:36,8:43,EDT,0.322,0.004,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,E5,S3,D2AM,20240611,10:14,10:19,EDT,0.439,-0.004,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,A2,S13,D2AM,20240611,8:47,8:52,EDT,0.563,0.004,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,I2,S14,D2AM,20240611,11:09,11:14,EDT,0.543,-0.001,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,C2,S16,D2AM,20240611,9:14,9:21,EDT,0.487,0.003,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,E6,S7,D2AM,20240611,10:40,10:46,EDT,0.486,0.668,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,F2,S9,D2AM,20240611,8:09,8:18,EDT,0.253,0.004,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,G5,S10,D2AM,20240611,10:53,10:58,EDT,0.127,0.009,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,E6,S4,D2AM,20240611,10:00,10:05,EDT,0.473,0.005,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,F5,S5,D2AM,20240611,9:40,9:45,EDT,0.645,-0.002,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,G6,S6,D2AM,20240611,11:01,11:06,EDT,0.737,0.007,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,E4,S15,D2AM,20240611,9:23,9:28,EDT,0.506,0.005,40,60,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,D1,S17,D2AM,20240611,8:59,9:04,EDT,0.152,0.033,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,E5,S18,D2AM,20240611,9:50,9:55,EDT,0.302,0,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,C6,S8,D2AM,20240611,8:21,8:30,EDT,0.16,0.009,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,F6,S11,D2AM,20240611,10:32,10:37,EDT,0.419,0.09,0,100,,AM-UNI,"K.A.M, Colin, Radha"
+Seawater,F4,S12,D2AM,20240611,9:31,9:37,EDT,0.296,0.002,30,70,,AM-UNI,"K.A.M, Colin, Radha"
+Control,F5,C1,D2PM,20240611,14:05,14:10,EDT,0.817,0.189,0,100,,Louise,Wegner
+Control,F5,C2,D2PM,20240611,13:56,14:01,EDT,0.763,0.014,0,100,,Louise,Wegner
+Control,B7,C6,D2PM,20240611,15:28,15:33,EDT,0.471,0.002,0,100,,Louise,Wegner
+Control,B7,C14,D2PM,20240611,15:37,15:42,EDT,0.652,0.014,0,100,,Louise,Wegner
+Control,E4,C16,D2PM,20240611,14:23,14:28,EDT,0.951,0.001,0,100,,Louise,Wegner
+Control,F6,C17,D2PM,20240611,14:14,14:19,EDT,0.621,0.007,0,100,,Louise,Wegner
+Control,A1,C19,D2PM,20240611,14:59,15:04,EDT,0.15,0.018,0,100,,Louise,Wegner
+Control,D4,C10,D2PM,20240611,14:32,14:37,EDT,0.297,-0.028,0,100,,Louise,Wegner
+Control,G3,C12,D2PM,20240611,13:09,13:14,EDT,0.102,0.044,0,100,,Louise,Wegner
+Control,C5,C3,D2PM,20240611,14:41,14:46,EDT,0.641,0,0,100,,Louise,Wegner
+Control,H4,C4,D2PM,20240611,13:47,13:52,EDT,0.744,-0.002,0,100,,Louise,Wegner
+Control,I3,C5,D2PM,20240611,13:39,13:44,EDT,0.246,0.001,0,100,,Louise,Wegner
+Control,B8,C13,D2PM,20240611,15:46,15:51,EDT,0.431,0.018,0,100,,Louise,Wegner
+Control,A4,C15,D2PM,20240611,15:17,15:22,EDT,0.434,0.038,0,100,,Louise,Wegner
+Control,N of G1,C18,D2PM,20240611,13:30,13:35,EDT,0.549,0.014,0,100,,Louise,Wegner
+Control,B3,C7,D2PM,20240611,14:50,14:55,EDT,0.454,0,0,100,,Louise,Wegner
+Control,W of A1,C9,D2PM,20240611,15:08,15:13,EDT,0.167,0.017,0,100,,Louise,Wegner
+Control,F2,C11,D2PM,20240611,13:20,13:25,EDT,0.472,0.001,0,100,,Louise,Wegner
+Freshwater,H5,F1,D2PM,20240611,15:41,15:46,EDT,0.664,0.011,0,100,Changed from 15:39,Ward PNNL,Rodrigo
+Freshwater,G3,F5,D2PM,20240611,14:49,14:53,EDT,0.75,0.002,0,100,Changed from 14:47,Ward PNNL,Rodrigo
+Freshwater,D6,F6,D2PM,20240611,11:00,14:05,EDT,0.464,0.016,15,85,Changed from 10:58,Ward PNNL,Rodrigo
+Freshwater,A6,F15,D2PM,20240611,13:34,13:38,EDT,0.361,0.003,0,100,Changed from 13:32,Ward PNNL,Rodrigo
+Freshwater,H4,F16,D2PM,20240611,15:27,15:31,EDT,0.349,0.078,0,100,Changed from 15:25,Ward PNNL,Rodrigo
+Freshwater,H8,F18,D2PM,20240611,15:15,15:20,EDT,0.413,0.031,30,70,Changed from 15:13,Ward PNNL,Rodrigo
+Freshwater,B5,F7,D2PM,20240611,13:25,13:29,EDT,0.233,0.002,0,100,Changed from 13:23,Ward PNNL,Rodrigo
+Freshwater,F6,F11,D2PM,20240611,14:29,14:34,EDT,0.511,0.048,0,100,Changed from 14:27,Ward PNNL,Rodrigo
+Freshwater,F2,F12,D2PM,20240611,15:11,15:14,EDT,0.503,0.001,0,100,Changed from 15:09,Ward PNNL,Rodrigo
+Freshwater,G6,F2,D2PM,20240611,15:52,15:57,EDT,0.651,0.011,0,100,Changed from 15:50,Ward PNNL,Rodrigo
+Freshwater,D5,F3,D2PM,20240611,14:11,14:15,EDT,0.722,-0.001,0,100,Changed from 14:09,Ward PNNL,Rodrigo
+Freshwater,E2,F4,D2PM,20240611,14:39,14:43,EDT,0.744,-0.003,0,100,Changed from 14:37,Ward PNNL,Rodrigo
+Freshwater,D6,F13,D2PM,20240611,13:51,13:56,EDT,0.359,0.017,0,100,Changed from 13:49,Ward PNNL,Rodrigo
+Freshwater,D7,F14,D2PM,20240611,14:20,14:23,EDT,0.247,0.003,0,100,Changed from 14:18,Ward PNNL,Rodrigo
+Freshwater,I6,F17,D2PM,20240611,16:04,16:09,EDT,0.547,-0.001,0,100,Changed from 16:02,Ward PNNL,Rodrigo
+Freshwater,B4,F8,D2PM,20240611,13:42,13:46,EDT,0.105,0.014,0,100,Changed from 13:40,Ward PNNL,Rodrigo
+Freshwater,G3,F9,D2PM,20240611,14:58,15:04,EDT,0.33,0.001,0,100,Changed from 14:56,Ward PNNL,Rodrigo
+Freshwater,F8,F10,D2PM,20240611,13:12,13:18,EDT,0.141,0.003,0,100,Changed from 13:10,Ward PNNL,Rodrigo
+Seawater,F7,S1,D2PM,20240611,15:55,16:01,EDT,0.652,0.003,0,100,,AM-UNI,"Radha, Colin"
+Seawater,C5,S2,D2PM,20240611,15:19,15:25,EDT,0.382,0.002,15,85,,AM-UNI,"Radha, Colin"
+Seawater,E5,S3,D2PM,20240611,15:11,15:16,EDT,0.427,0.004,0,100,,AM-UNI,"Radha, Colin"
+Seawater,A2,S13,D2PM,20240611,14:22,14:27,EDT,0.563,0.003,30,70,,AM-UNI,"Radha, Colin"
+Seawater,I2,S14,D2PM,20240611,13:52,13:57,EDT,0.469,-0.003,0,100,,AM-UNI,"Radha, Colin"
+Seawater,C2,S16,D2PM,20240611,14:04,14:09,EDT,0.529,0.01,30,70,,AM-UNI,"Radha, Colin"
+Seawater,E6,S7,D2PM,20240611,15:37,15:43,EDT,0.536,0.603,40,60,,AM-UNI,"Radha, Colin"
+Seawater,F2,S9,D2PM,20240611,13:40,13:46,EDT,0.346,-0.004,0,100,,AM-UNI,"Radha, Colin"
+Seawater,G5,S10,D2PM,20240611,16:05,16:10,EDT,0.251,0.021,0,100,,AM-UNI,"Radha, Colin"
+Seawater,E6,S4,D2PM,20240611,14:48,14:43,EDT,0.447,0.006,15,85,,AM-UNI,"Radha, Colin"
+Seawater,F5,S5,D2PM,20240611,13:17,13:22,EDT,0.796,0.009,0,100,,AM-UNI,"Radha, Colin"
+Seawater,G6,S6,D2PM,20240611,16:13,16:18,EDT,0.856,0.001,50,50,,AM-UNI,"Radha, Colin"
+Seawater,E4,S15,D2PM,20240611,14:31,13:36,EDT,0.595,-0.001,15,85,,AM-UNI,"Radha, Colin"
+Seawater,D1,S17,D2PM,20240611,14:14,14:19,EDT,0.153,0.029,0,100,,AM-UNI,"Radha, Colin"
+Seawater,E5,S18,D2PM,20240611,14:40,14:45,EDT,0.333,-0.002,0,100,,AM-UNI,"Radha, Colin"
+Seawater,C6,S8,D2PM,20240611,15:27,15:33,EDT,0.153,0.005,15,85,,AM-UNI,"Radha, Colin"
+Seawater,F6,S11,D2PM,20240611,15:46,15:51,EDT,0.487,0.006,30,70,,AM-UNI,"Radha, Colin"
+Seawater,F4,S12,D2PM,20240611,13:08,13:13,EDT,0.544,0.01,40,60,,AM-UNI,"Radha, Colin"
+Control,F5,C1,D3AM,20240612,11:17,11:22,EDT,0.7,0.169,0,100,,Louise,Sam Wright
+Control,F5,C2,D3AM,20240612,11:07,11:12,EDT,0.652,0.014,0,100,,Louise,Sam Wright
+Control,B7,C6,D3AM,20240612,10:25,10:30,EDT,0.496,0.005,0,100,"Wavy CO2, pulled out tubes, restarted, still wavy, went away came back 30 min later",Louise,Sam Wright
+Control,B7,C14,D3AM,20240612,10:05,10:10,EDT,0.573,0.015,0,100,,Louise,Sam Wright
+Control,E4,C16,D3AM,20240612,10:58,11:03,EDT,0.854,0,0,100,,Louise,Sam Wright
+Control,F6,C17,D3AM,20240612,11:29,11:34,EDT,0.57,0.007,0,100,,Louise,Sam Wright
+Control,A1,C19,D3AM,20240612,8:58,9:03,EDT,0.079,0.014,0,100,,Louise,Sam Wright
+Control,D4,C10,D3AM,20240612,10:47,10:52,EDT,0.27,0.003,0,100,,Louise,Sam Wright
+Control,G3,C12,D3AM,20240612,8:23,8:28,EDT,0.066,0.039,0,100,,Louise,Sam Wright
+Control,C5,C3,D3AM,20240612,10:37,10:42,EDT,0.58,-0.001,0,100,,Louise,Sam Wright
+Control,H4,C4,D3AM,20240612,11:39,11:44,EDT,0.716,-0.001,0,100,,Louise,Sam Wright
+Control,I3,C5,D3AM,20240612,8:11,8:16,EDT,0.196,0,0,100,,Louise,Sam Wright
+Control,B8,C13,D3AM,20240612,10:14,10:19,EDT,0.376,0.019,0,100,,Louise,Sam Wright
+Control,A4,C15,D3AM,20240612,9:35,9:40,EDT,0.39,0.039,0,100,,Louise,Sam Wright
+Control,N of G1,C18,D3AM,20240612,8:46,8:51,EDT,0.478,0.016,0,100,,Louise,Sam Wright
+Control,B3,C7,D3AM,20240612,9:25,9:30,EDT,0.338,-0.001,0,100,"Wavy CO2, waited for it to straighten",Louise,Sam Wright
+Control,W of A1,C9,D3AM,20240612,9:09,9:14,EDT,0.14,0.014,0,100,,Louise,Sam Wright
+Control,F2,C11,D3AM,20240612,8:34,8:39,EDT,0.336,0,0,100,,Louise,Sam Wright
+Freshwater,H5,F1,D3AM,20240612,10:48,10:54,EDT,0.638,0.011,0,100,Changed from 10:46,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,G3,F5,D3AM,20240612,10:19,10:23,EDT,0.694,0.002,0,100,Changed from 10:17,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,D6,F6,D3AM,20240612,9:27,9:31,EDT,0.401,0.013,0,100,Changed from 9:25,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,A6,F15,D3AM,20240612,8:42,8:46,EDT,0.391,0.006,0,100,Changed from 8:40,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,H4,F16,D3AM,20240612,10:38,10:42,EDT,0.319,0.092,0,100,Changed from 10:36,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,H8,F18,D3AM,20240612,11:22,11:26,EDT,0.405,0.034,0,100,Changed from 11:20,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,B5,F7,D3AM,20240612,8:31,8:35,EDT,0.17,0.003,0,100,Changed from 8:29,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,F6,F11,D3AM,20240612,9:47,9:52,EDT,0.348,0.047,0,100,Changed from 9:45,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,F2,F12,D3AM,20240612,10:09,10:13,EDT,0.368,0.002,0,100,Changed from 10:07,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,G6,F2,D3AM,20240612,11:11,11:17,EDT,0.58,0.002,0,100,Changed from 11:09,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,D5,F3,D3AM,20240612,9:36,9:41,EDT,0.503,0.004,0,100,Changed from 9:34,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,E2,F4,D3AM,20240612,9:58,10:04,EDT,0.671,0.001,0,100,Changed from 9:56,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,D6,F13,D3AM,20240612,9:07,9:11,EDT,0.334,0.019,0,100,Changed from 9:05,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,D7,F14,D3AM,20240612,9:18,9:22,EDT,0.183,0.004,0,100,Changed from 9:16,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,I6,F17,D3AM,20240612,11:01,11:06,EDT,0.477,-0.001,0,100,Changed from 10:59,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,B4,F8,D3AM,20240612,8:53,8:58,EDT,0.355,0.006,0,100,Changed from 8:51,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,G3,F9,D3AM,20240612,10:27,10:33,EDT,0.284,0.001,0,100,Changed from 10:25,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Freshwater,F8,F10,D3AM,20240612,8:19,8:24,EDT,0.096,0.003,0,100,Changed from 8:17,Ward PNNL,"Rodrigo Vargas, Loretta Battaglia"
+Seawater,F7,S1,D3AM,20240612,10:16,10:21,EDT,0.554,0.595,0,100,Changed from 10:15,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,C5,S2,D3AM,20240612,9:02,9:15,EDT,0.306,-0.001,0,100,Changed from 9:01,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,E5,S3,D3AM,20240612,10:39,10:44,EDT,0.515,0,0,100,Changed from 10:38,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,A2,S13,D3AM,20240612,9:34,9:43,EDT,0.443,0.001,0,100,Changed from 9:33,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,I2,S14,D3AM,20240612,8:17,8:26,EDT,0.429,0.002,0,100,Changed from 8:16,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,C2,S16,D3AM,20240612,11:31,11:36,EDT,0.498,0.013,0,100,Changed from 11:30,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,E6,S7,D3AM,20240612,9:46,10:00,EDT,0.415,0.614,0,100,Changed from 9:45,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,F2,S9,D3AM,20240612,8:30,8:35,EDT,0.264,0.005,0,100,Changed from 8:29,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,G5,S10,D3AM,20240612,10:24,10:29,EDT,0.198,0.593,0,100,Changed from 10:23,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,E6,S4,D3AM,20240612,10:52,10:57,EDT,0.503,0.011,0,100,Changed from 10:51,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,F5,S5,D3AM,20240612,11:01,11:05,EDT,0.765,0.01,0,100,Changed from 11:00,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,G6,S6,D3AM,20240612,10:31,10:35,EDT,0.814,0.594,0,100,Changed from 10:30,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,E4,S15,D3AM,20240612,9:20,9:27,EDT,0.471,0.001,0,100,Changed from 9:19,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,D1,S17,D3AM,20240612,11:19,11:24,EDT,0.208,0.038,0,100,Changed from 11:18,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,E5,S18,D3AM,20240612,10:46,10:50,EDT,0.316,0.002,0,100,Changed from 10:45,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,C6,S8,D3AM,20240612,8:40,8:50,EDT,0.113,0.009,0,100,End time estimated; changed from 8:39,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,F6,S11,D3AM,20240612,10:07,10:12,EDT,0.402,0.596,0,100,Changed from 10:06,AM UNI,"K.A.M., Josh, Aliyah"
+Seawater,F4,S12,D3AM,20240612,11:12,11:16,EDT,0.382,0.011,0,100,Changed from 11:11,AM UNI,"K.A.M., Josh, Aliyah"
+Control,F5,C1,D3PM,20240612,15:25,15:30,EST,0.804,0.187,0,100,,Louise,"Sam, Josh"
+Control,F5,C2,D3PM,20240612,15:16,15:21,EST,0.774,0.013,0,100,,Louise,"Sam, Josh"
+Control,B7,C6,D3PM,20240612,14:14,14:19,EST,0.514,0.005,0,100,,Louise,"Sam, Josh"
+Control,B7,C14,D3PM,20240612,14:24,14:29,EST,0.658,0.013,0,100,,Louise,"Sam, Josh"
+Control,E4,C16,D3PM,20240612,15:04,15:09,EST,1.041,0,0,100,,Louise,"Sam, Josh"
+Control,F6,C17,D3PM,20240612,15:35,15:40,EST,0.623,0.007,0,100,,Louise,"Sam, Josh"
+Control,A1,C19,D3PM,20240612,13:31,13:36,EST,0.119,0.017,0,100,,Louise,"Sam, Josh"
+Control,D4,C10,D3PM,20240612,14:53,14:58,EST,0.286,0.003,0,100,,Louise,"Sam, Josh"
+Control,G3,C12,D3PM,20240612,13:12,13:17,EST,0.108,0.043,0,100,,Louise,"Sam, Josh"
+Control,C5,C3,D3PM,20240612,14:44,14:49,EST,4.705,-0.002,0,100,,Louise,"Sam, Josh"
+Control,H4,C4,D3PM,20240612,15:48,15:53,EST,0.782,-0.002,0,100,,Louise,"Sam, Josh"
+Control,I3,C5,D3PM,20240612,15:58,16:03,EST,0.253,0.001,0,100,,Louise,"Sam, Josh"
+Control,B8,C13,D3PM,20240612,14:34,14:39,EST,0.434,0.018,0,100,,Louise,"Sam, Josh"
+Control,A4,C15,D3PM,20240612,13:50,13:55,EST,0.454,0.038,0,100,,Louise,"Sam, Josh"
+Control,N of G1,C18,D3PM,20240612,16:08,16:13,EST,0.591,0.013,0,100,,Louise,"Sam, Josh"
+Control,B3,C7,D3PM,20240612,14:00,14:05,EST,0.458,0,0,100,,Louise,"Sam, Josh"
+Control,W of A1,C9,D3PM,20240612,13:41,13:46,EST,0.199,0.016,0,100,,Louise,"Sam, Josh"
+Control,F2,C11,D3PM,20240612,13:21,13:26,EST,0.482,0.001,0,100,,Louise,"Sam, Josh"
+Freshwater,H5,F1,D3PM,20240612,15:45,15:54,EST,0.744,0.013,0,100,Changed from 15:43,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,G3,F5,D3PM,20240612,15:11,15:15,EST,0.821,0.001,0,100,Changed from 15:09,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,D6,F6,D3PM,20240612,14:23,14:28,EST,0.505,0.016,0,100,Changed from 14:21,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,A6,F15,D3PM,20240612,13:48,13:55,EST,0.438,0.003,0,100,Changed from 13:46,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,H4,F16,D3PM,20240612,15:34,15:39,EST,0.888,0.079,0,100,Changed from 15:32,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,H8,F18,D3PM,20240612,16:17,16:23,EST,0.47,0.033,0,100,Changed from 16:15,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,B5,F7,D3PM,20240612,13:32,13:38,EST,0.237,0.003,0,100,Changed from 13:30,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,F6,F11,D3PM,20240612,16:28,16:32,EST,0.62,0.052,0,100,Changed from 16:26,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,F2,F12,D3PM,20240612,15:03,15:06,EST,0.534,0.001,0,100,Changed from 15:01,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,G6,F2,D3PM,20240612,16:09,16:12,EST,0.808,0.002,0,100,Changed from 16:07,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,D5,F3,D3PM,20240612,14:43,14:46,EST,0.836,0,0,100,Changed from 14:41,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,E2,F4,D3PM,20240612,14:52,14:59,EST,0.908,0.002,0,100,Changed from 14:50,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,D6,F13,D3PM,20240612,14:12,14:16,EST,0.379,0.017,0,100,Changed from 14:10,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,D7,F14,D3PM,20240612,14:33,14:37,EST,0.234,0.005,0,100,Changed from 14:31,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,I6,F17,D3PM,20240612,16:00,16:04,EST,0.603,-0.001,0,100,Changed from 15:58,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,B4,F8,D3PM,20240612,14:00,14:03,EST,0.128,0.013,0,100,Changed from 13:58,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,G3,F9,D3PM,20240612,15:20,15:27,EST,0.362,0,0,100,Changed from 15:18,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Freshwater,F8,F10,D3PM,20240612,13:23,13:26,EST,0.151,0.005,0,100,Changed from 13:21,Ward PNNL,"Rodrigo, Glory, Karen, Aliyah"
+Seawater,E6,S7,D3PM,20240612,13:24,13:31,EST,0.503,0.551,0,100,Changed from 13:23,Am Uni,KAM
+Seawater,C5,S2,D3PM,20240612,13:41,13:47,EST,0.454,0,0,100,Changed from 13:40,Am Uni,KAM
+Seawater,C6,S8,D3PM,20240612,13:51,13:55,EST,0.18,0.01,0,100,Changed from 13:50,Am Uni,KAM
+Seawater,A2,S13,D3PM,20240612,14:00,14:04,EST,0.619,0.007,0,100,Changed from 13:59,Am Uni,KAM
+Seawater,C2,S16,D3PM,20240612,14:07,14:12,EST,0.595,0.014,0,100,Changed from 14:06,Am Uni,KAM
+Seawater,D1,S17,D3PM,20240612,14:15,14:19,EST,0.23,0.039,0,100,Changed from 14:14,Am Uni,KAM
+Seawater,F2,S9,D3PM,20240612,14:23,14:27,EST,0.383,0.006,0,100,Changed from 14:22,Am Uni,KAM
+Seawater,I2,S14,D3PM,20240612,14:32,14:36,EST,0.6,0.002,0,100,Changed from 14:31,Am Uni,KAM
+Seawater,G6,S6,D3PM,20240612,14:40,14:44,EST,0.978,-0.001,0,100,Changed from 14:39,Am Uni,KAM
+Seawater,G5,S10,D3PM,20240612,14:47,14:51,EST,0.293,0.011,0,100,Changed from 14:46,Am Uni,KAM
+Seawater,F7,S1,D3PM,20240612,14:54,14:58,EST,0.817,0.006,0,100,Changed from 14:53,Am Uni,KAM
+Seawater,F6,S11,D3PM,20240612,15:02,15:06,EST,0.614,0.02,0,100,Changed from 15:01,Am Uni,KAM
+Seawater,E6,S4,D3PM,20240612,15:10,15:14,EST,0.621,0.012,0,100,Changed from 15:09,Am Uni,KAM
+Seawater,E5,S18,D3PM,20240612,15:17,15:21,EST,0.457,0.003,0,100,CH4 jagged; changed from 15:16,Am Uni,KAM
+Seawater,E5,S3,D3PM,20240612,15:26,15:30,EST,0.777,-0.001,0,100,Changed from 15:25,Am Uni,KAM
+Seawater,F5,S5,D3PM,20240612,15:33,15:38,EST,1.176,0.013,0,100,Changed from 15:32,Am Uni,KAM
+Seawater,F4,S12,D3PM,20240612,15:40,15:44,EST,0.563,0.011,0,100,Changed from 15:39,Am Uni,KAM
+Seawater,E4,S15,D3PM,20240612,15:47,15:51,EST,0.772,0.005,0,100,Changed from 15:46,Am Uni,KAM
+Control,F5,C1,D4_AM,20240613,9:01,9:06,EST,0.785,0.146,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,F5,C2,D4_AM,20240613,8:53,8:58,EST,0.616,0.017,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,B7,C6,D4_AM,20240613,9:36,9:42,EST,0.521,0.006,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,B7,C14,D4_AM,20240613,9:47,9:52,EST,0.729,0.015,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,E4,C16,D4_AM,20240613,9:18,9:23,EST,1.118,-0.001,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,F6,C17,D4_AM,20240613,9:10,9:15,EST,0.667,0.007,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,A1,C19,D4_AM,20240613,9:56,10:01,EST,0.134,0.015,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,D4,C10,D4_AM,20240613,10:36,10:41,EST,0.307,0.002,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,G3,C12,D4_AM,20240613,8:03,8:08,EST,0.081,0.04,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,C5,C3,D4_AM,20240613,9:27,9:32,EST,0.668,-0.001,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,H4,C4,D4_AM,20240613,8:43,8:48,EST,0.78,-0.003,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,I3,C5,D4_AM,20240613,8:33,8:39,EST,0.223,0,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,B8,C13,D4_AM,20240613,10:28,10:33,EST,0.471,0.019,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,A4,C15,D4_AM,20240613,10:19,10:24,EST,0.542,0.04,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,N of G1,C18,D4_AM,20240613,8:23,8:28,EST,0.593,0.016,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,B3,C7,D4_AM,20240613,10:44,10:49,EST,0.48,0,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,W of A1,C9,D4_AM,20240613,10:06,10:11,EST,0.164,0.013,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Control,F2,C11,D4_AM,20240613,8:13,8:19,EST,0.45,0,0,100,,Louise,"Max Wegner, Loretta Battaglia"
+Freshwater,H5,F1,D4_AM,20240613,10:43,10:48,EST,0.787,0.016,0,100,,Nick,Evan Phillips
+Freshwater,G3,F5,D4_AM,20240613,10:10,10:15,EST,0.996,0.002,0,100,,Nick,Evan Phillips
+Freshwater,D6,F6,D4_AM,20240613,9:14,9:19,EST,0.518,0.017,0,100,,Nick,Evan Phillips
+Freshwater,A6,F15,D4_AM,20240613,8:45,8:50,EST,0.535,0.004,0,100,,Nick,Evan Phillips
+Freshwater,H4,F16,D4_AM,20240613,10:29,10:34,EST,0.487,0.1,0,100,,Nick,Evan Phillips
+Freshwater,H8,F18,D4_AM,20240613,11:28,11:33,EST,0.532,0.034,0,100,,Nick,Evan Phillips
+Freshwater,B5,F7,D4_AM,20240613,8:28,8:33,EST,0.224,0.005,0,100,,Nick,Evan Phillips
+Freshwater,F6,F11,D4_AM,20240613,11:20,11:25,EST,0.576,0.056,0,100,"wiggly flux, tried twice",Nick,Evan Phillips
+Freshwater,F2,F12,D4_AM,20240613,9:48,9:53,EST,0.492,0.002,0,100,,Nick,Evan Phillips
+Freshwater,G6,F2,D4_AM,20240613,11:05,11:10,EST,0.718,0.002,0,100,,Nick,Evan Phillips
+Freshwater,D5,F3,D4_AM,20240613,9:25,9:30,EST,0.679,0.002,0,100,,Nick,Evan Phillips
+Freshwater,E2,F4,D4_AM,20240613,10:02,10:01,EST,0.588,0,0,100,,Nick,Evan Phillips
+Freshwater,D6,F13,D4_AM,20240613,9:06,9:11,EST,0.452,0.021,0,100,,Nick,Evan Phillips
+Freshwater,D7,F14,D4_AM,20240613,9:38,9:43,EST,0.24,0.005,0,100,,Nick,Evan Phillips
+Freshwater,I6,F17,D4_AM,20240613,10:55,11:00,EST,0.642,0,0,100,,Nick,Evan Phillips
+Freshwater,B4,F8,D4_AM,20240613,8:56,9:01,EST,0.116,0.014,0,100,,Nick,Evan Phillips
+Freshwater,G3,F9,D4_AM,20240613,10:19,10:24,EST,0.326,0,0,100,,Nick,Evan Phillips
+Freshwater,F8,F10,D4_AM,20240613,8:05,8:10,EST,0.122,0.004,0,100,,Nick,Evan Phillips
+Seawater,F7,S1,D4_AM,20240613,9:13,9:18,EST,0.68,0.006,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,C5,S2,D4_AM,20240613,8:23,8:28,EST,0.396,0,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,E5,S3,D4_AM,20240613,10:39,10:44,EST,0.673,0.002,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,A2,S13,D4_AM,20240613,12:04,12:09,EST,0.823,0.009,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,I2,S14,D4_AM,20240613,11:12,11:17,EST,0.74,0.002,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,C2,S16,D4_AM,20240613,11:44,11:49,EST,0.693,0.015,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,E6,S7,D4_AM,20240613,8:45,8:50,EST,0.564,0.684,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,F2,S9,D4_AM,20240613,11:23,11:28,EST,0.398,0.006,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,G5,S10,D4_AM,20240613,9:38,9:43,EST,0.262,0.015,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,E6,S4,D4_AM,20240613,10:27,10:32,EST,0.653,0.011,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,F5,S5,D4_AM,20240613,10:50,10:55,EST,0.875,0.025,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,G6,S6,D4_AM,20240613,9:57,10:02,EST,1.071,-0.001,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,E4,S15,D4_AM,20240613,11:33,11:38,EST,0.82,0.003,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,D1,S17,D4_AM,20240613,11:55,12:00,EST,0.273,0.048,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,E5,S18,D4_AM,20240613,10:14,10:19,EST,0.457,0.003,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,C6,S8,D4_AM,20240613,8:11,8:16,EST,0.198,0.012,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,F6,S11,D4_AM,20240613,9:00,9:05,EST,0.654,0.027,0,100,,AM.UNI.,Sam Wright; Peyton
+Seawater,F4,S12,D4_AM,20240613,11:00,11:05,EST,0.591,0.013,0,100,somewhat wonky CO2 ,AM.UNI.,Sam Wright; Peyton
+Control,F5,C1,D4_PM,20240613,13:59,14:04,EST,0.895,0.189,0,100,,,
+Control,F5,C2,D4_PM,20240613,13:50,13;55,EST,0.846,0.015,0,100,,,
+Control,B7,C6,D4_PM,20240613,15:14,15:19,EST,0.61,0.009,0,100,,,
+Control,B7,C14,D4_PM,20240613,15:22,15:27,EST,0.837,0.014,0,100,,,
+Control,E4,C16,D4_PM,20240613,14:15,14:20,EST,1.281,-0.001,0,100,,,
+Control,F6,C17,D4_PM,20240613,14:07,14:12,EST,0.792,0.007,0,100,,,
+Control,A1,C19,D4_PM,20240613,14:49,14;54,EST,0.185,0.019,0,100,,,
+Control,D4,C10,D4_PM,20240613,14:23,14:28,EST,0.328,0.002,0,100,,,
+Control,G3,C12,D4_PM,20240613,13:31,13:36,EST,0.134,0.048,0,100,,,
+Control,C5,C3,D4_PM,20240613,14:31,14:36,EST,0.779,0.001,0,100,,,
+Control,H4,C4,D4_PM,20240613,13:04,13:09,EST,0.917,-0.002,0,100,,,
+Control,I3,C5,D4_PM,20240613,13:12,13:17,EST,0.286,0,0,100,,,
+Control,B8,C13,D4_PM,20240613,15:31,15:36,EST,0.547,0.018,0,100,,,
+Control,A4,C15,D4_PM,20240613,15:05,15:10,EST,0.631,0.039,0,100,,,
+Control,N of G1,C18,D4_PM,20240613,13:21,13:26,EST,0.706,0.015,0,100,,,
+Control,B3,C7,D4_PM,20240613,14;39,14:45,EST,0.573,0,0,100,,,
+Control,W of A1,C9,D4_PM,20240613,14:57,15:02,EST,0.225,0.017,0,100,,,
+Control,F2,C11,D4_PM,20240613,13:39,13:47,EST,0.702,0,0,100,,,
+Freshwater,B5,F7,D4_PM,20240613,13:57,14:02,EST,0.37,0.006,0,100,,,
+Freshwater,F8,F10,D4_PM,20240613,14:15,14:20,EST,0.2,0.804,0,100,,,
+Freshwater,D7,F14,D4_PM,20240613,14:23,14:28,EST,0.306,0.004,0,100,,,
+Freshwater,B4,F8,D4_PM,20240613,14:35,14:40,EST,0.168,-0.014,0,100,,,
+Freshwater,A6,F15,D4_PM,20240613,14:52,14:57,EST,0.689,0.003,0,100,,,
+Freshwater,D6,F13,D4_PM,20240613,15:02,15:07,EST,0.531,0.019,0,100,,,
+Freshwater,D6,F6,D4_PM,20240613,15:13,15:18,EST,0.694,0.025,0,100,,,
+Freshwater,D5,F3,D4_PM,20240613,15:24,15:29,EST,0.917,0.003,0,100,,,
+Freshwater,F6,F11,D4_PM,20240613,15:33,15:38,EST,0.737,0.056,0,100,,,
+Freshwater,F2,F12,D4_PM,20240613,15:51,15:56,EST,0.677,0.001,0,100,,,
+Freshwater,E2,F4,D4_PM,20240613,16:03,16:08,EST,1.082,-0.001,0,100,,,
+Freshwater,H8,F18,D4_PM,20240613,17:04,17:09,EST,0.571,0.035,0,100,BBL corrected; see https://github.com/COMPASS-DOE/TEMPEST/issues/142,,
+Freshwater,G3,F9,D4_PM,20240613,16:13,16:18,EST,0.502,0,0,100,,,
+Freshwater,H4,F16,D4_PM,20240613,16:21,16:26,EST,0.591,0.094,0,100,,,
+Freshwater,G3,F5,D4_PM,20240613,16:30,16:35,EST,1.202,0.003,0,100,,,
+Freshwater,H5,F1,D4_PM,20240613,16:37,16:42,EST,1.11,0.024,0,100,written slopes are estimates; phone issues,,
+Freshwater,G6,F2,D4_PM,20240613,16:49,16:54,EST,0.901,0.001,0,100,,,
+Freshwater,I6,F17,D4_PM,20240613,16:57,17:02,EST,0.759,-0.001,0,100,,,
+Seawater,F7,S1,D4_PM,20240613,15:09,15:14,EST,0.99,0.006,0,100,,,
+Seawater,C5,S2,D4_PM,20240613,14:57,15:02,EST,0.664,0,0,100,,,
+Seawater,E5,S3,D4_PM,20240613,14:45,14:50,EST,1.001,0,0,100,,,
+Seawater,A2,S13,D4_PM,20240613,13:44,13:49,EST,0.876,0.01,0,100,,,
+Seawater,I2,S14,D4_PM,20240613,14:04,14:09,EST,0.744,0.003,0,100,,,
+Seawater,C2,S16,D4_PM,20240613,13:34,13:39,EST,0.8,0.016,0,100,,,
+Seawater,E6,S7,D4_PM,20240613,16:22,16:27,EST,0.888,0.741,0,100,,,
+Seawater,F2,S9,D4_PM,20240613,13:15,13:20,EST,0.472,0.006,0,100,,,
+Seawater,G5,S10,D4_PM,20240613,14:24,14:29,EST,0.366,0.015,0,100,,,
+Seawater,E6,S4,D4_PM,20240613,16:12,16:17,EST,0.911,0.014,0,100,,,
+Seawater,F5,S5,D4_PM,20240613,15:40,15:45,EST,1.301,0.049,0,100,,,
+Seawater,G6,S6,D4_PM,20240613,14:14,14:19,EST,1.652,-0.002,0,100,,,
+Seawater,E4,S15,D4_PM,20240613,13:53,13:58,EST,0.987,0.003,0,100,,,
+Seawater,D1,S17,D4_PM,20240613,13:25,13:30,EST,0.3,0.05,0,100,,,
+Seawater,E5,S18,D4_PM,20240613,15:52,15:57,EST,0.607,0.004,0,100,,,
+Seawater,C6,S8,D4_PM,20240613,16:00,16:05,EST,0.351,0.016,0,100,,,
+Seawater,F6,S11,D4_PM,20240613,15:30,15:35,EST,1.069,0.031,0,100,,,
+Seawater,F4,S12,D4_PM,20240613,14:34,14:39,EST,0.842,0.015,0,100,,,
+Control,F5,C1,D5_AM,20240614,11:11,11:16,EST,0.908,0.184,0,100,,Louise,Sam Wright
+Control,F5,C2,D5_AM,20240614,11:02,11:07,EST,0.828,0.016,0,100,,Louise,Sam Wright
+Control,B7,C6,D5_AM,20240614,9:38,9:43,EST,0.584,0.009,0,100,,Louise,Sam Wright
+Control,B7,C14,D5_AM,20240614,9:48,9:53,EST,0.863,0.017,0,100,,Louise,Sam Wright
+Control,E4,C16,D5_AM,20240614,10:41,10:46,EST,1.28,0,0,100,,Louise,Sam Wright
+Control,F6,C17,D5_AM,20240614,10:51,10:56,EST,0.839,0.008,0,100,,Louise,Sam Wright
+Control,A1,C19,D5_AM,20240614,9:02,9:07,EST,0.167,0.018,0,100,,Louise,Sam Wright
+Control,D4,C10,D5_AM,20240614,10:32,10:37,EST,0.356,0.003,0,100,,Louise,Sam Wright
+Control,G3,C12,D5_AM,20240614,8:22,8:27,EST,0.113,0.045,0,100,,Louise,Sam Wright
+Control,C5,C3,D5_AM,20240614,10:07,10:12,EST,0.529,-0.001,0,100,,Louise,Sam Wright
+Control,H4,C4,D5_AM,20240614,11:23,11:28,EST,0.973,-0.002,0,100,,Louise,Sam Wright
+Control,I3,C5,D5_AM,20240614,11:31,11:36,EST,0.296,0,0,100,,Louise,Sam Wright
+Control,B8,C13,D5_AM,20240614,9:57,10:02,EST,0.545,0.021,0,100,,Louise,Sam Wright
+Control,A4,C15,D5_AM,20240614,9:25,9:30,EST,0.663,0.045,0,100,,Louise,Sam Wright
+Control,N of G1,C18,D5_AM,20240614,8:51,8:56,EST,0.749,0.017,0,100,,Louise,Sam Wright
+Control,B3,C7,D5_AM,20240614,10:23,10:28,EST,0.549,0,0,100,,Louise,Sam Wright
+Control,W of A1,C9,D5_AM,20240614,9:13,9:18,EST,0.237,0.018,0,100,,Louise,Sam Wright
+Control,F2,C11,D5_AM,20240614,8:33,8:38,EST,0.569,0,0,100,,Louise,Sam Wright
+Freshwater,H5,F1,D5_AM,20240614,9:53,9:56,EST,0.964,0.017,0,100,Changed from 9:51,Nick,Nick Ward
+Freshwater,G3,F5,D5_AM,20240614,9:42,9:45,EST,1.137,0.002,0,100,Changed from 9:40,Nick,Nick Ward
+Freshwater,D6,F6,D5_AM,20240614,9:02,9:05,EST,0.585,0.023,0,100,Changed from 9:00,Nick,Nick Ward
+Freshwater,A6,F15,D5_AM,20240614,8:40,8:43,EST,0.714,0.005,0,100,Changed from 8:38,Nick,Nick Ward
+Freshwater,H4,F16,D5_AM,20240614,9:33,9:37,EST,0.597,0.116,0,100,Changed from 9:31,Nick,Nick Ward
+Freshwater,H8,F18,D5_AM,20240614,10:19,10:23,EST,0.605,0.038,0,100,Changed from 10:17,Nick,Nick Ward
+Freshwater,B5,F7,D5_AM,20240614,8:31,8:34,EST,0.311,0.004,0,100,Changed from 8:29,Nick,Nick Ward
+Freshwater,F6,F11,D5_AM,20240614,10:28,10:31,EST,0.672,0.065,0,100,Changed from 10:26,Nick,Nick Ward
+Freshwater,F2,F12,D5_AM,20240614,11:11,11:14,EST,0.775,0.001,0,100,Changed from 11:09,Nick,Nick Ward
+Freshwater,G6,F2,D5_AM,20240614,10:12,10:15,EST,0.875,0.003,0,100,Changed from 10:10,Nick,Nick Ward
+Freshwater,D5,F3,D5_AM,20240614,10:37,10:41,EST,0.895,0.005,0,100,Changed from 10:35,Nick,Nick Ward
+Freshwater,E2,F4,D5_AM,20240614,11:01,11:07,EST,1.116,0.001,0,100,Changed from 10:59,Nick,Nick Ward
+Freshwater,D6,F13,D5_AM,20240614,10:49,10:55,EST,0.602,0.022,0,100,Changed from 10:47,Nick,Nick Ward
+Freshwater,D7,F14,D5_AM,20240614,9:11,9:17,EST,0.311,0.005,0,100,Changed from 9:09,Nick,Nick Ward
+Freshwater,I6,F17,D5_AM,20240614,10:01,10:06,EST,0.753,-0.001,0,100,Changed from 9:59,Nick,Nick Ward
+Freshwater,B4,F8,D5_AM,20240614,8:49,8:52,EST,0.189,0.016,0,100,Changed from 8:47,Nick,Nick Ward
+Freshwater,G3,F9,D5_AM,20240614,9:22,9:25,EST,0.447,0.001,0,100,Changed from 9:20,Nick,Nick Ward
+Freshwater,F8,F10,D5_AM,20240614,8:21,8:24,EST,0.148,0.005,0,100,Changed from 8:19,Nick,Nick Ward
+Seawater,F7,S1,D5_AM,20240614,11:01,11:06,EST,0.954,0.008,0,100,,AM UNI,Max Wegner
+Seawater,C5,S2,D5_AM,20240614,9:16,9:21,EST,0.589,0.001,0,100,,AM UNI,Max Wegner
+Seawater,E5,S3,D5_AM,20240614,9:37,9:42,EST,0.754,0.003,0,100,,AM UNI,Max Wegner
+Seawater,A2,S13,D5_AM,20240614,9:06,9:11,EST,0.853,0.009,0,100,,AM UNI,Max Wegner
+Seawater,I2,S14,D5_AM,20240614,8:39,8:44,EST,0.822,0.003,0,100,,AM UNI,Max Wegner
+Seawater,C2,S16,D5_AM,20240614,8:57,9:02,EST,0.799,0.017,0,100,,AM UNI,Max Wegner
+Seawater,E6,S7,D5_AM,20240614,9:25,9:30,EST,0.756,0.786,0,100,,AM UNI,Max Wegner
+Seawater,F2,S9,D5_AM,20240614,8:29,8:34,EST,0.476,0.009,0,100,,AM UNI,Max Wegner
+Seawater,G5,S10,D5_AM,20240614,10:33,10:38,EST,0.325,0.015,0,100,,AM UNI,Max Wegner
+Seawater,E6,S4,D5_AM,20240614,10:15,10:20,EST,0.811,0.016,0,100,,AM UNI,Max Wegner
+Seawater,F5,S5,D5_AM,20240614,10:05,10:10,EST,0.997,0.159,0,100,,AM UNI,Max Wegner
+Seawater,G6,S6,D5_AM,20240614,10:42,10:47,EST,1.427,-0.002,0,100,,AM UNI,Max Wegner
+Seawater,E4,S15,D5_AM,20240614,9:47,9:52,EST,0.873,0.002,0,100,,AM UNI,Max Wegner
+Seawater,D1,S17,D5_AM,20240614,8:48,8:53,EST,0.323,0.057,0,100,,AM UNI,Max Wegner
+Seawater,E5,S18,D5_AM,20240614,10:24,10:29,EST,0.604,0.003,0,100,,AM UNI,Max Wegner
+Seawater,C6,S8,D5_AM,20240614,8:20,8:26,EST,0.223,0.008,0,100,,AM UNI,Max Wegner
+Seawater,F6,S11,D5_AM,20240614,10:50,10:57,EST,0.759,0.023,0,100,,AM UNI,Max Wegner
+Seawater,F4,S12,D5_AM,20240614,9:56,10:01,EST,0.553,0.014,0,100,,AM UNI,Max Wegner
+Control,F5,C1,D5_PM,20240614,15:04,15:09,EST,0.939,0.205,0,100,,Louise,Sam Wright
+Control,F5,C2,D5_PM,20240614,14:56,15:01,EST,9.17,0.015,0,100,,Louise,Sam Wright
+Control,B7,C6,D5_PM,20240614,15:37,15:42,EST,0.643,0.014,0,100,,Louise,Sam Wright
+Control,B7,C14,D5_PM,20240614,15:27,15:32,EST,0.849,0.016,0,100,,Louise,Sam Wright
+Control,E4,C16,D5_PM,20240614,15:57,16:02,EST,1.318,0,0,100,,Louise,Sam Wright
+Control,F6,C17,D5_PM,20240614,15:16,15:21,EST,0.873,0.008,0,100,,Louise,Sam Wright
+Control,A1,C19,D5_PM,20240614,16:35,16:40,EST,0.241,0.022,0,100,,Louise,Sam Wright
+Control,D4,C10,D5_PM,20240614,14:34,14:39,EST,0.358,0.003,0,100,,Louise,Sam Wright
+Control,G3,C12,D5_PM,20240614,13:11,13:16,EST,0.148,0.055,0,100,,Louise,Sam Wright
+Control,C5,C3,D5_PM,20240614,16:26,16:31,EST,0.886,-0.002,0,100,,Louise,Sam Wright
+Control,H4,C4,D5_PM,20240614,16:06,16:11,EST,0.983,-0.003,0,100,,Louise,Sam Wright
+Control,I3,C5,D5_PM,20240614,16:16,16:21,EST,0.318,0,0,100,,Louise,Sam Wright
+Control,B8,C13,D5_PM,20240614,14:24,14:29,EST,0.593,0.02,0,100,,Louise,Sam Wright
+Control,A4,C15,D5_PM,20240614,13:53,13:58,EST,0.705,0.044,0,100,,Louise,Sam Wright
+Control,N of G1,C18,D5_PM,20240614,13:31,13:36,EST,0.788,0.015,0,100,,Louise,Sam Wright
+Control,B3,C7,D5_PM,20240614,14:14,14:19,EST,0.642,0,0,100,,Louise,Sam Wright
+Control,W of A1,C9,D5_PM,20240614,13:41,13:46,EST,0.318,0.02,0,100,,Louise,Sam Wright
+Control,F2,C11,D5_PM,20240614,13:21,13:26,EST,0.724,0.001,0,100,,Louise,Sam Wright
+Freshwater,H5,F1,D5_PM,20240614,15:21,15:25,EST,1.124,0.025,0,100,Changed from 15:19,Nick,Rodrigo Vargas
+Freshwater,G3,F5,D5_PM,20240614,14:54,14:47,EST,1.308,0.004,0,100,Changed from 14:52,Nick,Rodrigo Vargas
+Freshwater,D6,F6,D5_PM,20240614,14:06,14:09,EST,0.773,0.033,0,100,Changed from 14:04,Nick,Rodrigo Vargas
+Freshwater,A6,F15,D5_PM,20240614,13:23,13:36,EST,0.669,0.003,0,100,Changed from 13:21,Nick,Rodrigo Vargas
+Freshwater,H4,F16,D5_PM,20240614,15:11,13:14,EST,0.567,0.096,0,100,Changed from 15:09,Nick,Rodrigo Vargas
+Freshwater,H8,F18,D5_PM,20240614,15:37,15:42,EST,0.588,0.035,0,100,Changed from 15:35,Nick,Rodrigo Vargas
+Freshwater,B5,F7,D5_PM,20240614,13:15,13:18,EST,0.346,0.002,0,100,Changed from 13:13,Nick,Rodrigo Vargas
+Freshwater,F6,F11,D5_PM,20240614,14:22,14:25,EST,0.865,0.064,0,100,Changed from 14:20,Nick,Rodrigo Vargas
+Freshwater,F2,F12,D5_PM,20240614,14:46,14:49,EST,0.896,0.001,0,100,Changed from 14:44,Nick,Rodrigo Vargas
+Freshwater,G6,F2,D5_PM,20240614,15:49,15:55,EST,0.974,0.001,0,100,Changed from 15:47,Nick,Rodrigo Vargas
+Freshwater,D5,F3,D5_PM,20240614,14:14,14:17,EST,1.122,0.007,0,100,Changed from 14:12,Nick,Rodrigo Vargas
+Freshwater,E2,F4,D5_PM,20240614,14:38,14:42,EST,1.203,0,0,100,Changed from 14:36,Nick,Rodrigo Vargas
+Freshwater,D6,F13,D5_PM,20240614,13:52,13:55,EST,0.631,0.02,0,100,Changed from 13:50,Nick,Rodrigo Vargas
+Freshwater,D7,F14,D5_PM,20240614,13:59,14:02,EST,0.357,0.004,0,100,Changed from 13:57,Nick,Rodrigo Vargas
+Freshwater,I6,F17,D5_PM,20240614,15:30,15:33,EST,0.814,-0.002,0,100,Changed from 15:28,Nick,Rodrigo Vargas
+Freshwater,B4,F8,D5_PM,20240614,13:40,13:47,EST,0.213,0.015,0,100,Changed from 13:38,Nick,Rodrigo Vargas
+Freshwater,G3,F9,D5_PM,20240614,15:02,15:05,EST,0.56,0.001,0,100,Changed from 15:00,Nick,Rodrigo Vargas
+Freshwater,F8,F10,D5_PM,20240614,14:29,14:33,EST,0.2,0.003,0,100,Changed from 14:27,Nick,Rodrigo Vargas
+Seawater,F7,S1,D5_PM,20240614,15:26,15:31,EST,1.143,0.007,0,100,,AM. Univ.,Nick Ward
+Seawater,C5,S2,D5_PM,20240614,13:32,13:37,EST,0.78,0,0,100,,AM. Univ.,Nick Ward
+Seawater,E5,S3,D5_PM,20240614,14:42,14:47,EST,1.182,-0.001,0,100,,AM. Univ.,Nick Ward
+Seawater,A2,S13,D5_PM,20240614,13:44,13:49,EST,0.924,0.009,0,100,,AM. Univ.,Nick Ward
+Seawater,I2,S14,D5_PM,20240614,15:40,15:45,EST,0.949,0.001,0,100,,AM. Univ.,Nick Ward
+Seawater,C2,S16,D5_PM,20240614,13:53,13:58,EST,0.905,0.017,0,100,,AM. Univ.,Nick Ward
+Seawater,E6,S7,D5_PM,20240614,14:28,14:33,EST,0.933,0.795,30,70,,AM. Univ.,Nick Ward
+Seawater,F2,S9,D5_PM,20240614,14:07,14:12,EST,0.627,0.007,0,100,,AM. Univ.,Nick Ward
+Seawater,G5,S10,D5_PM,20240614,15:03,15:08,EST,0.423,0.021,20,80,,AM. Univ.,Nick Ward
+Seawater,E6,S4,D5_PM,20240614,14:55,16:00,EST,1.065,0.016,20,80,,AM. Univ.,Nick Ward
+Seawater,F5,S5,D5_PM,20240614,14:21,14:26,EST,1.461,0.21,20,80,,AM. Univ.,Nick Ward
+Seawater,G6,S6,D5_PM,20240614,15:10,15:15,EST,1.622,-0.002,20,80,,AM. Univ.,Nick Ward
+Seawater,E4,S15,D5_PM,20240614,14:14,14:19,EST,1.12,0.003,30,70,,AM. Univ.,Nick Ward
+Seawater,D1,S17,D5_PM,20240614,14:00,14:05,EST,0.34,0.054,10,90,,AM. Univ.,Nick Ward
+Seawater,E5,S18,D5_PM,20240614,14:49,14:54,EST,0.706,0.004,0,100,,AM. Univ.,Nick Ward
+Seawater,C6,S8,D5_PM,20240614,13:20,13:27,EST,0.324,0.014,0,100,,AM. Univ.,Nick Ward
+Seawater,F6,S11,D5_PM,20240614,15:18,15:23,EST,0.939,0.027,10,90,,AM. Univ.,Nick Ward
+Seawater,F4,S12,D5_PM,20240614,15:33,15:38,EST,0.884,0.014,30,70,,AM. Univ.,Nick Ward
