@@ -96,7 +96,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
 
 results <- list()
 for(i in seq_len(nrow(tfpi))) {
-    #i <- 1
+   # i <- 10
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -251,7 +251,7 @@ for(i in seq_len(nrow(tfpi))) {
         results[[i]]
 
 } # for
-
+#stop("OK")
 
 # ---- Wrap up ----
 message("Done with processing")
