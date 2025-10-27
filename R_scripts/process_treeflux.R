@@ -56,6 +56,9 @@ meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
                    col_types = "ccccccddcc")
 meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
+meta2125 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
+                     col_types = "ccccccdd__dddc", na = c("N/A", "n/a"))
+
 # meta24 has a different format; rework it to match others
 meta24 %>%
     select(-grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
@@ -69,8 +72,21 @@ meta24 %>%
                                    substr(collection_date, 1, 4), sep = "/")) ->
     meta24
 
+# meta2125 has a different format; rework it to match others
+meta2125 %>%
+    select(plot = Plot, ID, collection_date = Date,
+           start_time = `Start Time`, end_time = `End Time`,
+           -`Tubing length (cm)`) %>%
+    filter(!is.na(start_time)) %>%
+    # change period to colons in the time columns and remove seconds
+    mutate(start_time = gsub(".", ":", start_time, fixed = TRUE),
+           start_time = gsub(":[0-9]{2}$", "", start_time),
+           end_time = gsub(".", ":", end_time, fixed = TRUE),
+           end_time = gsub(":[0-9]{2}$", "", end_time)) ->
+    meta2125
+
 meta22 %>%
-    bind_rows(meta23, meta24) %>%
+    bind_rows(meta23, meta24, meta2125) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
     # we will get time zone information from treeflux-processing-info.csv
