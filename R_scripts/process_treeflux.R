@@ -1,7 +1,7 @@
 # process_treeflux.R
 # Script to process raw Licor files into
 # ready-for-analysis data matched with metadata
-# KAM 2025
+# KAM/BBL 2025
 
 # install.packages("remotes")
 # remotes::install_github("COMPASS-DOE/fluxfinder")
@@ -40,8 +40,10 @@ if(!exists("tree_data_raw")) {
     lapply(files, read_file) %>%
         bind_rows() %>%
         as_tibble() %>%
-        # although the Licor's timezone settings are "America/New_York" this
-        # is incorrect -- they *should be* maintained at EST. So change this
+        # although the Licor's timezone settings vary, assume that
+        # they are maintained EST. This is just a temporary
+        # standardization; below we re-set the time zone based on
+        # the entry in the treeflux-processing-info.csv file
         mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST"), TZ = "EST") ->
         tree_data_raw
 }
@@ -94,157 +96,159 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
 
 results <- list()
 for(i in seq_len(nrow(tfpi))) {
-#i <- 1
+    #i <- 1
 
-I_STR <- sprintf("%02s", i)
-FILE <- tfpi$File[i]
-DATE <- tfpi$Date[i]
-TIMEPOINT <- tfpi$Timepoint[i]
-PLOT <- tfpi$Plot[i]
-MD_TZ <- tfpi$Metadata_tz[i]
-INS_TZ <- tfpi$Instrument_tz[i]
-NOTES <- tfpi$Notes[i]
+    I_STR <- sprintf("%02s", i)
+    FILE <- tfpi$File[i]
+    DATE <- tfpi$Date[i]
+    TIMEPOINT <- tfpi$Timepoint[i]
+    PLOT <- tfpi$Plot[i]
+    MD_TZ <- tfpi$Metadata_tz[i]
+    INS_TZ <- tfpi$Instrument_tz[i]
+    NOTES <- tfpi$Notes[i]
 
-message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
+    message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
-# Filter to one Licor file and one day for testing
-tree_data_raw %>%
-    filter(File == FILE) %>%
-    filter(date(TIMESTAMP) == DATE) ->
-    tree_data_filtered
-message("\t", nrow(tree_data_filtered), " rows of data")
-
-# ---- Licor data time zone conversion, if needed ----
-if(INS_TZ != "EST") {
-    message("\tConverting instrument times from ", INS_TZ, " to EST")
-    tree_data_filtered$TIMESTAMP <- force_tz(tree_data_filtered$TIMESTAMP, tzone = INS_TZ)
-    tree_data_filtered$TIMESTAMP <- with_tz(tree_data_filtered$TIMESTAMP, tzone = "EST")
-}
-
-# Here and below, we use CO2 for plotting because we *know* it has
-# to be emitted, not taken up, by tree stems, which makes it easier
-# to diagnose matching problems
-ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
-    geom_point(na.rm = TRUE) +
-    ylim(300, 1000) +
-    ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT),
-            subtitle = NOTES)
-
-# ---- Filter metadata for the same day ----
-md %>%
-    filter(date(start_timestamp) == DATE,
-           timepoint == TIMEPOINT,
-           plot == PLOT) ->
-    md_filtered
-message("\t", nrow(md_filtered), " rows of metadata")
-
-# ---- Metadata time zone conversion, if needed ----
-if(MD_TZ != "EST") {
-    message("\tConverting metadata times from ", MD_TZ, " to EST")
-    md_filtered$start_timestamp <- force_tz(md_filtered$start_timestamp, tzone = MD_TZ)
-    md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
-    md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
-    md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
-}
-
-# Construct start timestamps needed by ffi_metadata_match
-md_filtered %>%
-    mutate(start_times = paste(hour(start_timestamp),
-                               minute(start_timestamp),
-                               second(start_timestamp), sep = ":")) ->
-    md_filtered
-# ---- matchy match? ----
-message("\tMatching...")
-tree_data_filtered$match <-
-    ffi_metadata_match(
-        data_timestamps = tree_data_filtered$TIMESTAMP,
-        start_dates = as.character(date(md_filtered$start_timestamp)),
-        start_times = md_filtered$start_times,
-        # to start, match 100 seconds of data
-        # this will be refined using the dead_band and obs_length
-        # entries in the metadata files
-        obs_lengths = rep(100, nrow(md_filtered))
-    )
-
-# Add ID information to the Licor data
-tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
-tree_data_filtered$num_ID <- paste0(tree_data_filtered$match, " (", tree_data_filtered$ID, ")")
-tree_data_filtered$num_ID[is.na(tree_data_filtered$match)] <- NA
-
-# ---- Duplication check ----
-message("\tChecking for multiple observations per timestamp")
-matched_data <- tree_data_filtered %>% filter(!is.na(match))
-if(any(duplicated(matched_data$TIMESTAMP))) {
-    # If the 7810's time zone settings gets changed during use,
-    # the instrument writes multiple observations per timestamp
-    # It *seems* that the last observation is the one we want to keep
-    tree_data_filtered %>%
-        group_by(TIMESTAMP) %>%
-        mutate(obsrep = 1:n()) -> x
-    message("\t", sum(x$obsrep > 1), " of ", nrow(tree_data_filtered), " timestamps with duplicate entries")
-    # Keep only the last observation
-    x %>%
-        group_by(TIMESTAMP) %>%
-        filter(obsrep == n()) %>%
-        select(-obsrep) ->
+    # Filter to one Licor file and one day for testing
+    tree_data_raw %>%
+        filter(File == FILE) %>%
+        filter(date(TIMESTAMP) == DATE) ->
         tree_data_filtered
-    warning("De-duplicated data in ", i, ": multiple obs per timestamp!")
-}
+    message("\t", nrow(tree_data_filtered), " rows of data")
 
-# ---- Diagnostic plot 1: color data by match ----
-p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
-    geom_point(na.rm = TRUE) +
-    ylim(300, 1000) +
-    ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
-            subtitle = NOTES)
-print(p1)
+    # ---- Change Licor data time zone, if needed ----
+    if(INS_TZ != "EST") {
+        message("\tConverting instrument times from ", INS_TZ, " to EST")
+        tree_data_filtered$TIMESTAMP <- force_tz(tree_data_filtered$TIMESTAMP, tzone = INS_TZ)
+        tree_data_filtered$TIMESTAMP <- with_tz(tree_data_filtered$TIMESTAMP, tzone = "EST")
+    }
 
-FN_ROOT <- paste(DATE, TIMEPOINT, PLOT, sep = "_")
-fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
-message("\tSaving ", basename(fn), "...")
-ggsave(fn, width = 10, height = 6)
+    # Here and below, we use CO2 for plotting because we *know* it has
+    # to be emitted, not taken up, by tree stems, which makes it easier
+    # to diagnose matching problems
+    ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+        geom_point(na.rm = TRUE) +
+        ylim(300, 1000) +
+        ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT),
+                subtitle = NOTES)
 
-# Detail plot
-tree_data_filtered %>% filter(!is.na(match)) -> matches
-print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
-fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match_detail.pdf"))
-message("\tSaving ", basename(fn), "...")
-ggsave(fn, width = 10, height = 6)
+    # ---- Filter metadata for the same day ----
+    md %>%
+        filter(date(start_timestamp) == DATE,
+               timepoint == TIMEPOINT,
+               plot == PLOT) ->
+        md_filtered
+    message("\t", nrow(md_filtered), " rows of metadata")
+
+    # ---- Metadata time zone conversion, if needed ----
+    if(MD_TZ != "EST") {
+        message("\tConverting metadata times from ", MD_TZ, " to EST")
+        md_filtered$start_timestamp <- force_tz(md_filtered$start_timestamp, tzone = MD_TZ)
+        md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
+        md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
+        md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
+    }
+
+    # Construct start timestamps needed by ffi_metadata_match
+    md_filtered %>%
+        mutate(start_times = paste(hour(start_timestamp),
+                                   minute(start_timestamp),
+                                   second(start_timestamp), sep = ":")) ->
+        md_filtered
+    # ---- matchy match? ----
+    message("\tMatching...")
+    tree_data_filtered$match <-
+        ffi_metadata_match(
+            data_timestamps = tree_data_filtered$TIMESTAMP,
+            start_dates = as.character(date(md_filtered$start_timestamp)),
+            start_times = md_filtered$start_times,
+            # to start, match 100 seconds of data
+            # this will be refined using the dead_band and obs_length
+            # entries in the metadata files
+            obs_lengths = rep(100, nrow(md_filtered))
+        )
+
+    # Add ID information to the Licor data
+    tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
+    tree_data_filtered$num_ID <- paste0(tree_data_filtered$match, " (", tree_data_filtered$ID, ")")
+    tree_data_filtered$num_ID[is.na(tree_data_filtered$match)] <- NA
+
+    # ---- Duplication check ----
+    message("\tChecking for multiple observations per timestamp")
+    matched_data <- tree_data_filtered %>% filter(!is.na(match))
+    if(any(duplicated(matched_data$TIMESTAMP))) {
+        # If the 7810's time zone settings gets changed during use,
+        # the instrument writes multiple observations per timestamp
+        # After investigation, it *seems* that the last observation
+        # is the one we want to keep
+        tree_data_filtered %>%
+            group_by(TIMESTAMP) %>%
+            mutate(obsrep = 1:n()) -> x
+        message("\t", sum(x$obsrep > 1), " of ",
+                nrow(tree_data_filtered), " timestamps with duplicate entries")
+        # Keep only the last observation
+        x %>%
+            group_by(TIMESTAMP) %>%
+            filter(obsrep == n()) %>%
+            select(-obsrep) ->
+            tree_data_filtered
+        warning("De-duplicated data in ", i, ": multiple obs per timestamp!")
+    }
+
+    # ---- Diagnostic plot 1: color data by match ----
+    p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
+        geom_point(na.rm = TRUE) +
+        ylim(300, 1000) +
+        ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
+                subtitle = NOTES)
+    print(p1)
+
+    FN_ROOT <- paste(DATE, TIMEPOINT, PLOT, sep = "_")
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
+
+    # Detail plot
+    tree_data_filtered %>% filter(!is.na(match)) -> matches
+    print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match_detail.pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
 
 
-# ---- Diagnostic plot 2: individual tree data ----
-p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
-    geom_point(na.rm = TRUE) +
-    facet_wrap(. ~ ID, scales = "free_x") +
-    ylim(300, 1000) +
-    geom_vline(data = md_filtered,
-               aes(xintercept = start_timestamp + dead_band),
-               linetype = 2, color = "darkgreen") +
-    geom_vline(data = md_filtered,
-               aes(xintercept = start_timestamp + dead_band + obs_length),
-               linetype = 2, color = "darkred") +
-    ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
-            subtitle = NOTES)
-print(p2)
+    # ---- Diagnostic plot 2: individual tree data ----
+    p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+        geom_point(na.rm = TRUE) +
+        facet_wrap(. ~ ID, scales = "free_x") +
+        ylim(300, 1000) +
+        geom_vline(data = md_filtered,
+                   aes(xintercept = start_timestamp + dead_band),
+                   linetype = 2, color = "darkgreen") +
+        geom_vline(data = md_filtered,
+                   aes(xintercept = start_timestamp + dead_band + obs_length),
+                   linetype = 2, color = "darkred") +
+        ggtitle(paste(I_STR, PLOT, TIMEPOINT, DATE, "fluxwindows"),
+                subtitle = NOTES)
+    print(p2)
 
-fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
-message("\tSaving ", basename(fn), "...")
-ggsave(fn, width = 10, height = 6)
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
 
-# Merge data with metadata
-tree_data_filtered %>%
-    filter(!is.na(match)) %>%
-    left_join(md_filtered, by = "ID") %>%
-    # Filter for dead_band and obs_length
-    group_by(ID) %>%
-    filter(TIMESTAMP - min(TIMESTAMP) > dead_band) %>%
-    group_by(ID) %>%
-    filter(TIMESTAMP - min(TIMESTAMP) <= obs_length) %>%
-    ungroup() %>%
-    select(-dead_band, -obs_length,
-           -start_timestamp, -end_timestamp, -start_times,
-           -match, -num_ID) ->
-    results[[i]]
+    # Merge data with metadata and save
+    tree_data_filtered %>%
+        filter(!is.na(match)) %>%
+        left_join(md_filtered, by = "ID") %>%
+        # Filter for dead_band and obs_length settings
+        group_by(ID) %>%
+        filter(TIMESTAMP - min(TIMESTAMP) > dead_band) %>%
+        group_by(ID) %>%
+        filter(TIMESTAMP - min(TIMESTAMP) <= obs_length) %>%
+        ungroup() %>%
+        select(-dead_band, -obs_length,
+               -start_timestamp, -end_timestamp, -start_times,
+               -match, -num_ID) ->
+        results[[i]]
 
 } # for
 
@@ -274,6 +278,7 @@ results %>%
            std.error_CO2 = std.error) ->
     slopes_CO2
 
+# CH4 slopes
 results %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
@@ -288,11 +293,7 @@ results %>%
 
 slopes_CO2 %>%
     left_join(slopes_CH4, by = c("Year", "Date", "plot", "timepoint", "ID")) %>%
-    group_by(Year, Date, plot, timepoint) %>%
-    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2)) / sd(slope_CO2),
-           z_CH4 = (slope_CH4 - mean(slope_CH4)) / sd(slope_CH4),
-           lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
-           lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
+    arrange(Year, Date, plot, timepoint, ID) ->
     slopes
 
 message("Writing slope data")
@@ -304,8 +305,18 @@ message("\tWriting ", basename(slopes_fn_pqt))
 arrow::write_parquet(results, slopes_fn_pqt)
 
 message("Writing summary plots")
-for(yr in 2022:2024) {
-    ggplot(filter(slopes, Year == yr), aes(1, slope_CO2, color = z_CO2)) +
+slopes %>%
+    group_by(Year, Date, plot, timepoint) %>%
+    # compute z-scores for
+    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2)) / sd(slope_CO2),
+           z_CH4 = (slope_CH4 - mean(slope_CH4)) / sd(slope_CH4),
+           lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
+           lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
+    slopes_plot
+
+for(yr in unique(slopes_plot$Year)) {
+    slopes_plot_yr <- filter(slopes_plot, Year == yr)
+    ggplot(slopes_plot_yr, aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CO2), size = 2) +
@@ -317,7 +328,7 @@ for(yr in 2022:2024) {
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
-    ggplot(filter(slopes, Year == yr), aes(1, slope_CH4, color = z_CH4)) +
+    ggplot(slopes_plot_yr, aes(1, slope_CH4, color = z_CH4)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CH4), size = 2) +
