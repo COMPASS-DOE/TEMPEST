@@ -79,7 +79,8 @@ meta2125 %>%
            -`Tubing length (cm)`) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
-    mutate(start_time = gsub(".", ":", start_time, fixed = TRUE),
+    mutate(timepoint = "(none)",
+           start_time = gsub(".", ":", start_time, fixed = TRUE),
            start_time = gsub(":[0-9]{2}$", "", start_time),
            end_time = gsub(".", ":", end_time, fixed = TRUE),
            end_time = gsub(":[0-9]{2}$", "", end_time)) ->
@@ -111,8 +112,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 results <- list()
-for(i in seq_len(nrow(tfpi))) {
-   # i <- 10
+#for(i in seq_len(nrow(tfpi))) {
+    i <- 72
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -266,8 +267,8 @@ for(i in seq_len(nrow(tfpi))) {
                -match, -num_ID) ->
         results[[i]]
 
-} # for
-#stop("OK")
+#} # for
+stop("OK")
 
 # ---- Wrap up ----
 message("Done with processing")
