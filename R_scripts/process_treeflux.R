@@ -57,7 +57,7 @@ meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
 meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
 meta2125 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
-                     col_types = "ccccccdd__dddc", na = c("N/A", "n/a"))
+                     col_types = "ccccccddcc___dc", na = c("N/A", "n/a"))
 
 # meta24 has a different format; rework it to match others
 meta24 %>%
@@ -79,7 +79,7 @@ meta2125 %>%
            -`Tubing length (cm)`) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
-    mutate(timepoint = "(none)",
+    mutate(timepoint = NA_character_,
            start_time = gsub(".", ":", start_time, fixed = TRUE),
            start_time = gsub(":[0-9]{2}$", "", start_time),
            end_time = gsub(".", ":", end_time, fixed = TRUE),
