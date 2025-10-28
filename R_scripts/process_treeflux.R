@@ -118,7 +118,7 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDccccc")
+                 col_types = "cDcccdcc")
 
 results <- list()
 #for(i in seq_len(nrow(tfpi))) {
@@ -130,6 +130,7 @@ results <- list()
     TIMEPOINT <- tfpi$Timepoint[i]
     PLOT <- tfpi$Plot[i]
     MD_TZ <- tfpi$Metadata_tz[i]
+    MD_TIME_ADD <- tfpi$Metadata_time_add[i]
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
 
@@ -178,6 +179,12 @@ results <- list()
         md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
         md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
         md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
+    }
+
+    if(!is.na(MD_TIME_ADD) && MD_TIME_ADD != 0) {
+        message("Adding ", MD_TIME_ADD, " to metadata start times")
+        md_filtered$start_timestamp <- md_filtered$start_timestamp + MD_TIME_ADD * 60
+        NOTES <- paste0(NOTES, " (+", MD_TIME_ADD, " min added to m.d. starts)")
     }
 
     # Construct start timestamps needed by ffi_metadata_match
