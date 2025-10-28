@@ -124,6 +124,10 @@ results <- list()
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
 
+    if(is.na(INS_TZ) || is.na(FILE)) {
+        message("No entry for row ", i, "; skipping")
+        next
+    }
     message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
     # Filter to one Licor file and one day for testing
@@ -220,15 +224,20 @@ results <- list()
                 subtitle = NOTES)
     print(p1)
 
+    # Organize QAQC outputs by year and plot; change as you like
+    SUBFOLDER <- file.path(year(DATE), PLOT)
+    if(!dir.exists(file.path(OUTPUT_DIR_ROOT, SUBFOLDER))) {
+        dir.create(file.path(OUTPUT_DIR_ROOT, SUBFOLDER), recursive = TRUE)
+    }
     FN_ROOT <- paste(DATE, TIMEPOINT, PLOT, sep = "_")
-    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match.pdf"))
+    fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
     # Detail plot
     tree_data_filtered %>% filter(!is.na(match)) -> matches
     print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
-    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_match_detail.pdf"))
+    fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
@@ -248,7 +257,7 @@ results <- list()
                 subtitle = NOTES)
     print(p2)
 
-    fn <- file.path(OUTPUT_DIR_ROOT, paste0(FN_ROOT, "_fluxwindows.pdf"))
+    fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_fluxwindows.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
@@ -325,8 +334,8 @@ message("Writing summary plots")
 slopes %>%
     group_by(Year, Date, plot, timepoint) %>%
     # compute z-scores for
-    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2)) / sd(slope_CO2),
-           z_CH4 = (slope_CH4 - mean(slope_CH4)) / sd(slope_CH4),
+    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2, na.rm = TRUE)) / sd(slope_CO2, na.rm = TRUE),
+           z_CH4 = (slope_CH4 - mean(slope_CH4, na.rm = TRUE)) / sd(slope_CH4, na.rm = TRUE),
            lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
            lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
     slopes_plot
@@ -359,3 +368,4 @@ for(yr in unique(slopes_plot$Year)) {
 }
 
 message(now(), " All done")
+
