@@ -66,7 +66,7 @@ meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
 meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
 meta2125 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
-                     col_types = "ccccccddcc___dc", na = c("N/A", "n/a"))
+                     col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
 # meta24 has a different format; rework it to match others
 meta24 %>%
@@ -85,10 +85,10 @@ meta24 %>%
 meta2125 %>%
     select(plot = Plot, ID, collection_date = Date,
            start_time = `Start Time`, end_time = `End Time`,
-           -`Tubing length (cm)`) %>%
+           -`Tubing length (cm)`, dead_band, obs_length) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
-    mutate(timepoint = NA_character_,
+    mutate(timepoint = "(none)",
            start_time = gsub(".", ":", start_time, fixed = TRUE),
            start_time = gsub(":[0-9]{2}$", "", start_time),
            end_time = gsub(".", ":", end_time, fixed = TRUE),
@@ -121,8 +121,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 results <- list()
-for(i in seq_len(nrow(tfpi))) {
-    #    i <- 72
+#for(i in seq_len(nrow(tfpi))) {
+        i <- 72
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -168,6 +168,8 @@ for(i in seq_len(nrow(tfpi))) {
                plot == PLOT) ->
         md_filtered
     message("\t", nrow(md_filtered), " rows of metadata")
+
+    stopifnot(nrow(md_filtered) > 0)
 
     # ---- Metadata time zone conversion, if needed ----
     if(MD_TZ != "EST") {
@@ -284,8 +286,8 @@ for(i in seq_len(nrow(tfpi))) {
                -match, -num_ID) ->
         results[[i]]
 
-} # for
-#stop("OK")
+#} # for
+stop("OK")
 
 # ---- Wrap up ----
 message("Done with processing")
