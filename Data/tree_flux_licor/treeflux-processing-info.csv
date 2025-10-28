@@ -1,27 +1,27 @@
 File,Date,Timepoint,Plot,Metadata_tz,Instrument_tz,Notes
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-20,Pre-Treatment,Freshwater,EST,EDT,Kind of a mess; duplicate data removed; adjusted metadata times +10 min (per scanned data sheet there was a large gap)
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-21,Pre-Treatment,Freshwater,EST,EDT,
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-21,Pre-Treatment,Freshwater,EST,EDT,"Missing data for F1, F2, F17 at end"
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T0,Freshwater,EST,EST,Adjusted metadata times +3 min
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T1,Freshwater,EST,EST,Adjusted metadata times +3 min
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T2,Freshwater,EST,EST,Adjusted metadata times +3 min
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T3,Freshwater,EST,EST,Adjusted metadata times +3 min
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,EST,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,EST,
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,EST,
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,EST,Adjusted metadata times +2 min
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,EST,C13 (#12) had wrong time and erasure mark; changed
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,EST,
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,EST,
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,EST,"Poor quality; C1, C2, C12 esp. bad"
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-24,Post-Treatment,Control,EST,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-20,Pre-Treatment,Seawater,EST,EST,S7 time changed from PST to EST
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-21,Pre-Treatment,Seawater,EST,EST,S18 wonky
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T0,Seawater,EST,EST,
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,EST,F12 data missing
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,EST,Adjusted metadata times +2 min (and C4 more)
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,EST,Adjusted metadata times +2 min; no C6 data
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,EST,C13 (#12) had wrong time and erasure mark; no C9 data; metadata times +2
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,EST,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,EST,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,EST,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-24,Post-Treatment,Control,EST,EST,Adjusted metadata times +2 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-20,Pre-Treatment,Seawater,EST,EST,Poor quality; S7 time changed from PST to EST
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-21,Pre-Treatment,Seawater,EST,EST,Adjusted metadata times +1 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T0,Seawater,EST,EST,Adjusted metadata times +1 min; S12 start corrected 1 hour
 TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T1,Seawater,EST,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T2,Seawater,EST,EST,
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T2,Seawater,EST,EST,Adjusted metadata times +1 min; S12 time corrected
 TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T3,Seawater,EST,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-23,Post-Treatment,Seawater,EST,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-24,Post-Treatment,Seawater,EST,EST,
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-23,Post-Treatment,Seawater,EST,EST,Adjusted metadata times +1 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-24,Post-Treatment,Seawater,EST,EST,Adjusted metadata times +1 min
 TG10-01286-2023-06-04T050000_Louise.data,2023-06-04,T0,Control,EDT,EDT,Adjusted metadata times +4 min
 TG10-01286-2023-06-04T050000_Louise.data,2023-06-05,T1,Control,EDT,EDT,Adjusted metadata times +3-4 min
 TG10-01286-2023-06-04T050000_Louise.data,2023-06-06,T2,Control,EDT,EDT,Adjusted metadata times +4-5 min
