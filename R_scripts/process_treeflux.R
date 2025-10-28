@@ -24,28 +24,37 @@ INPUT_DIR_ROOT <- "Data/tree_flux_licor/"
 OUTPUT_DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
 
 # Get names of data files from TEMPEST I and II (2022, 2023, 2024)
-files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE)
+files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE, recursive = TRUE)
+message("I see ", length(files), " data files")
 
 # Helper function
-read_file <- function(f) {
-    message("\nReading ", basename(f))
-    ffi_read_LI7810(f) %>%
-        mutate(File = basename(f)) %>%
-        select(TIMESTAMP, TZ, CO2, CH4, SN, File)
-}
+# We use a cache (a list) to only read from disk when needed
+if(!exists("cache")) cache <- list()
+basefiles <- basename(files)
+read_data_file <- function(base_f) {
+    if(!base_f %in% basefiles) {
+        stop("Hmm, I don't see a file named ", base_f, " in ", INPUT_DIR_ROOT)
+    }
 
-# Bind all data files into raw dataframe
-# Reading the files is a a bit slow so skip if possible
-if(!exists("tree_data_raw")) {
-    lapply(files, read_file) %>%
-        bind_rows() %>%
-        as_tibble() %>%
-        # although the Licor's timezone settings vary, assume that
-        # they are maintained EST. This is just a temporary
-        # standardization; below we re-set the time zone based on
-        # the entry in the treeflux-processing-info.csv file
-        mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST"), TZ = "EST") ->
-        tree_data_raw
+    f <- files[which(base_f == basefiles)]
+    if(f %in% names(cache)) {
+        message("\tGetting from cache: ", base_f)
+    } else {
+        message("\tReading: ", f)
+        ffi_read_LI7810(f) %>%
+            as_tibble() %>%
+            mutate(File = basename(f)) %>%
+            select(TIMESTAMP, TZ, CO2, CH4, SN, File) %>%
+            # although the Licor's timezone settings vary, assume that
+            # they are maintained EST. This is just a temporary
+            # standardization; below we re-set the time zone based on
+            # the entry in the treeflux-processing-info.csv file
+            mutate(TIMESTAMP = force_tz(TIMESTAMP, tzone = "EST"),
+                   TZ = "EST") ->>
+            cache[[f]]
+    }
+
+    return(cache[[f]])
 }
 
 # Read in metadata and construct start/end timestamps
@@ -112,8 +121,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDccccc")
 
 results <- list()
-#for(i in seq_len(nrow(tfpi))) {
-    i <- 72
+for(i in seq_len(nrow(tfpi))) {
+    #    i <- 72
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -131,8 +140,7 @@ results <- list()
     message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
     # Filter to one Licor file and one day for testing
-    tree_data_raw %>%
-        filter(File == FILE) %>%
+    read_data_file(FILE) %>%
         filter(date(TIMESTAMP) == DATE) ->
         tree_data_filtered
     message("\t", nrow(tree_data_filtered), " rows of data")
@@ -276,8 +284,8 @@ results <- list()
                -match, -num_ID) ->
         results[[i]]
 
-#} # for
-stop("OK")
+} # for
+#stop("OK")
 
 # ---- Wrap up ----
 message("Done with processing")
