@@ -492,7 +492,7 @@ Seawater,E4,S15,7/8/2022,14.23.30,14.25.30,0.863,0.000,0,100,Louise,B,EDT,102,
 Seawater,D1,S17,7/8/2022,13.37.00,13.39.00,0.281,0.045,0,100,Louise,B,EDT,102,Time overlap with other measurement
 Seawater,E5,S18,7/8/2022,13.53.00,13.55.00,0.624,0.002,0,100,Louise,B,EDT,102,
 Seawater,C6,S8,7/8/2022,14.30.00,14.32.00,0.508,0.020,0,100,Louise,B,EDT,102,
-Seawater,F6,S11,7/8/2022,13.37.30,13.39.30,0.892,0.031,0,100,Louise,B,EDT,102,Time overlap with other measurement
+Seawater,F6,S11,7/8/2022,13.39.30,13.39.30,0.892,0.031,0,100,Louise,B,EDT,102,Time overlap with other measurement
 Seawater,F4,S12,7/8/2022,14.07.30,14.09.30,0.962,0.025,0,100,Louise,B,EDT,102,
 Control,F5,C1,7/18/2022,10.19.00,10.21.00,0.907,0.013,0,100,Thelma,A,EDT,102,
 Control,F5,C2,7/18/2022,10.37.30,10.39.30,1.388,0.231,0,100,Thelma,A,EDT,102,CH4 and CO2 wavy
