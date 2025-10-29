@@ -269,7 +269,7 @@ results <- list()
     })
     # ...and plot
     p2 <- ggplot(matches, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
-        geom_line(aes(y = mod), color = "darkgrey", linewidth = 1.5) +
+        geom_line(aes(y = mod), color = "darkgrey", linetype = 2, linewidth = 1.1) +
         geom_point(na.rm = TRUE) +
         facet_wrap(. ~ ID, scales = "free_x") +
         geom_vline(data = md_filtered,
