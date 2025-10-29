@@ -121,8 +121,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
 results <- list()
-#for(i in seq_len(nrow(tfpi))) {
-        i <- 72
+for(i in 72:169) {# seq_len(nrow(tfpi))) {
+#        i <-169
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -301,7 +301,7 @@ results <- list()
                -match, -num_ID) ->
         results[[i]]
 
-#} # for
+} # for
 stop("OK")
 
 # ---- Wrap up ----
@@ -318,8 +318,10 @@ arrow::write_parquet(results, conc_fn_pqt)
 
 # CO2 slopes
 results %>%
+    filter(!is.na(CO2)) %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
+    filter(n() > 1) %>%
     mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CO2 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
@@ -331,8 +333,10 @@ results %>%
 
 # CH4 slopes
 results %>%
+    filter(!is.na(CH4)) %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
+    filter(n() > 1) %>%
     mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CH4 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
@@ -365,8 +369,28 @@ slopes %>%
            lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
     slopes_plot
 
+# All data plots
+ggplot(slopes_plot, aes(yday(Date), slope_CO2, color = plot)) +
+    geom_point() +
+    facet_grid(Year ~ .) +
+    ggtitle("slope_CO2")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_slopes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
+    geom_point() +
+    facet_grid(Year ~ .) +
+    ggtitle("slope_CH4")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_slopes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+
+# Annual plots
 for(yr in unique(slopes_plot$Year)) {
     slopes_plot_yr <- filter(slopes_plot, Year == yr)
+
     ggplot(slopes_plot_yr, aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
