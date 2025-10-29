@@ -182,7 +182,7 @@ results <- list()
     }
 
     if(!is.na(MD_TIME_ADD) && MD_TIME_ADD != 0) {
-        message("Adding ", MD_TIME_ADD, " to metadata start times")
+        message("\tAdding ", MD_TIME_ADD, " to metadata start times")
         md_filtered$start_timestamp <- md_filtered$start_timestamp + MD_TIME_ADD * 60
         NOTES <- paste0(NOTES, " (+", MD_TIME_ADD, " min added to m.d. starts)")
     }
@@ -260,10 +260,18 @@ results <- list()
 
 
     # ---- Diagnostic plot 2: individual tree data ----
-    p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+    # Fit a linear model as a visual reference...
+    matches$mod <- NA_real_
+    try({
+        matches$secs <- matches$TIMESTAMP - min(matches$TIMESTAMP)
+        mod <- lm(CO2 ~ secs * ID, data = matches)
+        matches$mod <- predict(mod)
+    })
+    # ...and plot
+    p2 <- ggplot(matches, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
+        geom_line(aes(y = mod), color = "darkgrey", linewidth = 1.5) +
         geom_point(na.rm = TRUE) +
         facet_wrap(. ~ ID, scales = "free_x") +
-        ylim(300, 1000) +
         geom_vline(data = md_filtered,
                    aes(xintercept = start_timestamp + dead_band),
                    linetype = 2, color = "darkgreen") +
