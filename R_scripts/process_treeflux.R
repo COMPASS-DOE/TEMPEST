@@ -23,6 +23,27 @@ message(now(), " Welcome to process_treeflux.R")
 INPUT_DIR_ROOT <- "Data/tree_flux_licor/"
 OUTPUT_DIR_ROOT <- "Data/tree_flux_licor/processing_outputs/"
 
+# ---- Chamber metadata prep ----
+CMD_DIR <- file.path(INPUT_DIR_ROOT, "chamber_metadata")
+cmd <- read_csv(file.path(CMD_DIR,
+                          "Static chamber inventory_11272023.xlsx - Updated 11_27_2023.csv"),
+                col_types = "cdddddddd") %>%
+    select(size_class = `Size Class`,
+           area_cm2 = `Surface Area of Tree Covered (cm2)`,
+           volume_cm3 = `Volume (cm3)`) %>%
+    # TEMPORARY -- collapse the two size 1 classes
+    mutate(size_class = if_else(size_class %in% c("1a", "1b"), "1", size_class)) %>%
+    group_by(size_class) %>%
+    summarise(area = mean(area_cm2), volume_cm3 = mean(volume_cm3))
+
+tree_assignments <- read_csv(file.path(CMD_DIR,
+                                       "TEMPEST_TreeChamberInstallation_11272023.xlsx - Orginal.csv"),
+                             col_types = "_c_ccc__") %>%
+    filter(!is.na(Plot)) %>%
+    select(Plot, ID, size_class = `Chamber Size Class`)
+
+chamber_metadata <- left_join(tree_assignments, cmd, by = "size_class")
+
 # Get names of data files from TEMPEST I and II (2022, 2023, 2024)
 files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE, recursive = TRUE)
 message("I see ", length(files), " data files")
