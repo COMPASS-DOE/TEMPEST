@@ -123,7 +123,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
 # ---- Main loop ----
 results <- list()
 for(i in seq_len(nrow(tfpi))) {
-    #i <- 329
+    #i <- 71
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -237,6 +237,7 @@ for(i in seq_len(nrow(tfpi))) {
     # ---- Diagnostic plot 1: color data by match ----
     p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
         geom_point(na.rm = TRUE) +
+        xlab("TIMESTAMP (EST)") +
         ylim(350, 800) +
         ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
                 subtitle = NOTES)
@@ -273,6 +274,7 @@ for(i in seq_len(nrow(tfpi))) {
     p2 <- ggplot(matches, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
         geom_line(aes(y = mod), na.rm = TRUE, color = "darkgrey", linetype = 2, linewidth = 1.1) +
         geom_point(na.rm = TRUE) +
+        xlab("TIMESTAMP (EST)") +
         facet_wrap(. ~ ID, scales = "free_x") +
         geom_vline(data = md_filtered,
                    aes(xintercept = start_timestamp + dead_band),
