@@ -143,7 +143,7 @@ for(i in seq_len(nrow(tfpi))) {
 
     # Filter to one Licor file and one day for testing
     read_data_file(FILE) %>%
-        filter(date(TIMESTAMP) == DATE) ->
+        filter(date(TIMESTAMP) == DATE, !is.na(CO2)) ->
         tree_data_filtered
     message("\t", nrow(tree_data_filtered), " rows of data")
 
