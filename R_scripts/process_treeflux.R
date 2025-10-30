@@ -259,7 +259,7 @@ for(i in seq_len(nrow(tfpi))) {
         message("\tDropping data rows with CO2 > 1200")
         matches <- matches[matches$CO2 <= 1200,]
     }
-    p1_detail <- p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP)))
+    p1_detail <- p1 + xlim(range(matches$TIMESTAMP, na.rm = TRUE))
     print(p1_detail)
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
     message("\tSaving ", basename(fn), "...")
