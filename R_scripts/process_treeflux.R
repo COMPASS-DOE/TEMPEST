@@ -270,7 +270,7 @@ for(i in seq_len(nrow(tfpi))) {
     # Fit a linear model as a visual reference...
     matches$mod <- NA_real_
     try({
-        matches$secs <- matches$TIMESTAMP - min(matches$TIMESTAMP)
+        matches$secs <- as.numeric(matches$TIMESTAMP - min(matches$TIMESTAMP))
         mod <- lm(CO2 ~ secs * ID, data = matches)
         matches$mod <- predict(mod)
     })
@@ -299,9 +299,9 @@ for(i in seq_len(nrow(tfpi))) {
         left_join(md_filtered, by = "ID") %>%
         # Filter for dead_band and obs_length settings
         group_by(ID) %>%
-        filter(TIMESTAMP - min(TIMESTAMP) > dead_band) %>%
+        filter(secs > dead_band) %>%
         group_by(ID) %>%
-        filter(TIMESTAMP - min(TIMESTAMP) <= obs_length) %>%
+        filter(secs <= obs_length) %>%
         ungroup() %>%
         select(-dead_band, -obs_length,
                -start_timestamp, -end_timestamp, -start_times,
@@ -330,7 +330,6 @@ results %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
     filter(n() > 1) %>%
-    mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CO2 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
     select(-term, -statistic,
@@ -345,7 +344,6 @@ results %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
     filter(n() > 1) %>%
-    mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CH4 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
     select(-term, -statistic,
@@ -385,7 +383,7 @@ ggplot(slopes_plot, aes(yday(Date), slope_CO2, color = plot)) +
     ggtitle("slope_CO2")
 fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_slopes_all.pdf")
 message("\tSaving ", basename(fn), "...")
-ggsave(fn, width = 10, height = 8)
+ggsave(fn, width = 12, height = 8)
 
 ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
     geom_jitter() +
@@ -393,7 +391,7 @@ ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
     ggtitle("slope_CH4")
 fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_slopes_all.pdf")
 message("\tSaving ", basename(fn), "...")
-ggsave(fn, width = 10, height = 8)
+ggsave(fn, width = 12, height = 8)
 
 
 # Annual plots
@@ -403,7 +401,7 @@ for(yr in unique(slopes_plot$Year)) {
     ggplot(slopes_plot_yr, aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
-        geom_text(aes(label = lab_CO2), size = 2) +
+        geom_text(aes(label = lab_CO2), size = 2, na.rm = TRUE) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
         theme(axis.text.y = element_blank(), axis.title = element_blank()) +
@@ -415,7 +413,7 @@ for(yr in unique(slopes_plot$Year)) {
     ggplot(slopes_plot_yr, aes(1, slope_CH4, color = z_CH4)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
-        geom_text(aes(label = lab_CH4), size = 2) +
+        geom_text(aes(label = lab_CH4), size = 2, na.rm = TRUE) +
         facet_grid(timepoint ~ plot) +
         coord_flip() +
         theme(axis.text.y = element_blank(), axis.title = element_blank()) +
