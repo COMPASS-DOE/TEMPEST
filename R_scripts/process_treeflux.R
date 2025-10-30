@@ -121,8 +121,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
 results <- list()
-for(i in 72:169) {# seq_len(nrow(tfpi))) {
-#        i <-169
+for(i in 72:236) {# seq_len(nrow(tfpi))) {
+        #i <- 236
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -302,9 +302,9 @@ for(i in 72:169) {# seq_len(nrow(tfpi))) {
         results[[i]]
 
 } # for
-stop("OK")
+#stop("OK")
 
-# ---- Wrap up ----
+# ---- Write concentration data ----
 message("Done with processing")
 
 message("Writing concentration data")
@@ -316,6 +316,7 @@ conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
 message("\tWriting ", basename(conc_fn_pqt))
 arrow::write_parquet(results, conc_fn_pqt)
 
+# ---- Slope calculation ----
 # CO2 slopes
 results %>%
     filter(!is.na(CO2)) %>%
@@ -359,6 +360,7 @@ slopes_fn_pqt <- gsub("csv", "parquet", slopes_fn)
 message("\tWriting ", basename(slopes_fn_pqt))
 arrow::write_parquet(results, slopes_fn_pqt)
 
+# ---- Summary plots ----
 message("Writing summary plots")
 slopes %>%
     group_by(Year, Date, plot, timepoint) %>%
