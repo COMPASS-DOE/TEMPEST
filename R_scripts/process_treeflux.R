@@ -120,9 +120,10 @@ message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
+# ---- Main loop ----
 results <- list()
-#for(i in 197:236) {# seq_len(nrow(tfpi))) {
-    i <- 293
+for(i in seq_len(nrow(tfpi))) {
+    #i <- 329
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -302,8 +303,8 @@ results <- list()
                -match, -num_ID) ->
         results[[i]]
 
-#} # for
-stop("OK")
+} # for
+#stop("OK")
 
 # ---- Write concentration data ----
 message("Done with processing")
