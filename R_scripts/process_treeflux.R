@@ -7,8 +7,8 @@ DATA_DIR_ROOT <- "Data/tree_flux_licor/"
 TEMP_OUTPUT_DIR <- file.path(DATA_DIR_ROOT, "temporary_data")
 OUTPUT_DIR_ROOT <- file.path(DATA_DIR_ROOT, "processing_outputs")
 
-# Use saved data in the TEMP_OUTPUT_DIR folder?
-USE_SAVED_DATA <- FALSE
+# Skip if there are saved data in the TEMP_OUTPUT_DIR folder?
+SKIP_SAVED_DATA <- TRUE
 
 library(dplyr)
 library(stringr)
@@ -23,7 +23,7 @@ now <- function() format(Sys.time(), "%a %b %d %X %Y")
 message(now(), " Welcome to process_treeflux.R")
 
 premade_outputs <- list.files(TEMP_OUTPUT_DIR, pattern = "\\.RDS", full.names = TRUE)
-if(length(premade_outputs) > 0 && USE_SAVED_DATA) {
+if(length(premade_outputs) > 0 && SKIP_SAVED_DATA) {
     message("There are ", length(premade_outputs), " file(s) in 'temporary_outputs/' ",
     "that will be used instead of computing data")
     okay <- askYesNo("Is this what you want?")
@@ -156,7 +156,7 @@ for(i in lines_to_process) {
     }
     # Check pre-saved data
     fd_fn <- file.path(TEMP_OUTPUT_DIR, paste0(i, ".RDS"))
-    if(USE_SAVED_DATA && fd_fn %in% premade_outputs) {
+    if(SKIP_SAVED_DATA && fd_fn %in% premade_outputs) {
         message("Saved data already exists for ", i)
         next
     }
