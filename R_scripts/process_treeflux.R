@@ -40,7 +40,7 @@ tree_assignments <- read_csv(file.path(CMD_DIR,
                                        "TEMPEST_TreeChamberInstallation_11272023.xlsx - Orginal.csv"),
                              col_types = "_c_ccc__") %>%
     filter(!is.na(Plot)) %>%
-    select(Plot, ID, size_class = `Chamber Size Class`)
+    select(Plot, Species, ID, size_class = `Chamber Size Class`)
 
 chamber_metadata <- left_join(tree_assignments, cmd, by = "size_class")
 
@@ -142,8 +142,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
 # ---- Main loop ----
-results <- list()
-for(i in seq_len(nrow(tfpi))) {
+results_list <- list()
+for(i in 1:50) { #seq_len(nrow(tfpi))) {
 #    i <- 11
 
     I_STR <- sprintf("%02s", i)
@@ -327,16 +327,18 @@ for(i in seq_len(nrow(tfpi))) {
         select(-dead_band, -obs_length,
                -start_timestamp, -end_timestamp, -start_times,
                -match, -num_ID) ->
-        results[[i]]
+        results_list[[i]]
 
 } # for
 #stop("OK")
 
-# ---- Write concentration data ----
+# ---- Post-processing ----
 message("Done with processing")
+bind_rows(results_list) %>%
+    rename(Plot = plot, Timepoint = timepoint) ->
+    results
 
 message("Writing concentration data")
-results <- bind_rows(results)
 conc_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_concentrations.csv")
 message("\tWriting ", basename(conc_fn))
 write_csv(results, conc_fn)
@@ -344,102 +346,114 @@ conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
 message("\tWriting ", basename(conc_fn_pqt))
 arrow::write_parquet(results, conc_fn_pqt)
 
-# ---- Slope calculation ----
-# CO2 slopes
+# ---- Flux calculation ----
+library(fluxfinder)
+
+# Bring in chamber metadata
+results %>%
+    left_join(chamber_metadata, by = c("Plot", "ID")) %>%
+    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) ->
+    results
+
+# CO2 fluxes
 results %>%
     filter(!is.na(CO2)) %>%
-    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
-    group_by(Year, Date, plot, timepoint, ID) %>%
+    group_by(Year, Date, Plot, Timepoint, Species, ID) %>%
     filter(n() > 1) %>%
-    group_modify(~ broom::tidy(lm(CO2 ~ secs, data = .x))) %>%
-    filter(term == "secs") %>%
-    select(-term, -statistic,
-           slope_CO2 = estimate,
-           p.value_CO2 = p.value,
-           std.error_CO2 = std.error) ->
-    slopes_CO2
+    group_modify(~ffi_fit_models(.x$secs,
+                                 .x$CO2,
+                                 area = .x$area[1],
+                                 volume = .x$volume[1])) %>%
+    select(Year, Date, Plot, Timepoint, Species, ID,
+           CO2_lin_flux.estimate = lin_flux.estimate,
+           CO2_lin_r.squared = lin_r.squared,
+           CO2_rob_flux.estimate = rob_flux.estimate) ->
+    fluxes_CO2
 
-# CH4 slopes
+# CH4 fluxes
 results %>%
     filter(!is.na(CH4)) %>%
-    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
-    group_by(Year, Date, plot, timepoint, ID) %>%
+    group_by(Year, Date, Plot, Timepoint, Species, ID) %>%
     filter(n() > 1) %>%
-    group_modify(~ broom::tidy(lm(CH4 ~ secs, data = .x))) %>%
-    filter(term == "secs") %>%
-    select(-term, -statistic,
-           slope_CH4 = estimate,
-           p.value_CH4 = p.value,
-           std.error_CH4 = std.error) ->
-    slopes_CH4
+    group_modify(~ffi_fit_models(.x$secs,
+                                 .x$CH4,
+                                 area = .x$area[1],
+                                 volume = .x$volume[1])) %>%
+    select(Year, Date, Plot, Timepoint, Species, ID,
+           CH4_lin_flux.estimate = lin_flux.estimate,
+           CH4_lin_r.squared = lin_r.squared,
+           CH4_rob_flux.estimate = rob_flux.estimate) ->
+    fluxes_CH4
 
-slopes_CO2 %>%
-    left_join(slopes_CH4, by = c("Year", "Date", "plot", "timepoint", "ID")) %>%
-    arrange(Year, Date, plot, timepoint, ID) ->
-    slopes
+fluxes_CO2 %>%
+    left_join(fluxes_CH4, by = c("Year", "Date", "Plot", "Timepoint", "Species", "ID")) %>%
+    arrange(Year, Date, Plot, Timepoint, ID) ->
+    fluxes
 
-message("Writing slope data")
-slopes_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_slopes.csv")
-message("\tWriting ", basename(slopes_fn))
-write_csv(slopes, slopes_fn)
-slopes_fn_pqt <- gsub("csv", "parquet", slopes_fn)
-message("\tWriting ", basename(slopes_fn_pqt))
-arrow::write_parquet(results, slopes_fn_pqt)
+message("Writing flux data")
+fluxes_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_fluxes.csv")
+message("\tWriting ", basename(fluxes_fn))
+write_csv(fluxes, fluxes_fn)
+fluxes_fn_pqt <- gsub("csv", "parquet", fluxes_fn)
+message("\tWriting ", basename(fluxes_fn_pqt))
+arrow::write_parquet(fluxes, fluxes_fn_pqt)
 
 # ---- Summary plots ----
 message("Writing summary plots")
-slopes %>%
-    group_by(Year, Date, plot, timepoint) %>%
+fluxes %>%
+    group_by(Year, Date, Plot, Timepoint) %>%
     # compute z-scores for
-    mutate(z_CO2 = (slope_CO2 - mean(slope_CO2, na.rm = TRUE)) / sd(slope_CO2, na.rm = TRUE),
-           z_CH4 = (slope_CH4 - mean(slope_CH4, na.rm = TRUE)) / sd(slope_CH4, na.rm = TRUE),
+    mutate(z_CO2 = (CO2_rob_flux.estimate - mean(CO2_rob_flux.estimate, na.rm = TRUE)) /
+               sd(CO2_rob_flux.estimate, na.rm = TRUE),
+           z_CH4 = (CH4_rob_flux.estimate - mean(CH4_rob_flux.estimate, na.rm = TRUE)) /
+               sd(CH4_rob_flux.estimate, na.rm = TRUE),
            lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
            lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
-    slopes_plot
+    fluxes_plot
 
 # All data plots
-ggplot(slopes_plot, aes(yday(Date), slope_CO2, color = plot)) +
+ggplot(fluxes_plot, aes(yday(Date), CO2_rob_flux.estimate, color = Plot)) +
     geom_jitter() +
     facet_grid(Year ~ .) +
-    ggtitle("slope_CO2")
-fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_slopes_all.pdf")
+    ggtitle("fluxes_CO2")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_fluxes_all.pdf")
 message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 12, height = 8)
 
-ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
+ggplot(fluxes_plot, aes(yday(Date), CH4_rob_flux.estimate, color = Plot)) +
     geom_jitter() +
     facet_grid(Year ~ .) +
-    ggtitle("slope_CH4")
-fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_slopes_all.pdf")
+    ggtitle("fluxes_CH4")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_fluxes_all.pdf")
 message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 12, height = 8)
 
 
 # Annual plots
-for(yr in unique(slopes_plot$Year)) {
-    slopes_plot_yr <- filter(slopes_plot, Year == yr)
+for(yr in unique(fluxes_plot$Year)) {
+    fluxes_plot_yr <- filter(fluxes_plot, Year == yr)
 
-    ggplot(slopes_plot_yr, aes(1, slope_CO2, color = z_CO2)) +
+    ggplot(fluxes_plot_yr, aes(1, CO2_rob_flux.estimate, color = z_CO2)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CO2), size = 2, na.rm = TRUE) +
-        facet_grid(timepoint ~ plot) +
+        facet_grid(Timepoint ~ Plot) +
         coord_flip() +
         theme(axis.text.y = element_blank(), axis.title = element_blank()) +
-        ggtitle(paste(yr, "slope_CO2"))
-    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CO2_slopes_", yr, ".pdf"))
+        ggtitle(paste(yr, "fluxes_CO2"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CO2_fluxes_", yr, ".pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
-    ggplot(slopes_plot_yr, aes(1, slope_CH4, color = z_CH4)) +
+    ggplot(fluxes_plot_yr, aes(1, CH4_rob_flux.estimate, color = z_CH4)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CH4), size = 2, na.rm = TRUE) +
-        facet_grid(timepoint ~ plot) +
+        facet_grid(Timepoint ~ Plot) +
         coord_flip() +
         theme(axis.text.y = element_blank(), axis.title = element_blank()) +
-        ggtitle(paste(yr, "slope_CH4"))
-    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CH4_slopes_", yr, ".pdf"))
+        ggtitle(paste(yr, "fluxes_CH4"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CH4_fluxes_", yr, ".pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 }
