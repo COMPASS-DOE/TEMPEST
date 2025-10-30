@@ -66,7 +66,7 @@ meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_met
 meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
 meta2125 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
-                     col_types = "ccccccddcc___dc", na = c("N/A", "n/a"))
+                     col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
 # meta24 has a different format; rework it to match others
 meta24 %>%
@@ -85,10 +85,10 @@ meta24 %>%
 meta2125 %>%
     select(plot = Plot, ID, collection_date = Date,
            start_time = `Start Time`, end_time = `End Time`,
-           -`Tubing length (cm)`) %>%
+           -`Tubing length (cm)`, dead_band, obs_length) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
-    mutate(timepoint = NA_character_,
+    mutate(timepoint = "(none)",
            start_time = gsub(".", ":", start_time, fixed = TRUE),
            start_time = gsub(":[0-9]{2}$", "", start_time),
            end_time = gsub(".", ":", end_time, fixed = TRUE),
@@ -118,11 +118,12 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDccccc")
+                 col_types = "cDcccdcc")
 
+# ---- Main loop ----
 results <- list()
 for(i in seq_len(nrow(tfpi))) {
-    #    i <- 72
+    #i <- 329
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -130,6 +131,7 @@ for(i in seq_len(nrow(tfpi))) {
     TIMEPOINT <- tfpi$Timepoint[i]
     PLOT <- tfpi$Plot[i]
     MD_TZ <- tfpi$Metadata_tz[i]
+    MD_TIME_ADD <- tfpi$Metadata_time_add[i]
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
 
@@ -169,6 +171,8 @@ for(i in seq_len(nrow(tfpi))) {
         md_filtered
     message("\t", nrow(md_filtered), " rows of metadata")
 
+    stopifnot(nrow(md_filtered) > 0)
+
     # ---- Metadata time zone conversion, if needed ----
     if(MD_TZ != "EST") {
         message("\tConverting metadata times from ", MD_TZ, " to EST")
@@ -176,6 +180,12 @@ for(i in seq_len(nrow(tfpi))) {
         md_filtered$start_timestamp <- with_tz(md_filtered$start_timestamp, tzone = "EST")
         md_filtered$end_timestamp <- force_tz(md_filtered$end_timestamp, tzone = MD_TZ)
         md_filtered$end_timestamp <- with_tz(md_filtered$end_timestamp, tzone = "EST")
+    }
+
+    if(!is.na(MD_TIME_ADD) && MD_TIME_ADD != 0) {
+        message("\tAdding ", MD_TIME_ADD, " to metadata start times")
+        md_filtered$start_timestamp <- md_filtered$start_timestamp + MD_TIME_ADD * 60
+        NOTES <- paste0(NOTES, " (+", MD_TIME_ADD, " min added to m.d. starts)")
     }
 
     # Construct start timestamps needed by ffi_metadata_match
@@ -204,7 +214,7 @@ for(i in seq_len(nrow(tfpi))) {
 
     # ---- Duplication check ----
     message("\tChecking for multiple observations per timestamp")
-    matched_data <- tree_data_filtered %>% filter(!is.na(match))
+    matched_data <- tree_data_filtered[!is.na(tree_data_filtered$match),]
     if(any(duplicated(matched_data$TIMESTAMP))) {
         # If the 7810's time zone settings gets changed during use,
         # the instrument writes multiple observations per timestamp
@@ -227,7 +237,7 @@ for(i in seq_len(nrow(tfpi))) {
     # ---- Diagnostic plot 1: color data by match ----
     p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
         geom_point(na.rm = TRUE) +
-        ylim(300, 1000) +
+        ylim(350, 800) +
         ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
                 subtitle = NOTES)
     print(p1)
@@ -243,18 +253,27 @@ for(i in seq_len(nrow(tfpi))) {
     ggsave(fn, width = 10, height = 6)
 
     # Detail plot
-    tree_data_filtered %>% filter(!is.na(match)) -> matches
-    print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
+    matches <- tree_data_filtered[!is.na(tree_data_filtered$match),]
+    p1_detail <- p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP)))
+    print(p1_detail)
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
 
 
     # ---- Diagnostic plot 2: individual tree data ----
-    p2 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2)) +
+    # Fit a linear model as a visual reference...
+    matches$mod <- NA_real_
+    try({
+        matches$secs <- matches$TIMESTAMP - min(matches$TIMESTAMP)
+        mod <- lm(CO2 ~ secs * ID, data = matches)
+        matches$mod <- predict(mod)
+    })
+    # ...and plot
+    p2 <- ggplot(matches, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
+        geom_line(aes(y = mod), na.rm = TRUE, color = "darkgrey", linetype = 2, linewidth = 1.1) +
         geom_point(na.rm = TRUE) +
         facet_wrap(. ~ ID, scales = "free_x") +
-        ylim(300, 1000) +
         geom_vline(data = md_filtered,
                    aes(xintercept = start_timestamp + dead_band),
                    linetype = 2, color = "darkgreen") +
@@ -287,7 +306,7 @@ for(i in seq_len(nrow(tfpi))) {
 } # for
 #stop("OK")
 
-# ---- Wrap up ----
+# ---- Write concentration data ----
 message("Done with processing")
 
 message("Writing concentration data")
@@ -299,10 +318,13 @@ conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
 message("\tWriting ", basename(conc_fn_pqt))
 arrow::write_parquet(results, conc_fn_pqt)
 
+# ---- Slope calculation ----
 # CO2 slopes
 results %>%
+    filter(!is.na(CO2)) %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
+    filter(n() > 1) %>%
     mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CO2 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
@@ -314,8 +336,10 @@ results %>%
 
 # CH4 slopes
 results %>%
+    filter(!is.na(CH4)) %>%
     mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) %>%
     group_by(Year, Date, plot, timepoint, ID) %>%
+    filter(n() > 1) %>%
     mutate(secs = TIMESTAMP - min(TIMESTAMP)) %>%
     group_modify(~ broom::tidy(lm(CH4 ~ secs, data = .x))) %>%
     filter(term == "secs") %>%
@@ -338,6 +362,7 @@ slopes_fn_pqt <- gsub("csv", "parquet", slopes_fn)
 message("\tWriting ", basename(slopes_fn_pqt))
 arrow::write_parquet(results, slopes_fn_pqt)
 
+# ---- Summary plots ----
 message("Writing summary plots")
 slopes %>%
     group_by(Year, Date, plot, timepoint) %>%
@@ -348,8 +373,28 @@ slopes %>%
            lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
     slopes_plot
 
+# All data plots
+ggplot(slopes_plot, aes(yday(Date), slope_CO2, color = plot)) +
+    geom_jitter() +
+    facet_grid(Year ~ .) +
+    ggtitle("slope_CO2")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_slopes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
+    geom_jitter() +
+    facet_grid(Year ~ .) +
+    ggtitle("slope_CH4")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_slopes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+
+# Annual plots
 for(yr in unique(slopes_plot$Year)) {
     slopes_plot_yr <- filter(slopes_plot, Year == yr)
+
     ggplot(slopes_plot_yr, aes(1, slope_CO2, color = z_CO2)) +
         geom_jitter() +
         scale_color_distiller(type = "div") +
