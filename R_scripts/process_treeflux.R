@@ -121,8 +121,8 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
 results <- list()
-for(i in 72:236) {# seq_len(nrow(tfpi))) {
-        #i <- 236
+#for(i in 197:236) {# seq_len(nrow(tfpi))) {
+    i <- 251
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -213,7 +213,7 @@ for(i in 72:236) {# seq_len(nrow(tfpi))) {
 
     # ---- Duplication check ----
     message("\tChecking for multiple observations per timestamp")
-    matched_data <- tree_data_filtered %>% filter(!is.na(match))
+    matched_data <- tree_data_filtered[!is.na(tree_data_filtered$match),]
     if(any(duplicated(matched_data$TIMESTAMP))) {
         # If the 7810's time zone settings gets changed during use,
         # the instrument writes multiple observations per timestamp
@@ -236,7 +236,7 @@ for(i in 72:236) {# seq_len(nrow(tfpi))) {
     # ---- Diagnostic plot 1: color data by match ----
     p1 <- ggplot(tree_data_filtered, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
         geom_point(na.rm = TRUE) +
-        ylim(300, 1000) +
+        ylim(350, 800) +
         ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT, "matched"),
                 subtitle = NOTES)
     print(p1)
@@ -253,7 +253,8 @@ for(i in 72:236) {# seq_len(nrow(tfpi))) {
 
     # Detail plot
     tree_data_filtered %>% filter(!is.na(match)) -> matches
-    print(p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP))))
+    p1_detail <- p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP)))
+    print(p1_detail)
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
@@ -269,7 +270,7 @@ for(i in 72:236) {# seq_len(nrow(tfpi))) {
     })
     # ...and plot
     p2 <- ggplot(matches, aes(x = TIMESTAMP, y = CO2, color = num_ID)) +
-        geom_line(aes(y = mod), color = "darkgrey", linetype = 2, linewidth = 1.1) +
+        geom_line(aes(y = mod), na.rm = TRUE, color = "darkgrey", linetype = 2, linewidth = 1.1) +
         geom_point(na.rm = TRUE) +
         facet_wrap(. ~ ID, scales = "free_x") +
         geom_vline(data = md_filtered,
@@ -301,8 +302,8 @@ for(i in 72:236) {# seq_len(nrow(tfpi))) {
                -match, -num_ID) ->
         results[[i]]
 
-} # for
-#stop("OK")
+#} # for
+stop("OK")
 
 # ---- Write concentration data ----
 message("Done with processing")
@@ -373,7 +374,7 @@ slopes %>%
 
 # All data plots
 ggplot(slopes_plot, aes(yday(Date), slope_CO2, color = plot)) +
-    geom_point() +
+    geom_jitter() +
     facet_grid(Year ~ .) +
     ggtitle("slope_CO2")
 fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_slopes_all.pdf")
@@ -381,7 +382,7 @@ message("\tSaving ", basename(fn), "...")
 ggsave(fn, width = 10, height = 8)
 
 ggplot(slopes_plot, aes(yday(Date), slope_CH4, color = plot)) +
-    geom_point() +
+    geom_jitter() +
     facet_grid(Year ~ .) +
     ggtitle("slope_CH4")
 fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_slopes_all.pdf")
