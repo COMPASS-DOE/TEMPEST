@@ -9,7 +9,7 @@ TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,ES
 TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,0,EST,F12 data missing
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,0,EST,Adjusted metadata times +2 min (and C4 more)
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,0,EST,Adjusted metadata times +2 min; no C6 data
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,0,EST,C13 (#12) had wrong time and erasure mark; no C9 data; metadata times +2
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,0,EST,C13 had wrong time and erasure mark; no C9 data; metadata times +2
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,0,EST,Adjusted metadata times +2 min
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,0,EST,Adjusted metadata times +2 min
 TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,0,EST,Adjusted metadata times +2 min
