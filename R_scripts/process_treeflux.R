@@ -122,7 +122,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
 
 results <- list()
 #for(i in 197:236) {# seq_len(nrow(tfpi))) {
-    i <- 287
+    i <- 293
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -252,7 +252,7 @@ results <- list()
     ggsave(fn, width = 10, height = 6)
 
     # Detail plot
-    tree_data_filtered <- tree_data_filtered[!is.na(tree_data_filtered$match),]
+    matches <- tree_data_filtered[!is.na(tree_data_filtered$match),]
     p1_detail <- p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP)))
     print(p1_detail)
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
