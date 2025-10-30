@@ -3,6 +3,11 @@
 # intermediate data files that are then handled by finalize_treeflux.R
 # KAM/BBL 2025
 
+DATA_DIR_ROOT <- "Data/tree_flux_licor/"
+TEMP_OUTPUT_DIR <- file.path(DATA_DIR_ROOT, "temporary_data")
+OUTPUT_DIR_ROOT <- file.path(DATA_DIR_ROOT, "processing_outputs")
+
+# Use saved data in the TEMP_OUTPUT_DIR folder?
 USE_SAVED_DATA <- FALSE
 
 library(dplyr)
@@ -16,10 +21,6 @@ library(arrow)
 now <- function() format(Sys.time(), "%a %b %d %X %Y")
 
 message(now(), " Welcome to process_treeflux.R")
-
-DATA_DIR_ROOT <- "Data/tree_flux_licor/"
-TEMP_OUTPUT_DIR <- file.path(DATA_DIR_ROOT, "temporary_data")
-OUTPUT_DIR_ROOT <- file.path(DATA_DIR_ROOT, "processing_outputs")
 
 premade_outputs <- list.files(TEMP_OUTPUT_DIR, pattern = "\\.RDS", full.names = TRUE)
 if(length(premade_outputs) > 0 && USE_SAVED_DATA) {
@@ -132,9 +133,9 @@ tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
 # ---- Main loop ----
 
 # If you want to process a single line, use
-lines_to_process <- 11
+#lines_to_process <- 11
 # To process the entire file, use
-#lines_to_process <- seq_len(nrow(tfpi))
+lines_to_process <- seq_len(nrow(tfpi))
 
 for(i in lines_to_process) {
 
