@@ -1,18 +1,16 @@
 # process_treeflux.R
-# Script to process raw Licor files into
-# ready-for-analysis data matched with metadata
+# Script to process raw Licor files and metadata into
+# intermediate data files that are then handled by finalize_treeflux.R
 # KAM/BBL 2025
 
 USE_SAVED_DATA <- FALSE
 
-library(fluxfinder)
 library(dplyr)
 library(stringr)
 library(ggplot2)
 theme_set(theme_bw())
 library(lubridate)
 library(readr)
-library(broom)
 library(arrow)
 
 now <- function() format(Sys.time(), "%a %b %d %X %Y")
@@ -232,7 +230,9 @@ for(i in lines_to_process) {
 
     # Add ID information to the Licor data
     tree_data_filtered$ID <- md_filtered$ID[tree_data_filtered$match]
-    tree_data_filtered$num_ID <- paste0(tree_data_filtered$match, " (", tree_data_filtered$ID, ")")
+    # num_ID is just for making our graph legends prettier and easier
+    tree_data_filtered$num_ID <- paste0(sprintf("%02s", tree_data_filtered$match),
+                                        " (", tree_data_filtered$ID, ")")
     tree_data_filtered$num_ID[is.na(tree_data_filtered$match)] <- NA
 
     # ---- Duplication check ----
@@ -292,7 +292,10 @@ for(i in lines_to_process) {
     # Fit a linear model as a visual reference...
     matches$mod <- NA_real_
     try({
-        matches$secs <- as.numeric(matches$TIMESTAMP - min(matches$TIMESTAMP))
+        matches %>%
+            group_by(ID) %>%
+            mutate(secs = as.numeric(TIMESTAMP - min(TIMESTAMP))) ->
+            matches
         mod <- lm(CO2 ~ secs * ID, data = matches)
         matches$mod <- predict(mod)
     })
@@ -320,11 +323,7 @@ for(i in lines_to_process) {
     matches %>%
         left_join(md_filtered, by = "ID") %>%
         # Filter for dead_band and obs_length settings
-        group_by(ID) %>%
-        filter(secs > dead_band) %>%
-        group_by(ID) %>%
-        filter(secs <= obs_length) %>%
-        ungroup() %>%
+        filter(secs >= dead_band, secs <= obs_length) %>%
         select(-dead_band, -obs_length,
                -start_timestamp, -end_timestamp, -start_times,
                -match, -num_ID) ->
@@ -336,4 +335,3 @@ for(i in lines_to_process) {
 } # for
 
 message(now(), " All done. Go run finalize_treeflux.R!")
-
