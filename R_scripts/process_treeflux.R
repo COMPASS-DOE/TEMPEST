@@ -123,7 +123,7 @@ tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
 # ---- Main loop ----
 results <- list()
 for(i in seq_len(nrow(tfpi))) {
-    #i <- 71
+#    i <- 11
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -255,6 +255,10 @@ for(i in seq_len(nrow(tfpi))) {
 
     # Detail plot
     matches <- tree_data_filtered[!is.na(tree_data_filtered$match),]
+    if(any(matches$CO2 > 1200)) {
+        message("\tDropping data rows with CO2 > 1200")
+        matches <- matches[matches$CO2 <= 1200,]
+    }
     p1_detail <- p1 + xlim(c(min(matches$TIMESTAMP), max(matches$TIMESTAMP)))
     print(p1_detail)
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
@@ -291,8 +295,7 @@ for(i in seq_len(nrow(tfpi))) {
     ggsave(fn, width = 10, height = 6)
 
     # Merge data with metadata and save
-    tree_data_filtered %>%
-        filter(!is.na(match)) %>%
+    matches %>%
         left_join(md_filtered, by = "ID") %>%
         # Filter for dead_band and obs_length settings
         group_by(ID) %>%
