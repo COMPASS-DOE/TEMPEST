@@ -1,7 +1,10 @@
-# process_treeflux.R
+# finalize_treeflux.R
 # Script to process raw Licor files into
 # ready-for-analysis data matched with metadata
 # KAM/BBL 2025
+
+# install.packages("remotes")
+# remotes::install_github("COMPASS-DOE/fluxfinder")
 
 USE_SAVED_DATA <- FALSE
 
@@ -17,25 +20,35 @@ library(arrow)
 
 now <- function() format(Sys.time(), "%a %b %d %X %Y")
 
-message(now(), " Welcome to process_treeflux.R")
+message(now(), " Welcome to finalize_treeflux.R")
 
 DATA_DIR_ROOT <- "Data/tree_flux_licor/"
-TEMP_OUTPUT_DIR <- file.path(DATA_DIR_ROOT, "temporary_data")
-OUTPUT_DIR_ROOT <- file.path(DATA_DIR_ROOT, "processing_outputs")
+INPUT_DIR <- file.path(DATA_DIR_ROOT, "temporary_data")
+OUTPUT_DIR <- file.path(DATA_DIR_ROOT, "processing_outputs")
 
-premade_outputs <- list.files(TEMP_OUTPUT_DIR, pattern = "\\.RDS", full.names = TRUE)
-if(length(premade_outputs) > 0 && USE_SAVED_DATA) {
-    message("There are ", length(premade_outputs), " file(s) in 'temporary_outputs/' ",
-    "that will be used instead of computing data")
-    okay <- askYesNo("Is this what you want?")
-    if(!okay) stop("Stopping")
-}
+# ---- Chamber metadata prep ----
+CMD_DIR <- file.path(INPUT_DIR_ROOT, "chamber_metadata")
+cmd <- read_csv(file.path(CMD_DIR,
+                          "Static chamber inventory_11272023.xlsx - Updated 11_27_2023.csv"),
+                col_types = "cdddddddd") %>%
+    select(size_class = `Size Class`,
+           area_cm2 = `Surface Area of Tree Covered (cm2)`,
+           volume_cm3 = `Volume (cm3)`) %>%
+    # TEMPORARY -- collapse the two size 1 classes
+    mutate(size_class = if_else(size_class %in% c("1a", "1b"), "1", size_class)) %>%
+    group_by(size_class) %>%
+    summarise(area = mean(area_cm2), volume_cm3 = mean(volume_cm3))
 
-# ---- Initialization ----
+tree_assignments <- read_csv(file.path(CMD_DIR,
+                                       "TEMPEST_TreeChamberInstallation_11272023.xlsx - Orginal.csv"),
+                             col_types = "_c_ccc__") %>%
+    filter(!is.na(Plot)) %>%
+    select(Plot, Species, ID, size_class = `Chamber Size Class`)
 
-# Get names of LI-7810 data files from TEMPEST I and II (2022, 2023, 2024)
-files <- list.files(DATA_DIR_ROOT, pattern = "\\.data$",
-                    full.names = TRUE, recursive = TRUE)
+chamber_metadata <- left_join(tree_assignments, cmd, by = "size_class")
+
+# Get names of data files from TEMPEST I and II (2022, 2023, 2024)
+files <- list.files(INPUT_DIR_ROOT, pattern = "\\.data$", full.names = TRUE, recursive = TRUE)
 message("I see ", length(files), " data files")
 
 # Helper function
@@ -70,13 +83,13 @@ read_data_file <- function(base_f) {
 
 # Read in metadata and construct start/end timestamps
 message("Reading metadata...")
-meta22 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata22.csv"),
+meta22 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata22.csv"),
                    col_types = "ccccccddcc")
-meta23 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata23.csv"),
+meta23 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata23.csv"),
                    col_types = "ccccccddcc")
-meta24 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
+meta24 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
-meta2125 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
+meta2125 <- read_csv(file.path(INPUT_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
                      col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
 # meta24 has a different format; rework it to match others
@@ -128,17 +141,13 @@ if(any(is.na(md$end_timestamp))) {
 # We use a "treeflux-processing-info" file to step through the data. This
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
-tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
+tfpi <- read_csv(file.path(INPUT_DIR_ROOT, "treeflux-processing-info.csv"),
                  col_types = "cDcccdcc")
 
 # ---- Main loop ----
-
-# If you want to process a single line, use
-lines_to_process <- 11
-# To process the entire file, use
-#lines_to_process <- seq_len(nrow(tfpi))
-
-for(i in lines_to_process) {
+results_list <- list()
+for(i in 1:50) { #seq_len(nrow(tfpi))) {
+#    i <- 11
 
     I_STR <- sprintf("%02s", i)
     FILE <- tfpi$File[i]
@@ -150,18 +159,10 @@ for(i in lines_to_process) {
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
 
-    # Check no valid data
     if(is.na(INS_TZ) || is.na(FILE)) {
         message("No entry for row ", i, "; skipping")
         next
     }
-    # Check pre-saved data
-    fd_fn <- file.path(TEMP_OUTPUT_DIR, paste0(i, ".RDS"))
-    if(USE_SAVED_DATA && fd_fn %in% premade_outputs) {
-        message("Saved data already exists for ", i)
-        next
-    }
-
     message(now(), paste(" processing", I_STR, FILE, DATE, TIMEPOINT, PLOT))
 
     # Filter to one Licor file and one day for testing
@@ -254,7 +255,7 @@ for(i in lines_to_process) {
             filter(obsrep == n()) %>%
             select(-obsrep) ->
             tree_data_filtered
-        message("\tDe-duplicated data in ", i, ": multiple obs per timestamp!")
+        warning("De-duplicated data in ", i, ": multiple obs per timestamp!")
     }
 
     # ---- Diagnostic plot 1: color data by match ----
@@ -287,6 +288,7 @@ for(i in lines_to_process) {
     fn <- file.path(OUTPUT_DIR_ROOT, SUBFOLDER, paste0(FN_ROOT, "_match_detail.pdf"))
     message("\tSaving ", basename(fn), "...")
     ggsave(fn, width = 10, height = 6)
+
 
     # ---- Diagnostic plot 2: individual tree data ----
     # Fit a linear model as a visual reference...
@@ -328,12 +330,136 @@ for(i in lines_to_process) {
         select(-dead_band, -obs_length,
                -start_timestamp, -end_timestamp, -start_times,
                -match, -num_ID) ->
-        final_data
-
-    message("\tSaving ", basename(fd_fn))
-    saveRDS(final_data, file = fd_fn)
+        results_list[[i]]
 
 } # for
+#stop("OK")
 
-message(now(), " All done. Go run finalize_treeflux.R!")
+# ---- Post-processing ----
+message("Done with processing")
+bind_rows(results_list) %>%
+    rename(Plot = plot, Timepoint = timepoint) ->
+    results
+
+message("Writing concentration data")
+conc_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_concentrations.csv")
+message("\tWriting ", basename(conc_fn))
+write_csv(results, conc_fn)
+conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
+message("\tWriting ", basename(conc_fn_pqt))
+arrow::write_parquet(results, conc_fn_pqt)
+
+# ---- Flux calculation ----
+library(fluxfinder)
+
+# Bring in chamber metadata
+results %>%
+    left_join(chamber_metadata, by = c("Plot", "ID")) %>%
+    mutate(Year = year(TIMESTAMP), Date = date(TIMESTAMP)) ->
+    results
+
+# CO2 fluxes
+results %>%
+    filter(!is.na(CO2)) %>%
+    group_by(Year, Date, Plot, Timepoint, Species, ID) %>%
+    filter(n() > 1) %>%
+    group_modify(~ffi_fit_models(.x$secs,
+                                 .x$CO2,
+                                 area = .x$area[1],
+                                 volume = .x$volume[1])) %>%
+    select(Year, Date, Plot, Timepoint, Species, ID,
+           CO2_lin_flux.estimate = lin_flux.estimate,
+           CO2_lin_r.squared = lin_r.squared,
+           CO2_rob_flux.estimate = rob_flux.estimate) ->
+    fluxes_CO2
+
+# CH4 fluxes
+results %>%
+    filter(!is.na(CH4)) %>%
+    group_by(Year, Date, Plot, Timepoint, Species, ID) %>%
+    filter(n() > 1) %>%
+    group_modify(~ffi_fit_models(.x$secs,
+                                 .x$CH4,
+                                 area = .x$area[1],
+                                 volume = .x$volume[1])) %>%
+    select(Year, Date, Plot, Timepoint, Species, ID,
+           CH4_lin_flux.estimate = lin_flux.estimate,
+           CH4_lin_r.squared = lin_r.squared,
+           CH4_rob_flux.estimate = rob_flux.estimate) ->
+    fluxes_CH4
+
+fluxes_CO2 %>%
+    left_join(fluxes_CH4, by = c("Year", "Date", "Plot", "Timepoint", "Species", "ID")) %>%
+    arrange(Year, Date, Plot, Timepoint, ID) ->
+    fluxes
+
+message("Writing flux data")
+fluxes_fn <- file.path(OUTPUT_DIR_ROOT, "tempest_tree_ghg_fluxes.csv")
+message("\tWriting ", basename(fluxes_fn))
+write_csv(fluxes, fluxes_fn)
+fluxes_fn_pqt <- gsub("csv", "parquet", fluxes_fn)
+message("\tWriting ", basename(fluxes_fn_pqt))
+arrow::write_parquet(fluxes, fluxes_fn_pqt)
+
+# ---- Summary plots ----
+message("Writing summary plots")
+fluxes %>%
+    group_by(Year, Date, Plot, Timepoint) %>%
+    # compute z-scores for
+    mutate(z_CO2 = (CO2_rob_flux.estimate - mean(CO2_rob_flux.estimate, na.rm = TRUE)) /
+               sd(CO2_rob_flux.estimate, na.rm = TRUE),
+           z_CH4 = (CH4_rob_flux.estimate - mean(CH4_rob_flux.estimate, na.rm = TRUE)) /
+               sd(CH4_rob_flux.estimate, na.rm = TRUE),
+           lab_CO2 = if_else(abs(z_CO2) > 1.96, ID, ""),
+           lab_CH4 = if_else(abs(z_CH4) > 1.95, ID, "")) ->
+    fluxes_plot
+
+# All data plots
+ggplot(fluxes_plot, aes(yday(Date), CO2_rob_flux.estimate, color = Plot)) +
+    geom_jitter() +
+    facet_grid(Year ~ .) +
+    ggtitle("fluxes_CO2")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CO2_fluxes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 12, height = 8)
+
+ggplot(fluxes_plot, aes(yday(Date), CH4_rob_flux.estimate, color = Plot)) +
+    geom_jitter() +
+    facet_grid(Year ~ .) +
+    ggtitle("fluxes_CH4")
+fn <- file.path(OUTPUT_DIR_ROOT, "tempest_CH4_fluxes_all.pdf")
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 12, height = 8)
+
+
+# Annual plots
+for(yr in unique(fluxes_plot$Year)) {
+    fluxes_plot_yr <- filter(fluxes_plot, Year == yr)
+
+    ggplot(fluxes_plot_yr, aes(1, CO2_rob_flux.estimate, color = z_CO2)) +
+        geom_jitter() +
+        scale_color_distiller(type = "div") +
+        geom_text(aes(label = lab_CO2), size = 2, na.rm = TRUE) +
+        facet_grid(Timepoint ~ Plot) +
+        coord_flip() +
+        theme(axis.text.y = element_blank(), axis.title = element_blank()) +
+        ggtitle(paste(yr, "fluxes_CO2"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CO2_fluxes_", yr, ".pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
+
+    ggplot(fluxes_plot_yr, aes(1, CH4_rob_flux.estimate, color = z_CH4)) +
+        geom_jitter() +
+        scale_color_distiller(type = "div") +
+        geom_text(aes(label = lab_CH4), size = 2, na.rm = TRUE) +
+        facet_grid(Timepoint ~ Plot) +
+        coord_flip() +
+        theme(axis.text.y = element_blank(), axis.title = element_blank()) +
+        ggtitle(paste(yr, "fluxes_CH4"))
+    fn <- file.path(OUTPUT_DIR_ROOT, paste0("tempest_CH4_fluxes_", yr, ".pdf"))
+    message("\tSaving ", basename(fn), "...")
+    ggsave(fn, width = 10, height = 6)
+}
+
+message(now(), " All done")
 
