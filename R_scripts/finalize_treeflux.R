@@ -198,5 +198,23 @@ for(yr in unique(fluxes_plot$Year)) {
     ggsave(fn, width = 10, height = 6)
 }
 
+# Species plots
+fn <- file.path(OUTPUT_DIR, "tempest_CO2_species_fluxes.pdf")
+ggplot(fluxes, aes(CO2_rob_flux.estimate, Date, color = Species)) +
+    geom_point(na.rm = TRUE) +
+    xlim(c(0,2)) +
+    ggtitle(fn)
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+fn <- file.path(OUTPUT_DIR, "tempest_CH4_species_fluxes.pdf")
+ggplot(fluxes, aes(CH4_rob_flux.estimate, Date, color = Species)) +
+    geom_point(na.rm = TRUE) +
+ #   xlim(c(0,2)) +
+    ggtitle(fn)
+message("\tSaving ", basename(fn), "...")
+ggsave(fn, width = 10, height = 8)
+
+
 message(now(), " All done")
 
