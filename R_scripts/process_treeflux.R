@@ -151,7 +151,10 @@ for(i in lines_to_process) {
 
     # Check no valid data
     if(is.na(INS_TZ) || is.na(FILE)) {
-        message("No entry for row ", i, "; skipping")
+        msg <- paste0("No valid data for row ", i, "; skipping")
+        message(msg)
+        # Leave a note in the temporary outputs folder
+        writeLines(msg, file.path(TEMP_OUTPUT_DIR, paste0(i, ".txt")))
         next
     }
     # Check pre-saved data
