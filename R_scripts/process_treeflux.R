@@ -11,7 +11,6 @@ OUTPUT_DIR_ROOT <- file.path(DATA_DIR_ROOT, "processing_outputs")
 SKIP_SAVED_DATA <- TRUE
 
 library(dplyr)
-library(stringr)
 library(ggplot2)
 theme_set(theme_bw())
 library(lubridate)
