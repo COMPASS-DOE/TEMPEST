@@ -1,0 +1,1029 @@
+---
+title: "Synoptic CB: Porewater Sulfide"
+author: "September 2025 Samples Plate 6"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+    number_sections: false
+geometry: "left=2cm,right=2cm,top=1cm,bottom=2cm"
+output_dir: "To Be Reviewed/PDF"
+---
+
+
+```{r Add Required Packages, include=FALSE}
+
+#Packages that are required 
+lapply(c(
+  "dplyr", "ggplot2", "ggpubr", "stringr",
+  "purrr", "tidyverse", "here", "broom", "tibble",
+  "googledrive", "googlesheets4", "data.table", 
+  "matrixStats", "gridExtra", "grid", "tidyverse", "knitr", 
+  "plater", "raster", "readxl", "patchwork"), 
+  library, character.only = TRUE)
+
+```
+
+## Run Information
+```{r Run Information, echo=TRUE, message=FALSE, warning=FALSE}
+###### Run information - PLEASE CHANGE
+  Date_Run = "20250925"  #Date that instrument was run
+  Plate = "6"
+  Month = "Sept"
+  Year = "2025"
+  Run_by = "Steph Wilson and Zoe Read"  #Instrument user 
+  Script_run_by = "Zoe Read" #Code user 
+  Project = "COMPASS"
+  run_notes = "Matrix Check 10 is significantly different from Std 5. 
+  Samples 91, 19, 36, and 98 still have high CVs after one replicate removed. 
+  Sample July_42 needs dilution. 
+  Dup 38 had high percent difference. 
+  10 uL of spike added." #any notes from the run
+
+###### STDs to remove manually - NA unless standards have high CVs
+  stds_to_remove <- c(NA) #Ex. c("A02", "B02")
+  
+  Chkstds_to_remove <- c(NA)
+  
+  MCs_to_remove <- c(NA)
+  
+##Sample data that was entered incorrectly
+  # The Old ID is the original, incorrecly-entered ID and the New ID is the correct ID to change it to. 
+# Old_ID_1 = "17 Dup"
+# New_ID_1 = "16 Dup"
+cat(run_notes)
+```
+
+
+```{r File Names, echo=TRUE, message=FALSE, warning=FALSE, include = FALSE}
+
+###### File Names - - PLEASE CHECK, should automatically update based on Date and Plate Number
+#file path and name for raw summary data file 
+  raw_file_name_id_dil = paste0("Raw Data/", Year, Month, "_H2S_Datasheets.xlsx")
+  Sheet = paste0("Plate ", Plate)
+  raw_file_name_data = paste0("Raw Data/", Date_Run, "_COMPASS_H2S_Plate", Plate, ".xlsx")
+
+#file path and name of processed data file 
+  tidy_file_name = paste0("Tidy Data/", Date_Run, "_COMPASS_H2S_Plate", Plate, "_tidy.csv")
+  processed_file_name = paste0("Processed Data/COMPASS_H2S_", Date_Run, "_Plate", Plate, ".csv")
+  samples_need_dilution_name = paste0("Processed Data/COMPASS_H2S_", Date_Run, "_Plate", Plate, "_SamplesNeedDilution.csv")
+  samples_high_cv_name = paste0("Processed Data/COMPASS_H2S_", Date_Run, "_Plate", Plate, "_SamplesHighCV.csv")
+
+###### Log Files - PLEASE CHECK 
+#downloaded metadata csv - downloaded from Google drive as csv for this year
+  Raw_Metadata = paste0("Raw Data/COMPASS_SynopticCB_PW_SampleLog_", Year, ".csv")
+
+#qaqc log file path for this year 
+  Log_path = "Raw Data/Sulfide_STD_QAQC.csv"
+
+```
+
+
+```{r Set Up Code - constants and QAQC cutoffs, include=FALSE}
+
+  #Flag cutoffs
+  r2_cutoff = 0.98            #this is the level below which we want to rerun or consider a curve 
+  cv_flag_stds = 10           #this is the maximum cv allowed for standards
+  p_value_chkstds = 0.05      #the p-value for the t-test between check standards must be greater than this
+  p_value_MC = 0.05           #the p-value for the t-test between matrix checks and top std must be greater than this
+  cv_flag_sample = 10         #this is the maximum cv allowed for samples
+  dups_perc_diff = 15.5       #this is the maximum percent difference allowed between duplicates
+  high_recovery_cutoff = 120  #this is the maximum percent recovery of SO4 allowed in spiked samples
+  low_recovery_cutoff = 80    #this is the minimum percent recovery of SO4 allowed in spiked samples
+
+#Standard concentrations - Update if running different standard curve:
+# standard units are in uM
+  standards <- tibble(
+    IDs = c("Std 0", "Std 1", "Std 2", "Std 3", "Std 4", "Std 5"),
+    Conc = c(0, 5.0, 12.5, 25.0, 50.0, 100.0))  #uM
+
+#Spike concentration calc
+  #spike for these samples was 50 uL of the 100uM standard
+  Con1 <- 1000000               #conversion factor value for spike volumes (uL -> L)
+  spk_std <- 100                # uM S2- standard used
+  spkvol <- 10                  # uL volume of spike added
+  spk_Conc <- (spk_std)*(spkvol/Con1)  # umoles of S2- added to each spiked sample
+  sample_vol <- 250             # the sample volume without the spike is 250 uL
+  cline_vol <- 0               # the total volume without the spike is 250 uL
+
+#Top standard Concentration- Update if running different standard curve: 
+   Top_STD = 100
+
+#Set time zone 
+  common_tz = "Etc/GMT+5"
+  Sys.setenv(TZ = "America/New_York")
+
+
+```
+
+```{r Tidy data, include=FALSE}
+
+# Read in file with IDs and dilutions
+raw_id_dil <- read_excel(raw_file_name_id_dil, sheet = Sheet, col_names = FALSE, range = cell_rows(1:19))
+
+# Read in file with data values
+raw_data <- read_excel(raw_file_name_data, col_names = FALSE, range = "A1:M10")
+
+# Combine IDs/dilutions with data
+raw_tidy <- rbind(raw_data, raw_id_dil)
+
+# Write tidy data to new folder
+write.table(raw_tidy, tidy_file_name, sep = ",", col.names = FALSE, row.names = FALSE, na = "", quote = FALSE)
+
+
+```
+
+```{r Read in tidy data, include=FALSE}
+
+# Read tidy plate file
+dat <- stds <- read_plate(
+  file = tidy_file_name,             # full path to the .csv file
+  well_ids_column = "Wells",    # name to give column of well IDs (optional)
+  sep = ","                     # separator used in the csv file (optional)
+)
+str(dat)
+# head(dat)
+
+#Change the headers
+colnames(dat) <- c("Wells", "Abs", "IDs", "Dilution")
+
+```
+
+```{r Fix data entered incorrectly, include = FALSE}
+##Data entered incorrectly
+# dat$IDs[dat$IDs == Old_ID_1] <- New_ID_1
+# dat$IDs[dat$IDs == Old_ID_2] <- New_ID_2
+# dat$IDs[dat$IDs == Old_ID_3] <- New_ID_3
+# dat$IDs[dat$IDs == Old_ID_4] <- New_ID_4
+# dat$IDs[dat$IDs == Old_ID_5] <- New_ID_5
+# dat$IDs[dat$IDs == Old_ID_6] <- New_ID_6
+
+```
+
+```{r Plot Standard Curve, echo=FALSE, message=FALSE, warning = FALSE, fig.keep='none', include=FALSE}
+
+#subset by H2s Stds
+H2S_stds_all <- dat %>%  
+  filter(str_detect(dat$IDs, "Std"))  
+# head(H2S_stds_all)
+
+# Make a concentration column and add H2S std concentrations to std dataframe
+H2S_stds_all <- left_join(H2S_stds_all, standards, by = "IDs")
+
+#Remove check standards which have NAs in the Conc column
+H2S_stds <- na.omit(H2S_stds_all)
+
+#Calculate cv for STDs
+H2S_stds_cv1 <- H2S_stds %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            Conc = first(Conc))
+
+#Flag high cvs
+H2S_stds_cv1$H2S_cv_flag <- ifelse(H2S_stds_cv1$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+stds_HCV <- H2S_stds_cv1 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(stds_HCV, caption = "High CV Samples")
+
+stds_HCV <- subset(H2S_stds, (IDs %in% stds_HCV$IDs ))
+stds_HCV
+
+
+
+##Remove bad reps
+H2S_stds_fixed <- subset(H2S_stds, !(Wells %in% stds_to_remove ))
+
+#Calculate cv for STDs
+H2S_stds_cv2 <- H2S_stds_fixed %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            Conc = first(Conc))
+
+#Flag high cvs
+H2S_stds_cv2$H2S_cv_flag <- ifelse(H2S_stds_cv2$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+stds_HCV <- H2S_stds_cv2 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(stds_HCV, caption = "High CV Samples")
+
+
+
+## Calculate std curve
+H2S_lm <- lm(H2S_stds_fixed$Abs ~ H2S_stds_fixed$Conc)
+# summary(H2S_lm)
+cf <- coef(H2S_lm)
+
+#Create data frame with 1 rows and 0 columns
+Slopes <- data.frame(matrix(ncol = 0, nrow = 1))
+Slopes$Curve <- "H2S"
+Slopes$R2 <- summary(H2S_lm)$adj.r.squared
+Slopes$Slope <- cf[2]
+Slopes$Intercept <- cf[1]
+head(Slopes)
+
+##Fix this so it plots all the points!
+#Plot stds and calculate the slope, intercept, and R2 
+H2S <- ggplot(H2S_stds_fixed, aes(Conc, Abs)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)+
+  ggtitle("Sulfide Standard Curve")
+
+H2S
+
+#Write out to the user whether or not the r2 is above the cutoff
+if (Slopes$R2 < (r2_cutoff)) {
+print("Std Curve r2 is below cutoff! - REASSESS")
+} else {
+print("Std Curve r2 GOOD")
+}
+  
+#write out a flag to the sample dataframe if the r2 is above the cutoff of 0.98
+##This creates the QAQC flag column
+dat <- dat %>%
+  mutate(
+    QAQC_flag = if (Slopes$R2 <= r2_cutoff) {
+      "Std curve r2 low"
+    } else {
+      ""
+    }
+  )
+
+```
+
+```{r Assess Standard Curves, echo=FALSE, message=FALSE, warning = FALSE, fig.keep='none', include=FALSE}
+
+#read in datafile with all the slopes
+qlogO <- read.csv(Log_path)
+colnames(qlogO) <- c("Row_Number", "Date", "Project", "R2", "Slope", "Intercept", "Top_STD")
+qlogO$Row_Number <- NULL
+# head(qlogO)
+
+#create data frame 
+Date <- Date_Run
+R2 <-summary(H2S_lm)$adj.r.squared
+Slope <- cf[2]
+Intercept <- cf[1]
+qplate <- data.frame(Date, Project , R2, Slope, Intercept, Top_STD, row.names = NULL)
+# head(qplate)
+
+#add data to file
+qlog <- rbind(qplate, qlogO)
+# head(qlog)
+
+# pull date run
+qlog_Date <- subset(qlog, Date == Date_Run) 
+
+##plot the slopes to make sure there are no crazy outliers 
+slope1 <- ggplot(data=qlog, aes(x=Date, y=Slope)) +
+           geom_hline(yintercept= (mean(qlog$Slope)+ (2*sd(qlog$Slope))), linetype="dashed", color = "red", linewidth=2)+
+            geom_hline(yintercept= (mean(qlog$Slope)- (2*sd(qlog$Slope))), linetype="dashed", color = "red", linewidth=2)+
+            geom_point(aes(size=3)) + 
+            theme_classic() + ylim(0, 0.02) + 
+           theme(legend.position="none") + 
+           ggtitle("Sulfide Slopes")+
+  guides(x = guide_axis(angle = 70))+
+    geom_point(aes( x = qplate$Date, y = qplate$Slope,size=3), colour = "orange")
+  
+slope1
+
+
+##Check if the current slope is within 2 std deviations of previous slopes
+if (qlog_Date$Slope[1] > (mean(qlog$Slope)+ (2*sd(qlog$Slope)))| qlog_Date$Slope[1] < (mean(qlog$Slope)- (2*sd(qlog$Slope)))) {
+print("Std curve slope is 2 sd different from previous slopes! - REASSESS")
+} else {
+print("Std curve slope is with 2 sd of previous slopes")
+}
+
+#Rerun if outside of red lines
+
+##plot the intercepts to make sure there are no crazy outliers 
+int1 <- ggplot(data=qlog, aes(x=Date, y=Intercept)) +
+  geom_hline(yintercept= (mean(qlog$Intercept)+ (2*sd(qlog$Intercept))), linetype="dashed", color = "red", linewidth=2)+
+  geom_hline(yintercept= (mean(qlog$Intercept)- (2*sd(qlog$Intercept))), linetype="dashed", color = "red", linewidth=2)+
+  geom_point(aes(size=3)) + 
+  theme_classic() + ylim(0.05,0.125) + 
+  theme(legend.position="none")+ 
+  ggtitle("Sulfide Intercepts")+
+  guides(x = guide_axis(angle = 70))+
+    geom_point(aes( x = qplate$Date, y = qplate$Intercept,size=3), colour = "orange")
+
+int1
+
+##Check if the current intercept is within 2 std deviations of previous intercepts
+if (qlog_Date$Intercept[1] > (mean(qlog$Intercept)+ (2*sd(qlog$Intercept)))| qlog_Date$Intercept[1] < (mean(qlog$Intercept)- (2*sd(qlog$Intercept)))) {
+print("Std curve intercept is 2 sd different from previous intercepts! - REASSESS")
+} else {
+print("Std curve intercept is with 2 sd of previous intercepts")
+}
+
+#plot the R2s to make sure there are no crazy outliers 
+Rsq1 <- ggplot(data=qlog, aes(x=Date, y=R2)) +
+  geom_hline(yintercept= (r2_cutoff), linetype="dashed", color = "red", linewidth=2)+
+  geom_point(aes(size=3)) + 
+  theme_classic() + ylim(0.96, 1.01) + 
+  theme(legend.position="none")+ 
+  ggtitle("Sulfide R2s")+
+  guides(x = guide_axis(angle = 70))+
+    geom_point(aes( x = qplate$Date, y = qplate$R2,size=3), colour = "orange")
+
+Rsq1
+
+#write out the log file with the added lines for this run  
+write.csv(qlog, Log_path)
+
+
+
+```
+
+```{r Plot standard graphs, echo = FALSE, warning = FALSE, message = FALSE, fig.width=8, fig.height=12}
+
+knit_print((paste("Std Curve R squared:", round(Slopes$R2, 4))))
+
+##Plot std graphs together
+(H2S)/(slope1)/(int1)
+
+```
+
+```{r Assess Check Standards, echo=FALSE, warning = FALSE, include=FALSE, eval=FALSE}
+
+#Make sure check standards are not different from standard concentration
+#subset Check Standards from the rest of the dataset
+H2S_std_Chk <- H2S_stds_all %>%
+  filter(grepl("ChkStd", IDs))
+
+
+#Calculate cv for Chk STDs
+H2S_std_Chk_cv1 <- H2S_std_Chk %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            Conc = first(Conc))
+
+#Flag high cvs
+H2S_std_Chk_cv1$H2S_cv_flag <- ifelse(H2S_std_Chk_cv1$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+Chkstds_HCV <- H2S_std_Chk_cv1 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(Chkstds_HCV, caption = "High CV Samples")
+
+Chkstds_HCV <- subset(H2S_std_Chk, (IDs %in% Chkstds_HCV$IDs ))
+head(Chkstds_HCV)
+
+
+
+##Remove bad reps
+H2S_std_Chk_fixed <- subset(H2S_std_Chk, !(Wells %in% Chkstds_to_remove ))
+
+#Calculate cv for STDs
+H2S_std_Chk_cv2 <- H2S_std_Chk_fixed %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            Conc = first(Conc))
+
+#Flag high cvs
+H2S_std_Chk_cv2$H2S_cv_flag <- ifelse(H2S_std_Chk_cv2$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+Chkstds_HCV <- H2S_std_Chk_cv2 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(Chkstds_HCV, caption = "High CV Samples")
+
+
+
+#Are the check standards significantly different from the standards?
+#subset datasets for comparison
+std0 <- subset(H2S_stds_fixed, IDs == "Std 0")
+Chkstd0 <- subset(H2S_std_Chk_fixed, IDs == "ChkStd 0")
+std3 <- subset(H2S_stds_fixed, IDs == "Std 3")
+Chkstd3 <- subset(H2S_std_Chk_fixed, IDs == "ChkStd 3")
+std4 <- subset(H2S_stds_fixed, IDs == "Std 4")
+Chkstd4 <- subset(H2S_std_Chk_fixed, IDs == "ChkStd 4")
+
+##Chk std 0 t-test
+t.test.std0 <- t.test(std0$Abs,Chkstd0$Abs,var.equal = T)
+# Extract key statistics
+stats0 <- data.frame(
+  Statistic = c("t-statistic", "df", "p-value"),
+  Value = c(t.test.std0$statistic, t.test.std0$parameter, t.test.std0$p.value)
+)
+# Use knitr::kable to print a formatted table with a caption
+knitr::kable(stats0,
+caption = "Two-Sample T-Test Comparing Chk Std 0 with Std 0")
+
+
+if(t.test.std0$p.value > p_value_chkstds){
+print("Chk Std 0 GOOD")
+} else {
+print("Chk Std 0 is significantly different from Std - REASSESS")
+}
+  
+#write out a flag to the sample dataframe if the Chk std is Bad
+if (t.test.std0$p.value < p_value_chkstds) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; Chk Std 0 out of range"),
+    "Chk Std 0 out of range"
+  )
+}
+
+
+##Chk std 3 t-test
+t.test.std3 <- t.test(std3$Abs,Chkstd3$Abs,var.equal = T)
+# Extract key statistics
+stats3 <- data.frame(
+  Statistic = c("t-statistic", "df", "p-value"),
+  Value = c(t.test.std3$statistic, t.test.std3$parameter, t.test.std3$p.value)
+)
+# Use knitr::kable to print a formatted table with a caption
+knitr::kable(stats3,
+caption = "Two-Sample T-Test Comparing Chk Std 3 with Std 3")
+
+
+if(t.test.std3$p.value > p_value_chkstds){
+print("Chk Std 3 GOOD")
+} else {
+print("Chk Std 3 is signficantly different from Std - REASSESS")
+}
+  
+#write out a flag to the sample dataframe if the Chk std is Bad
+if (t.test.std3$p.value < p_value_chkstds) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; Chk Std 3 out of range"),
+    "Chk Std 3 out of range"
+  )
+}
+
+
+
+##Chk std 4 t-test
+t.test.std4 <- t.test(std4$Abs,Chkstd4$Abs,var.equal = T)
+# Extract key statistics
+stats4 <- data.frame(
+  Statistic = c("t-statistic", "df", "p-value"),
+  Value = c(t.test.std4$statistic, t.test.std4$parameter, t.test.std4$p.value)
+)
+# Use knitr::kable to print a formatted table with a caption
+knitr::kable(stats4,
+             caption = "Two-Sample T-Test Comparing Chk Std 4 with Std 4")
+
+if(t.test.std4$p.value > p_value_chkstds){
+print("Chk Std 4 GOOD")
+} else {
+print("Chk Std 4 is signficantly different from Std - REASSESS")
+}
+  
+#write out a flag to the sample dataframe if the Chk std 4is Bad
+if (t.test.std4$p.value < p_value_chkstds) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; Chk Std 4 out of range"),
+    "Chk Std 4 out of range"
+  )
+}
+
+
+##Add p-values to dataframes
+std0$p_value <- t.test.std0$p.value
+std3$p_value <- t.test.std3$p.value
+std4$p_value <- t.test.std4$p.value
+
+
+
+##Check Stds Plot
+##plot MC Abs vs Std 5 Abs and color based on whether passed T test
+
+##Combine std checks
+QAstdchk <- rbind(std0, std3, std4)
+
+#Generate flags based on p-values
+QAstdchk$p_flag <-  ifelse(QAstdchk$p_value > p_value_chkstds, 'OK', 'Rerun')
+
+QAstdchk_unique <- QAstdchk %>%
+  group_by(IDs) %>%
+  slice(1) %>%
+  ungroup()
+
+#plot output as a bar graph to easily check
+ChkStdbar <- ggplot(data = QAstdchk_unique, aes(x = IDs, y = p_value, fill=p_flag)) +
+        geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("OK" = "darkgreen", "Rerun" = "darkred"))+
+        theme_classic() + labs(x= "Sample ID", y="T-test p-value") + 
+        theme(legend.position="none") +  geom_hline(yintercept=0.05, linetype="dashed", 
+                color = "black", linewidth=1)+ 
+        ggtitle("Check Standards")
+
+ChkStdbar
+
+
+```
+
+```{r Matrix Checks, echo=FALSE, warning = FALSE, include=FALSE}
+
+H2S_MC <- dat %>%  
+  filter(str_detect(IDs, "MC")) 
+
+#Calculate cv for MCs
+H2S_MC_cv1 <- H2S_MC %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            QAQC_flag = first(QAQC_flag))
+
+#Flag high cvs
+H2S_MC_cv1$H2S_cv_flag <- ifelse(H2S_MC_cv1$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+MC_HCV <- H2S_MC_cv1 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(MC_HCV, caption = "High CV Samples")
+
+MC_HCV <- subset(H2S_MC, (IDs %in% MC_HCV$IDs ))
+head(MC_HCV)
+
+
+
+##Remove bad reps
+H2S_MC_fixed <- subset(H2S_MC, !(Wells %in% MCs_to_remove ))
+
+#Calculate cv for MCs
+H2S_MC_cv2 <- H2S_MC_fixed %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean_Abs = mean(Abs), H2S_sd = sd(Abs), H2S_cv = cv(Abs), 
+            Dilution = first(Dilution), 
+            QAQC_flag = first(QAQC_flag))
+
+#Flag high cvs
+H2S_MC_cv2$H2S_cv_flag <- ifelse(H2S_MC_cv2$H2S_cv > cv_flag_stds, 'High CV', 'Within range')
+
+# filter High CV Samples
+MC_HCV <- H2S_MC_cv2 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(MC_HCV, caption = "High CV Samples")
+
+
+##Select Std 5 for comparison to MCs
+std5 <- subset(H2S_stds, IDs == "Std 5")
+MC10 <- subset(H2S_MC_fixed, IDs == "MC: 10ppt S5")
+MC20 <- subset(H2S_MC_fixed, IDs == "MC: 20ppt S5") #Uncomment MC20 if you used the 20 ppt matrix check
+
+
+
+#10ppt matrix check
+t.test.MC10 <- t.test(std5$Abs,MC10$Abs,var.equal = T)
+# Extract key statistics
+statsMC10 <- data.frame(
+  Statistic = c("t-statistic", "df", "p-value"),
+  Value = c(t.test.MC10$statistic, t.test.MC10$parameter, t.test.MC10$p.value)
+)
+# Use knitr::kable to print a formatted table with a caption
+knitr::kable(statsMC10,
+             caption = "Two-Sample T-Test Comparing MC10 with Std 5")
+
+
+if(t.test.MC10$p.value > p_value_MC){
+print("Matrix Check 10 GOOD")
+} else {
+print("Matrix Check 10 is signficantly different from Std 5 - REASSESS")
+}
+  
+#write out a flag to the sample dataframe if the MC is Bad
+if (t.test.MC10$p.value < p_value_MC) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; MC 10 out of range"),
+    "MC 10 out of range"
+  )
+}
+
+##Add p-value to dataframe
+MC10$p_value <- t.test.MC10$p.value
+
+#20ppt matrix check
+t.test.MC20 <- t.test(std5$Abs,MC20$Abs,var.equal = T)
+# Extract key statistics
+statsMC20 <- data.frame(
+  Statistic = c("t-statistic", "df", "p-value"),
+  Value = c(t.test.MC20$statistic, t.test.MC20$parameter, t.test.MC20$p.value)
+)
+# Use knitr::kable to print a formatted table with a caption
+knitr::kable(statsMC20,
+             caption = "Two-Sample T-Test Comparing MC20 with Std 5")
+
+
+if(t.test.MC20$p.value > p_value_MC){
+print("Matrix Check 20 GOOD")
+} else {
+print("Matrix Check 20 is significantly different from Std 5 - REASSESS")
+}
+  
+#write out a flag to the sample dataframe if the MC is Bad
+if (t.test.MC20$p.value < p_value_MC) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; MC 20 out of range"),
+    "MC 20 out of range"
+  )
+}
+
+##Add p-value to dataframe
+MC20$p_value <- t.test.MC20$p.value
+
+##Matrix Checks Plot
+##plot MC Abs vs Std 5 Abs and color based on whether passed T test
+
+##Combine matrix checks
+QAMC <- rbind(MC10, MC20)
+
+#Calculate p-values
+QAMC$p_flag <-  ifelse(QAMC$p_value > p_value_MC, 'OK', 'Rerun')
+QAMC_unique <- QAMC %>%
+  group_by(IDs) %>%
+  slice(1) %>%
+  ungroup()
+
+#plot dups output as a bar graph to easily check - want any over 10% to be red need to work on this 
+MCbar <- ggplot(data = QAMC_unique, aes(x = IDs, y = p_value, fill=p_flag)) +
+        geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("OK" = "darkgreen", "Rerun" = "darkred"))+
+        theme_classic() + 
+        labs(x= "Sample ID", y="T-test p-value") + 
+        theme(legend.position="none") +  
+        geom_hline(yintercept=0.05, linetype="dashed", 
+                color = "black", linewidth=1)+ 
+        ggtitle("Matrix Effects")
+
+MCbar
+
+
+```
+
+
+```{r Flag sample data, echo=FALSE, warning = FALSE, include=FALSE}
+
+dat_flagged <- dat %>%  
+      filter(!str_detect(IDs, "Std")) %>%  
+      filter(!str_detect(IDs, "MC"))
+
+# head(dat_flagged)
+
+#Calculate concentrations of Sulfide
+dat_flagged$Conc <- ((dat_flagged$Abs-cf[1])/cf[2])*(dat_flagged$Dilution)
+# head(dat_flagged)
+
+#Use ifelse to make any negative values equal to zero
+dat_flagged$H2S_Conc_Final <- ifelse(dat_flagged$Conc <0, 0, dat_flagged$Conc)
+
+#summarize by sampleID so that we can calculate the mean and std. dev. of the three wells 
+dat1 <- dat_flagged %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean = mean(H2S_Conc_Final), H2S_sd = sd(H2S_Conc_Final), H2S_cv = cv(H2S_Conc_Final), 
+            abs_mean = mean(Abs), Conc_mean = mean(Conc), 
+            QAQC_flag = first(QAQC_flag), 
+            Dilution = first(Dilution))
+
+# head(dat_flagged)
+
+```
+
+```{r calculate sample CVs, include = FALSE}
+# head(dat_flagged)
+
+
+# head(dat1)
+
+#Flag high cvs 
+dat1$H2S_cv_flag <- ifelse(dat1$H2S_cv > cv_flag_sample, 'High CV', 'Within range')
+
+# head(dat1)
+
+#plot data and sd's just to check and see what they look like - just a quick first look 
+H2S_original <- ggplot(dat1, aes(x=IDs, y=H2S_mean, color = H2S_cv_flag))+ 
+  geom_point(size=4) +  theme_classic() + 
+  scale_color_manual(values = c("Within range" = "darkgreen", "High CV" = "darkred"))+
+  labs(y="Sulfide (uM)", x="Sample ID") + 
+  geom_errorbar(aes(ymin=H2S_mean-H2S_sd,
+                    ymax=H2S_mean+H2S_sd),width=0.3,position=position_dodge(.1))+
+  guides(x = guide_axis(angle = 70)) + 
+  ggtitle("Sample triplicate means and sd dev before bad reps removed") 
+H2S_original
+
+```
+
+```{r remove bad reps, include = FALSE}
+
+####This is a bit clunky but they figured out how to auto remove bad reps!####
+
+# filter High CV Samples
+dat1_HCV <- dat1 %>%  
+  filter(str_detect(H2S_cv_flag, "High CV")) 
+
+knitr::kable(dat1_HCV, caption = "High CV Samples")
+
+dat_HCV <- subset(dat_flagged, (IDs %in% dat1_HCV$IDs ))
+# head(dat_HCV)
+
+#Columns 4 7 10
+Column1= c("A04", "A07","A10", "B04","B10" ,"C04" , "C07", "C10",
+"D04","D10", "E04","E07", "E10" ,"F04" , "F07" ,"G04","G07" ,"G10" ,"H01","H04","H07")
+
+#Columns 5,8,11
+Column2= c("A05", "A08","A11", "B05","B11" ,"C05" , "C08", "C11",
+"D05","D11", "E05","E08", "E11" ,"F05" , "F08" ,"G05","G08" ,"G11" ,"H02","H05","H08")
+
+#Columns 6,9,12
+Column3= c("A06", "A09","A12", "B06" ,"B12" ,"C06" , "C09", "C12",
+"D06","D12", "E06","E09", "E12" ,"F06" , "F09" ,"G06","G09" ,"G12" ,"H03","H06","H09")
+
+
+#Delete Column one
+dat_HCV1 <- subset(dat_HCV, !(Wells %in% Column1 ))
+
+#Delete Column two
+dat_HCV2 <- subset(dat_HCV, !(Wells %in% Column2 ))
+
+#Delete Column three
+dat_HCV3 <- subset(dat_HCV, !(Wells %in% Column3 ))
+
+
+##Find CV for each data set with one column's data removed
+#W/out column1
+dat_HCV1 <- dat_HCV1 %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean = mean(H2S_Conc_Final), H2S_sd = sd(H2S_Conc_Final), H2S_cv = cv(H2S_Conc_Final), 
+            abs_mean = mean(Abs), Conc_mean = mean(Conc), 
+            QAQC_flag = first(QAQC_flag),
+            Dilution = first(Dilution))
+dat_HCV1$H2S_cv_flag <- ifelse(dat_HCV1$H2S_cv > cv_flag_sample, 'High CV', 'Within range')
+
+#W/out column2
+dat_HCV2 <- dat_HCV2 %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean = mean(H2S_Conc_Final), H2S_sd = sd(H2S_Conc_Final), H2S_cv = cv(H2S_Conc_Final), 
+            abs_mean = mean(Abs), Conc_mean = mean(Conc),
+            QAQC_flag = first(QAQC_flag),
+            Dilution = first(Dilution))
+dat_HCV2$H2S_cv_flag <- ifelse(dat_HCV2$H2S_cv > cv_flag_sample, 'High CV', 'Within range')
+
+#W/out column3
+dat_HCV3 <- dat_HCV3 %>%
+  group_by(IDs) %>%
+  summarise(H2S_mean = mean(H2S_Conc_Final), H2S_sd = sd(H2S_Conc_Final), H2S_cv = cv(H2S_Conc_Final), 
+            abs_mean = mean(Abs), Conc_mean = mean(Conc),
+            QAQC_flag = first(QAQC_flag),
+            Dilution = first(Dilution))
+dat_HCV3$H2S_cv_flag <- ifelse(dat_HCV3$H2S_cv > cv_flag_sample, 'High CV', 'Within range')
+
+
+#find lowest CVs
+dat_HCV1_1 <- subset(dat_HCV1, dat_HCV1$H2S_cv < dat_HCV2$H2S_cv & dat_HCV1$H2S_cv < dat_HCV3$H2S_cv)
+# head(dat_HCV1_1)
+
+dat_HCV2_2 <- subset(dat_HCV2, dat_HCV2$H2S_cv < dat_HCV1$H2S_cv & dat_HCV2$H2S_cv < dat_HCV3$H2S_cv)
+# head(dat_HCV1_1)
+
+dat_HCV3_3 <- subset(dat_HCV3, dat_HCV3$H2S_cv < dat_HCV2$H2S_cv & dat_HCV3$H2S_cv < dat_HCV1$H2S_cv)
+# head(dat_HCV3_3)
+
+
+#recombine data frames
+dat2_HCV <- rbind(dat_HCV1_1,dat_HCV2_2,dat_HCV3_3)
+knitr::kable(dat2_HCV, caption = "Samples that originally had high CVs")
+
+dat1 <- subset(dat1, (!IDs %in% dat2_HCV$IDs ))
+dat1 <- rbind(dat2_HCV, dat1)
+# head(dat1)
+
+#dat1$H2S_mean <- ifelse(dat1$H2S_cv_flag == 'High CV',  dat2_HCV$H2S_mean, dat1$H2S_mean)
+#dat1$H2S_H2S_sd <- ifelse(dat1$H2S_cv_flag == 'High CV',  dat2_HCV$H2S_H2S_sd, dat1$H2S_H2S_sd)
+#dat1$H2S_H2S_cv <- ifelse(dat1$H2S_cv_flag == 'High CV',  dat2_HCV$H2S_H2S_cv, dat1$H2S_H2S_cv)
+#dat1$H2S_H2S_cv_flag <- ifelse(dat1$H2S_cv_flag == 'High CV',  dat2_HCV$H2S_H2S_cv_flag, dat1$H2S_H2S_cv_flag)
+
+
+
+###Manually Remove bad reps by row number in original dataframe
+#dat <- dat[-c(10,13,16,21,28,31,37,40,48,52,60),]
+#dat <- subset(dat, !(Wells %in% c("B04," )))
+
+
+#rerun lines 231-253
+#head(dat)
+
+#summarize by sampleID so that we can calculate the mean and std. dev. of the three wells 
+#dat1 <- dat %>%
+#  group_by(IDs) %>%
+ # summarise(H2S_mean = mean(H2S_Conc_Final), H2S_sd = sd(H2S_Conc_Final), H2S_cv = cv(H2S_Conc_Final), 
+           # H2S_flag = first(Conc_flag), 
+           # Dilution = first(Dilution))
+
+#head(dat1)
+
+#Flag high cvs
+#dat1$H2S_cv_flag <- ifelse(dat1$H2S_cv > 10, 'High CV rerun', 'Within range')
+
+#head(dat1)
+
+#plot data and sd's just to check and see what they look like - just a quick first look 
+H2S_fixed <- ggplot(dat1, aes(x=IDs, y=H2S_mean, color = H2S_cv_flag))+ 
+  geom_point(size=4) +  theme_classic() + 
+  scale_color_manual(values = c("Within range" = "darkgreen", "High CV" = "darkred"))+
+  labs(y="Sulfide (uM)", x="Sample ID") + 
+  geom_errorbar(aes(ymin=H2S_mean-H2S_sd,
+                    ymax=H2S_mean+H2S_sd),width=0.3,position=position_dodge(.1))+
+  guides(x = guide_axis(angle = 70)) + 
+  ggtitle("Sample triplicate means and sd dev after bad reps removed") 
+H2S_fixed
+
+
+#Use ifelse to mark samples that were below detection limit and changed to zero
+dat1$H2S_flag <- ifelse(dat1$Conc_mean <0, 'bdl', ifelse(dat1$abs_mean > mean(std5$Abs), "adl", "Within_Range"))
+
+#If samples with cv >10 rerun those samples 
+H2S_HighCVRerun <- subset(dat1, H2S_cv_flag == "High CV")
+H2S_DiluteRerun <- subset(dat1, H2S_flag == "adl")
+H2S_DiluteRerun$Top_STD <- Top_STD
+H2S_bdl <- subset(dat1,H2S_flag == "bdl")
+
+
+knitr::kable(H2S_HighCVRerun, caption = "Samples that still have High CVs")
+knitr::kable(H2S_DiluteRerun, caption = "Samples that need to be diluted")
+# print(H2S_bdl)
+
+```
+
+```{r Plot samples before and after removing bad replicates, echo = FALSE, warning = FALSE, fig.width=8, fig.height=10}
+
+##Plot original and fixed sample CV graphs together
+H2S_original/H2S_fixed
+
+```
+
+```{r Assess Duplicates, echo=FALSE, fig.keep = "none", warning=FALSE, include=FALSE}
+
+#Show me the data that we have from the calculations 
+# head(dat1)
+
+#pull out any rows that have "Dup" in the ID column
+dups <- dat1 %>%  
+  filter(str_detect(IDs, "Dup")) 
+head(dups)
+
+#remove these from dat1
+dat2 <- dat1 %>%  
+  filter(!str_detect(IDs, "Dup")) %>%  
+  filter(!str_detect(IDs, "Spike")) 
+head(dat2)
+
+#remove the dup from these IDs so we will have duplicates 
+dups$IDs<-gsub(" Dup",'',dups$IDs)
+# head(dups)
+colnames(dups) <- c('IDs', 'mean_dup')
+
+
+#put it back together with the old data set and look for duplicates 
+QAdups <- merge(dat2, dups)
+head(QAdups)
+
+#Calculate percent difference between duplicates
+QAdups$dups_chk <- ((abs(QAdups$H2S_mean-QAdups$mean_dup))/((QAdups$H2S_mean+QAdups$mean_dup)/2))*100
+QAdups$dups_flag <-  ifelse(QAdups$dups_chk < dups_perc_diff, 'OK', 'Rerun')
+
+# head(QAdups)
+
+#plot dups output as a bar graph to easily check - want any over 10% to be red need to work on this 
+dupsbar <- ggplot(data = QAdups, aes(x = IDs, y = dups_chk, fill=dups_flag)) +
+        geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("OK" = "darkgreen", "Rerun" = "darkred"))+
+        theme_classic() + labs(x= "Sample ID", y="Difference Between Duplicates (%)") + 
+        theme(legend.position="none") +  geom_hline(yintercept=15.5, linetype="dashed", 
+                color = "black", linewidth=1)+ 
+        ggtitle("Duplicate Checks")
+
+dupsbar
+
+Baddups <- subset(QAdups, dups_flag == "Rerun")
+
+#write out a flag to the sample dataframe if any dups have percent differences out of range 
+if (nrow(Baddups) > 0) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; Dup perc diff out of range"),
+    "Dup perc diff out of range"
+  )
+}
+
+#check for any one's that would warrant reruns 
+```
+
+```{r Assess Analytical Spikes, echo=FALSE, fig.keep = "none", include=FALSE}
+
+#Show me the data that we have from the calculations 
+# head(dat1)
+
+#pull out any rows that have "Spike" in the SampleID column
+spks <- dat1 %>%  
+  filter(str_detect(IDs, "Spike")) 
+# head(spks)
+
+#remove these from dat1
+dat2 <- dat1 %>%  
+  filter(!str_detect(IDs, "Dup")) %>%  
+  filter(!str_detect(IDs, "Spike")) 
+# head(dat2)
+
+#remove the Spike from these IDs so we will have duplicates 
+spks$IDs<-gsub(" Spike","",spks$IDs)
+# head(spks)
+colnames(spks) <- c('IDs', 'mean_spk')
+
+
+#put it back together with the old data set and look for duplicates 
+QAspks <- merge(dat2, spks)
+# head(QAspks)
+
+#now we need to calculate the spike concentration and calculate the spike recovery 
+#spike for these samples was 50 uL of the 100uM standard
+QAspks$unspkd <- (QAspks$H2S_mean/QAspks$Dilution)*((sample_vol + cline_vol)/Con1) #gives us the total S2- in the sample in umoles
+QAspks$spkd <-    (QAspks$mean_spk/QAspks$Dilution)*((sample_vol + cline_vol + spkvol)/Con1)        ##total S2- in spiked sample in umoles 
+QAspks$expctd_spkd <-  (QAspks$unspkd + spk_Conc)
+QAspks$spk_recovery <-    (QAspks$spkd/QAspks$expctd_spkd)*100
+QAspks$spks_flag <-  ifelse(QAspks$spk_recovery > low_recovery_cutoff & QAspks$spk_recovery < high_recovery_cutoff, 'OK', 'No, rerun')  
+
+# head(QAspks)
+
+#plot spk recoveries output as a bar graph to easily check - want any over 10% to be red need to work on this 
+spksbar <- ggplot(data = QAspks, aes(x = IDs, y = spk_recovery, fill = spks_flag)) +
+        geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("OK" = "darkgreen", "No, rerun" = "darkred"))+
+        theme_classic() + labs(x= "Sample ID", y="Spike Recovery (%)") + 
+        theme(legend.position="none") +  
+        geom_hline(yintercept=80, linetype="dashed", color = "black", linewidth=1) + 
+        geom_hline(yintercept=120, linetype="dashed", color = "black", linewidth=1) + 
+        ggtitle("Spike Checks")
+
+spksbar
+
+Badspks <- subset(QAspks, spks_flag == "No, rerun")
+
+#write out a flag to the sample dataframe if any spks have recovery out of range 
+if (nrow(Badspks) > 0) {
+    dat$QAQC_flag <- ifelse(
+    dat$QAQC_flag != "",
+    paste0(dat$QAQC_flag, "; Spk recovery out of range"),
+    "Spk recovery out of range"
+  )
+}
+
+#check for any no's that would warrant reruns! 
+```
+
+```{r Plot duplicates and spikes, echo = FALSE, warning = FALSE, out.width = "100%", out.height = "100%"}
+
+##Plot dup and spk together
+(dupsbar + spksbar)
+
+```
+
+
+```{r Plot check standards and matrix checks, echo = FALSE, warning = FALSE, out.width = "100%", out.height = "100%"}
+
+##Plot chk stds and MC graphs together
+# ChkStdbar
+MCbar
+
+```
+
+
+```{r Export final data and samples to rerun, echo=FALSE, include = FALSE}
+
+##Remove aquifer samples 
+Non_COMPASS_IDs <- c("116", "117", "118", "119", "120", "121", "122", "123", "124")
+dat_IDs <- dat1 %>%
+  filter(!(IDs %in% Non_COMPASS_IDs))
+
+#Read out the processed data
+# dat_IDs$Run_notes <- run_notes
+
+# head(dat_IDs)
+write.csv(dat_IDs, processed_file_name)
+
+# write flagged data to file
+write.csv(H2S_DiluteRerun, samples_need_dilution_name)
+write.csv(H2S_HighCVRerun, samples_high_cv_name)
+
+
+```
+
