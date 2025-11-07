@@ -1,0 +1,201 @@
+---
+title: "TEMPEST Aquifer: Porewater Sulfide"
+author: "September 2025 All Plates"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+    number_sections: false
+geometry: "left=2cm,right=2cm,top=1cm,bottom=2cm"
+output_dir: "To Be Reviewed/PDF"
+---
+
+##Run Notes
+```{r}
+# Some sample IDs are missing from metadata.
+
+```
+
+
+##Read in packages
+```{r packages, include = FALSE}
+#packages
+library(ggplot2)
+library(dplyr)
+library(data.table)
+library(matrixStats)
+library(gridExtra)
+library(ggpubr)
+library(grid)
+library(stringr)
+library(plater)
+library(raster)
+library(tidyverse)
+library(readxl)
+library(dplyr)
+
+```
+
+##Read in raw data
+```{r Read in raw data, include = FALSE}
+
+#Read in list of processed data files
+files <- list.files(path = "Processed Data", pattern = "\\d\\.csv$", full.names = TRUE)
+
+#Read and combine all csvs
+all_data <- files %>%
+  lapply(read.csv, 
+        colClasses = c("IDs" = "character")) %>%    # or read.csv if you prefer base R
+  bind_rows()             # combine into one data frame
+
+all_data$X <- NULL
+
+colnames(all_data)
+
+all_data <- all_data %>%
+  rename(
+    H2S_Conc_flag = H2S_flag,
+    H2S_QAQC_flag = QAQC_flag, 
+    
+  )
+
+##Remove Dups and Spikes
+Sample_data <- all_data %>% 
+  subset((!IDs %like% " Dup")) %>% 
+  subset((!IDs %like% " Spike"))%>% 
+  subset((!IDs %like% "July"))
+
+```
+
+##Read in and Fix Sample IDs
+```{r Read in and Fix Sample IDs, include = FALSE}
+
+#Read in Sample IDs
+SampleIDs <- read_excel("Raw Data/Aquifer_Sept2025_SampleIDs.xlsx")
+SampleIDs$Number <- as.character(SampleIDs$Number)
+names(SampleIDs) <- tools::toTitleCase(names(SampleIDs))
+
+```
+
+
+##Convert Sample Numbers to Sample IDs
+```{r Convert Sample Numbers to Sample IDs, include = FALSE}
+##Merge with data
+Sample_data_IDs <- Sample_data %>%
+  left_join(SampleIDs, by = c("IDs" = "Number"))
+
+##Add Zone
+Sample_data_IDs$Zone = "FW"
+Sample_data_IDs$Site = "TMP"
+
+##Make full sample IDs
+#Create IDs from what was collected for comparison later
+Sample_data_IDs <- Sample_data_IDs %>%
+  mutate(Sample_ID = paste(Site, Zone, "Well", Date, Replicate, sep = "_"))
+
+```
+
+##Remove ADL/BDL samples that were later diluted differently
+```{r Remove ADL/BDL samples that were later diluted differently, include = FALSE}
+
+#filter the high CV data in to one table
+HighCV<-filter(Sample_data_IDs, H2S_cv_flag=="High CV")
+
+#filter out the samples that need to be run at a higher dilution
+ADL<-filter(Sample_data_IDs, H2S_Conc_flag=="adl")
+
+#remove the samples that have already been run at a higher dilution 
+ww_ADL<-subset(Sample_data_IDs, (IDs %in% ADL$IDs))
+ww_ADL<-filter(ww_ADL, H2S_Conc_flag=="Within_Range") 
+ADL_not_fixed<-ADL %>% 
+  subset((!IDs %in% ww_ADL$IDs)) %>% 
+  subset((!IDs %like% " Dup")) %>% 
+  subset((!IDs %like% " Spike"))
+
+#filter out the samples that need to be run at a lower dilution
+BDL<-filter(Sample_data_IDs, H2S_Conc_flag=="bdl"& Dilution!=1)
+
+#remove the samples that have already been run at a lower dilution 
+ww_BDL<-subset(Sample_data_IDs, (IDs %in% BDL$IDs))
+ww_BDL<-filter(ww_BDL,H2S_Conc_flag=="Within_Range") 
+BDL_not_fixed<-BDL %>% 
+  subset((!IDs %in% ww_BDL$IDs)) %>% 
+  subset((!IDs %like% " Dup")) %>% 
+  subset((!IDs %like% " Spike"))
+
+
+##Remove samples that were ADL/BDL and are now fixed
+ADL_fixed<-ADL %>% 
+  subset((IDs %in% ww_ADL$IDs)) %>% 
+  subset((!IDs %like% " Dup")) %>% 
+  subset((!IDs %like% " Spike"))
+ADL_fixed$ID_conc <- paste(ADL_fixed$IDs, ADL_fixed$H2S_Conc_flag, sep = "_")
+
+BDL_fixed<-BDL %>% 
+  subset((IDs %in% ww_BDL$IDs)) %>% 
+  subset((!IDs %like% " Dup")) %>% 
+  subset((!IDs %like% " Spike"))
+BDL_fixed$ID_conc <- paste(BDL_fixed$IDs, BDL_fixed$H2S_Conc_flag, sep = "_")
+
+
+Sample_data_IDs$ID_conc <- paste(Sample_data_IDs$IDs, Sample_data_IDs$H2S_Conc_flag, sep = "_")
+
+Sample_data_wr <- Sample_data_IDs %>% 
+  subset(!ID_conc %in% BDL_fixed$ID_conc) %>% 
+  subset(!ID_conc %in% ADL_fixed$ID_conc)
+
+##If there are duplicates, remove the one with the lowest CV
+Sample_data_nodups <- Sample_data_wr %>%
+  arrange(IDs, H2S_cv) %>% # Sort by ID ascending, Value ascending
+  distinct(IDs, .keep_all = TRUE) # Keep distinct IDs, retaining all other columns
+
+print(HighCV)
+print(ADL_not_fixed)
+print(BDL_not_fixed)
+
+```
+
+##Export Combined Data
+```{r Export Combined Data, include = FALSE}
+
+#Prepare data to be exported - if there is anything else to add 
+#Add any necessary identifiers to the samples  ### VERY IMPORTANT AND STANDARD FOR PROJECT ####
+  #example read in sample IDs list and merge 
+  #create required ID columns in R, etc. 
+
+Sample_data_nodups$Sample_Time <- sprintf("%s:%s", substr(Sample_data_nodups$Time, 1, 2), substr(Sample_data_nodups$Time, 3, 4))
+
+final_data <- Sample_data_nodups %>% 
+  mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-09-04", 
+    Analysis_rundate = "2025-09-25"
+  ) 
+
+colnames(final_data)
+
+final_data <- final_data %>%
+  rename(
+    H2S_uM = H2S_mean,
+    H2S_sd_uM = H2S_sd,
+    sample_name = Sample_ID
+    # add more rename pairs as needed
+  ) %>%
+  dplyr::select(
+         Project, Experiment, Sample_Date, Sample_Time, Replicate, sample_name,
+         H2S_uM, H2S_sd_uM, H2S_cv, H2S_Conc_flag, H2S_cv_flag, H2S_QAQC_flag, 
+         Analysis_rundate
+        # list columns in the order you want them
+  )
+
+head(final_data)
+
+#Write out final data frame 
+write.csv(final_data, "Processed Data/TMP_20250904_FW_WellTest_H2S_Processed.csv")
+
+
+```
+
+
+##END

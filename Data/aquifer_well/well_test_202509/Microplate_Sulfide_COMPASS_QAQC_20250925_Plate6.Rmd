@@ -1,5 +1,5 @@
 ---
-title: "Synoptic CB: Porewater Sulfide"
+title: "TEMPEST Aquifer: Porewater Sulfide"
 author: "September 2025 Samples Plate 6"
 date: "`r Sys.Date()`"
 output: 
@@ -59,7 +59,7 @@ cat(run_notes)
 
 ###### File Names - - PLEASE CHECK, should automatically update based on Date and Plate Number
 #file path and name for raw summary data file 
-  raw_file_name_id_dil = paste0("Raw Data/", Year, Month, "_H2S_Datasheets.xlsx")
+  raw_file_name_id_dil = paste0("Raw Data/", Year, Month, "_H2S_Datasheets_AqWell.xlsx")
   Sheet = paste0("Plate ", Plate)
   raw_file_name_data = paste0("Raw Data/", Date_Run, "_COMPASS_H2S_Plate", Plate, ".xlsx")
 
@@ -1012,7 +1012,7 @@ MCbar
 ##Remove aquifer samples 
 Non_COMPASS_IDs <- c("116", "117", "118", "119", "120", "121", "122", "123", "124")
 dat_IDs <- dat1 %>%
-  filter(!(IDs %in% Non_COMPASS_IDs))
+  filter((IDs %in% Non_COMPASS_IDs))
 
 #Read out the processed data
 # dat_IDs$Run_notes <- run_notes
