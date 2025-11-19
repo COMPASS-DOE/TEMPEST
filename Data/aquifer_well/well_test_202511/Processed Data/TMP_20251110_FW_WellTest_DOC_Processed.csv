@@ -1,0 +1,9 @@
+"","Project","Experiment","Sample_Date","Sample_Time","Tank_Status","Replicate","sample_name","npoc_mgL","npoc_uM","npoc_flag","tdn_mgL","tdn_uM","tdn_flag","Analysis_runtime","Run_notes"
+"1","COMPASS","TEMPEST: Well Test","2025-11-10","13:30","half full","A","TMP_AquiferWell_13:30_halffull",0.865,72.0833333333333,"NPOC dups out of range",0.1649,11.7785714285714,"","11/17/2025 10:59:13 AM"," Instrument started, then there was a leak and once that was fixed a new standard curve 
+    was run for remaining samples."
+"2","COMPASS","TEMPEST: Well Test","2025-11-10","13:30","half full","B","TMP_AquiferWell_13:30_halffull_dup",0.8703,72.525,"NPOC dups out of range",0.1606,11.4714285714286,"","11/17/2025 11:27:18 AM"," Instrument started, then there was a leak and once that was fixed a new standard curve 
+    was run for remaining samples."
+"3","COMPASS","TEMPEST: Well Test","2025-11-10","15:00","full","A","TMP_AquiferWell_15:00_full",0.6431,53.5916666666667,"NPOC dups out of range",0.1979,14.1357142857143,"","11/17/2025 11:54:54 AM"," Instrument started, then there was a leak and once that was fixed a new standard curve 
+    was run for remaining samples."
+"4","COMPASS","TEMPEST: Well Test","2025-11-10","15:00","full","B","TMP_AquiferWell_15:00_full_dup",0.7834,65.2833333333333,"NPOC dups out of range",0.1876,13.4,"","11/17/2025 12:20:54 PM"," Instrument started, then there was a leak and once that was fixed a new standard curve 
+    was run for remaining samples."
