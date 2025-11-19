@@ -1,0 +1,766 @@
+---
+title: "COMPASS: TEMPEST Discrete DOC Data QAQC"
+author: "Freshwater Well Test: 2025-11-10"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+output_dir: "To Be Reviewed/PDF"
+---
+## Run Information
+```{r}
+
+#identify which section you are in 
+cat("Run Information")
+
+#a link to the Gitbook or whatever protocol you are using for this analysis 
+  #steph will add this soon 
+  
+#anything that needs to be changed do this in the first chunk
+  Date_Run = "11/16/25"
+  Run_by = "Stephanie J. Wilson"
+  Script_run_by = "Stephanie J. Wilson"
+  run_notes = " Instrument started, then there was a leak and once that was fixed a new standard curve 
+    was run for remaining samples."
+  
+  #file path and name for summary file 
+    raw_file_name = "Raw Data/TMP_AquiferWellTest_NPOC.txt" 
+  #file path and name for the all peaks file 
+    raw_allpeaks_name = "Raw Data/TMP_AquiferWellTest_NPOC_allpeaks.txt"
+  #file path and name for processed data after QAQC
+    processed_file_name = "Processed Data/TMP_20251110_FW_WellTest_DOC_Processed.csv"
+
+#check standard concentrations - Update if running different checks: 
+   chk_std_c = 50
+   chk_std_n = 2
+    
+#Log path 
+    Log_path = "Raw Data/COMPASS_TMP_TOCTN_QAQClog_2025.csv"
+
+```
+
+## Setup
+```{r setup, include=FALSE}
+
+#identify which section you are in 
+cat("Setup")
+
+#a link to the Gitbook or whatever protocol you are using for this analysis 
+  #steph will add this soon 
+
+#Packages that are required 
+  library(dplyr)
+  library(broom)
+  library(ggplot2)
+  library(ggpubr)
+  library(stringr)
+  library(purrr)
+  library(tidyverse)
+  library(here)
+  library(googledrive)
+
+#any coefficients / constants that are needed for calculations 
+  mw_c <- 12   #molecular weight of Carbon 
+  mw_n <- 14  #molecular weight of Nitrogen
+  Con1 <- 1000       # conversion factor value
+  Con2 <- 1000000    # conversion factor value 
+
+#Flag that we 
+  r2_cutoff = 0.98  #this is the level below which we want to rerun or consider a curve 
+  chk_flag = 0.10   #if the RSD (relative standard deviation) is over 1 among checks this is the std dev. / mean  
+  chks_flag = 60    #this is the percent of checks we want to be within range (at least) or else we will flag the data 
+  chk_conc_flag = 15 #this is the level cutoff for percent difference of check standards vs. the concentration they are meant to be 
+  rep_flag = 25 #this is a 25% error between samples
+  #blank_flag is calculated based on samples later in this code
+   
+#Top standard Concentrations- Update if running different standard curve: 
+   top_std_c = 100
+   top_std_n = 3
+  
+#any reference to other code 
+   ## if we need the metadata to check sample names we can put path here 
+
+#Set time zone 
+  common_tz = "Etc/GMT+5"
+  Sys.setenv(TZ = "America/New_York")
+  
+#plot indicators 
+plot_order <- c('Control', 'Freshwater', 'Saltwater')
+anyas_colors <- c('springgreen2', 'cyan2', 'violetred2')
+
+```
+
+\newpage
+
+## Import Data Functions  
+```{r create function to read in data, echo=FALSE}
+## Create a function to read in data from summary file: 
+
+read_data <- function(data){
+  # Second, read in data
+  read_delim(file = data, skip = 10, delim = "\t", show_col_types = FALSE) %>% 
+    rename(sample_name = `Sample Name`, 
+           npoc_raw = `Result(NPOC)`, 
+           tdn_raw = `Result(TN)`,
+           run_datetime = `Date / Time`) %>% 
+    select(sample_name, npoc_raw, tdn_raw,run_datetime)
+}
+
+read_curve <- function(data){
+  # Second, read in data
+  read_delim(file = data, skip = 10, delim = "\t", show_col_types = FALSE) %>% 
+    rename(sample_name = `Sample Name`,
+           analyte = `Analysis(Inj.)`,
+           concentration = `Conc.`,
+           area = Area,
+           manual_dilution = `Manual Dilution`,
+           excluded = Excluded,
+           run_datetime = `Date / Time`) %>% 
+    filter(excluded == 0) %>% #filter to injections that are included in the analysis 
+    select(sample_name, analyte, concentration, area, run_datetime) %>%
+    pivot_wider(names_from= analyte, values_from = concentration) %>%
+    rename(npoc_raw = NPOC,
+           tdn_raw = TN)
+}
+```
+
+## Import Sample Data     
+```{r Import Data, echo=FALSE}
+
+cat("Import Sample Data")
+
+#find the file in the raw data folder 
+dat_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl("TMP", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+head(dat_raw)
+```
+
+\newpage
+
+## Assessing standard Curves 
+```{r Assess Standard Curves, echo=FALSE}
+
+cat("Assess the Standard Curve")
+
+#filter standards out of the raw data 
+stds_all <- raw_allpeaks_name %>% 
+  map_df(read_curve) %>% 
+  filter(grepl("CalCurve", sample_name)) %>% 
+  dplyr::rename(
+        standard_C_ppm = npoc_raw,
+        standard_N_ppm = tdn_raw) %>%
+  select(run_datetime,standard_C_ppm,standard_N_ppm, area) %>%
+  bind_rows() 
+
+#separate by analyte 
+stds_C <- stds_all %>%
+  filter(!is.na(standard_C_ppm)) %>%
+  select(-standard_N_ppm) %>%
+  mutate(run_date = as.Date(strptime(run_datetime, format = "%m/%d/%Y %I:%M:%S %p")))
+
+stds_N <- stds_all %>%
+  filter(!is.na(standard_N_ppm)) %>%
+  select(-standard_C_ppm) %>%
+  mutate(run_date = as.Date(strptime(run_datetime, format = "%m/%d/%Y %I:%M:%S %p")))
+
+#calculate slope and r2 of cal curves
+#npoc curve
+lm_results_c <- stds_C %>%
+  group_by(run_date) %>%
+  do({
+    model = lm(area ~ standard_C_ppm, data = .)
+    tidy_model = tidy(model)             # coefficients
+    glance_model = glance(model)         # model metrics like R²
+    tibble(
+      slope = tidy_model$estimate[2],    # coefficient for standard_C_ppm
+      intercept = tidy_model$estimate[1],
+      r2 = glance_model$adj.r.squared
+    )
+  }) %>%
+  mutate(
+    analyte = "C", 
+    curve = "NPOC (mg/L)"
+  )
+
+#tn curve
+lm_results_n <- stds_N %>%
+  group_by(run_date) %>%
+  do({
+    model = lm(area ~ standard_N_ppm, data = .)
+    tidy_model = tidy(model)             # coefficients
+    glance_model = glance(model)         # model metrics like R²
+    tibble(
+      slope = tidy_model$estimate[2],    # coefficient for standard_C_ppm
+      intercept = tidy_model$estimate[1],
+      r2 = glance_model$adj.r.squared
+    )
+  }) %>%
+  mutate(
+    analyte = "N", 
+    curve = "TN (mg/L)"
+  )
+
+#put the together in one dataframe to later add to log 
+Slopes <- rbind(lm_results_c, lm_results_n)
+
+#store the r2's so they plot on the curve graphs
+r2_labels_c <- stds_C %>%
+  group_by(run_date) %>%
+  summarise(
+    x_pos = max(standard_C_ppm, na.rm = TRUE) * 0.8,
+    y_pos = max(area, na.rm = TRUE),
+    r_squared = round(summary(lm(area ~ standard_C_ppm))$adj.r.squared, 4),
+    .groups = "drop"
+  )
+
+r2_labels_n <- stds_N %>%
+  group_by(run_date) %>%
+  summarise(
+    x_pos = max(standard_N_ppm, na.rm = TRUE) * 0.8,
+    y_pos = max(area, na.rm = TRUE),
+    r_squared = round(summary(lm(area ~ standard_N_ppm))$adj.r.squared, 4),
+    .groups = "drop"
+  )
+
+##Plot standard Curve or Curves 
+#C Curve
+C_stds_plot <- ggplot(stds_C, aes(x = standard_C_ppm, y = area)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  facet_wrap(~ run_date) +
+  geom_text(
+    data = r2_labels_c,
+    aes(x = x_pos, y = y_pos, label = paste0("R² = ", r_squared)),
+    inherit.aes = FALSE,
+    hjust = 1, vjust = 1,
+    size = 4
+  ) +
+  labs(
+    title = "NPOC Std Curve by Date",
+    x = "Carbon Standard Concentration (ppm)",
+    y = "Peak Area"
+  ) +
+  theme_bw()
+
+C_stds_plot
+
+#N Curve
+N_stds_plot <- ggplot(stds_N, aes(x = standard_N_ppm, y = area)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "purple") +
+  facet_wrap(~ run_date) +
+    geom_text(
+    data = r2_labels_n,
+    aes(x = x_pos, y = y_pos, label = paste0("R² = ", r_squared)),
+    inherit.aes = FALSE,
+    hjust = 1, vjust = 1,
+    size = 4
+  ) +
+  labs(
+    title = "TN Std Curve by Date",
+    x = "Nitrogen Standard Concentration (ppm)",
+    y = "Peak Area"
+  ) +
+  theme_bw()
+
+N_stds_plot
+
+#compare slopes to previous runs (from log) in order to assess drift 
+log <- read.csv(Log_path)
+log <- log[ ,-c(1)]
+
+#make sure they both have dates as dates 
+log$run_date <- as.Date(log$run_date)
+log$analyte <- as.character(log$analyte)
+log$curve <- as.character(log$curve)
+Slopes$run_date <- as.Date(Slopes$run_date)
+
+# Filter to only rows in Slopes that are NOT already in log (by run_date + analyte)
+new_rows <- anti_join(Slopes, log, by = c("run_date", "analyte"))
+
+# Append the new, non-duplicate rows to log
+log <- bind_rows(log, new_rows)
+
+#plot the current slops with teh previous slopes 
+Slopes_chk <- ggplot(log, aes(run_date, slope, col=curve)) +
+  geom_point(size=4) + 
+  geom_line() + 
+  theme_bw() + labs(title="Slope Drift Assessment", x="Run Date", y="Slope") +
+  scale_color_manual(values=c("blue", "purple"))
+Slopes_chk
+
+#write out the log file with the added lines for this run  
+write.csv(log, Log_path)
+
+#Grab the highest r2 that is available for this run 
+r2_C = max(lm_results_c$r2)
+r2_N = max(lm_results_n$r2)
+
+#Write out to the user whether or not the r2 is above the cutoff of 0.98
+  ifelse(r2_C <= r2_cutoff, 
+         "NPOC Curve r2 is below cutoff! - REASSESS", "NPOC Curve r2 GOOD")
+  ifelse(r2_N <= r2_cutoff, 
+         "TN Curve r2 is below cutoff! - REASSESS", "TN Curve r2 GOOD")
+  
+#write out a flag to the sample dataframe if the r2 is above the cutoff of 0.98
+dat_raw <- dat_raw %>%
+  mutate(
+    npoc_flag = if (r2_C <= r2_cutoff) {
+      "NPOC r2 low"
+    } else {
+      ""
+    },
+    tdn_flag = if (r2_N <= r2_cutoff) {
+      "TN r2 low"
+    } else {
+      ""
+    }
+  )
+
+```
+
+\newpage
+
+## Assess Check Standards 
+```{r Check Standards, echo=FALSE}
+
+cat("Assess the Check Standards")
+
+#call to checkstds orrrr Pull out check standards from raw file 
+chks_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl("Chk_Std_50C_2N", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+chks_raw <- chks_raw %>% 
+  mutate(rep = row_number())
+
+
+#RSV of standards 
+chks_C_rsv <- ((sd(chks_raw$npoc_raw))/mean(chks_raw$npoc_raw))
+chks_N_rsv <- ((sd(chks_raw$tdn_raw))/mean(chks_raw$tdn_raw))
+
+#write out to user about whether or not to continue 
+ifelse(chks_C_rsv >= chk_flag, "Carbon CHECK STANDARD RSD TOO HIGH - REASSESS", "Carbon Check Standard RSD within Range")
+ifelse(chks_N_rsv >= chk_flag, "Nitrogen CHECK STANDARD RSD TOO HIGH - REASSESS", "Nitrogen Check Standard RSD within Range")
+
+#calculate percent difference between check standards & expected concentration 
+#flag if the percent difference is over X% (defined in setup)
+#calculate percent difference of check standards 
+chks_raw$C_diff <- ((chks_raw$npoc_raw - chk_std_c)/((chks_raw$npoc_raw + chk_std_c)/2)) * 100
+chks_raw$C_diff_flag <-  ifelse(abs(chks_raw$C_diff) <= chk_conc_flag, 'YES', 'NO, rerun')
+
+chks_raw$N_diff <- ((chks_raw$tdn_raw - chk_std_n)/((chks_raw$tdn_raw + chk_std_n)/2)) * 100
+chks_raw$N_diff_flag <-  ifelse(abs(chks_raw$N_diff) <= chk_conc_flag, 'YES', 'NO, rerun')
+
+#now plot the Ch4 concentrations and the CO2 concentrations vs. the expected concentration 
+#then also make the color the percent difference between the expected and observed concentration
+c_chks <-  ggplot(data = chks_raw, aes(x = rep, y = npoc_raw, fill=C_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("YES" = "darkgreen", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="NPOC (mg/L)", title="Check Stds: NPOC") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=chk_std_c,
+              linetype="dashed", color = "black", linewidth=1) + 
+              guides(fill=guide_legend(title="% Difference <10%"))
+
+
+n_chks <-  ggplot(data = chks_raw, aes(x = rep, y = tdn_raw, fill=N_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+       scale_fill_manual(values = c("YES" = "darkgreen", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="TN  (mg/L)", title="Check Stds: TN") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=chk_std_n,
+              linetype="dashed",  color = "black", linewidth=1) + 
+              guides(fill=guide_legend(title="% Difference <10%"))
+
+ggarrange(c_chks, n_chks, nrow=1, ncol=2)
+
+#calculate the percent of check standards that are within the range based on the flag 
+c_chks_percent <- (sum(chks_raw$C_diff_flag == "YES")/nrow(chks_raw))*100
+n_chks_percent <- (sum(chks_raw$N_diff_flag == "YES")/nrow(chks_raw))*100
+
+#report out if flags indicate need for rerun
+ifelse(c_chks_percent >= chks_flag, ">60% of Carbon Check Standards are within range of the expected concentration",
+       "<60% of Carbon Check Standards are within range of the expected concentration - REASSESS")
+ifelse(n_chks_percent >= chks_flag,">60% of Nitrogen Check Standards are within range of the expected concentration",
+       "<60% of Nitrogen Check Standards are within range of the expected concentration - REASSESS")
+
+#write out a flag to the sample dataframe if less than 60% of the checks are within the expected CV
+if (c_chks_percent <= chks_flag) {
+  dat_raw$npoc_flag <- ifelse(
+    dat_raw$npoc_flag != "",
+    paste0(dat_raw$npoc_flag, "; NPOC checks out of range"),
+    "NPOC checks out of range"
+  )
+}
+
+if (n_chks_percent <= chks_flag) {  # assuming you have tn_chks_percent similarly
+  dat_raw$tdn_flag <- ifelse(
+    dat_raw$tdn_flag != "",
+    paste0(dat_raw$tdn_flag, "; TN checks out of range"),
+    "TN checks out of range"
+  )
+}
+
+```
+
+\newpage
+
+## Assess Blanks 
+```{r Check Blanks, echo=FALSE}
+
+cat("Assess Blanks")
+
+#Pull out check standards from raw file 
+blks_raw <- raw_file_name %>% 
+  map_df(read_data) %>% 
+  filter(grepl("DI", sample_name)) %>% # filter to TMP samples only
+  bind_rows() 
+
+blks_raw <- blks_raw %>% 
+  mutate(rep = row_number())
+
+
+#I think we want to check that the blank concentrations are less than the lowest 25% of sample concentrations: 
+
+blk_flag_c <- quantile(dat_raw$npoc_raw, prob=c(.25))   #this gives you the lower 25% quartile of the data 
+blks_raw$C_diff_flag <-  ifelse(blks_raw$npoc_raw <= blk_flag_c, 'YES', 'NO, rerun')
+
+blk_flag_n <- quantile(dat_raw$tdn_raw, prob=c(.25))   #this gives you the lower 25% quartile of the data 
+blks_raw$N_diff_flag <-  ifelse(blks_raw$tdn_raw <= blk_flag_n, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag 
+c_blks_percent <- (sum(blks_raw$C_diff_flag == "YES")/nrow(blks_raw))*100
+n_blks_percent <- (sum(blks_raw$N_diff_flag == "YES")/nrow(blks_raw))*100
+
+#report out if flags indicate need for rerun
+ifelse(c_blks_percent >= chks_flag, ">60% of Carbon Blank concentrations are below the lower 25% quartile of samples",
+       "<60% of Carbon blanks are higher than the lower 25% quartile of samples - REASSESS")
+ifelse(n_blks_percent >= chks_flag, ">60% of Nitrogen Blank concentrations are below the lower 25% quartile of samples",
+       "<60% of Nitrogen blanks are higher than the lower 25% quartile of samples - REASSESS")
+
+
+#now plot the DOC concentrations and the TDN concentrations vs. the expected concentration 
+#then also make the color the percent difference between the expected and observed concentration
+c_blks <-  ggplot(data = blks_raw, aes(x = rep, y = npoc_raw, fill=C_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("YES" = "darkblue", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="NPOC  (mg/L)", title="Check Stds: NPOC") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=blk_flag_c, linetype="dashed", 
+                color = "black", linewidth=1)  + 
+                guides(fill=guide_legend(title="Blank Conc <25% Quartile Samples"))
+
+
+n_blks <-  ggplot(data = blks_raw, aes(x = rep, y = tdn_raw, fill=N_diff_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values = c("YES" = "darkblue", "NO, rerun" = "darkgrey")) +
+        theme_classic() + labs(x= " ", y="TN  (mg/L)", title="Check Stds: TN") + 
+        theme(legend.position="bottom") +  geom_hline(yintercept=blk_flag_n, linetype="dashed", 
+                color = "black", linewidth=1)  + 
+                guides(fill=guide_legend(title="Blank Conc <25% Quartile Samples"))
+
+ggarrange(c_blks, n_blks, nrow=1, ncol=2)
+
+#find average of run carbon and nitrogen blanks for flagging samples later 
+blk_avg_c <- mean(blks_raw$npoc_raw)
+
+cat("carbon blanks:")
+print(blk_avg_c)
+
+blk_avg_n <- mean(blks_raw$tdn_raw)
+
+cat("nitrogen blanks:")
+print(blk_avg_n)
+
+#write out a flag to the sample dataframe if more than 60% of the blanks are above the lower 25% quantile of samples
+if (c_blks_percent <= chks_flag) {
+  dat_raw$npoc_flag <- ifelse(
+    dat_raw$npoc_flag != "",
+    paste0(dat_raw$npoc_flag, "; NPOC blanks out of range"),
+    "NPOC blanks out of range"
+  )
+}
+
+if (n_blks_percent <= chks_flag) {  # assuming you have tn_chks_percent similarly
+  dat_raw$tdn_flag <- ifelse(
+    dat_raw$tdn_flag != "",
+    paste0(dat_raw$tdn_flag, "; TN blanks out of range"),
+    "TN blanks out of range"
+  )
+}
+
+```
+
+\newpage
+
+## Assess Duplicates - if there are any 
+```{r Check Duplicates, echo=FALSE}
+
+cat("Assess Duplicates")
+
+#Take a look at the raw data 
+  #head(dat_raw)
+
+#pull out any rows that have "dup" in the sample_name column
+dups <- dat_raw %>%  
+  select(!c(npoc_flag, tdn_flag)) %>%
+  filter(str_detect(sample_name, "dup"))      #have to change this to match data
+
+#create a new dataframe and remove dups from sample dataframe 
+dat_raw2 <- dat_raw %>%  
+  filter(!str_detect(sample_name, "dup")) 
+
+#remove the dup from these IDs so we will have duplicate sample names
+dups$sample_name<-gsub("_dup","",as.character(dups$sample_name))
+dups <- dups[ ,-c(4)] #remove the run date time for 
+colnames(dups) <- c('sample_name', 'npoc_raw_dup', "tdn_raw_dup")
+head(dups)
+
+QAdups <- merge(dat_raw2, dups)
+head(QAdups)
+
+df2 <- as.data.frame(QAdups$npoc_raw)
+df2$dups <- QAdups$npoc_raw_dup
+
+df2$sds <- apply(df2,1,sd)
+df2$mean <- apply(df2, 1, mean)
+
+QAdups$npoc_dups_cv <- (df2$sds/df2$mean) * 100
+QAdups$npoc_dups_cv_flag <-  ifelse(QAdups$npoc_dups_cv <10, 'YES', 'NO, rerun')
+
+df3 <- as.data.frame(QAdups$tdn_raw)
+df3$dups <- QAdups$tdn_raw_dup
+
+df3$sds <- apply(df3,1,sd)
+df3$mean <- apply(df3, 1, mean)
+
+QAdups$tdn_dups_cv <- (df3$sds/df3$mean) * 100
+QAdups$tdn_dups_cv_flag <-  ifelse(QAdups$tdn_dups_cv <10, 'YES', 'NO, rerun')
+
+head(QAdups)
+
+#plot dups output as a bar graph to easily check - want any over 10% to be red need to work on this 
+C_dups <- ggplot(data =QAdups, aes(x =sample_name, y =npoc_dups_cv, fill=npoc_dups_cv_flag)) +
+       geom_bar(stat = 'identity') + 
+        theme_classic() + labs(x= "Sample ID", y="CV of NPOC Dups (%)") + 
+        scale_fill_manual(values = c("YES" = "darkgreen", "NO, rerun" = "red")) +
+        theme(legend.position="none") +  geom_hline(yintercept=10, linetype="dashed", 
+                color = "black", size=1)  + 
+              guides(fill=guide_legend(title="CV Between Dups <10%")) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+
+N_dups <- ggplot(data =QAdups, aes(x =sample_name, y =tdn_dups_cv, fill=tdn_dups_cv_flag)) +
+       geom_bar(stat = 'identity') + 
+        theme_classic() + labs(x= "Sample ID", y="CV of TN Dups (%)") + 
+          scale_fill_manual(values = c("YES" = "darkgreen", "NO, rerun" = "red")) +
+        theme(legend.position="none") +  geom_hline(yintercept=10, linetype="dashed", 
+                color = "black", size=1) + 
+              guides(fill=guide_legend(title="CV Between Dups <10%"))+
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+ggarrange(C_dups, N_dups,ncol=2, nrow=1)
+
+
+#calculate the percent of check standards that are within the range based on the flag 
+c_dups_percent <- (sum(QAdups$npoc_dups_cv_flag == "YES")/nrow(QAdups))*100
+n_dups_percent <- (sum(QAdups$tdn_dups_cv_flag == "YES")/nrow(QAdups))*100
+
+#report out if flags indicate need for rerun
+ifelse(c_dups_percent >= chks_flag, ">60% of Carbon Duplicates have a CV <10%",
+       "<60% of Carbon Duplicates have a CB <10% - REASSESS")
+ifelse(n_dups_percent >= chks_flag, ">60% of Nitrogen Duplicates have a CV <10%",
+       "<60% of Nitrogen Duplicates have a CB <10% - REASSESS")
+
+#write out a flag to the sample dataframe if more than 60% of the dups have CVs out of range 
+if (c_dups_percent <= chks_flag) {
+  dat_raw$npoc_flag <- ifelse(
+    dat_raw$npoc_flag != "",
+    paste0(dat_raw$npoc_flag, "; NPOC dups out of range"),
+    "NPOC dups out of range"
+  )
+}
+
+if (n_dups_percent <= chks_flag) {  # assuming you have tn_chks_percent similarly
+  dat_raw$tdn_flag <- ifelse(
+    dat_raw$tdn_flag != "",
+    paste0(dat_raw$tdn_flag, "; TN dups out of range"),
+    "TN dups out of range"
+  )
+}
+
+```
+
+\newpage
+
+## Sample Flagging   
+```{r Sample Flagging, echo=FALSE}
+
+cat("Sample Flagging")
+
+#Flagging data if the concentration is outside the standards range and based on blanks
+dat_flagged <- dat_raw %>%
+  mutate(
+    npoc_flag = if_else(
+      npoc_raw > top_std_c,
+      if_else(
+        npoc_flag != "" & !is.na(npoc_flag),
+        paste0(npoc_flag, "; value above cal curve"),
+        "value above cal curve"
+      ),
+      npoc_flag
+    ),
+    npoc_flag = if_else(
+      blk_avg_c > 0.25 * npoc_raw,
+      if_else(
+        npoc_flag != "" & !is.na(npoc_flag),
+        paste0(npoc_flag, "; blank is > 25% of sample value"),
+        "blank is > 25% of sample value"
+      ),
+      npoc_flag
+    ),
+
+    tdn_flag = if_else(
+      tdn_raw > top_std_n,
+      if_else(
+        tdn_flag != "" & !is.na(tdn_flag),
+        paste0(tdn_flag, "; value above cal curve"),
+        "value above cal curve"
+      ),
+      tdn_flag
+    ),
+    tdn_flag = if_else(
+      blk_avg_n > 0.25 * tdn_raw,
+      if_else(
+        tdn_flag != "" & !is.na(tdn_flag),
+        paste0(tdn_flag, "; blank is > 25% of sample value"),
+        "blank is > 25% of sample value"
+      ),
+      tdn_flag
+    )
+  )
+
+#lets make a dataframe with just the concentration flag for plotting 
+dat_flag_viz <- dat_raw %>% 
+  mutate(npoc_flag = case_when(npoc_raw > top_std_c ~ "value above cal curve",
+            blk_avg_c > 0.25*npoc_raw ~ "blank is > 25% of sample value"), # flagging if blank concentration is > 20% of the sample concentration
+            #sample_name == "TMP_SW_F4_T3" ~ "incorrect sample naming, cannot resolve"), # if needed and there are issues with sample names
+    
+        tdn_flag = case_when(tdn_raw > top_std_n ~ "value above cal curve",
+            blk_avg_n > 0.25*tdn_raw ~ "blank is > 25% of sample value") #, # flagging if blank concentration is > 25% of the sample concentration
+          #sample_name == "TMP_SW_F4_T3" ~ "incorrect sample naming, cannot resolve"), # if needed and there are issues with sample names
+ )
+
+dat_flag_viz <- dat_flag_viz %>% 
+  mutate(rep = row_number())
+
+#Plot data and change colors based on flags to check it: 
+c_samples_flag <-  ggplot(data = dat_flag_viz, aes(x = sample_name, y = npoc_raw, fill=npoc_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("red", "orange"))+
+        theme_classic() + labs(x= " ", y="C (mg/L)", title="C: Grey = Within Range of Curve") + 
+        theme(legend.position="none")  +
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+
+n_samples_flag <-  ggplot(data = dat_flag_viz, aes(x = sample_name, y = tdn_raw, fill=tdn_flag)) +
+       geom_bar(stat = 'identity') + 
+        scale_fill_manual(values=c("red", "orange"))+
+        theme_classic() + labs(x= " ", y="N (mg/L)", title="N: Grey = Within Range of Curve") + 
+        theme(legend.position="none")  +
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+#ggarrange(c_samples_flag, n_samples_flag, nrow=1, ncol=2)
+print(c_samples_flag)
+print(n_samples_flag)
+
+```
+
+\newpage
+
+## Visualize Data by Plot   
+```{r Visualize Data, echo=FALSE}
+
+cat("Visualize Data")
+
+
+#Plot data and change colors based on flags to check it: 
+viz_c_plot <-  ggplot(data = dat_flagged, aes(x = sample_name, y = npoc_raw)) +
+       geom_bar(stat = 'identity', fill="darkblue") + 
+        theme_classic() + labs(x= " ", y="NPOC (mg/L)", title="Well Dissolved Organic Carbon") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+
+viz_n_plot <-  ggplot(data = dat_flagged, aes(x = sample_name, y = tdn_raw)) +
+       geom_bar(stat = 'identity', fill="purple") + 
+        theme_classic() + labs(x= " ", y="TN (mg/L)", title="Well Total Nitrogen") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 0.5))
+
+#ggarrange(viz_c_plot, viz_n_plot, nrow=1, ncol=2)
+print(viz_c_plot)
+print(viz_n_plot)
+
+```
+
+\newpage
+
+## Convert data from mg/L to uMoles/L 
+```{r, Unit Conversion, include=FALSE}
+
+#convert npoc and tdn from mg/L to uMoles/L 
+dat_flagged <- dat_flagged %>%
+  mutate(
+    npoc_uM = (((as.numeric(dat_flagged$npoc_raw))/Con1)/mw_c)*Con2, 
+    tdn_uM = (((as.numeric(dat_flagged$tdn_raw))/Con1)/mw_n)*Con2
+  )
+
+```
+
+## Export Processed Data  
+```{r, Export Processed Data, echo=FALSE}
+
+cat("Export Processed Data")
+
+#Prepare data to be exported - if there is anything else to add 
+#Add any necessary identifiers to the samples  ### VERY IMPORTANT AND STANDARD FOR PROJECT ####
+  #example read in sample IDs list and merge 
+  #create required ID columns in R, etc. 
+final_data <- dat_flagged %>% 
+  #select(Project, Plot, grid, sample_name, Vial_ID, date, ) %>%
+  mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-11-10",
+    Sample_Time = c("13:30", "13:30", "15:00", "15:00"),
+    Tank_Status = c("half full", "half full", "full", "full"), 
+    Replicate = c("A", "B", "A", "B"),
+    Run_notes = run_notes     # new column with notes about the run
+  ) 
+
+#this needs altered to match the tempest metadata and clean up 
+final_data <- final_data %>%
+  rename(
+    npoc_mgL = npoc_raw, 
+    tdn_mgL = tdn_raw,
+    Analysis_runtime = run_datetime, 
+    # add more rename pairs as needed
+  ) %>%
+  select(
+    Project, Experiment, Sample_Date, Sample_Time, Tank_Status, Replicate, sample_name,
+    npoc_mgL, npoc_uM, npoc_flag, tdn_mgL, tdn_uM, tdn_flag, Analysis_runtime,
+    Run_notes
+    # list columns in the order you want them
+  )
+
+head(final_data)
+
+#will put final data in processed data folder 
+  write.csv(final_data, processed_file_name)
+
+
+```
+
+#end

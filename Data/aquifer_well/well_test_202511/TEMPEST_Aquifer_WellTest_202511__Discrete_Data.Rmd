@@ -1,0 +1,219 @@
+---
+title: "TEMPEST_FW_Well_TSS_20251110"
+author: "Stephanie J. Wilson"
+date: "2025-11-16"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+output_dir: "To Be Reviewed/PDF"
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(knitr)
+library(ggpubr)
+```
+
+\newpage
+
+## TSS Data
+```{#r, echo=FALSE}
+
+#read out title
+cat("TSS Data: ~1L Samples filtered with GFF")
+
+#Read in the data 
+tss <- read.csv("Raw Data/COMPASS_TEMPEST_WellTest_TSS_Data.csv")
+#head(tss)
+
+#Calculate an Avg. Sample Weight and caluclate TSS mg/L
+tss <- tss %>%
+  mutate(Avg_Sample_Weight_g = 
+           rowMeans(select(., Tin_Filter_Sample_Weight_Dry_g, 
+                           Tin_Filter_Sample_Weight_Dry1_g), na.rm = TRUE))
+
+tss$TSS_mgL <- ((tss$Avg_Sample_Weight_g - tss$Tin_Filter_Weight_g)*1000) /   
+  (tss$Filtered_Volume_mL/1000)
+
+final_tss <- tss %>% 
+  #select(Project, Plot, grid, sample_name, Vial_ID, date, ) %>%
+  mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-09-04",
+    Sample_Time = c("12:25", "13:00", "14:00", "NA"),
+    Replicate = c("A", "A","A", "NA")
+  ) 
+
+#this needs altered to match the tempest metadata and clean up 
+final_tss <- final_tss %>%
+  rename(sample_name = Sample_ID) %>%
+  select(
+    Project, Experiment, Sample_Date, Sample_Time, Replicate, sample_name,
+    TSS_mgL, Filtered_Volume_mL
+    # list columns in the order you want them
+  )
+
+
+#plot the TSS 
+tss_plot <- ggplot(final_tss, aes(x=sample_name, y=TSS_mgL, fill=Sample_Time)) + 
+  geom_bar(stat = "identity")  + 
+  labs(title="Well: Total Dissolved Solids", 
+       y="Total Dissolved Solids (mg/L)", x=" ") + theme_classic()
+ 
+print(tss_plot)
+
+##remove the DI blank and make a table 
+tss_table <- final_tss %>%
+  filter(sample_name != "DI_Blank") %>%
+  select("sample_name", "TSS_mgL") %>%
+  mutate(TSS_mgL = round(TSS_mgL, 2))
+
+
+kable(tss_table)
+
+##remove the DI blank and make a table 
+final_tss <- final_tss %>%
+  filter(sample_name != "DI_Blank")
+
+#will put final data in processed data folder
+  write.csv(final_tss, "Processed Data/TMP_20250904_FW_WellTest_TSS_Processed.csv")
+
+
+```
+
+\newpage
+
+## GHG Data 
+```{#r, echo=FALSE}
+
+#read out title
+cat("Greenhouse Gas Data from Shimadzu GC - Shakey Samples")
+
+#Read in the data 
+ghg <- read.csv("Processed Data/TMP_20250904_FW_WellTest_GHG_Processed.csv")
+#head(doc)
+
+#Plot DOC data 
+viz_ch4_plot <-  ggplot(data = ghg, aes(x = sample_name, y = CH4_ppm, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") +
+        scale_fill_manual(values = c("#619CFF")) + 
+        theme_classic() + labs(x= " ", y="CH4 (ppm)", title="Well: Extractable Methane") + 
+        theme(legend.position="right") 
+
+viz_ch4_plot
+
+#ggarrange(viz_c_plot, viz_n_plot, nrow=2, ncol=1)
+#print(viz_c_plot)
+#print(viz_n_plot)
+
+##Calculate an average DOC and TN?  
+# Calculate the averages
+avg_ch4 <- round(mean(ghg$CH4_ppm), 2)
+#avg_tn <- round(mean(doc$tdn_mgL), 2)
+sd_ch4 <- round(sd(ghg$CH4_ppm), 2)
+#sd_tn <- round(sd(doc$tdn_mgL), 2)
+
+# Create a dataframe with the results
+ghg_table <- data.frame(
+  Analyte = c("CH4 (ppm)"), #, "CO2 (ppm)"),
+  Average = c(avg_ch4), #, avg_tn),
+  Std_Deviation = c(sd_ch4) #, sd_tn)
+)
+
+kable(ghg_table)
+
+```
+
+\newpage
+
+## DIC Data 
+```{#r, echo=FALSE}
+
+#read out title
+cat("DIC Data from Shimadzu TOC-V")
+
+#Read in the data 
+dic <- read.csv("Processed Data/TMP_20250904_FW_WellTest_DIC_Processed.csv")
+#head(doc)
+
+#Plot DOC data 
+viz_ic_plot <-  ggplot(data = dic, aes(x = Replicate, y = ic_mgL, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="DIC (mg/L)", title="Well: Dissolved Inorganic Carbon") + 
+        theme(legend.position="right") 
+
+print(viz_ic_plot)
+
+
+##Calculate an average DIC  
+# Calculate the averages
+avg_dic <- round(mean(dic$ic_mgL), 2)
+sd_dic <- round(sd(dic$ic_mgL), 2)
+
+
+# Create a dataframe with the results
+dic_table <- data.frame(
+  Analyte = c("DIC (mg/L)"),
+  Average = c(avg_dic),
+  Std_Deviation = c(sd_dic)
+)
+
+kable(dic_table)
+
+```
+
+
+## TOC/TN Data 
+```{r, echo=FALSE}
+
+#read out title
+cat("DOC and TN Data from Shimadzu TOC/TN")
+
+#Read in the data 
+doc <- read.csv("Processed Data/TMP_20251110_FW_WellTest_DOC_Processed.csv")
+#head(doc)
+
+#Plot DOC data 
+viz_c_plot <-  ggplot(data = doc, aes(x = Replicate, y = npoc_mgL, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="NPOC (mg/L)", title="Well: Dissolved Organic Carbon") + 
+        theme(legend.position="right") 
+
+
+viz_n_plot <-  ggplot(data = doc, aes(x = Replicate, y = tdn_mgL, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="TN (mg/L)", title="Well: Total Nitrogen") + 
+        theme(legend.position="right") 
+
+ggarrange(viz_c_plot, viz_n_plot, nrow=2, ncol=1)
+#print(viz_c_plot)
+#print(viz_n_plot)
+
+##Calculate an average DOC and TN?  
+# Calculate the averages
+avg_doc <- round(mean(doc$npoc_mgL), 3)
+avg_tn <- round(mean(doc$tdn_mgL), 3)
+sd_doc <- round(sd(doc$npoc_mgL), 3)
+sd_tn <- round(sd(doc$tdn_mgL), 3)
+
+# Create a dataframe with the results
+doc_table <- data.frame(
+  Analyte = c("DOC (mg/L)", "TN (mg/L)"),
+  Average = c(avg_doc, avg_tn),
+  Std_Deviation = c(sd_doc, sd_tn)
+)
+
+kable(doc_table)
+
+```
+
+
+## Sulfate / Chloride Data
+
