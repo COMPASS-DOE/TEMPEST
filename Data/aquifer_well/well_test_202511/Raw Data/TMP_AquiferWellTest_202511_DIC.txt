@@ -1,0 +1,160 @@
+[Header]	
+System	TOCL TNML ASIL 24ML	
+S/W Version	1.00	
+User	sjw	
+Date/Time	11/21/2025 3:29:30 PM	
+
+[System]	
+Instrument Options	TOC/ASI/IC Unit/TN/	
+
+[Data]	
+Type	Anal.	Sample Name	Sample ID	Result(TOC)	Result(TC)	Result(IC)	Result(POC)	Result(NPOC)	Result(TN)	Unit	Vial	Date / Time	
+Unknown	IC	DI	Untitled			1.346				mg/L	0	11/20/2025 12:33:39 PM	
+Unknown	IC	DI	Untitled			1.372				mg/L	0	11/20/2025 12:51:57 PM	
+Unknown	IC	DI	Untitled			1.375				mg/L	0	11/20/2025 1:03:53 PM	
+Unknown	IC	Chk_Std_80mgL	Untitled			65.70				mg/L	1	11/20/2025 1:31:21 PM	
+Unknown	IC	Chk_Std_200mgL	Untitled			159.0				mg/L	2	11/20/2025 2:00:37 PM	
+Unknown	IC	DI	Untitled			1.477				mg/L	0	11/20/2025 2:21:18 PM	
+Unknown	IC	DI	Untitled			1.353				mg/L	0	11/20/2025 3:47:31 PM	
+Unknown	IC	DI	Untitled			1.355				mg/L	0	11/20/2025 3:59:16 PM	
+Standard	IC	CalCurve_IC	Untitled			200.0				mg/L	3, 4, 5, 6, 7, 8, 9, 10	11/20/2025 7:03:17 PM	
+Unknown	IC	DI	Untitled			3.664				mg/L	0	11/20/2025 7:21:55 PM	
+Unknown	IC	DI_Bubbled	Untitled			4.088				mg/L	11	11/20/2025 7:40:36 PM	
+Unknown	IC	Chk_Std_crm221	Untitled			25.72				mg/L	12	11/20/2025 8:01:55 PM	
+Unknown	IC	Chk_Std_40mgL	Untitled			38.57				mg/L	13	11/20/2025 8:29:19 PM	
+Unknown	IC	DI	Untitled			4.098				mg/L	0	11/20/2025 8:45:30 PM	
+Unknown	IC	TMP_AquiferWell_1330	Untitled			31.41				mg/L	14	11/20/2025 9:06:51 PM	
+Unknown	IC	TMP_AquiferWell_1330_dup	Untitled			30.77				mg/L	15	11/20/2025 9:29:55 PM	
+Unknown	IC	TMP_AquiferWell_1500	Untitled			34.12				mg/L	16	11/20/2025 9:52:54 PM	
+Unknown	IC	TMP_AquiferWell_1500_dup	Untitled			34.53				mg/L	17	11/20/2025 10:16:09 PM	
+Unknown	IC	DI	Untitled			4.181				mg/L	0	11/20/2025 10:36:39 PM	
+Unknown	IC	FATE_Dock_20251002_A	Untitled			27.08				mg/L	18	11/20/2025 11:01:48 PM	
+Unknown	IC	FATE_Dock_20251002_B	Untitled			28.20				mg/L	19	11/20/2025 11:29:28 PM	
+Unknown	IC	FATE_Flume_20251002_A	Untitled			30.89				mg/L	20	11/20/2025 11:52:35 PM	
+Unknown	IC	FATE_Flume_20251002_B	Untitled			30.65				mg/L	21	11/21/2025 12:15:49 AM	
+Unknown	IC	FATE_Dock_20251103_A	Untitled			28.04				mg/L	22	11/21/2025 12:39:05 AM	
+Unknown	IC	FATE_Dock_20251103_B	Untitled			18.48				mg/L	23	11/21/2025 1:00:02 AM	
+Unknown	IC	FATE_Flume_20251103_A	Untitled			34.16				mg/L	24	11/21/2025 1:23:06 AM	
+Unknown	IC	FATE_Flume_20251103_B	Untitled			33.64				mg/L	25	11/21/2025 1:46:23 AM	
+Unknown	IC	FATE_Dock_20251110_A	Untitled			18.62				mg/L	26	11/21/2025 2:07:18 AM	
+Unknown	IC	FATE_Dock_20251110_B	Untitled			18.28				mg/L	27	11/21/2025 2:22:28 AM	
+Unknown	IC	FATE_Flume_20251110_A	Untitled			21.11				mg/L	28	11/21/2025 2:37:56 AM	
+Unknown	IC	FATE_Flume_20251110_B	Untitled			30.40				mg/L	29	11/21/2025 3:05:48 AM	
+Unknown	IC	DI	Untitled			4.120				mg/L	0	11/21/2025 3:25:15 AM	
+Unknown	IC	Chk_Std_crm221	Untitled			32.60				mg/L	30	11/21/2025 3:51:17 AM	
+Unknown	IC	Chk_Std_10mgL	Untitled			12.15				mg/L	31	11/21/2025 4:12:00 AM	
+Unknown	IC	DI	Untitled			4.109				mg/L	0	11/21/2025 4:26:21 AM	
+Unknown	IC	202511_SWH_UP_LysA_10cm	Untitled			24.28				mg/L	32	11/21/2025 4:47:39 AM	
+Unknown	IC	202511_SWH_UP_LysA_20cm	Untitled			33.31				mg/L	33	11/21/2025 5:15:43 AM	
+Unknown	IC	202511_SWH_UP_LysA_45cm	Untitled			37.27				mg/L	34	11/21/2025 5:43:35 AM	
+Unknown	IC	202511_SWH_UP_LysB_20cm	Untitled			31.14				mg/L	35	11/21/2025 6:06:40 AM	
+Unknown	IC	202511_SWH_UP_LysC_10cm	Untitled			6.159				mg/L	36	11/21/2025 6:29:43 AM	
+Unknown	IC	202511_SWH_UP_LysC_20cm	Untitled			37.56				mg/L	37	11/21/2025 6:55:38 AM	
+Unknown	IC	202511_SWH_UP_LysC_45cm	Untitled			33.35				mg/L	38	11/21/2025 7:22:46 AM	
+Unknown	IC	202511_SWH_SWAMP_LysA_10cm	Untitled			24.92				mg/L	39	11/21/2025 7:50:40 AM	
+Unknown	IC	202511_SWH_SWAMP_LysA_20cm	Untitled			29.27				mg/L	40	11/21/2025 8:18:08 AM	
+Unknown	IC	202511_SWH_SWAMP_LysA_45cm	Untitled			27.91				mg/L	41	11/21/2025 8:45:38 AM	
+Unknown	IC	DI	Untitled			4.206				mg/L	0	11/21/2025 9:05:09 AM	
+Unknown	IC	Chk_Std_40mgL	Untitled			41.88				mg/L	42	11/21/2025 9:31:04 AM	
+Unknown	IC	DI	Untitled			4.141				mg/L	0	11/21/2025 9:47:33 AM	
+Unknown	IC	202511_SWH_SWAMP_LysB_10cm	Untitled			23.27				mg/L	43	11/21/2025 10:13:29 AM	
+Unknown	IC	202511_SWH_SWAMP_LysB_20cm	Untitled			32.22				mg/L	44	11/21/2025 10:36:14 AM	
+Unknown	IC	202511_SWH_SWAMP_LysB_45cm	Untitled			31.50				mg/L	45	11/21/2025 10:59:04 AM	
+Unknown	IC	202511_SWH_SWAMP_LysC_10cm_WARM	Untitled			14.91				mg/L	46	11/21/2025 11:15:20 AM	
+Unknown	IC	202511_SWH_SWAMP_LysC_20cm	Untitled			17.36				mg/L	47	11/21/2025 11:29:38 AM	
+Unknown	IC	202511_SWH_SWAMP_LysC_45cm	Untitled			18.53				mg/L	48	11/21/2025 11:47:18 AM	
+Unknown	IC	202511_SWH_TR_LysA_10cm	Untitled			14.10				mg/L	49	11/21/2025 12:01:16 PM	
+Unknown	IC	202511_SWH_TR_LysA_20cm	Untitled			51.11				mg/L	50	11/21/2025 12:27:11 PM	
+Unknown	IC	202511_SWH_TR_LysA_45cm	Untitled			62.61				mg/L	51	11/21/2025 12:54:37 PM	
+Unknown	IC	202511_SWH_TR_LysB_10cm	Untitled			45.94				mg/L	52	11/21/2025 1:17:47 PM	
+Unknown	IC	DI	Untitled			4.196				mg/L	0	11/21/2025 1:36:42 PM	
+Unknown	IC	Chk_Std_40mgL	Untitled			53.27				mg/L	53	11/21/2025 2:02:38 PM	
+Unknown	IC	DI	Untitled			4.176				mg/L	0	11/21/2025 2:21:06 PM	
+Unknown	IC	202511_SWH_TR_LysB_20cm	Untitled			86.40				mg/L	54	11/21/2025 2:47:02 PM	
+Unknown	IC	202511_SWH_TR_LysB_45cm	Untitled			102.0				mg/L	55	11/21/2025 3:16:20 PM	
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_SWH_TR_LysC_10cm	Untitled			0.000				mg/L	56		
+Unknown	IC	202511_SWH_TR_LysC_20cm	Untitled			0.000				mg/L	57		
+Unknown	IC	202511_SWH_TR_LysC_45cm	Untitled			0.000				mg/L	58		
+Unknown	IC	202511_SWH_WC_LysA_10cm	Untitled			0.000				mg/L	59		
+Unknown	IC	202511_SWH_WC_LysB_10cm	Untitled			0.000				mg/L	60		
+Unknown	IC	202511_SWH_WC_LysC_45cm	Untitled			0.000				mg/L	61		
+Unknown	IC	202511_SWH_SW_A	Untitled			0.000				mg/L	62		
+Unknown	IC	202511_SWH_SW_B	Untitled			0.000				mg/L	63		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_10mgL	Untitled			0.000				mg/L	64		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_SWH_SW_C	Untitled			0.000				mg/L	65		
+Unknown	IC	202511_GWI_UP_LysA_20cm	Untitled			0.000				mg/L	66		
+Unknown	IC	202511_GWI_UP_LysA_45cm	Untitled			0.000				mg/L	67		
+Unknown	IC	202511_GWI_UP_LysB_10cm	Untitled			0.000				mg/L	68		
+Unknown	IC	202511_GWI_UP_LysB_20cm	Untitled			0.000				mg/L	69		
+Unknown	IC	202511_GWI_UP_LysB_45cm	Untitled			0.000				mg/L	70		
+Unknown	IC	202511_GWI_UP_LysC_20cm	Untitled			0.000				mg/L	71		
+Unknown	IC	202511_GWI_TR_LysA_10cm	Untitled			0.000				mg/L	72		
+Unknown	IC	202511_GWI_TR_LysA_20cm	Untitled			0.000				mg/L	73		
+Unknown	IC	202511_GWI_TR_LysB_10cm	Untitled			0.000				mg/L	74		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_200mgL	Untitled			0.000				mg/L	75		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_GWI_TR_LysB_10cm_dup	Untitled			0.000				mg/L	76		
+Unknown	IC	202511_GWI_TR_LysB_20cm	Untitled			0.000				mg/L	77		
+Unknown	IC	202511_GWI_TR_LysC_10cm	Untitled			0.000				mg/L	78		
+Unknown	IC	202511_GWI_TR_LysC_20cm	Untitled			0.000				mg/L	79		
+Unknown	IC	202511_GWI_WC_LysA_10cm	Untitled			0.000				mg/L	80		
+Unknown	IC	202511_GWI_WC_LysB_10cm	Untitled			0.000				mg/L	81		
+Unknown	IC	202511_GWI_WC_LysB_20cm	Untitled			0.000				mg/L	82		
+Unknown	IC	202511_GWI_WC_LysC_10cm	Untitled			0.000				mg/L	83		
+Unknown	IC	202511_GWI_WC_LysC_10cm_dup	Untitled			0.000				mg/L	84		
+Unknown	IC	202511_GWI_SW_A	Untitled			0.000				mg/L	85		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_crm221	Untitled			0.000				mg/L	86		
+Unknown	IC	Chk_Std_1mgL	Untitled			0.000				mg/L	87		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_GWI_SW_B	Untitled			0.000				mg/L	88		
+Unknown	IC	202511_GWI_SW_C	Untitled			0.000				mg/L	89		
+Unknown	IC	202511_GCW_TR_LysB_10cm	Untitled			0.000				mg/L	90		
+Unknown	IC	202511_GCW_WC_LysA_10cm	Untitled			0.000				mg/L	91		
+Unknown	IC	202511_GCW_WC_LysA_20cm	Untitled			0.000				mg/L	92		
+Unknown	IC	202511_GCW_WC_LysA_45cm	Untitled			0.000				mg/L	93		
+Unknown	IC	202511_GCW_WC_LysB_10cm	Untitled			0.000				mg/L	1		
+Unknown	IC	202511_GCW_WC_LysB_20cm	Untitled			0.000				mg/L	2		
+Unknown	IC	202511_GCW_WC_LysB_45cm	Untitled			0.000				mg/L	3		
+Unknown	IC	202511_GCW_WC_LysC_10cm	Untitled			0.000				mg/L	4		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_1mgL	Untitled			0.000				mg/L	5		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_GCW_WC_LysC_20cm	Untitled			0.000				mg/L	6		
+Unknown	IC	202511_GCW_SW_A	Untitled			0.000				mg/L	7		
+Unknown	IC	202511_GCW_SW_B	Untitled			0.000				mg/L	8		
+Unknown	IC	202511_GCW_SW_C	Untitled			0.000				mg/L	9		
+Unknown	IC	202511_MSM_UP_LysB_10cm	Untitled			0.000				mg/L	10		
+Unknown	IC	202511_MSM_UP_LysB_20cm	Untitled			0.000				mg/L	11		
+Unknown	IC	202511_MSM_UP_LysC_10cm	Untitled			0.000				mg/L	12		
+Unknown	IC	202511_MSM_UP_LysC_20cm	Untitled			0.000				mg/L	13		
+Unknown	IC	202511_MSM_TR_LysA_10cm	Untitled			0.000				mg/L	14		
+Unknown	IC	202511_MSM_TR_LysA_20cm	Untitled			0.000				mg/L	15		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_crm221	Untitled			0.000				mg/L	16		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	202511_MSM_TR_LysB_10cm	Untitled			0.000				mg/L	17		
+Unknown	IC	202511_MSM_TR_LysB_20cm	Untitled			0.000				mg/L	18		
+Unknown	IC	202511_MSM_TR_LysC_20cm	Untitled			0.000				mg/L	19		
+Unknown	IC	202511_MSM_WC_LysA_10cm	Untitled			0.000				mg/L	20		
+Unknown	IC	202511_MSM_WC_LysA_20cm	Untitled			0.000				mg/L	21		
+Unknown	IC	202511_MSM_WC_LysB_10cm	Untitled			0.000				mg/L	22		
+Unknown	IC	202511_MSM_WC_LysB_20cm	Untitled			0.000				mg/L	23		
+Unknown	IC	202511_MSM_WC_LysC_10cm	Untitled			0.000				mg/L	24		
+Unknown	IC	202511_MSM_WC_LysC_20cm	Untitled			0.000				mg/L	25		
+Unknown	IC	202511_MSM_SW_A	Untitled			0.000				mg/L	26		
+Unknown	IC	202511_MSM_SW_B	Untitled			0.000				mg/L	27		
+Unknown	IC	202511_MSM_SW_C	Untitled			0.000				mg/L	28		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	Chk_Std_crm221	Untitled			0.000				mg/L	29		
+Unknown	IC	Chk_Std_100mgL	Untitled			0.000				mg/L	30		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Standard	IC	CalCurve_IC	Untitled			200.0				mg/L	31, 32, 33, 34, 35, 36, 37, 38		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		
+Unknown	IC	DI	Untitled			0.000				mg/L	0		

@@ -1,0 +1,13 @@
+"","Project","Experiment","Sample_Date","Sample_Time","Tank_Status","Replicate","sample_name","ic_mgL","ic_uM","ic_flag","Analysis_runtime","Run_notes"
+"1","COMPASS","TEMPEST: Well Test","2025-11-10","13:30","half full","A","TMP_AquiferWell_1330",31.41,2615.10282241279,"IC checks out of range","11/20/2025 9:06:51 PM","Blanks / Background running high, may need to subtract blanks from 
+    sample concentrations as they were ~3 to 4mgL. The auto fill IC rxn setting was on
+    at the beginning of the run, turned on by a tech during service."
+"2","COMPASS","TEMPEST: Well Test","2025-11-10","13:30","half full","B","TMP_AquiferWell_1330_dup",30.77,2561.81833319457,"IC checks out of range","11/20/2025 9:29:55 PM","Blanks / Background running high, may need to subtract blanks from 
+    sample concentrations as they were ~3 to 4mgL. The auto fill IC rxn setting was on
+    at the beginning of the run, turned on by a tech during service."
+"3","COMPASS","TEMPEST: Well Test","2025-11-10","15:00","full","A","TMP_AquiferWell_1500",34.12,2840.72933144617,"IC checks out of range","11/20/2025 9:52:54 PM","Blanks / Background running high, may need to subtract blanks from 
+    sample concentrations as they were ~3 to 4mgL. The auto fill IC rxn setting was on
+    at the beginning of the run, turned on by a tech during service."
+"4","COMPASS","TEMPEST: Well Test","2025-11-10","15:00","full","B","TMP_AquiferWell_1500_dup",34.53,2874.86470735159,"IC checks out of range","11/20/2025 10:16:09 PM","Blanks / Background running high, may need to subtract blanks from 
+    sample concentrations as they were ~3 to 4mgL. The auto fill IC rxn setting was on
+    at the beginning of the run, turned on by a tech during service."
