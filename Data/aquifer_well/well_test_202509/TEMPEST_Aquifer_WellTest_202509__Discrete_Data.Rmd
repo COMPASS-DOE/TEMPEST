@@ -11,9 +11,11 @@ output_dir: "To Be Reviewed/PDF"
 
 ```{r setup, include=FALSE}
 library(ggplot2)
+library(raster)
 library(dplyr)
 library(knitr)
 library(ggpubr)
+library(stringr)
 ```
 
 \newpage
@@ -31,7 +33,7 @@ tss <- read.csv("Raw Data/COMPASS_TEMPEST_WellTest_TSS_Data.csv")
 #Calculate an Avg. Sample Weight and caluclate TSS mg/L
 tss <- tss %>%
   mutate(Avg_Sample_Weight_g = 
-           rowMeans(select(., Tin_Filter_Sample_Weight_Dry_g, 
+           rowMeans(dplyr::select(., Tin_Filter_Sample_Weight_Dry_g, 
                            Tin_Filter_Sample_Weight_Dry1_g), na.rm = TRUE))
 
 tss$TSS_mgL <- ((tss$Avg_Sample_Weight_g - tss$Tin_Filter_Weight_g)*1000) /   
@@ -50,7 +52,7 @@ final_tss <- tss %>%
 #this needs altered to match the tempest metadata and clean up 
 final_tss <- final_tss %>%
   rename(sample_name = Sample_ID) %>%
-  select(
+  dplyr::select(
     Project, Experiment, Sample_Date, Sample_Time, Replicate, sample_name,
     TSS_mgL, Filtered_Volume_mL
     # list columns in the order you want them
@@ -68,7 +70,7 @@ print(tss_plot)
 ##remove the DI blank and make a table 
 tss_table <- final_tss %>%
   filter(sample_name != "DI_Blank") %>%
-  select("sample_name", "TSS_mgL") %>%
+  dplyr::select("sample_name", "TSS_mgL") %>%
   mutate(TSS_mgL = round(TSS_mgL, 2))
 
 
@@ -211,6 +213,66 @@ doc_table <- data.frame(
 )
 
 kable(doc_table)
+
+```
+
+\newpage
+
+## FE Data 
+```{r, echo=FALSE}
+
+#read out title
+cat("FE Data from Microplate")
+
+#Read in the data 
+fe <- read.csv("Processed Data/TEMPEST_AquiferWell_FE_data.csv")
+#head(fe)
+
+#clean up this data 
+fe <- fe %>% 
+    filter(str_detect(IDs, "9-4-25")) %>%
+    filter(Dilution == 8 | (Dilution == 1 & X == 13) | (Dilution == 1 & X == 10)) %>%
+     mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-09-04",
+    Sample_Time = c("14:00", "14:00", "12:25", "12:25", "13:00", "13:00", "14:00", "12:25", "13:00"),
+    #Tank_Status = c("half full", "full")) #, 
+    Replicate = c("C", "B", "A", "B", "A", "C","A","C","B")) #,
+    #Run_notes = run_notes     # new column with notes about the run
+#  ) 
+
+
+#Plot DOC data 
+viz_fe2_plot <-  ggplot(data = fe, aes(x = Replicate, y = FE_2_mean, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="Fe(II) (uM)", title="Well: Fe(II)") + 
+        theme(legend.position="right") 
+viz_fe3_plot <-  ggplot(data = fe, aes(x = Replicate, y = FE_3_mean, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="Fe(III) (uM)", title="Well: Fe(III)") + 
+        theme(legend.position="right") 
+#print(viz_fe2_plot)
+#print(viz_fe3_plot)
+ggarrange(viz_fe2_plot, viz_fe3_plot, nrow=2, ncol=1)
+
+##Calculate an average DIC  
+# Calculate the averages
+avg_fe2 <- round(mean(fe$FE_2_mean), 2)
+sd_fe2 <- round(sd(fe$FE_2_mean), 2)
+avg_fe3 <- round(mean(fe$FE_3_mean), 2)
+sd_fe3 <- round(sd(fe$FE_3_mean), 2)
+
+# Create a dataframe with the results
+fe_table <- data.frame(
+  Analyte = c("Fe(II) (uM)", "Fe(III) (uM)"),
+  Average = c(avg_fe2, avg_fe3),
+  Std_Deviation = c(sd_fe2, sd_fe3)
+)
+
+kable(fe_table)
 
 ```
 
