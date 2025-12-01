@@ -14,6 +14,7 @@ library(ggplot2)
 library(dplyr)
 library(knitr)
 library(ggpubr)
+library(stringr)
 ```
 
 
@@ -148,10 +149,82 @@ kable(doc_table)
 
 ```
 
+\newpage
 
-## Sulfate / Chloride Data
+## FE Data 
+```{r, echo=FALSE}
+
+#read out title
+cat("FE Data from Shimadzu TOC-V")
+
+#Read in the data 
+fe <- read.csv("Processed Data/TEMPEST_AquiferWell_FE_data.csv")
+#head(fe)
+
+#clean up this data 
+fe <- fe %>% 
+    filter(str_detect(IDs, "11-10-25")) %>%
+    filter(Dilution == 16) %>%
+     mutate(
+    Project = "COMPASS",   # new column with same value on every row
+    Experiment = "TEMPEST: Well Test",
+    Sample_Date = "2025-11-10",
+    Sample_Time = c("13:30", "15:00"),
+    Tank_Status = c("half full", "full")) #, 
+    #Replicate = c("A", "B", "A", "B"),
+    #Run_notes = run_notes     # new column with notes about the run
+#  ) 
+
+
+#Plot DOC data 
+viz_fe2_plot <-  ggplot(data = fe, aes(x = Sample_Time, y = FE_2_mean, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        #facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="Fe(II) (uM)", title="Well: Fe(II)") + 
+        theme(legend.position="right") 
+viz_fe3_plot <-  ggplot(data = fe, aes(x = Sample_Time, y = FE_3_mean, fill=Sample_Time)) +
+       geom_bar(stat = 'identity') + 
+        #facet_grid(~Sample_Time, scales="free_x") + 
+        theme_classic() + labs(x= " ", y="Fe(III) (uM)", title="Well: Fe(III)") + 
+        theme(legend.position="right") 
+print(viz_fe2_plot)
+print(viz_fe3_plot)
+
+##Calculate an average DIC  
+# Calculate the averages
+avg_fe2 <- round(mean(fe$FE_2_mean), 2)
+sd_fe2 <- round(sd(fe$FE_2_mean), 2)
+avg_fe3 <- round(mean(fe$FE_3_mean), 2)
+sd_fe3 <- round(sd(fe$FE_3_mean), 2)
+
+# Create a dataframe with the results
+fe_table <- data.frame(
+  Analyte = c("Fe(II) (uM)", "Fe(III) (uM)"),
+  Average = c(avg_fe2, avg_fe3),
+  Std_Deviation = c(sd_fe2, sd_fe3)
+)
+
+kable(fe_table)
+
+```
+
+
+```{r, out.width="60%", fig.align="center", echo=FALSE}
+
+cat("Pictures of FE precipitation")
+
+cat("Four TMP Aquifer Well Vials compared to those with surface water from Rhode River:")
+knitr::include_graphics("Processed Data/IMG_9725.jpg")
+
+cat("Refridgerated samples from TMP Aquifer Well:")
+knitr::include_graphics("Processed Data/IMG_9727.jpg")
+knitr::include_graphics("Processed Data/IMG_9728.jpg")
+```
+
 
 \newpage
+
+## Sulfate / Chloride Data
 
 ## TSS Data
 ```{#r, echo=FALSE}
