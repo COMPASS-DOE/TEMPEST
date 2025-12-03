@@ -5,6 +5,7 @@
 
 # install.packages("remotes")
 # remotes::install_github("COMPASS-DOE/fluxfinder")
+# (fluxfinder is also available on CRAN)
 
 library(fluxfinder)
 options(fluxfinder.quiet = TRUE)
@@ -30,17 +31,13 @@ cmd <- read_csv(file.path(CMD_DIR,
                 col_types = "cdddddddd") %>%
     select(size_class = `Size Class`,
            area_cm2 = `Surface Area of Tree Covered (cm2)`,
-           volume_cm3 = `Volume (cm3)`) %>%
-    # TEMPORARY -- collapse the two size 1 classes
-    mutate(size_class = if_else(size_class %in% c("1a", "1b"), "1", size_class)) %>%
-    group_by(size_class) %>%
-    summarise(area = mean(area_cm2), volume_cm3 = mean(volume_cm3))
+           volume_cm3 = `Volume (cm3)`)
 
 tree_assignments <- read_csv(file.path(CMD_DIR,
-                                       "TEMPEST_TreeChamberInstallation_11272023.xlsx - Orginal.csv"),
-                             col_types = "_c_ccc__") %>%
+                                       "TEMPEST_TreeChamberSizeInventory.xlsx - Updated Nov 2025.csv"),
+                             col_types = "cdccccccc") %>%
     filter(!is.na(Plot)) %>%
-    select(Plot, Species, ID, size_class = `Chamber Size Class`)
+    select(Plot, Species, ID = Sapflux_ID, size_class = `Chamber Size Class`)
 
 chamber_metadata <- left_join(tree_assignments, cmd, by = "size_class")
 
@@ -54,18 +51,20 @@ results_list <- lapply(files, readRDS)
 
 # OK, we've got the input files, now what?
 
-# We use a "treeflux-processing-info" file to step through the data. This
-# simplifies things and provides a documentary record of decisions, etc.
-message("Reading processing info file...")
-tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccdcc")
 
 # ---- Processing ----
 bind_rows(results_list) %>%
     rename(Plot = plot, Timepoint = timepoint) ->
     results
 
-# TODO: print a warning or something if number of results tables ≠ tfpi
+# The "treeflux-processing-info" is primarily used by process_treeflux.R
+# (step 1 in the processing chain). We use it here simply to check
+# if the results are fully processed or not
+message("Reading processing info file...")
+tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
+                 col_types = "cDcccdcc")
+# Print a warning if number of results tables ≠ tfpi
+# This might be OK, but important to flag for the user
 if(length(results_list) != nrow(tfpi)) {
     warning("The number of results is not equal to rows in processing list!")
 }
@@ -96,6 +95,8 @@ results %>%
     group_modify(~ffi_fit_models(.x$secs,
                                  .x$CO2,
                                  area = .x$area[1],
+                                 # TODO -- this accounts only for chamber volume; see
+                                 # https://github.com/COMPASS-DOE/TEMPEST/issues/167
                                  volume = .x$volume[1])) %>%
     select(Year, Date, Plot, Timepoint, Species, ID,
            CO2_lin_flux.estimate = lin_flux.estimate,
@@ -112,6 +113,8 @@ results %>%
     group_modify(~ffi_fit_models(.x$secs,
                                  .x$CH4,
                                  area = .x$area[1],
+                                 # TODO -- this accounts only for chamber volume; see
+                                 # https://github.com/COMPASS-DOE/TEMPEST/issues/167
                                  volume = .x$volume[1])) %>%
     select(Year, Date, Plot, Timepoint, Species, ID,
            CH4_lin_flux.estimate = lin_flux.estimate,
