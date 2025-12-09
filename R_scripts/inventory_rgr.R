@@ -70,13 +70,16 @@ inv_rgr_delta %>%
     group_by(Plot, Species_code, Year) %>%
     summarise(delta_RGR_err = sd(delta_RGR),
               delta_RGR = mean(delta_RGR), .groups = "drop") %>%
-    ggplot(aes(Year, delta_RGR, color = Plot)) +
-    geom_point() +
+    ggplot(aes(Year, delta_RGR, group = Plot, color = Plot)) +
+    geom_point(position = position_dodge(width = 0.2)) +
     facet_grid(Species_code ~ .) +
     geom_hline(yintercept = 0, linetype = 2) +
-  #  geom_errorbar(aes(ymin = delta_RGR - delta_RGR_err, ymax = delta_RGR + delta_RGR_err)) +
-    geom_smooth(method = "lm") +
-    ylab("Relative growth rate (relative to control mean)")
+    geom_linerange(aes(ymin = delta_RGR - delta_RGR_err, ymax = delta_RGR + delta_RGR_err),
+                   position = position_dodge(width = 0.2),
+                   alpha = 0.5) +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 1.5) +
+    ylab("Relative growth rate (relative to control mean)") +
+    coord_cartesian(ylim = c(-1, 1))
 
 ggsave("~/Desktop/rgr.png", width = 8, height = 6)
 
