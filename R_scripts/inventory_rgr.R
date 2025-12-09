@@ -36,10 +36,10 @@ for(yr in dbh_years[-1]) {
 inv %>%
     select(Plot, Tree_ID, Species_code, starts_with("RGR_")) %>%
     pivot_longer(starts_with("RGR_"), values_to = "RGR") %>%
-    replace_na(list(RGR = 0)) %>%
+    #replace_na(list(RGR = 0)) %>%
     separate(name, into = c("x", "Year"), convert = TRUE) %>%
     select(-x) %>%
-    filter(Species_code %in% c("ACRU", "LITU", "FAGR")) ->
+    filter(!is.na(RGR), Species_code %in% c("ACRU", "LITU", "FAGR")) ->
     inv_rgr
 
 ggplot(inv_rgr, aes(Year, RGR, color = Plot, group = Tree_ID)) +
