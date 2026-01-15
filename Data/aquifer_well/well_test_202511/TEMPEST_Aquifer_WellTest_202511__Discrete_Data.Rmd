@@ -79,6 +79,7 @@ dic <- read.csv("Processed Data/TMP_20251110_FW_WellTest_DIC_Processed.csv")
 viz_ic_plot <-  ggplot(data = dic, aes(x = Replicate, y = ic_mgL, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
         facet_grid(~Sample_Time, scales="free_x") + 
+        scale_fill_manual(values = c("#619CFF", "darkblue")) +
         theme_classic() + labs(x= " ", y="DIC (mg/L)", title="Well: Dissolved Inorganic Carbon") + 
         theme(legend.position="right") 
 
@@ -117,6 +118,7 @@ doc <- read.csv("Processed Data/TMP_20251110_FW_WellTest_DOC_Processed.csv")
 viz_c_plot <-  ggplot(data = doc, aes(x = Replicate, y = npoc_mgL, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
         facet_grid(~Sample_Time, scales="free_x") + 
+        scale_fill_manual(values = c("#619CFF", "darkblue")) +
         theme_classic() + labs(x= " ", y="NPOC (mg/L)", title="Well: Dissolved Organic Carbon") + 
         theme(legend.position="right") 
 
@@ -124,6 +126,7 @@ viz_c_plot <-  ggplot(data = doc, aes(x = Replicate, y = npoc_mgL, fill=Sample_T
 viz_n_plot <-  ggplot(data = doc, aes(x = Replicate, y = tdn_mgL, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
         facet_grid(~Sample_Time, scales="free_x") + 
+        scale_fill_manual(values = c("#619CFF", "darkblue")) +
         theme_classic() + labs(x= " ", y="TN (mg/L)", title="Well: Total Nitrogen") + 
         theme(legend.position="right") 
 
@@ -158,7 +161,7 @@ kable(doc_table)
 cat("FE Data from Shimadzu TOC-V")
 
 #Read in the data 
-fe <- read.csv("Processed Data/TEMPEST_AquiferWell_FE_data.csv")
+fe <- read.csv("Processed Data/TEMPEST_AquiferWell_FE_data_updated.csv")
 #head(fe)
 
 #clean up this data 
@@ -180,12 +183,14 @@ fe <- fe %>%
 viz_fe2_plot <-  ggplot(data = fe, aes(x = Sample_Time, y = FE_2_mean, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
         #facet_grid(~Sample_Time, scales="free_x") + 
+        scale_fill_manual(values = c("#619CFF", "darkblue")) +
         theme_classic() + labs(x= " ", y="Fe(II) (uM)", title="Well: Fe(II)") + 
         theme(legend.position="right") 
 viz_fe3_plot <-  ggplot(data = fe, aes(x = Sample_Time, y = FE_3_mean, fill=Sample_Time)) +
        geom_bar(stat = 'identity') + 
         #facet_grid(~Sample_Time, scales="free_x") + 
-        theme_classic() + labs(x= " ", y="Fe(III) (uM)", title="Well: Fe(III)") + 
+        scale_fill_manual(values = c("#619CFF", "darkblue")) +
+        theme_classic() + labs(x= " ", y="Fe(III) (uM)", title="Well: Fe(III) - NOT DETECTED") + 
         theme(legend.position="right") 
 print(viz_fe2_plot)
 print(viz_fe3_plot)
@@ -223,6 +228,8 @@ knitr::include_graphics("Processed Data/IMG_9728.jpg")
 
 
 \newpage
+
+#STILL WORKING ON THE REST OF THE SAMPLES:
 
 ## Sulfate / Chloride Data
 
