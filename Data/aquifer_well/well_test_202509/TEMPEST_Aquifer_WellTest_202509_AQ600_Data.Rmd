@@ -57,7 +57,9 @@ summary_stats <- well_dat_filtered %>%
     DO_mgL_mean = mean(DO_mgL, na.rm = TRUE),
     DO_mgL_sd = sd(DO_mgL, na.rm = TRUE),
     TDS_ppt_mean = mean(TDS_ppt, na.rm = TRUE),
-    TDS_ppt_sd = sd(TDS_ppt, na.rm = TRUE)
+    TDS_ppt_sd = sd(TDS_ppt, na.rm = TRUE), 
+    pH_mean = mean(pH, na.rm = TRUE), 
+    pH_sd = sd(pH, na.rm = TRUE)
   ) %>%
   pivot_longer(
     everything(),
@@ -96,6 +98,12 @@ tds <- ggplot()+
 
 do + tds
 
+#plot TDS 
+pH <- ggplot()+
+  geom_point(data=well_dat_filtered, aes(x=Date_Time, y=pH), size=2, color="darkviolet")+ 
+  theme_bw()+ labs(x="Time", y="pH ", title="Aquifer pH") + theme(legend.title = element_blank())
+
+pH
 
 ```
 
