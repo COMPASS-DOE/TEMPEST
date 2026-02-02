@@ -1,0 +1,7 @@
+TEMPEST 2024 Soil Gas Well Data
+
+There was an issue with standard curves on the varian GC in 2024 where standard vials were not being de-pressurized to atmospheric pressure before mixing standards, causing standard curves to vary widely. In order to account for this, the most recently run standards that were prepared correctly were used to estimate concentrations. 
+
+Files in this folder that say wOG curves are the original, over pressurized standards. Files without this distinction include the most recent standards available. The varian GC is very consistent, so we do not anticipate using standards from a month or so before the run to be an issue and check standards on the runs are used to check that the concentrations being calculated are reasonable. 
+
+If there are any questions about these data, please contact either Stephanie J. Wilson (wilsonsj@si.edu) or Patrick Megonigal (megonigalp@si.edu). 

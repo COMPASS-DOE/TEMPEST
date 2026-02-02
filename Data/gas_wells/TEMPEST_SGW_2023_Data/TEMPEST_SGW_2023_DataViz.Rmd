@@ -1,0 +1,809 @@
+---
+title: 'TEMPEST: SGW 2023 Data Viz'
+author: "Stephanie J. Wilson"
+date: "2024-04-29"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(plyr)
+library(tidyverse)
+library(tidyr)
+
+```
+
+## April 2023
+
+```{r}
+#### April 2023 ###
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202304_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+april_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "April 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+april_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+april_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "April 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank()) + 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+april_avg_soil_ch41
+
+april_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "April 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+april_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## May 2023
+
+```{r}
+#### May 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202305_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+              sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+              mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+              sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+may_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "May 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+may_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+may_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "May 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+may_avg_soil_ch41
+
+may_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "May 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+may_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## June 2023
+
+```{r}
+#### June 2023 ###
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202306_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+dat$Event_Stamp <- as.factor(dat$Event_Stamp)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot, Event_Stamp) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+levels(ghg_avg$Event_Stamp)
+ghg_avg$Event <- revalue(ghg_avg$Event_Stamp, c("0" = "Pre-1", "1" = "Pre-2", "2" = "Flood 1", 
+                                                 "3_AM"= "Flood 2-AM", "3_PM" = "Flood 2-PM", "4" = "Post-1", "5" = "Post-2"))
+
+june_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  facet_grid(~factor(Event, levels=c("Pre-1", "Pre-2", "Flood 1","Flood 2-AM" ,"Flood 2-PM", "Post-1","Post-2"))) +
+  labs(title = "June 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+june_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+june_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  facet_grid(~factor(Event, levels=c("Pre-1", "Pre-2", "Flood 1","Flood 2-AM" ,"Flood 2-PM", "Post-1","Post-2"))) +
+  labs(title = "June 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+june_avg_soil_ch41
+
+june_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,50000) + 
+  facet_grid(~factor(Event, levels=c("Pre-1", "Pre-2", "Flood 1","Flood 2-AM" ,"Flood 2-PM", "Post-1","Post-2"))) +
+  labs(title = "June 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+june_avg_soil_co21
+
+
+################################################################################################################
+
+```
+
+## July 2023
+
+```{r}
+#### July 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202307_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+july_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "July 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+july_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+july_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "July 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+july_avg_soil_ch41
+
+july_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "July 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+july_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## August 2023
+
+```{r}
+#### Aug 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202308_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+aug_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Aug 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+aug_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+aug_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Aug 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+aug_avg_soil_ch41
+
+aug_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "Aug 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+aug_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## September 2023
+
+```{r}
+#### Sept 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202309_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+sept_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Sept 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+sept_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+sept_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Sept 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+sept_avg_soil_ch41
+
+sept_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "Sept 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+sept_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## October 2023
+
+```{r}
+#### OCT 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202310_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+oct_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Oct 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+oct_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+oct_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Oct 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+oct_avg_soil_ch41
+
+oct_avg_soil_co21 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "Oct 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+oct_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## November 2023
+
+```{r}
+#### NOV 2023 ####
+################################################################################################################
+#read in some data 
+dat <- read.csv("2023 Processed Data/COMPASS_TEMPEST_SGW_202311_Processed.csv")
+head(dat)
+
+dat <-  dat %>%  
+  filter(!str_detect(Sample_Plot, "Transition")) 
+head(dat)
+
+dat$Depth <- dat$Sample_Depth
+dat$Depth <- revalue(dat$Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+dat$Depth <- as.numeric(dat$Depth)
+
+soil_ch4 <- ggplot(data=dat, aes( x=CH4_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+soil_co2 <- ggplot(data=dat, aes( x=CO2_Conc_ppm_dilcorr, y=Depth, color=Sample_Plot)) + 
+  geom_point(size=4)  + scale_y_reverse() + theme_bw()
+
+ggarrange(soil_ch4, soil_co2, nrow=1, ncol=2, common.legend = TRUE, legend="bottom")
+
+dat$Sample_Month <- as.factor(dat$Sample_Month)
+dat$Sample_Depth <- as.factor(dat$Sample_Depth)
+dat$Sample_Plot <- as.factor(dat$Sample_Plot)
+
+levels(dat$Sample_Plot)
+dat <- as.data.frame(dat)
+
+ghg_avg <- dat %>%
+  group_by(Sample_Depth, Sample_Plot) %>%
+  dplyr::summarize(mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   sd_CH4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+                   mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+                   sd_CO2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+head(ghg_avg)
+
+ghg_avg$Depth <- revalue(ghg_avg$Sample_Depth, c("10" = 10, "20" = 20, "35" = 35, "50"= 50, "ATM" = 0))
+ghg_avg$Depth <- as.character(ghg_avg$Depth)
+ghg_avg$Depth <- as.numeric(ghg_avg$Depth)
+
+nov_avg_soil_ch4 <- ggplot(data=ghg_avg, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Nov 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+nov_avg_soil_ch4
+
+ghg_avg1 <-  ghg_avg %>%  
+  filter(!(Sample_Depth == "ATM")) 
+head(ghg_avg1)
+
+nov_avg_soil_ch41 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CH4_ppm)) +
+  geom_point(size=4, aes(Depth, mean_CH4_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  ylim(0,5) + 
+  labs(title = "Nov 2023", y="CH4 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+ 
+  geom_errorbar(aes(Depth, ymin=mean_CH4_ppm-sd_CH4,
+                    ymax=mean_CH4_ppm+sd_CH4),width=0.3,position=position_dodge(.1))
+nov_avg_soil_ch41
+
+nov_avg_soil_co21 <- ggplot(data=ghg_avg1, aes(col=Sample_Plot, fill=Sample_Plot)) + 
+  geom_line(size=1, aes(Depth, mean_CO2_ppm)) +
+  geom_point(shape=22, size=4, aes(Depth, mean_CO2_ppm)) +
+  scale_color_manual(values=c( "darkgreen","blue", "red")) + 
+  scale_fill_manual(values=c( "darkgreen","blue", "red")) +
+  coord_flip() + 
+  scale_x_reverse() + 
+  #ylim(0,5) + 
+  labs(title = "Nov 2023", y="CO2 (ppm)", x="Depth (cm)") + 
+  theme_bw() + 
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())+
+  geom_errorbar(aes(Depth, ymin=mean_CO2_ppm-sd_CO2,
+                    ymax=mean_CO2_ppm+sd_CO2),width=0.3,position=position_dodge(.1))
+nov_avg_soil_co21
+
+################################################################################################################
+
+```
+
+## Viz Together?  
+
+```{r}
+
+```
