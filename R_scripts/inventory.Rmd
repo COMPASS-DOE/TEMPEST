@@ -23,11 +23,11 @@ theme_set(theme_bw())
 ```
 
 ```{r process-inventory}
-inv <- read_csv("../Data/tree_inventory/inventory.csv",
+inv <- read_csv("./Data/tree_inventory/inventory.csv",
                 col_types = cols(
                     Plot = col_character(),
                     Section = col_character(),
-                    Tag = col_double(),
+                    Tree_ID = col_double(),
                     Grid = col_character(),
                     DBH_2019 = col_double(),
                     Date_2019 = col_date(format = ""),
@@ -57,7 +57,7 @@ inv <- read_csv("../Data/tree_inventory/inventory.csv",
                 )
 )
                 
-genera <- read_csv("../Data/tree_inventory/species-genera.csv", 
+genera <- read_csv("./Data/tree_inventory/species_genera.csv", 
                    col_types = "cc")
 
 # There are some trees in our records that aren't in the plot, because of plot
@@ -84,7 +84,7 @@ pivot_and_split <- function(df, col_prefix) {
     stopifnot(any(grepl(col_prefix, colnames(df)))) # not present
     newcol <- gsub("_", "", col_prefix)
     df %>%
-        select(Plot, Section, Tag, Grid, Species_code, starts_with(col_prefix)) %>%
+        select(Plot, Section, Tree_ID, Grid, Species_code, starts_with(col_prefix)) %>%
         pivot_longer(cols = starts_with(col_prefix), values_to = newcol) %>%
         separate(name, into = c("x", "Year")) %>%
         select(-x)
@@ -96,7 +96,7 @@ inv_long_date <- pivot_and_split(inv, "Date_")
 inv_long_growth <- pivot_and_split(inv, "Growth_")
 inv_long_resurrect <- pivot_and_split(inv, "Resurrect_")
 inv_long_zombie <- pivot_and_split(inv, "Zombie_")
-joincols <- c("Plot", "Section", "Tag", "Grid", "Species_code", "Year")
+joincols <- c("Plot", "Section", "Tree_ID", "Grid", "Species_code", "Year")
 inv %>%
     pivot_and_split("Status_") %>%
     left_join(inv_long_dbh, by = joincols) %>%
@@ -106,7 +106,7 @@ inv %>%
     left_join(inv_long_date, by = joincols) %>%
     # clean up
     mutate(Year = as.integer(Year)) %>%
-    arrange(Plot, Tag, Year) %>% 
+    arrange(Plot, Tree_ID, Year) %>% 
     # add genus information for cleaner graphs
     left_join(genera, by = "Species_code") %>% 
     # status codes propagate to following years
@@ -139,7 +139,7 @@ inv_long %>%
 
 inv_long %>% 
     filter(Growth < min(growth_limits) | Growth > max(growth_limits)) %>% 
-    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH, Growth) %>% 
+    select(Plot, Section, Tree_ID, Grid, Species_code, Year, Status, DBH, Growth) %>% 
     knitr::kable(caption = "Extreme growth values")
 ```
 
@@ -150,7 +150,7 @@ Used to be dead, now alive.
 ```{r resurrection}
 inv_long %>% 
     filter(Resurrect) %>% 
-    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
+    select(Plot, Section, Tree_ID, Grid, Species_code, Year, Status, DBH) %>% 
     knitr::kable()
 ```
 
@@ -161,7 +161,7 @@ Used to be dead down, now dead standing.
 ```{r zombies}
 inv_long %>% 
     filter(Zombie) %>% 
-    select(Plot, Section, Tag, Grid, Species_code, Year, Status, DBH) %>% 
+    select(Plot, Section, Tree_ID, Grid, Species_code, Year, Status, DBH) %>% 
     knitr::kable()
 ```
 
@@ -178,7 +178,7 @@ inv_long %>%
 
 inv_long %>%
     filter(Status == "LI", is.na(Species_code)) %>%
-    group_by(Plot, Section, Tag, Grid, Species_code) %>% 
+    group_by(Plot, Section, Tree_ID, Grid, Species_code) %>% 
     summarise(Year = paste(Year, collapse = ", "), .groups = "drop") %>% 
     knitr::kable(caption = "Live tree, unknown species")
 ```
