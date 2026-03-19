@@ -23,7 +23,7 @@ theme_set(theme_bw())
 ```
 
 ```{r process-inventory}
-inv <- read_csv("./Data/tree_inventory/inventory.csv",
+inv <- read_csv("../Data/tree_inventory/inventory.csv",
                 col_types = cols(
                     Plot = col_character(),
                     Section = col_character(),
@@ -51,13 +51,16 @@ inv <- read_csv("./Data/tree_inventory/inventory.csv",
                     Date_2025 = col_date(format = ""),
                     DBH_2025 = col_double(),
                     Status_2025 = col_character(),
+                    Date_2026 = col_date(format = ""),
+                    DBH_2026 = col_double(),
+                    Status_2026 = col_character(),
                     In_Plot = col_logical(),
                     Notes = col_character(),
                     JS_codes = col_character()
                 )
 )
                 
-genera <- read_csv("./Data/tree_inventory/species_genera.csv", 
+genera <- read_csv("../Data/tree_inventory/species_genera.csv", 
                    col_types = "cc")
 
 # There are some trees in our records that aren't in the plot, because of plot
@@ -121,13 +124,15 @@ rm(inv_long_dbh, inv_long_date, inv_long_growth, inv_long_resurrect, inv_long_zo
 
 ### Tree-specific relative growth
 
-```{r relative-growth}
+```{r relative-growth, fig.height=8, fig.width=8}
 growth_limits <- c(-1.0, 1.0)
-ggplot(inv_long, aes(DBH, Growth, color = Genus)) +
+inv_long %>% 
+    filter(!is.na(Growth)) %>% 
+    ggplot(aes(DBH, Growth, color = Genus)) +
     geom_jitter(na.rm = TRUE) + 
     coord_cartesian(ylim = growth_limits) + 
     ggtitle("DBH versus growth") +
-    facet_wrap(~Year)
+    facet_grid(Year ~ Plot)
 
 inv_long %>% 
     filter(Growth >= min(growth_limits), Growth <= max(growth_limits)) %>% 

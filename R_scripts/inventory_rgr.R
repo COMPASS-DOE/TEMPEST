@@ -27,9 +27,10 @@ for(yr in dbh_years[-1]) {
     # Compute delta DBH
     dbh_name <- paste0("DBH_", yr)
     delta_name <- paste0("DeltaDBH_", yr)
+    rgr_name <- paste0("RGR_", yr)
+    # Create the new delta and RGR columns
     inv[delta_name] <- inv[dbh_name] - inv[paste0("DBH_", yr-1)]
-    rhr_name <- paste0("RGR_", yr)
-    inv[rhr_name] <- inv[delta_name] / inv[dbh_name] * 100
+    inv[rgr_name] <- inv[delta_name] / inv[dbh_name] * 100
 }
 
 # Separate RGR columns, reshape, and focus on the sapflow species
