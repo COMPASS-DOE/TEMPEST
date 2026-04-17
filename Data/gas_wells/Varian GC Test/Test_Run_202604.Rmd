@@ -2,7 +2,7 @@
 title: "COMPASS_TEMPEST_SGW_2024: November w/ original standard curve"
 author: "Stephanie J. Wilson"
 date: '2025-02-11'
-output: html_document
+output: pdf_document
 ---
 ##Set Up
 
@@ -17,7 +17,7 @@ library(ggpmisc)
 ## Read in first data file and assess standard curves 
 ```{r , echo=FALSE}
 #Read in June Data 
-raw <- read.csv("2024 Raw Data/TEMPEST_SGW_MM_202411_entered.csv")
+raw <- read.csv("Test_Run.csv")
 head(raw)
 
 #pull out methane standards
@@ -95,9 +95,9 @@ Slopes <- rbind(Slope_CH4_low, Slope_CH4_high, Slope_CO2)
 #head(Slopes)
 
 #needs changed each time #####
-Slopes$Run_Date <- c(202411, 202411, 202411)
+Slopes$Run_Date <- c(202604, 202604, 202604)
 
-log <- read.csv("2024 Raw Data/COMPASS_TEMPEST_Varian_QAQC_2024.csv")
+log <- read.csv("COMPASS_TEMPEST_Varian_QAQC_2024.csv")
 head(log)
 log <- log[ ,-c(1)]
 log <- rbind(log, Slopes)
@@ -105,7 +105,7 @@ log <- rbind(log, Slopes)
 Slopes_chk <- ggplot(log, aes(Run_Date, Slope, col=Curve)) + geom_point(size=4) + geom_line() + theme_bw()
 Slopes_chk
 
-write.csv(log, "2024 Raw Data/COMPASS_TEMPEST_Varian_QAQC_2024.csv")
+# write.csv(log, "2024 Raw Data/COMPASS_TEMPEST_Varian_QAQC_2024.csv")
 ```
 
 ## Now calculate the CH4 & CO2 concentrations in ppm  
@@ -290,7 +290,7 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 #head(Samples)
 
 #pull out what we need 
-Samples1 <- Samples[ ,c(1:3,6:16,20, 24:30)]
+# Samples1 <- Samples[ ,c(1:3,6:16,20, 24:30)]
 #head(Samples1)
 
 #change the column names as needed 
@@ -299,9 +299,69 @@ Samples1 <- Samples[ ,c(1:3,6:16,20, 24:30)]
   #                      "Sample_ID" ,  "Dilution_Factor", "Notes" ,  "CH4_Flag", "CO2_Flag" , 
    #                     "CH4_Conc_ppm_dilcorr", "CO2_Conc_ppm_dilcorr")
 
-#write.csv(Samples1, "COMPASS_TEMPEST_SGW_202410_Processed.csv")  #not writing out because curve is bad!!!!
+write.csv(Samples, "Test_Run_Processed.csv")  #not writing out because curve is bad!!!!
 
 ```
 
 
-#end
+##Combine sample data with expected concentrations
+```{r}
+Exp_Conc <- read.csv("TMP_Low_Conc_Test.csv")
+
+Exp_Conc <- Exp_Conc %>% 
+  select(-c(CO2.Area, CH4.Area)) %>% 
+  rename(CO2_Conc_Exp = CO2.Conc...., 
+         CH4_Conc_Exp = CH4.Conc..ppm.)
+
+Exp_Conc <- unique(Exp_Conc)
+
+
+Samples2 <- left_join(Samples, Exp_Conc, by = c("Sample_ID" = "Standard"))
+
+Samples2 <- Samples2 %>% 
+  select(Sample_ID, CO2_Conc_ppm, CH4_Conc_ppm, CO2_Conc_Exp, CH4_Conc_Exp)
+
+```
+
+
+##Plot Expected vs Actual Conc
+```{r}
+##Plot CO2 Data
+CO2_plots <- ggplot(Samples2, aes(x = CO2_Conc_Exp, y = CO2_Conc_ppm)) +
+  geom_point(size = 3) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  # coord_cartesian(xlim = combined_limits, ylim = combined_limits) +
+  coord_fixed(ratio = 1) +
+  labs(
+    y = "Measured CO2 Conc",
+    x = "Expected CO2 Conc",
+    title = "Varian Test Run: CO2"
+  ) +
+  theme_classic()
+
+CO2_plots
+
+##Plot CH4 Data
+CH4_plots <- ggplot(Samples2, aes(x = CH4_Conc_Exp, y = CH4_Conc_ppm)) +
+  geom_point(size = 3) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  # coord_cartesian(xlim = combined_limits, ylim = combined_limits) +
+  coord_fixed(ratio = 1) +
+  labs(
+    y = "Measured CH4 Conc",
+    x = "Expected CH4 Conc",
+    title = "Varian Test Run: CH4"
+  ) +
+  theme_classic()
+
+CH4_plots
+```
+
+##Put Samples in Order and Plot in Order
+```{r}
+
+
+
+
+
+```
