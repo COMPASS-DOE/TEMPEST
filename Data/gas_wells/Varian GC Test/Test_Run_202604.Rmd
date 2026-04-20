@@ -15,7 +15,7 @@ library(ggpmisc)
 ```
 
 ## Read in first data file and assess standard curves 
-```{r , echo=FALSE}
+```{r, echo=FALSE}
 #Read in June Data 
 raw <- read.csv("Test_Run.csv")
 head(raw)
@@ -201,7 +201,7 @@ ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
 ```
 
 ## Dilution correct samples 
-```{r}
+```{r, echo=FALSE}
 
 #multiply the concentration by the dilution factor
 Samples$CH4_Conc_ppm_dilcorr <- (Samples$CH4_Conc_ppm * Samples$Dilution_Factor)
@@ -285,7 +285,7 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 
 
 ## Write out processed data & slopes - NOT THIS ONE 
-```{r}
+```{r, echo=FALSE}
 #check results
 #head(Samples)
 
@@ -305,7 +305,7 @@ write.csv(Samples, "Test_Run_Processed.csv")  #not writing out because curve is 
 
 
 ##Combine sample data with expected concentrations
-```{r}
+```{r, echo=FALSE}
 Exp_Conc <- read.csv("TMP_Low_Conc_Test.csv")
 
 Exp_Conc <- Exp_Conc %>% 
@@ -316,16 +316,17 @@ Exp_Conc <- Exp_Conc %>%
 Exp_Conc <- unique(Exp_Conc)
 
 
-Samples2 <- left_join(Samples, Exp_Conc, by = c("Sample_ID" = "Standard"))
+Samples2 <- left_join(Samples, Exp_Conc, by = c("Sample_ID" = "Standard", "Sample_Order"))
 
 Samples2 <- Samples2 %>% 
-  select(Sample_ID, CO2_Conc_ppm, CH4_Conc_ppm, CO2_Conc_Exp, CH4_Conc_Exp)
+  select(Sample_ID, CO2_Conc_ppm, CH4_Conc_ppm, CO2_Conc_Exp, CH4_Conc_Exp, Sample_Order) %>% 
+  filter(!is.na(Sample_Order))
 
 ```
 
 
-##Plot Expected vs Actual Conc
-```{r}
+## Plot Expected vs Actual Conc
+```{r, echo=FALSE}
 ##Plot CO2 Data
 CO2_plots <- ggplot(Samples2, aes(x = CO2_Conc_Exp, y = CO2_Conc_ppm)) +
   geom_point(size = 3) +
@@ -357,11 +358,50 @@ CH4_plots <- ggplot(Samples2, aes(x = CH4_Conc_Exp, y = CH4_Conc_ppm)) +
 CH4_plots
 ```
 
-##Put Samples in Order and Plot in Order
-```{r}
+## Plot Samples in Run Order
+```{r, echo=FALSE}
 
+Samples2 <- Samples2 %>% 
+  mutate(Sample_ID_full = paste(Sample_ID, Sample_Order, sep = "_"))
 
+##Plot CH4 Data
+# CH4_order_plots <- ggplot(Samples2, aes(x = reorder(Sample_ID_full, Sample_Order), y = CH4_Conc_ppm, fill = as.factor(CH4_Conc_Exp))) +
+CH4_order_plots <- ggplot(Samples2, aes(x = as.factor(Sample_Order), y = CH4_Conc_ppm, fill = as.factor(CH4_Conc_Exp))) +
+  geom_bar(stat = "identity")+
+  labs(
+    y = "Measured CH4 Conc (ppm)",
+    x = "Sample Run Order",
+    title = "CH4 Samples in Run Order", 
+    fill = "Expected CH4 Concentration (ppm)"
+  ) +
+  theme_classic() + 
+  scale_fill_manual(values = c(
+    "2.5" = "#20063B",
+    "5" = "darkgrey",
+    "10" = "#FFBC42",
+    "0" = "#419973"))
 
+CH4_order_plots
 
+##Calculate Percent Error
+Samples3 <- Samples2 %>% 
+  mutate(Perc_Error = abs(CH4_Conc_ppm-CH4_Conc_Exp)/CH4_Conc_Exp * 100) %>% 
+  filter(Perc_Error != Inf)
 
+##Plot CH4 Data
+CH4_error_plots <- ggplot(Samples3, aes(x = as.factor(Sample_Order), y = Perc_Error, fill = as.factor(CH4_Conc_Exp))) +
+  geom_bar(stat = "identity")+
+  labs(
+    y = "Percent Error from Expected Concentration",
+    x = "Sample Run Order",
+    title = "CH4 Samples in Run Order", 
+    fill = "Expected CH4 Concentration (ppm)"
+  ) +
+  theme_classic()  + 
+  scale_fill_manual(values = c(
+    "2.5" = "#20063B",
+    "5" = "darkgrey",
+    "10" = "#FFBC42"))
+
+CH4_error_plots
 ```
