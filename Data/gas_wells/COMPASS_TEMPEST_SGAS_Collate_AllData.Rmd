@@ -47,7 +47,7 @@ all_dat1 <- all_dat %>%
   filter(is.na(qaqc_flag)) %>% #Remove samples flagged for unusually high values 
   select(-X) %>% #Select only required columns
   mutate(across(18:21, ~as.numeric(as.character(.)))) %>%
-  mutate(across(where(is.numeric), round, digits = 0)) %>% #Can change this depending on what the machine output is  
+  mutate(across(where(is.numeric), round, digits = 2)) %>% #Can change this depending on what the machine output is  
   filter(Sample_Plot != "Transition") %>% ##Remove GCW TR samples
   mutate(Sample_Plot = ifelse(Sample_Plot == "Seawater", "Saltwater", Sample_Plot))
 
