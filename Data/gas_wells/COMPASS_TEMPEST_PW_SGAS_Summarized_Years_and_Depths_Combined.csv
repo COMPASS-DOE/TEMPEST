@@ -1,0 +1,4 @@
+"","Sample_Plot","min_CH4_ppm","max_CH4_ppm","mean_CH4_ppm","sd_CH4_ppm","min_CO2_ppm","max_CO2_ppm","mean_CO2_ppm","sd_CO2_ppm"
+"1","Control",0,3,1,1,204,53218,11099,7097
+"2","Freshwater",0,3,1,1,57,70256,14611,10917
+"3","Saltwater",0,12,2,2,213,69129,20022,13438

@@ -1,0 +1,602 @@
+---
+title: "TEMEPST: SGAS"
+author: "2023-2024 Samples"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+
+output_dir: "To Be Reviewed/PDF"
+header-includes:
+  - \pagenumbering{gobble}
+---
+
+##What should we be rounding the CO2 and CH4 to? Any decimal places? 
+##Already removed samples that are 10x the annual plot mean (unusually high)
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(stringr)
+library(readxl)
+library(tidyr)
+library(tibble)
+library(openxlsx)
+library(knitr)
+```
+
+##Grab 2022 and 2023 All Data Files
+```{r Pull in 2022-2024 data files, message=FALSE, include=FALSE}
+
+#read in 2023 SGAS Data:
+dat23 <- read.csv("TEMPEST_SGW_2023_Data/COMPASS_TEMPEST_SGAS_2023.csv", colClasses = "character")
+# head(dat23)
+colnames(dat23)
+
+#read in 2024 SGAS Data:
+dat24 <- read.csv("TEMPEST_SGW_2024_Data/COMPASS_TEMPEST_SGAS_2024.csv", colClasses = "character")
+# head(dat24)
+colnames(dat24)
+
+all_dat <- bind_rows(dat23, dat24)
+
+##Clean data
+all_dat1 <- all_dat %>% 
+  filter(is.na(qaqc_flag)) %>% #Remove samples flagged for unusually high values 
+  select(-X) %>% #Select only required columns
+  mutate(across(18:21, ~as.numeric(as.character(.)))) %>%
+  mutate(across(where(is.numeric), round, digits = 0)) %>% #Can change this depending on what the machine output is  
+  filter(Sample_Plot != "Transition") %>% ##Remove GCW TR samples
+  mutate(Sample_Plot = ifelse(Sample_Plot == "Seawater", "Saltwater", Sample_Plot))
+
+```
+
+##Make Relevant Metadata Sheet
+```{r make metadata, include = FALSE}
+
+# #pull the column names from the all_dat1 dataframe and create a new dataframe with them 
+# metadat <- data.frame(Column_Names = colnames(all_dat1))
+# metadat
+# 
+# metadat$Description <- ""
+# metadat$Units <- ""
+# metadat$Instrument_ifapplicable <- ""
+# 
+# #add information about each line: 
+# 
+# metadat$Description <- c("Project name", 
+#                          "Region samples originated from: CB = Chesapeake Bay",
+#                          "Sample identifier used in laboratory and field", 
+#                          "Year (YYYY) of sample collection", 
+#                          "Month (#) of sample collection",
+#                          "Day (#) of sample collection",
+#                          "Time (HH:MM) of sample collection",
+#                          "Time Zone of sample collection",
+#                          "Name of sampling transect location (GCW, SWH, MSM, GWI), see dataset locations for coordinates", 
+#                          "Zone within space-for-time transect (UP=Upland, SWAMP=Swamp, TR=Transition, WC=Wetland Control, SW=Surface Water)",
+#                          "Lysimeter or sample replicate id (A-C)", 
+#                          "Depth in centimeters from which water sample was taken", 
+#                          "Sulfate concentration in ppm", 
+#                          "Sulfate concentration in ppm", 
+#                          "Sulfate concentration flag base on standard curve (bdl=below detection limit (0), adl=above detection limit (highest   
+#                          standard), Within_Range=within detection range)", 
+#                          "Sulfate QAQC Flags generated during checks of standards, blanks, dups, and spks",
+#                          "Chloride concentration in ppm", 
+#                          "Chloride concentration in ppm", 
+#                          "Chloride concentration flag base on standard curve (bdl=below detection limit (0), adl=above detection limit (highest   
+#                          standard), Within_Range=within detection range)", 
+#                          "Chloride QAQC Flags generated during checks of standards, blanks, dups, and spks", 
+#                          "Salinity calculated using the Knudsen equation: Salinity=((1.807*(Chloride ppm)+0.026)/1000", 
+#                          "The date that samples were run on the Dionex IC", 
+#                          "Any notes generated during QAQC", 
+#                          "Notes generated during field sample collection")
+# 
+# metadat$Units <-       c("NA", 
+#                          "NA",
+#                          "NA", 
+#                          "NA",
+#                          "NA",
+#                          "NA", 
+#                          "NA",
+#                          "NA", 
+#                          "NA", 
+#                          "NA",
+#                          "NA", 
+#                          "cm",
+#                          "ppm", 
+#                          "ppm", 
+#                          "NA", 
+#                          "NA", 
+#                          "ppm", 
+#                          "ppm", 
+#                          "NA", 
+#                          "NA", 
+#                          "ppt", 
+#                          "NA", 
+#                          "NA",
+#                          "NA")
+# 
+# metadat$Instrument_ifapplicable <-  
+#   
+#                        c("NA", 
+#                          "NA",
+#                          "NA", 
+#                          "NA",
+#                          "NA",
+#                          "NA", 
+#                          "NA",
+#                          "NA", 
+#                          "NA", 
+#                          "NA",
+#                          "NA", 
+#                          "NA",
+#                          "Dionex Integrion HPIC (Thermo Fisher)", 
+#                          "Dionex Integrion HPIC (Thermo Fisher)", 
+#                          "NA", 
+#                          "NA", 
+#                          "Dionex Integrion HPIC (Thermo Fisher)", 
+#                          "Dionex Integrion HPIC (Thermo Fisher)", 
+#                          "NA", 
+#                          "NA", 
+#                          "NA", 
+#                          "NA", 
+#                          "NA",
+#                          "NA")
+
+
+```
+
+##Write out files
+```{r write out combined data and metadata, include=FALSE}
+
+#write out a csv of all the data to the main folder: 
+write.csv(all_dat1, "COMPASS_TEMPEST_SGAS_AllData.csv", row.names = FALSE)
+
+
+# #write out a csv of the metadata associated with the data: 
+# write.csv(metadat, "COMPASS_TEMPEST_SGAS_Metadata.csv")
+
+```
+
+
+## Visualize Data by Plot   
+```{r Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=20, fig.height=10, dpi = 300}
+
+data_plotting <- all_dat1 %>% 
+  mutate(plot_1 = factor(Sample_Plot, levels = c("Control", "Freshwater", "Saltwater")))
+
+#Plot data and change colors based on Zone:
+viz_ch4_plot <- ggplot(data_plotting, aes(x = as.character(Sample_Year), y = CH4_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "total")) +
+  facet_wrap( ~ plot_1, scales="free", nrow = 1) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "Samples: CH4") +
+  theme(
+    panel.spacing = unit(.05, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) + 
+  theme(text = element_text(size = 28))
+
+# viz_ch4_plot
+
+
+viz_co2_plot <-  ggplot(data_plotting, aes(x = as.character(Sample_Year), y = CO2_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "total")) +
+  facet_wrap( ~ plot_1, scales="free", nrow = 1) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "Samples: CO2") +
+  theme(
+    panel.spacing = unit(.05, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1))+ 
+  theme(text = element_text(size = 28))
+
+# viz_co2_plot
+
+ggarrange(viz_ch4_plot, viz_co2_plot, nrow=2, ncol=1)
+
+
+```
+
+
+## Summarized data for Site and Zone 
+```{r Summarize and Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=20, fig.height=15, dpi = 300}
+
+##Make Date Column
+data_plotting$Date <- as.Date(paste(data_plotting$Sample_Year, data_plotting$Sample_Month, data_plotting$Sample_Day, sep = "-"), format = "%Y-%B-%d")
+
+##Summarize SGAS by Date, Site, and Zone
+SGAS_avg <- data_plotting %>%
+  group_by(Date, plot_1) %>%
+   dplyr::summarize(mean_ch4 = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+            sd_ch4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+            mean_co2 = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+            sd_co2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+
+# Define the specific date breaks you want to display
+specific_breaks <- as.Date(c("2023-01-01", "2024-01-01", "2025-01-01"))
+
+viz_ch4_plot_avgs <- ggplot(SGAS_avg, aes(x = Date, y = mean_ch4, color = plot_1)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_ch4 - sd_ch4, ymax = mean_ch4 + sd_ch4), width = 0.2) + 
+  geom_line() + 
+  facet_wrap( ~ plot_1, scales="free_y", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "Samples: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
+  theme(text = element_text(size = 28))+
+  scale_x_date(breaks = specific_breaks, date_labels = "%Y", expand = expansion(mult = c(0.18, 0.05)))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))
+
+# viz_ch4_plot_avgs
+
+
+viz_co2_plot_avgs <- ggplot(SGAS_avg, aes(x = Date, y = mean_co2, color = plot_1)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_co2 - sd_co2, ymax = mean_co2 + sd_co2), width = 0.2) + 
+  geom_line() + 
+  facet_wrap( ~ plot_1, scales="free_y", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "Samples: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
+  theme(text = element_text(size = 28))+
+  scale_x_date(breaks = specific_breaks, date_labels = "%Y", expand = expansion(mult = c(0.18, 0.05)))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))
+
+# viz_co2_plot_avgs
+
+ggarrange(viz_ch4_plot_avgs, viz_co2_plot_avgs, nrow=2, ncol=1)
+
+```
+
+
+## Summarized Data by Depth
+```{r Summarize Data by Depth, echo=FALSE, warning=FALSE, message = FALSE, fig.width=22, fig.height=8, dpi = 500}
+
+##Remove SW and calculate average and sd for each depth
+SGAS_avg_depth <- data_plotting %>%
+  group_by(plot_1, Sample_Depth, Sample_Year) %>%
+   dplyr::summarize(mean_ch4 = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+            sd_ch4 = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+            mean_co2 = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+            sd_co2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
+
+viz_ch4_plot_depth <- ggplot(SGAS_avg_depth, aes(x = as.numeric(Sample_Depth), y = mean_ch4, color = plot_1)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_ch4 - sd_ch4, ymax = mean_ch4 + sd_ch4), width = 0.5, size = 1) + 
+  geom_line(size = 1.5) + 
+  facet_wrap( ~ Sample_Year, scales="free", nrow = 1) + 
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "Sampling Depth (cm)", y = "CH4 (ppm)", title = "Methane by Depth") +
+  theme(text = element_text(size = 28)) + 
+  theme(plot.title = element_text(size = 28)) + 
+  coord_flip() + 
+  scale_x_continuous(trans = "reverse") + 
+  labs(color = "Zone") 
+
+viz_ch4_plot_depth
+
+viz_co2_plot_depth <- ggplot(SGAS_avg_depth, aes(x = as.numeric(Sample_Depth), y = mean_co2, color = plot_1)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_co2 - sd_co2, ymax = mean_co2 + sd_co2), width = 0.5, size = 1) + 
+  geom_line(size = 1.5) + 
+  facet_wrap( ~ Sample_Year, scales="free", nrow = 1) + 
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "Sampling Depth (cm)", y = "CO2 (ppm)", title = "Carbon Dioxide by Depth") +
+  theme(text = element_text(size = 28)) + 
+  theme(plot.title = element_text(size = 28)) + 
+  coord_flip() + 
+  scale_x_continuous(trans = "reverse") + 
+  labs(color = "Zone") 
+
+viz_co2_plot_depth
+
+```
+
+## Boxplot by depth
+```{r Boxplot by depth, echo=FALSE, warning=FALSE, message = FALSE, fig.width=16, fig.height=10, dpi = 300}
+
+##Remove SW
+data_plotting_depth <- data_plotting %>%
+  mutate(Sample_Depth = factor(Sample_Depth, levels = c("50", "35", "20", "10", "ATM")))
+
+
+#Plot data and change colors based on Zone:
+viz_co2_depth <-  ggplot(data_plotting_depth, aes(x = Sample_Depth, y = CO2_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_boxplot() +
+  # facet_wrap( ~ plot_1, scales="free", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "Sampling Depth (cm)", y = "CO2 (ppm)", title = "") + 
+  theme(text = element_text(size = 30))+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  coord_flip() 
+
+viz_co2_depth
+
+#Plot data and change colors based on Zone:
+viz_ch4_depth <-  ggplot(data_plotting_depth, aes(x = Sample_Depth, y = CH4_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_boxplot() +
+  # facet_wrap( ~ plot_1, scales="free", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "Sampling Depth (cm)", y = "CH4 (ppm)", title = "") + 
+  theme(text = element_text(size = 30))+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  coord_flip() 
+
+viz_ch4_depth
+
+```
+
+
+
+## Boxplot summary
+```{r Overall Boxplot, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+
+data_plotting <- data_plotting %>% 
+  mutate(Date_boxplot = gsub("-", "", Date))
+
+##Summarize CO2 and CH4 by Date, Site, and Zone
+viz_ch4_boxplot <- ggplot(data_plotting, aes(x = Date_boxplot, y = CH4_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_boxplot() + 
+  facet_grid( ~ plot_1, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "TEMPEST Soil Gas Well: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  #scale_x_discrete(labels = c("Upland", "Swamp", "Transition", "Wetland", "Surface Water"))+ 
+  theme(legend.position = "none")
+
+viz_ch4_boxplot
+
+
+viz_co2_boxplot <- ggplot(data_plotting, aes(x = Date_boxplot, y = CO2_Conc_ppm_dilcorr, fill = plot_1)) +
+  geom_boxplot() +
+  facet_grid( ~ plot_1, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "TEMPEST Soil Gas Well: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  #scale_x_discrete(labels = c("Upland", "Swamp", "Transition", "Wetland", "Surface Water"))+ 
+  theme(legend.position = "none")
+
+viz_co2_boxplot
+
+# ggarrange(viz_CH4_boxplot, viz_CO2_boxplot, nrow=2, ncol=1)
+
+# Save as a PNG
+png("COMPASS_TEMPEST_CH4_alldata.png", width = 2000, height = 1200, res = 100) 
+print(viz_ch4_boxplot)  # For ggplot objects, use print()
+dev.off() 
+
+# Save as a PNG
+png("COMPASS_TEMPEST_CO2_alldata.png", width = 2000, height = 1200, res = 100) 
+print(viz_co2_boxplot)  # For ggplot objects, use print()
+dev.off() 
+
+```
+
+##Calculate summary metrics
+```{r Additional summary metrics, include=FALSE, dpi = 300}
+# It would also be great to add to our collation codes a summary chunk that will calculate value ranges, means, and standard deviations (and errors) for each site, zone, depth for each year; also for each site zone, depth overall; and for each site and zone overall so that we have some easy access to metrics. Was just thinking this might be helpful today when re-collating the DIC data.
+
+colnames(all_dat1)
+
+##Metrics for each site, zone, depth for each year
+summary_by_year <- all_dat1 %>%
+  group_by(Sample_Year, Sample_Plot, Sample_Depth) %>%
+   reframe(
+     min_CH4_ppm = min(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CH4_ppm = max(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CH4_ppm = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+
+     min_CO2_ppm = min(CO2_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CO2_ppm = max(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CO2_ppm = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE)) %>%
+  mutate(across(where(is.numeric), round, digits = 0)) 
+
+##Metrics for each site, zone, depth for all years
+summary_all_years <- all_dat1 %>%
+  group_by(Sample_Plot, Sample_Depth) %>%
+   reframe(
+     min_CH4_ppm = min(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CH4_ppm = max(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CH4_ppm = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+
+     min_CO2_ppm = min(CO2_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CO2_ppm = max(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CO2_ppm = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE)) %>%
+  mutate(across(where(is.numeric), round, digits = 0)) 
+
+##Metrics for each site and zone for all depths and years
+summary_all_depths_years <- all_dat1 %>%
+  group_by(Sample_Plot) %>%
+    reframe(
+     min_CH4_ppm = min(CH4_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CH4_ppm = max(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CH4_ppm = mean(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CH4_ppm = sd(CH4_Conc_ppm_dilcorr, na.rm=TRUE), 
+
+     min_CO2_ppm = min(CO2_Conc_ppm_dilcorr, na.rm=TRUE),
+     max_CO2_ppm = max(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     mean_CO2_ppm = mean(CO2_Conc_ppm_dilcorr, na.rm=TRUE), 
+     sd_CO2_ppm = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE)) %>%
+  mutate(across(where(is.numeric), round, digits = 0)) 
+
+```
+
+##Calculate number of samples 
+```{r Number of samples, include=FALSE, dpi = 300}
+#  I am thinking it might be cool to add to our Soil Gas Well collation files a table at the end that has total number of samples then also some info about # of samples per zone, site, depth etc.
+
+##Metrics for each year
+sample_numbers_years <- all_dat1 %>%
+  group_by(Sample_Year) %>%
+   reframe(
+     Number_of_samples = n())
+
+##Metrics for each site, zone, depth for all years
+sample_numbers <- all_dat1 %>%
+  group_by(Sample_Plot, Sample_Depth) %>%
+   reframe(
+     Number_of_samples = n())
+     
+
+```
+
+## Summary Tables
+```{r Summary table metrics, echo = FALSE, message = FALSE, dpi = 100}
+
+library(kableExtra)
+
+kable(
+  summary_all_depths_years[, c("Sample_Plot", "min_CH4_ppm",	"max_CH4_ppm",	"mean_CH4_ppm", "min_CO2_ppm",	"max_CO2_ppm",	"mean_CO2_ppm")],  
+  format = "latex",
+  booktabs = TRUE,
+  caption = "Summary Statistics"
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped", "scale_down"),
+    font_size = 12
+  ) %>%
+  row_spec(0, bold = TRUE) %>%   # header
+  column_spec(1, bold = TRUE)
+
+
+```
+
+## Number of Samples
+```{r number of samples tables, echo = FALSE, message = FALSE, dpi = 100}
+
+kable(
+  sample_numbers_years[, c("Sample_Year", "Number_of_samples")],  
+  format = "latex",
+  booktabs = TRUE,
+  caption = paste0("Total Samples: ", nrow(all_dat1))
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped", "scale_down"),
+    font_size = 12
+  ) %>%
+  row_spec(0, bold = TRUE) %>%   # header
+  column_spec(1, bold = TRUE)
+
+```
+
+```{r Number of Samples Barplots, echo=FALSE, warning=FALSE, message = FALSE, fig.width=16, fig.height=10, dpi = 300}
+##Remove SW samples
+sample_numbers_pw <- sample_numbers
+
+##Number of Samples Plots
+sample_num_barplot <- ggplot(sample_numbers_pw, aes(x = as.character(Sample_Depth), y = Number_of_samples, fill = Sample_Plot)) +
+  geom_col(position = "dodge", color = "black", width = 0.75) + # 'color' adds a border to the bars
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) + 
+  theme_classic() +
+  labs(x = "Depth (cm)", y = "Number of Samples", title = "TEMPEST SGAS Sample Numbers") +
+  theme(
+    panel.spacing = unit(0.5, "lines"),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))
+
+sample_num_barplot
+```
+
+
+
+```{r write out summarized data, include=FALSE}
+
+#write out a csv of all the data to the main folder: 
+write.csv(summary_by_year, "COMPASS_TEMPEST_PW_SGAS_Summarized_By_Year.csv")
+
+
+#write out a csv of the metadata associated with the data: 
+write.csv(summary_all_years, "COMPASS_TEMPEST_PW_SGAS_Summarized_Years_Combined.csv")
+
+
+#write out a csv of the metadata associated with the data: 
+write.csv(summary_all_depths_years, "COMPASS_TEMPEST_PW_SGAS_Summarized_Years_and_Depths_Combined.csv")
+```
+
+
+

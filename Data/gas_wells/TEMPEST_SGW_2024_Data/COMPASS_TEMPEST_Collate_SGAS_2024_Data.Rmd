@@ -1,5 +1,5 @@
 ---
-title: "COMPASS_TEMPEST_Collate_SGAS_2023_Data"
+title: "COMPASS_TEMPEST_Collate_SGAS_2024_Data"
 author: "Stephanie J. Wilson"
 date: "`r Sys.Date()`"
 output: html_document
@@ -19,7 +19,7 @@ library(readr)
 #Read in and collate all the files in the Processed Data folder 
 ```{r}
 
-files <- list.files(path = "2023 Processed Data", pattern = "\\.csv$", full.names = TRUE)
+files <- list.files(path = "2024 Processed Data", pattern = "\\.csv$", full.names = TRUE)
 
 # 3. Read and combine all CSVs
 all_data <- files %>%
@@ -28,6 +28,8 @@ all_data <- files %>%
     return(df)
   }) %>%
   bind_rows()
+
+colnames(all_data)
 
 all_data <- all_data %>% 
   select(-c("...1", "CO2_Conc_ppm" , "CH4_Conc_ppm", "CH4_Conc_nmol", "CO2_Conc_nmol"))
@@ -40,8 +42,7 @@ all_data <- all_data %>%
 
 C_mean_CO2 = mean(subset(all_data, Sample_Plot == "Control")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
 F_mean_CO2 = mean(subset(all_data, Sample_Plot == "Freshwater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
-S_mean_CO2 = mean(subset(all_data, Sample_Plot == "Seawater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
-GCW_TR_mean_CO2 = mean(subset(all_data, Sample_Plot == "Transition")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+S_mean_CO2 = mean(subset(all_data, Sample_Plot == "Saltwater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
 
 ##Flag data that is more than 100x the mean 
 all_data <- all_data %>% 
@@ -49,24 +50,21 @@ all_data <- all_data %>%
   mutate(qaqc_flag = case_when(
     is.na(qaqc_flag) & Sample_Plot == "Control" & CO2_Conc_ppm_dilcorr >= 10*C_mean_CO2 ~ "CO2 unusually high, not real value",
     is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CO2_Conc_ppm_dilcorr >= 10*F_mean_CO2 ~ "CO2 unusually high, not real value",
-    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CO2_Conc_ppm_dilcorr >= 10*S_mean_CO2 ~ "CO2 unusually high, not real value",
-    is.na(qaqc_flag) & Sample_Plot == "Transition" & CO2_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CO2 ~ "CO2 unusually high, not real value",
+    is.na(qaqc_flag) & Sample_Plot == "Saltwater" & CO2_Conc_ppm_dilcorr >= 10*S_mean_CO2 ~ "CO2 unusually high, not real value",
     TRUE ~ qaqc_flag    # NA if no match
   ))
 
 ##Calculate mean of CH4 data for each Site
-C_mean_CH4 = mean(subset(all_data, Sample_Plot = "Control")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+C_mean_CH4 = mean(subset(all_data, Sample_Plot == "Control")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
 F_mean_CH4 = mean(subset(all_data, Sample_Plot == "Freshwater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
-S_mean_CH4 = mean(subset(all_data, Sample_Plot == "Seawater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
-GCW_TR_mean_CH4 = mean(subset(all_data, Sample_Plot == "Transition")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+S_mean_CH4 = mean(subset(all_data, Sample_Plot == "Saltwater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
 
 ##Flag data that is more than 100x the mean 
 all_data <- all_data %>% 
   mutate(qaqc_flag = case_when(
     Sample_Plot == "Control" & CH4_Conc_ppm_dilcorr >= 10*C_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
     is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CH4_Conc_ppm_dilcorr >= 10*F_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CH4_Conc_ppm_dilcorr >= 10*S_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    is.na(qaqc_flag) & Sample_Plot == "Transition" & CH4_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
+    is.na(qaqc_flag) & Sample_Plot == "Saltwater" & CH4_Conc_ppm_dilcorr >= 10*S_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
     TRUE ~ qaqc_flag    # NA if no match
   ))
 
@@ -76,7 +74,7 @@ all_data <- all_data %>%
 ## Viz? and Write the 2022 file out to the folder 
 ```{r, echo=FALSE}
 
-write.csv(all_data, "COMPASS_TEMPEST_SGAS_2023.csv")
+write.csv(all_data, "COMPASS_TEMPEST_SGAS_2024.csv")
 
 ```
 
