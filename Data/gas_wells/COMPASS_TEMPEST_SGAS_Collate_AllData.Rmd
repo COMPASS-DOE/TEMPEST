@@ -210,7 +210,7 @@ ggarrange(viz_ch4_plot, viz_co2_plot, nrow=2, ncol=1)
 
 
 ## Summarized data for Site and Zone 
-```{r Summarize and Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=20, fig.height=15, dpi = 300}
+```{r Summarize and Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=22, fig.height=15, dpi = 300}
 
 ##Make Date Column
 data_plotting$Date <- as.Date(paste(data_plotting$Sample_Year, data_plotting$Sample_Month, data_plotting$Sample_Day, sep = "-"), format = "%Y-%B-%d")
@@ -224,7 +224,7 @@ SGAS_avg <- data_plotting %>%
             sd_co2 = sd(CO2_Conc_ppm_dilcorr, na.rm=TRUE))
 
 # Define the specific date breaks you want to display
-specific_breaks <- as.Date(c("2023-01-01", "2024-01-01", "2025-01-01"))
+# specific_breaks <- as.Date(c("2023-01-01", "2024-01-01", "2025-01-01"))
 
 viz_ch4_plot_avgs <- ggplot(SGAS_avg, aes(x = Date, y = mean_ch4, color = plot_1)) +
   geom_point(size = 3) + 
@@ -243,9 +243,12 @@ viz_ch4_plot_avgs <- ggplot(SGAS_avg, aes(x = Date, y = mean_ch4, color = plot_1
     panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
   # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
   theme(text = element_text(size = 28))+
-  scale_x_date(breaks = specific_breaks, date_labels = "%Y", expand = expansion(mult = c(0.18, 0.05)))+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
   theme(axis.ticks.x = element_line(linewidth = 1))+
-  theme(axis.ticks.length.x = unit(0.25, "cm"))
+  theme(axis.ticks.length.x = unit(0.25, "cm")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(size = 20))
 
 # viz_ch4_plot_avgs
 
@@ -267,9 +270,12 @@ viz_co2_plot_avgs <- ggplot(SGAS_avg, aes(x = Date, y = mean_co2, color = plot_1
     panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
   # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
   theme(text = element_text(size = 28))+
-  scale_x_date(breaks = specific_breaks, date_labels = "%Y", expand = expansion(mult = c(0.18, 0.05)))+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
   theme(axis.ticks.x = element_line(linewidth = 1))+
-  theme(axis.ticks.length.x = unit(0.25, "cm"))
+  theme(axis.ticks.length.x = unit(0.25, "cm")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(size = 20))
 
 # viz_co2_plot_avgs
 
