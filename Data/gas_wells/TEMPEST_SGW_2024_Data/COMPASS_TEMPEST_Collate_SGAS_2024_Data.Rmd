@@ -74,7 +74,10 @@ all_data <- all_data %>%
 ## Viz? and Write the 2022 file out to the folder 
 ```{r, echo=FALSE}
 
-write.csv(all_data, "COMPASS_TEMPEST_SGAS_2024.csv")
+final_data <- all_data %>% 
+  mutate( Depth = ifelse(Sample_Depth == "ATM", "0cm", paste0(Sample_Depth, "cm")))
+
+write.csv(final_data, "COMPASS_TEMPEST_SGAS_2024.csv")
 
 ```
 
