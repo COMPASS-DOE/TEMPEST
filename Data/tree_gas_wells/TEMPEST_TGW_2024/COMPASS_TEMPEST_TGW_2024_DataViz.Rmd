@@ -19,10 +19,10 @@ library(tidyr)
 ## Read in all processed files and combine
 ```{r}
 #read all non-event files and add an event time point 
-april_may <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202404-05_Processed.csv")
-july_aug <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202407-08_Processed.csv")
-sept_oct <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202409-10_Processed.csv")
-nov <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202411_Processed.csv")
+april_may <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202404-05_Processed.csv", colClasses = "character")
+july_aug <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202407-08_Processed.csv", colClasses = "character")
+sept_oct <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202409-10_Processed.csv", colClasses = "character")
+nov <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202411_Processed.csv", colClasses = "character")
 
 #add event time stamp
 april_may$Event_Stamp <- NA
@@ -31,11 +31,11 @@ sept_oct$Event_Stamp <- NA
 nov$Event_Stamp <- NA
 
 #read in all event files 
-june1 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D1PM-D2AM_Processed.csv")
-june2 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D2PM-D3AM_Processed.csv")
-june3 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D3PM-D4AM_Processed.csv")
-june4 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D4PM-D5AM_Processed.csv")
-june5 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D5PM_Processed.csv")
+june1 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D1PM-D2AM_Processed.csv", colClasses = "character")
+june2 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D2PM-D3AM_Processed.csv", colClasses = "character")
+june3 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D3PM-D4AM_Processed.csv", colClasses = "character")
+june4 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D4PM-D5AM_Processed.csv", colClasses = "character")
+june5 <- read.csv("2024 Processed Data/COMPASS_TEMPEST_TGW_202406-D5PM_Processed.csv", colClasses = "character")
 
 #need to rename sapflux ID and tree ID to sapflux_or_tree_ID in all dataframes 
 names(april_may)[names(april_may) == 'Tree_ID'] <- 'Sapflux_Tree_ID'
@@ -49,7 +49,7 @@ names(june4)[names(june4) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
 names(june5)[names(june5) == 'Sapflux_ID'] <- 'Sapflux_Tree_ID'
 
 #combine into one dataframe 
-alldat <- rbind(april_may, june1, june2, june3, june4, june5, july_aug, sept_oct, nov )
+alldat <- bind_rows(april_may, june1, june2, june3, june4, june5, july_aug, sept_oct, nov )
 head(alldat)
 
 

@@ -5,6 +5,7 @@ date: "2025-08-29"
 output: pdf_document
 ---
 
+##This code formats the 2022 data for collationand outputs TMP as well as GCW TGAS data. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -50,7 +51,7 @@ dat1 <- dat %>%
 final <- dat1 %>%
   select( "Project", "Year","Month" , "Day", "Time","Time_Zone", "Event_Stamp", "Plot", "Sapflux_Tree_ID", 
           "Sample_Grid", "Sample_ID", "Field_Notes", "Sample_Matrix", 
-          "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag")
+          "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag", "Lab_Notes")
 
 
 ```

@@ -5,6 +5,8 @@ date: "2025-04-11"
 output: html_document
 ---
 
+##This code plots the data and outputs 2022 TMP TGW data and samples to dilute. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
