@@ -15,111 +15,658 @@ library(dplyr)
 library(plyr)
 library(tidyverse)
 library(tidyr)
+library(kableExtra)
+library(magick)
+library(gt)
+
 ```
 
 ## Read in all processed file and clean up / add info
-```{r}
+```{r, include=FALSE}
 #read in all data: 
-dat22 <- read.csv("TEMPEST_TGW_2022/COMPASS_TEMPEST_TGW_2022_AllData.csv")
-dat23 <- read.csv("TEMPEST_TGW_2023/COMPASS_TEMPEST_TGW_2023_AllData.csv")
-dat24 <- read.csv("TEMPEST_TGW_2024/COMPASS_TEMPEST_TGW_2024_AllData.csv")
+dat22 <- read.csv("TEMPEST_TGW_2022/COMPASS_TEMPEST_TGW_2022_AllData.csv", colClasses = "character")
+dat23 <- read.csv("TEMPEST_TGW_2023/COMPASS_TEMPEST_TGW_2023_AllData.csv", colClasses = "character")
+dat24 <- read.csv("TEMPEST_TGW_2024/COMPASS_TEMPEST_TGW_2024_AllData.csv", colClasses = "character")
 
 #combine all the data together into one file 
-alldat <- rbind(dat22, dat23)
-alldat <- rbind(alldat, dat24)
+alldat <- bind_rows(dat22, dat23, dat24)
+
+```
+##Add in metadata
+```{r, include = FALSE}
+
+metadata <- read.csv("TEMPEST_TGW_Sample_Locations.csv")
+
+metadata <- metadata %>% 
+    select(c(Sapflux_ID, Tree_ID, spp, Well_Height_m))
+
+
+alldat1 <- alldat %>% 
+    left_join(metadata, by = c("Sapflux_Tree_ID" = "Sapflux_ID"))
 
 ```
 
 
 ## Clean up any columns that need it
-```{r}
-#read in all data: 
-head(alldat)
+```{r, include=FALSE}
 
-alldat <- alldat %>%
-  mutate(Plot = str_replace(Plot, "Seawater", "Saltwater"))
+##Clean up data
+names(alldat1)
+final_dat <- alldat1 %>%
+    select(-X) %>% 
+    dplyr::rename(Sapflux_ID = Sapflux_Tree_ID, 
+           Tree_Species = spp) %>% 
+    mutate(Plot = str_replace(Plot, "Seawater", "Saltwater")) %>%
+    mutate(Time = gsub(":", "", Time)) %>% #fix times so they're all HHMM
+    mutate(CH4_Flag = gsub("Within Std Curve Range", "", CH4_Flag)) %>% 
+    mutate(CO2_Flag = gsub("Within Std Curve Range", "", CO2_Flag)) %>% 
+    mutate(CH4_Flag = gsub("Over Std Curve Range", "adl", CH4_Flag)) %>% 
+    mutate(CO2_Flag = gsub("Over Std Curve Range", "adl", CO2_Flag)) %>%     
+    mutate(Project = "COMPASS", Site = "TEMPEST") %>% 
+    select("Project", "Site", "Year", "Month", "Day", "Plot", "Sample_Grid", "Sapflux_ID", "Tree_ID", "Tree_Species", "Well_Height_m", "Event_Stamp", "Time", "Time_Zone", "Sample_Matrix", "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag", "Field_Notes", "Lab_Notes")
+
 
 ```
 
 
-## Make a metadata file that explains these data - THIS NEEDS UPDATED
-```{r}
+## Make a metadata file that explains these data
+```{r, include=FALSE}
 
 #create a dataframe as the metadata from the columns of alldat 
-metadat <- data.frame(Column_Names = colnames(all_dat))
+metadat <- data.frame(Column_Names = colnames(final_dat))
 
 metadat$Description <- ""
 metadat$Units <- ""
 metadat$Instrument_ifapplicable <- ""
 
+colnames(final_dat)
 #add information about each line: 
+metadat$Description <- c("Project name", 
+                         "Site where sample collected", 
+                         "Year of sample collection", 
+                         "Month of sample collection", 
+                         "Day of sample collection", 
+                         "Plot where sample collected (SW = Saltwater, FW = Freshwater, C = Control, Estuary (Sourcewater))", 
+                         "Grid where sample collected (Letter + Number)", 
+                         "ID of sapflux sensors on tree that sample came from", 
+                         "ID of tree (# on metal tag on tree)", 
+                         "Tree Species (LITU = Liriodendron tulipifera, ACRU = Acer rubrum, FAGR = Fagus grandifolia)", 
+                         "Height of tree gas well from ground", 
+                         "Event sampling timestamp (#, AM/PM, D#, Pre/Post)", 
+                         "Time of sample collection", 
+                         "Time zone of sample collection", 
+                         "Matrix that sample was collected from (G = gas, W = water)", 
+                         "Methane (CH4) concentration", 
+                         "Methane (CH4) concentration flag (bdl=below detection limit (0), adl=above detection limit (highest   
+                         standard)", 
+                         "Carbon dioxide (CO2) concentration", 
+                         "Carbon dioxide (CO2) flag (bdl=below detection limit (0), adl=above detection limit (highest   
+                         standard)", 
+                         "Notes generated during field sample collection", 
+                         "Notes generated during sample analysis in the lab") 
 
-metadat$Description <- c("Project name: Project component", 
-                         "Region samples originated from: CB = Chesapeake Bay",
-                         "Year (YYYY) of sample collection", 
-                         "Month of sample collection",
-                         "Name of sampling transect location (GCW, SWH, MSM, GWI), 
-                         see dataset locations for coordinates", 
-                         "Zone within space-for-time transect (UP=upland, TR=transition)",
-                         "Sap flow (SF) replicate tree id (1-8, 11, 19). The ID for the sap flow 
-                         sensor associated with the tree (only live trees)", 
-                         "USDA Species code for tree sampled", 
-                         "Diameter at breast height (DBH) for tree sampled in same year",
-                         "Tree status indicates if the tree was Living or Dead Standing", 
-                         "Tree Info indicates if the tree had sap flow monitoring during sampling, 
-                         dead trees were not monitored for sap flow",
-                         "Sample identifier used in laboratory and field", 
-                         "Methane concentration of sample from tree gas well", 
-                         "Methane concentration flag: NA (data within instrument and std curve range) or
-                         Out of Std Curve Range.", 
-                         "Carbon Dioxide concentration of sample from tree gas well", 
-                         "Carbon Dioxide concentration flag: NA (data within instrument and std curve 
-                         range) or Out of Std Curve Range." )
-
-metadat$Units <-      c("NA", 
-                         "NA",
+metadat$Units <-      c( "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
                          "NA", 
                          "NA",
-                         "NA", 
                          "NA",
-                         "NA", 
-                         "NA", 
-                         "cm",
-                         "NA", 
                          "NA",
+                         "m", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
                          "NA", 
                          "ppm", 
                          "NA", 
                          "ppm", 
-                         "NA" )
+                         "NA", 
+                         "NA", 
+                         "NA")
 
-metadat$Instrument_ifapplicable <-  c("NA", 
-                         "NA",
+metadat$Instrument_ifapplicable <-  c(
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
                          "NA", 
                          "NA",
-                         "NA", 
+                         "NA",
                          "NA",
                          "NA", 
                          "NA", 
-                         "DBH tape",
                          "NA", 
-                         "NA",
+                         "NA", 
+                         "NA", 
+                         "NA", 
                          "NA", 
                          "Varian 450 GC (Agilent Technologies)", 
                          "NA", 
                          "Varian 450 GC (Agilent Technologies)", 
-                         "NA" )
+                         "NA", 
+                         "NA", 
+                         "NA")
 
-#write.csv(metadat, "COMPASS_TEMPEST_TGW_Metadata.csv")
+
+```
+
+## Write out collated file 
+```{r, include=FALSE}
+
+##Collated data
+write.csv(final_dat, "COMPASS_TEMPEST_TGW_AllData.csv")
+
+##Metadata
+write.csv(metadat, "COMPASS_TEMPEST_TGW_Metadata.csv")
+
+```
+
+## Plot each Sapflux Tree's Seasonal Trends
+```{r, echo=FALSE}
+
+final_dat$Sapflux_ID <- as.factor(final_dat$Sapflux_ID)
+final_dat$Month_Num <- match(final_dat$Month, month.name)
+final_dat <- final_dat %>% 
+  mutate(Month = fct_reorder(Month, Month_Num)) %>% 
+  mutate(CH4_ppm = as.numeric(CH4_ppm))  %>% 
+  mutate(CO2_ppm = as.numeric(CO2_ppm))
+
+#just plot all the data 
+all_trees_CH4 <- ggplot(data=final_dat, aes(x=Month, y=as.numeric(CH4_ppm), color=Sapflux_ID))+
+  geom_point()+ 
+  facet_grid(~Plot, scales="free")+ 
+  labs(y="CH4 (ppm)") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+all_trees_CH4
+
+#just plot all the data 
+all_trees_CO2 <- ggplot(data=final_dat, aes(x=Month, y=as.numeric(CO2_ppm), color=Sapflux_ID))+
+  geom_point()+ 
+  facet_grid(~Plot, scales="free")+ 
+  labs(y="CO2 (ppm)") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+all_trees_CO2
+
+```
+
+##Plot boxplot summaries of CH4 and CO2 by Plot
+```{r, echo=FALSE}
+
+TGAS_avg <- final_dat %>%
+  group_by(Plot, Sample_Grid) %>%
+   dplyr::summarize(mean_CH4 = mean(CH4_ppm, na.rm=TRUE), 
+            sd_CH4 = sd(CH4_ppm, na.rm=TRUE), 
+            mean_CO2 = mean(CO2_ppm, na.rm=TRUE), 
+            sd_CO2 = sd(CO2_ppm, na.rm=TRUE))
+
+
+boxplot_CH4 <- ggplot(data=TGAS_avg, aes(x=Plot, y=mean_CH4, fill=Plot))+
+  geom_boxplot()+ 
+  labs(y="CH4 (ppm)")+
+  theme_bw()
+
+print(boxplot_CH4)
+
+
+boxplot_CO2 <- ggplot(data=TGAS_avg, aes(x=Plot, y=mean_CO2, fill=Plot))+
+  geom_boxplot()+ 
+  labs(y="CO2 (ppm)")+
+  theme_bw()
+
+print(boxplot_CO2)
+
+
+```
+
+##Crate summary table of CH4/CO2 means by Plot
+```{r, echo=FALSE}
+
+TGAS_avg1 <- final_dat %>%
+  group_by(Plot) %>%
+   dplyr::summarize(mean_CH4 = mean(CH4_ppm, na.rm=TRUE), 
+            sd_CH4 = sd(CH4_ppm, na.rm=TRUE), 
+            mean_CO2 = mean(CO2_ppm, na.rm=TRUE), 
+            sd_CO2 = sd(CO2_ppm, na.rm=TRUE))
+
+
+
+kable(
+  TGAS_avg1[, c("Plot", 	"mean_CH4", "sd_CH4",	"mean_CO2", "sd_CO2")],  
+  col.names = c("Plot", "Mean [CH4] ppm", "std dev. CH4", "Mean [CO2] ppm", "std dev. CO2"),
+  format = "latex",
+  booktabs = TRUE,
+  caption = "Summary Statistics by Site, and Zone") %>%
+  kable_styling(
+    latex_options = c("hold_position", "striped", "scale_down"),
+    font_size = 12
+  ) %>%
+  row_spec(0, bold = TRUE) %>%   # header
+  column_spec(1, bold = TRUE)
+
+
+
+# #Make a PNG from the tables for the READ ME 
+# df_table <- TGAS_avg1[, c("Plot", 	"mean_CH4", "sd_CH4",	"mean_CO2", "sd_CO2")]
+# 
+# colnames(df_table) <- c("Plot", "Mean [CH4] ppm", "std dev. CH4", "Mean [CO2] ppm", "std dev. CO2")
+# 
+# tbl <- df_table %>%
+#   gt() %>%
+#   tab_header(
+#     title = "Summary by Plot"
+#   ) %>%
+#   fmt_number(
+#     columns = c(`Mean [CH4] ppm`, `std dev. CH4`, `Mean [CO2] ppm`, `std dev. CO2`),
+#     decimals = 2
+#   ) %>%
+#   tab_style(
+#     style = cell_text(weight = "bold"),
+#     locations = cells_column_labels(everything())
+#   )
+# 
+# tbl <- tbl %>%
+#   cols_align(
+#     align = "center",
+#     columns = everything()
+#   )
+# 
+# gtsave(tbl, "Tree_GHG_SumStats.png")
+
+
 
 ```
 
 
-## Write out collated file 
-```{r}
-#read in all data: 
-head(alldat)
+## Visualize Data by Plot   
+```{r Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=20, fig.height=10, dpi = 300}
 
-write.csv(alldat, "COMPASS_TEMPEST_TGW_AllData.csv")
+data_plotting <- final_dat %>% 
+  mutate(Plot = factor(Plot, levels = c("Control", "Freshwater", "Saltwater")))
+
+#Plot data and change colors based on Zone:
+viz_ch4_plot <- ggplot(data_plotting, aes(x = as.character(Year), y = CH4_ppm, fill = Plot)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "total")) +
+  facet_wrap( ~ Plot, scales="free", nrow = 1) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "Samples: CH4") +
+  theme(
+    panel.spacing = unit(.05, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) + 
+  theme(text = element_text(size = 28))
+
+# viz_ch4_plot
+
+
+viz_co2_plot <-  ggplot(data_plotting, aes(x = as.character(Year), y = CO2_ppm, fill = Plot)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "total")) +
+  facet_wrap( ~ Plot, scales="free", nrow = 1) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "Samples: CO2") +
+  theme(
+    panel.spacing = unit(.05, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1))+ 
+  theme(text = element_text(size = 28))
+
+# viz_co2_plot
+
+ggarrange(viz_ch4_plot, viz_co2_plot, nrow=2, ncol=1)
+
+
+```
+
+
+
+## Summarized data for Site and Zone 
+```{r Summarize and Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=22, fig.height=15, dpi = 300}
+
+##Make Date Column
+data_plotting$Date <- as.Date(paste(data_plotting$Year, data_plotting$Month, data_plotting$Day, sep = "-"), format = "%Y-%B-%d")
+
+##Summarize TGAS by Date, Site, and Zone
+TGAS_avg <- data_plotting %>%
+  group_by(Date, Plot) %>%
+   dplyr::summarize(mean_ch4 = mean(CH4_ppm, na.rm=TRUE), 
+            sd_ch4 = sd(CH4_ppm, na.rm=TRUE), 
+            mean_co2 = mean(CO2_ppm, na.rm=TRUE), 
+            sd_co2 = sd(CO2_ppm, na.rm=TRUE))
+
+# Define the specific date breaks you want to display
+# specific_breaks <- as.Date(c("2022-01-01", "2023-01-01", "2024-01-01"))
+
+viz_ch4_plot_avgs <- ggplot(TGAS_avg, aes(x = Date, y = mean_ch4, color = Plot)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_ch4 - sd_ch4, ymax = mean_ch4 + sd_ch4), width = 0.2) + 
+  geom_line() + 
+  facet_wrap( ~ Plot, scales="free_y", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "Samples: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
+  theme(text = element_text(size = 28))+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(size = 20))
+
+# viz_ch4_plot_avgs
+
+
+viz_co2_plot_avgs <- ggplot(TGAS_avg, aes(x = Date, y = mean_co2, color = Plot)) +
+  geom_point(size = 3) + 
+  geom_errorbar(aes(ymin = mean_co2 - sd_co2, ymax = mean_co2 + sd_co2), width = 0.2) + 
+  geom_line() + 
+  facet_wrap( ~ Plot, scales="free_y", nrow = 1) +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "Samples: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
+  theme(text = element_text(size = 28))+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm")) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(size = 20))
+
+# viz_co2_plot_avgs
+
+ggarrange(viz_ch4_plot_avgs, viz_co2_plot_avgs, nrow=2, ncol=1)
+
+```
+
+
+## Boxplot by species
+```{r Boxplot by depth, echo=FALSE, warning=FALSE, message = FALSE, fig.width=16, fig.height=10, dpi = 300}
+
+
+data_plotting_spp <- subset(data_plotting, !is.na(Tree_Species))
+
+#Plot data and change colors based on Zone:
+viz_co2_spp <-  ggplot(data_plotting_spp, aes(x = Tree_Species, y = CO2_ppm, fill = Plot)) +
+  geom_boxplot() +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "Tree Species", y = "CO2 (ppm)", title = "") + 
+  theme(text = element_text(size = 30))+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+viz_co2_spp
+
+#Plot data and change colors based on Zone:
+viz_ch4_spp <-  ggplot(data_plotting_spp, aes(x = Tree_Species, y = CH4_ppm, fill = Plot)) +
+  geom_boxplot() +
+  scale_color_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  )) +
+  theme_classic() +
+  labs(x = "ree Species", y = "CH4 (ppm)", title = "") + 
+  theme(text = element_text(size = 30))+ 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
+
+viz_ch4_spp
+
+```
+
+
+## Boxplot by Date
+```{r Boxplot by Date, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+
+data_plotting <- data_plotting %>% 
+  mutate(Date_boxplot = gsub("-", "", Date))
+
+##Summarize CO2 and CH4 by Date, Site, and Zone
+boxplot_date_ch4 <- ggplot(data_plotting, aes(x = Date_boxplot, y = CH4_ppm, fill = Plot)) +
+  geom_boxplot() + 
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "TEMPEST Tree Gas Well: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+boxplot_date_ch4
+
+
+boxplot_date_co2 <- ggplot(data_plotting, aes(x = Date_boxplot, y = CO2_ppm, fill = Plot)) +
+  geom_boxplot() +
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "TEMPEST Tree Gas Well: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+boxplot_date_co2
+
+```
+
+## Boxplot by Grid
+```{r Boxplot by Grid, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+
+data_plotting_grid <- subset(data_plotting, !is.na(Sample_Grid))
+
+##Summarize CO2 and CH4 by Date, Site, and Zone
+boxplot_grid_ch4 <- ggplot(data_plotting_grid, aes(x = Sample_Grid, y = CH4_ppm, fill = Plot)) +
+  geom_boxplot() + 
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "TEMPEST Tree Gas Well: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+boxplot_grid_ch4
+
+
+boxplot_grid_co2 <- ggplot(data_plotting_grid, aes(x = Sample_Grid, y = CO2_ppm, fill = Plot)) +
+  geom_boxplot() +
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "TEMPEST Tree Gas Well: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+boxplot_grid_co2
+
+```
+
+
+## Boxplot by Tree
+```{r Boxplot by Tree, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+
+data_plotting_tree <- subset(data_plotting, !is.na(Sapflux_ID))
+
+##Summarize CO2 and CH4 by Date, Site, and Zone
+boxplot_tree_ch4 <- ggplot(data_plotting_tree, aes(x = Sapflux_ID, y = CH4_ppm, fill = Sample_Grid)) +
+  geom_boxplot() + 
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  # scale_fill_manual(values = c(
+  #   "Control" = "springgreen2",
+  #   "Freshwater" = "cyan2",
+  #   "Saltwater" = "violetred2"
+  # ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "TEMPEST Tree Gas Well: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm")) 
+  # theme(legend.position = "none")
+
+boxplot_tree_ch4
+
+
+boxplot_tree_co2 <- ggplot(data_plotting_tree, aes(x = Sapflux_ID, y = CO2_ppm, fill = Sample_Grid)) +
+  geom_boxplot() +
+  facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  # scale_fill_manual(values = c(
+  #   "Control" = "springgreen2",
+  #   "Freshwater" = "cyan2",
+  #   "Saltwater" = "violetred2"
+  # ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "TEMPEST Tree Gas Well: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm")) 
+  # theme(legend.position = "none")
+
+boxplot_tree_co2
+
+```
+
+## Boxplot by Date
+```{r Overall Boxplot, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+
+##Summarize CO2 and CH4 by Date, Site, and Zone
+viz_ch4_boxplot <- ggplot(data_plotting, aes(x = Plot, y = CH4_ppm, fill = Plot)) +
+  geom_boxplot() + 
+  # facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CH4 (ppm)", title = "TEMPEST Tree Gas Well: CH4") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+viz_ch4_boxplot
+
+
+viz_co2_boxplot <- ggplot(data_plotting, aes(x = Plot, y = CO2_ppm, fill = Plot)) +
+  geom_boxplot() +
+  # facet_grid( ~ Plot, scales = "free_x") +
+  scale_x_discrete(drop = TRUE) +
+  scale_fill_manual(values = c(
+    "Control" = "springgreen2",
+    "Freshwater" = "cyan2",
+    "Saltwater" = "violetred2"
+  ), labels = c("Control", "Freshwater", "Saltwater")) + 
+  theme_classic() +
+  labs(x = " ", y = "CO2 (ppm)", title = "TEMPEST Tree Gas Well: CO2") +
+  theme(
+    panel.spacing = unit(0.5, "lines"), 
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+ 
+  theme(text = element_text(size = 30))+
+  theme(axis.ticks.x = element_line(linewidth = 1))+
+  theme(axis.ticks.length.x = unit(0.25, "cm"))+ 
+  theme(legend.position = "none")
+
+viz_co2_boxplot
+
+# ggarrange(viz_CH4_boxplot, viz_CO2_boxplot, nrow=2, ncol=1)
+
+# Save as a PNG
+png("COMPASS_TEMPEST_CH4_alldata.png", width = 2000, height = 1200, res = 100) 
+print(viz_ch4_boxplot)  # For ggplot objects, use print()
+dev.off() 
+
+# Save as a PNG
+png("COMPASS_TEMPEST_CO2_alldata.png", width = 2000, height = 1200, res = 100) 
+print(viz_co2_boxplot)  # For ggplot objects, use print()
+dev.off() 
 
 ```

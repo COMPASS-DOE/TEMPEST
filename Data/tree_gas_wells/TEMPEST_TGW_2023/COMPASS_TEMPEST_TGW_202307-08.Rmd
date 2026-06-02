@@ -278,7 +278,7 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 #head(Samples)
 
 #pull out what we need 
-Samples1 <- Samples[ ,c(1:3,6:17,21, 26:29)]
+Samples1 <- Samples[ ,c(1:3,6:17,21:22, 26:29)]
 #head(Samples1)
 
 write.csv(Samples1, "2023 Processed Data/COMPASS_TEMPEST_TGW_202307_08_Processed.csv")

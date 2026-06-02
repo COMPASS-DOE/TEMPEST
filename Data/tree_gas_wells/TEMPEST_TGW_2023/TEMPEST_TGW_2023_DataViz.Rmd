@@ -5,6 +5,8 @@ date: "2024-05-15"
 output: html_document
 ---
 
+##This code combines all the individual monthly processed data files. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 

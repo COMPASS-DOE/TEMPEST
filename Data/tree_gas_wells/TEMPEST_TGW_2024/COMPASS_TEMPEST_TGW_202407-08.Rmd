@@ -276,7 +276,7 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 #head(Samples)
 
 #pull out what we need 
-Samples1 <- Samples[ ,c(1:3,6:17,21, 26:33)]
+Samples1 <- Samples[ ,c(1:3,6:17,21:22, 26:33)]
 #head(Samples1)
 
 #write out the data to a csv in the processed data folder
