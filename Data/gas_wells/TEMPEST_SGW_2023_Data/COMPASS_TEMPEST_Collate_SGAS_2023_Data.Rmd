@@ -76,7 +76,11 @@ all_data <- all_data %>%
 ## Viz? and Write the 2022 file out to the folder 
 ```{r, echo=FALSE}
 
-write.csv(all_data, "COMPASS_TEMPEST_SGAS_2023.csv")
+##Remove Synoptic Data
+final_data <- all_data %>% 
+    filter(Sample_Plot != "Transition")
+
+write.csv(final_data, "COMPASS_TEMPEST_SGAS_2023.csv")
 
 ```
 
