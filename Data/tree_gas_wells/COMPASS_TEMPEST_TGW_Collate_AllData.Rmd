@@ -196,36 +196,8 @@ all_trees_CO2
 
 ```
 
-##Plot boxplot summaries of CH4 and CO2 by Plot
-```{r, echo=FALSE}
 
-TGAS_avg <- final_dat %>%
-  group_by(Plot, Sample_Grid) %>%
-   dplyr::summarize(mean_CH4 = mean(CH4_ppm, na.rm=TRUE), 
-            sd_CH4 = sd(CH4_ppm, na.rm=TRUE), 
-            mean_CO2 = mean(CO2_ppm, na.rm=TRUE), 
-            sd_CO2 = sd(CO2_ppm, na.rm=TRUE))
-
-
-boxplot_CH4 <- ggplot(data=TGAS_avg, aes(x=Plot, y=mean_CH4, fill=Plot))+
-  geom_boxplot()+ 
-  labs(y="CH4 (ppm)")+
-  theme_bw()
-
-print(boxplot_CH4)
-
-
-boxplot_CO2 <- ggplot(data=TGAS_avg, aes(x=Plot, y=mean_CO2, fill=Plot))+
-  geom_boxplot()+ 
-  labs(y="CO2 (ppm)")+
-  theme_bw()
-
-print(boxplot_CO2)
-
-
-```
-
-##Crate summary table of CH4/CO2 means by Plot
+##Create summary table of CH4/CO2 means by Plot
 ```{r, echo=FALSE}
 
 TGAS_avg1 <- final_dat %>%
