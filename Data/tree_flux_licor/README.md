@@ -13,7 +13,7 @@ datasets.
 # `process_treeflux.R`
 
 This script works its way through the rows in `treeflux-processing-info.csv`.
-FOr each, it finds the requested [LI-7810](https://www.licor.com/products/trace-gas/LI-7810)
+For each, it finds the requested [LI-7810](https://www.licor.com/products/trace-gas/LI-7810)
 file, finds the relevant rows of metadata (i.e., originally entered as field
 notes by the folks making the measurements), and combines the two, isolating the 
 LI-7810 corresponding to the measurement period.
