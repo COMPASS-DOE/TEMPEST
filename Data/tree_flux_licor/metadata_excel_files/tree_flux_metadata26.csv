@@ -54,61 +54,61 @@ Saltwater,E5,S18,D1-PM,20260607,14:17,14:24,,0.421,-0.005,,,datasheet times writ
 Saltwater,C6,S8,D1-PM,20260607,15:25,15:30,,0.466,0.011,,,datasheet times written in EDT,TG10-1087 Gru,Fausto
 Saltwater,F6,S11,D1-PM,20260607,14:57,15:02,,0.921,0.023,,,datasheet times written in EDT,TG10-1087 Gru,Fausto
 Saltwater,F4,S12,D1-PM,20260607,15:36,15:44,,0.921,0.013,,,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Control,F5,C1,D2-AM,20260608,7:09:00 AM,7:15,EST,0.174,-0.059,,,"flux done twice, but still wavy, took second flux ",Louise,"KMM, Julianna M"
-Control,F5,C2,D2-AM,20260608,7:23:55 AM,7:29,EST,0.475,0.017,,,,Louise,"KMM, Julianna M"
-Control,B7,C6,D2-AM,20260608,7:40:11 AM,7:46,EST,0.45,0.022,,,,Louise,"KMM, Julianna M"
-Control,B7,C14,D2-AM,20260608,7:49:30 AM,7:55,EST,0.703,0.019,,,,Louise,"KMM, Julianna M"
-Control,E4,C16,D2-AM,20260608,8:00:20 AM,8:05,EST,1.005,-0.007,,,,Louise,"KMM, Julianna M"
-Control,F6,C17,D2-AM,20260608,8:09:05 AM,8:14,EST,0.63,0.008,,,,Louise,"KMM, Julianna M"
-Control,H5,C20,D2-AM,20260608,8:17:51 AM,8:24,EST,0.283,0.311,,,,Louise,"KMM, Julianna M"
-Control,G2,C21,D2-AM,20260608,8:33:05 AM,8:38,EST,0.503,0.004,,,,Louise,"KMM, Julianna M"
-Control,D4,C10,D2-AM,20260608,8:41:27 AM,8:46,EST,0.433,0.004,,,,Louise,"KMM, Julianna M"
-Control,G3,C12,D2-AM,20260608,8:49:30 AM,8:56,EST,0.564,0.018,,,no sapflux ID ,Louise,"KMM, Julianna M"
-Control,C5,C3,D2-AM,20260608,9:02:30 AM,9:07,EST,0.545,-0.001,,,flux was wavy ,Louise,"KMM, Julianna M"
-Control,H4,C4,D2-AM,20260608,9:11:50 AM,9:16,EST,0.501,-0.001,,,,Louise,"KMM, Julianna M"
-Control,I3,C5,D2-AM,20260608,9:21:00 AM,9:26,EST,0.303,0,,,,Louise,"KMM, Julianna M"
-Control,B8,C13,D2-AM,20260608,9:29:50 AM,9:35,EST,0.59,0.014,,, ,Louise,"KMM, Julianna M"
-Control,A4,C15,D2-AM,20260608,9:38:40 AM,9:43,EST,0.46,0.014,,,,Louise,"KMM, Julianna M"
-Control,N of G1,C18,D2-AM,20260608,9:48:58 AM,9:54,EST,0.563,0.017,,,,Louise,"KMM, Julianna M"
-Control,B3,C7,D2-AM,20260608,10:09:53 AM,10:14,EST,0.546,-0.001,,,,Louise,"KMM, Julianna M"
-Control,W of A1,C9,D2-AM,20260608,9:58:53 AM,10:04,EST,0.959,0.015,,,,Louise,"KMM, Julianna M"
-Control,F2,C11,D2-AM,20260608,10:19:00 AM,10:23,EST,0.485,0.007,,,,Louise,"KMM, Julianna M"
-Freshwater,H5,F1,D2-AM,20260608,9:49:20 AM,9:54:20 AM,EST,0.546,0.02,,,,01738_AmericanUni,Sam W. 
-Freshwater,G3,F5,D2-AM,20260608,10:18:20 AM,10:23:20 AM,EST,0.435,0.002,,,CO2 wavy ,01738_AmericanUni,Sam W. 
-Freshwater,D6,F6,D2-AM,20260608,7:36:00 AM,7:38:00 AM,EST,0.249,0,,,2min flux,01738_AmericanUni,Sam W. 
-Freshwater,A6,F15,D2-AM,20260608,8:19:00 AM,8:24:00 AM,EST,0.446,-0.001,,,,01738_AmericanUni,Sam W. 
-Freshwater,H4,F16,D2-AM,20260608,9:34:40 AM,9:39:40 AM,EST,0.454,0.064,,,,01738_AmericanUni,Sam W. 
-Freshwater,H8,F18,D2-AM,20260608,7:04:00 AM,7:06:00 AM,EST,0.466,0.034,,,2min flux,01738_AmericanUni,Sam W. 
-Freshwater,B5,F7,D2-AM,20260608,8:05:00 AM,8:10:00 AM,EST,0.417,0.004,,,,01738_AmericanUni,Sam W. 
-Freshwater,F6,F11,D2-AM,20260608,7:20:20 AM,7:22:20 AM,EST,0.441,0.044,,,2min flux,01738_AmericanUni,Sam W. 
-Freshwater,F2,F12,D2-AM,20260608,10:42:20 AM,10:47:20 AM,EST,0.539,0.001,,,,01738_AmericanUni,Sam W. 
-Freshwater,G6,F2,D2-AM,20260608,9:07:00 AM,9:12:00 AM,EST,0.457,0,,,,01738_AmericanUni,Sam W. 
-Freshwater,D5,F3,D2-AM,20260608,8:43:40 AM,8:48:40 AM,EST,0.464,0,,,,01738_AmericanUni,Sam W. 
-Freshwater,E2,F4,D2-AM,20260608,10:33:20 AM,10:38:20 AM,EST,0.435,0.001,,,,01738_AmericanUni,Sam W. 
-Freshwater,D6,F13,D2-AM,20260608,10:52:00 AM,10:57:00 AM,EST,0.551,0.018,,,,01738_AmericanUni,Sam W. 
-Freshwater,D7,F14,D2-AM,20260608,8:57:00 AM,9:02:00 AM,EST,0.366,0.002,,,,01738_AmericanUni,Sam W. 
-Freshwater,I6,F17,D2-AM,20260608,9:24:40 AM,9:29:40 AM,EST,0.532,-0.003,,,,01738_AmericanUni,Sam W. 
-Freshwater,B4,F8,D2-AM,20260608,8:31:00 AM,8:36:00 AM,EST,0.152,0.015,,,,01738_AmericanUni,Sam W. 
-Freshwater,G3,F9,D2-AM,20260608,10:01:40 AM,10:06:40 AM,EST,0.406,-0.002,,,,01738_AmericanUni,Sam W. 
-Freshwater,F8,F10,D2-AM,20260608,7:27:00 AM,7:29:00 AM,EST,0.189,0.001,,,2min flux,01738_AmericanUni,Sam W. 
-Saltwater,F7,S1,D2-AM,20260608,11:00:00 AM,11:05:00 AM,EST,0.438,0.007,,,"Locking lid was not great, needed to check chambers for cracks and prep the lid again",1087,Fausto
-Saltwater,C5,S2,D2-AM,20260608,11:12:40 AM,11:17:40 AM,EST,0.289,0.005,,,looks like there was a bubble then continued ,1087,Fausto
-Saltwater,E5,S3,D2-AM,20260608,9:48:20 AM,9:53:20 AM,EST,0.422,0.001,,,,1087,Fausto
-Saltwater,A2,S13,D2-AM,20260608,7:12:30 AM,7:17:30 AM,EST,0.623,0.004,,,,1087,Fausto
-Saltwater,I2,S14,D2-AM,20260608,8:01:00 AM,8:06:00 AM,EST,0.483,0,,,"needed to redo because of leacky chamber, took second measurement",1087,Fausto
-Saltwater,C2,S16,D2-AM,20260608,7:23:00 AM,7:27:00 AM,EST,0.835,0.02,,,,1087,Fausto
-Saltwater,E6,S7,D2-AM,20260608,10:23:20 AM,10:28:20 AM,EST,0.914,0.548,,,,1087,Fausto
-Saltwater,F2,S9,D2-AM,20260608,7:42:00 AM,7:47:00 AM,EST,0.919,0.005,,,,1087,Fausto
-Saltwater,G5,S10,D2-AM,20260608,8:55:50 AM,9:00:50 AM,EST,0.492,-0.002,,,,1087,Fausto
-Saltwater,E6,S4,D2-AM,20260608,10:45:50 AM,10:55:50 AM,EST,0.335,0.007,,,check start and end times in processing,1087,Fausto
-Saltwater,F5,S5,D2-AM,20260608,8:28:20 AM,8:33:20 AM,EST,0.702,0.026,,,,1087,Fausto
-Saltwater,G6,S6,D2-AM,20260608,9:06:40 AM,9:11:40 AM,EST,0.413,-0.002,,,,1087,Fausto
-Saltwater,E4,S15,D2-AM,20260608,8:19:10 AM,8:19:10 AM,EST,0.804,-0.001,,,CH4 took 50s to stabilize ,1087,Fausto
-Saltwater,D1,S17,D2-AM,20260608,7:32:30 AM,7:37:30 AM,EST,0.172,0.032,,,,1087,Fausto
-Saltwater,E5,S18,D2-AM,20260608,9:57:30 AM,10:02:30 AM,EST,0.492,0.001,,,,1087,Fausto
-Saltwater,C6,S8,D2-AM,20260608,10:34:10 AM,10:39:10 AM,EST,0.342,0.01,,,,1087,Fausto
-Saltwater,F6,S11,D2-AM,20260608,9:35:55 AM,9:40:55 AM,EST,0.73,0.021,,,,1087,Fausto
-Saltwater,F4,S12,D2-AM,20260608,8:43:20 AM,8:47:20 AM,EST,0.715,0.013,,,,1087,Fausto
+Control,F5,C1,D2-AM,20260608,7:09,7:15,EST,0.174,-0.059,,,"flux done twice, but still wavy, took second flux ",Louise,"KMM, Julianna M"
+Control,F5,C2,D2-AM,20260608,7:24,7:29,EST,0.475,0.017,,,,Louise,"KMM, Julianna M"
+Control,B7,C6,D2-AM,20260608,7:40,7:46,EST,0.45,0.022,,,,Louise,"KMM, Julianna M"
+Control,B7,C14,D2-AM,20260608,7:49,7:55,EST,0.703,0.019,,,,Louise,"KMM, Julianna M"
+Control,E4,C16,D2-AM,20260608,8:00,8:05,EST,1.005,-0.007,,,,Louise,"KMM, Julianna M"
+Control,F6,C17,D2-AM,20260608,8:09,8:14,EST,0.63,0.008,,,,Louise,"KMM, Julianna M"
+Control,H5,C20,D2-AM,20260608,8:18,8:24,EST,0.283,0.311,,,,Louise,"KMM, Julianna M"
+Control,G2,C21,D2-AM,20260608,8:33,8:38,EST,0.503,0.004,,,,Louise,"KMM, Julianna M"
+Control,D4,C10,D2-AM,20260608,8:41,8:46,EST,0.433,0.004,,,,Louise,"KMM, Julianna M"
+Control,G3,C12,D2-AM,20260608,8:49:30,8:56,EST,0.564,0.018,,,no sapflux ID ,Louise,"KMM, Julianna M"
+Control,C5,C3,D2-AM,20260608,9:02:30,9:07,EST,0.545,-0.001,,,flux was wavy ,Louise,"KMM, Julianna M"
+Control,H4,C4,D2-AM,20260608,9:11:50,9:16,EST,0.501,-0.001,,,,Louise,"KMM, Julianna M"
+Control,I3,C5,D2-AM,20260608,9:21:00,9:26,EST,0.303,0,,,,Louise,"KMM, Julianna M"
+Control,B8,C13,D2-AM,20260608,9:29:50,9:35,EST,0.59,0.014,,, ,Louise,"KMM, Julianna M"
+Control,A4,C15,D2-AM,20260608,9:38:40,9:43,EST,0.46,0.014,,,,Louise,"KMM, Julianna M"
+Control,N of G1,C18,D2-AM,20260608,9:48:58,9:54,EST,0.563,0.017,,,,Louise,"KMM, Julianna M"
+Control,B3,C7,D2-AM,20260608,10:09:53,10:14,EST,0.546,-0.001,,,,Louise,"KMM, Julianna M"
+Control,W of A1,C9,D2-AM,20260608,9:58:53,10:04,EST,0.959,0.015,,,,Louise,"KMM, Julianna M"
+Control,F2,C11,D2-AM,20260608,10:19:00,10:23,EST,0.485,0.007,,,,Louise,"KMM, Julianna M"
+Freshwater,H5,F1,D2-AM,20260608,9:49:20,9:54,EST,0.546,0.02,,,,01738_AmericanUni,Sam W. 
+Freshwater,G3,F5,D2-AM,20260608,10:18:20,10:23,EST,0.435,0.002,,,CO2 wavy ,01738_AmericanUni,Sam W. 
+Freshwater,D6,F6,D2-AM,20260608,7:36:00,7:38,EST,0.249,0,,,2min flux,01738_AmericanUni,Sam W. 
+Freshwater,A6,F15,D2-AM,20260608,8:19:00,8:24,EST,0.446,-0.001,,,,01738_AmericanUni,Sam W. 
+Freshwater,H4,F16,D2-AM,20260608,9:34:40,9:39,EST,0.454,0.064,,,,01738_AmericanUni,Sam W. 
+Freshwater,H8,F18,D2-AM,20260608,7:04:00,7:06,EST,0.466,0.034,,,2min flux,01738_AmericanUni,Sam W. 
+Freshwater,B5,F7,D2-AM,20260608,8:05:00,8:10,EST,0.417,0.004,,,,01738_AmericanUni,Sam W. 
+Freshwater,F6,F11,D2-AM,20260608,7:20:20,7:22,EST,0.441,0.044,,,2min flux,01738_AmericanUni,Sam W. 
+Freshwater,F2,F12,D2-AM,20260608,10:42:20,10:47,EST,0.539,0.001,,,,01738_AmericanUni,Sam W. 
+Freshwater,G6,F2,D2-AM,20260608,9:07:00,9:12,EST,0.457,0,,,,01738_AmericanUni,Sam W. 
+Freshwater,D5,F3,D2-AM,20260608,8:43:40,8:49,EST,0.464,0,,,,01738_AmericanUni,Sam W. 
+Freshwater,E2,F4,D2-AM,20260608,10:33:20,10:38,EST,0.435,0.001,,,,01738_AmericanUni,Sam W. 
+Freshwater,D6,F13,D2-AM,20260608,10:52:00,10:57,EST,0.551,0.018,,,,01738_AmericanUni,Sam W. 
+Freshwater,D7,F14,D2-AM,20260608,8:57:00,9:02,EST,0.366,0.002,,,,01738_AmericanUni,Sam W. 
+Freshwater,I6,F17,D2-AM,20260608,9:24:40,9:29,EST,0.532,-0.003,,,,01738_AmericanUni,Sam W. 
+Freshwater,B4,F8,D2-AM,20260608,8:31:00,8:36,EST,0.152,0.015,,,,01738_AmericanUni,Sam W. 
+Freshwater,G3,F9,D2-AM,20260608,10:01:40,10:07,EST,0.406,-0.002,,,,01738_AmericanUni,Sam W. 
+Freshwater,F8,F10,D2-AM,20260608,7:27:00,7:29,EST,0.189,0.001,,,2min flux,01738_AmericanUni,Sam W. 
+Saltwater,F7,S1,D2-AM,20260608,11:00:00,11:05,EST,0.438,0.007,,,"Locking lid was not great, needed to check chambers for cracks and prep the lid again",1087,Fausto
+Saltwater,C5,S2,D2-AM,20260608,11:12:40,11:18,EST,0.289,0.005,,,looks like there was a bubble then continued ,1087,Fausto
+Saltwater,E5,S3,D2-AM,20260608,9:48:20,9:53,EST,0.422,0.001,,,,1087,Fausto
+Saltwater,A2,S13,D2-AM,20260608,7:12:30,7:17,EST,0.623,0.004,,,,1087,Fausto
+Saltwater,I2,S14,D2-AM,20260608,8:01:00,8:06,EST,0.483,0,,,"needed to redo because of leacky chamber, took second measurement",1087,Fausto
+Saltwater,C2,S16,D2-AM,20260608,7:23:00,7:27,EST,0.835,0.02,,,,1087,Fausto
+Saltwater,E6,S7,D2-AM,20260608,10:23:20,10:28,EST,0.914,0.548,,,,1087,Fausto
+Saltwater,F2,S9,D2-AM,20260608,7:42:00,7:47,EST,0.919,0.005,,,,1087,Fausto
+Saltwater,G5,S10,D2-AM,20260608,8:55:50,9:01,EST,0.492,-0.002,,,,1087,Fausto
+Saltwater,E6,S4,D2-AM,20260608,10:45:50,10:56,EST,0.335,0.007,,,check start and end times in processing,1087,Fausto
+Saltwater,F5,S5,D2-AM,20260608,8:28:20,8:33:20,EST,0.702,0.026,,,,1087,Fausto
+Saltwater,G6,S6,D2-AM,20260608,9:06:40,9:11:40,EST,0.413,-0.002,,,,1087,Fausto
+Saltwater,E4,S15,D2-AM,20260608,8:19:10,8:19:10,EST,0.804,-0.001,,,CH4 took 50s to stabilize ,1087,Fausto
+Saltwater,D1,S17,D2-AM,20260608,7:32:30,7:37:30,EST,0.172,0.032,,,,1087,Fausto
+Saltwater,E5,S18,D2-AM,20260608,9:57:30,10:02:30,EST,0.492,0.001,,,,1087,Fausto
+Saltwater,C6,S8,D2-AM,20260608,10:34:10,10:39:10,EST,0.342,0.01,,,,1087,Fausto
+Saltwater,F6,S11,D2-AM,20260608,9:35:55,9:40:55,EST,0.73,0.021,,,,1087,Fausto
+Saltwater,F4,S12,D2-AM,20260608,8:43:20,8:47:20,EST,0.715,0.013,,,,1087,Fausto
 Control,F5,C1,D2-PM,20260608,14:45:00,14:50:00,EST,0.424,0.14,,,,Louise,"RP, Julianna"
 Control,F5,C2,D2-PM,20260608,14:36:20,14:41:20,EST,0.668,0.011,,,"weird 6ppb drop in the middle, redid and used second measurement",Louise,"RP, Julianna"
 Control,B7,C6,D2-PM,20260608,13:00:50,13:06:41,EST,0.427,0.003,,,,Louise,"RP, Julianna"
@@ -348,7 +348,7 @@ Control,N of G1,C18,D4-PM,20260610,14:23:20,14:28:20,EST,0.728,0.018,,,,Louise,R
 Control,B3,C7,D4-PM,20260610,12:58:20,13:03:20,EST,0.653,0.001,,,,Louise,Roberta
 Control,W of A1,C9,D4-PM,20260610,13:08:20,13:13:20,EST,0.201,0.015,,,,Louise,Roberta
 Control,F2,C11,D4-PM,20260610,14:10:00,14:15:00,EST,0.662,0.009,,,,Louise,Roberta
-Freshwater,H5,F1,D4-PM,20260610,13:05:20,1:10:20 PM,EST,0.799,0.035,,,,TG10-01738,Sam
+Freshwater,H5,F1,D4-PM,20260610,13:05:20,1:10:20,EST,0.799,0.035,,,,TG10-01738,Sam
 Freshwater,G3,F5,D4-PM,20260610,13:28,13:33:40,EST,0.87,0.002,,,,TG10-01738,Sam
 Freshwater,D6,F6,D4-PM,20260610,14:12,14:17,EST,0.572,-0.001,,,,TG10-01738,Sam
 Freshwater,A6,F15,D4-PM,20260610,14:31,14:36,EST,0.619,-0.006,,,,TG10-01738,Sam
