@@ -16,6 +16,7 @@ theme_set(theme_bw())
 library(lubridate)
 library(readr)
 library(arrow)
+library(fluxfinder)
 
 now <- function() format(Sys.time(), "%a %b %d %X %Y")
 
