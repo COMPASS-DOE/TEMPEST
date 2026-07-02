@@ -74,6 +74,8 @@ meta23 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_meta
                    col_types = "ccccccddcc")
 meta24 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
+meta26 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata26.csv"),
+                   col_types = "ccccccccddccc")
 meta2125 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
                      col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
@@ -89,6 +91,31 @@ meta24 %>%
                                    substr(collection_date, 7, 8),
                                    substr(collection_date, 1, 4), sep = "/")) ->
     meta24
+
+# Sigh. In 2026 we changed format yet again
+meta26 |>
+     select(plot, -grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
+            collection_date = collection_date_YYYYMMDD,
+            start_time = start_time_24hr_EST,
+            end_time = end_time_24hr_EST,
+            -licor_timezone,
+            -flux_CO2_ppms, -flux_CH4_ppbs,
+            -instrument, -personnel) %>%
+     # make the date string into mm/dd/yyyy
+     mutate(collection_date = paste(substr(collection_date, 5, 6),
+                                    substr(collection_date, 7, 8),
+                                    substr(collection_date, 1, 4), sep = "/"),
+            # some people entered "AM" and "PM"; remove
+            start_time = trimws(gsub(" [AP]M", "", start_time)),
+            end_time = trimws(gsub(" [AP]M", "", end_time)),
+            # inconsistent use of HH:MM and HH:MM:SS;
+            # identify and drop the latter
+            tc_start = grepl(":[0-9]{2}:", start_time),
+            start_time = if_else(tc_start, gsub(":[0-9]{2}$", "", start_time), start_time),
+            tc_end = grepl(":[0-9]{2}:", end_time),
+            end_time = if_else(tc_end, gsub(":[0-9]{2}$", "", end_time), end_time)) |>
+        select(-tc_start, -tc_end) ->
+     meta26
 
 # meta2125 has a different format; rework it to match others
 meta2125 %>%

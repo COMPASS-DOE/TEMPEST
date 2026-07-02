@@ -1,59 +1,58 @@
 plot,grid_cell,Sapflux_ID,Timepoint,collection_date_YYYYMMDD,start_time_24hr_EST,end_time_24hr_EST,licor_timezone,flux_CO2_ppms,flux_CH4_ppbs,notes,instrument,personnel
-Control,F5,C1,D1-PM,20260607,15:24,15:30,EDT,0.499,0.166,datasheet times written in EDT,Louise,KAM
-Control,F5,C2,D1-PM,20260607,15:09,15:17,EDT,0.724,0.006,datasheet times written in EDT,Louise,KAM
-Control,B7,C6,D1-PM,20260607,12:57,13:02,EDT,1.032,-0.001,"bad lid fit, hard to seal ; datasheet times written in EDT",Louise,KAM
-Control,B7,C14,D1-PM,20260607,13:16,13:22,EDT,0.777,0.019,datasheet times written in EDT,Louise,KAM
-Control,E4,C16,D1-PM,20260607,12:15,12:21,EDT,1.086,-0.001,datasheet times written in EDT,Louise,KAM
-Control,F6,C17,D1-PM,20260607,14:49,14:54,EDT,0.706,0.011,datasheet times written in EDT,Louise,KAM
-Control,H5,C20,D1-PM,20260607,14:38,14:44,EDT,0.449,0.071,datasheet times written in EDT,Louise,KAM
-Control,G2,C21,D1-PM,20260607,14:01,14:10,EDT,0.669,0.006,datasheet times written in EDT,Louise,KAM
-Control,D4,C10,D1-PM,20260607,12:24,12:29,EDT,0.462,0.003,datasheet times written in EDT,Louise,KAM
-Control,G3,C12,D1-PM,20260607,NA,NA,EDT,NA,NA,datasheet times written in EDT,Louise,KAM
-Control,C5,C3,D1-PM,20260607,14:57,15:03,EDT,0.587,0.001,datasheet times written in EDT,Louise,KAM
-Control,H4,C4,D1-PM,20260607,14:28,14:35,EDT,0.634,0.001,datasheet times written in EDT,Louise,KAM
-Control,I3,C5,D1-PM,20260607,14:14,14:19,EDT,0.3,-0.001,datasheet times written in EDT,Louise,KAM
-Control,B8,C13,D1-PM,20260607,13:06,13:13,EDT,0.588,0.013,datasheet times written in EDT,Louise,KAM
-Control,A4,C15,D1-PM,20260607,12:43,12:48,EDT,0.755,0.043,datasheet times written in EDT,Louise,KAM
-Control,N of G1,C18,D1-PM,20260607,13:39,13:47,EDT,0.607,0.015,datasheet times written in EDT,Louise,KAM
-Control,B3,C7,D1-PM,20260607,12:35,12:40,EDT,0.625,-0.003,datasheet times written in EDT,Louise,KAM
-Control,W of A1,C9,D1-PM,20260607,13:27,13:35,EDT,0.234,0.016,datasheet times written in EDT,Louise,KAM
-Control,F2,C11,D1-PM,20260607,13:52,13:57,EDT,0.663,0.008,datasheet times written in EDT,Louise,KAM
-Freshwater,H5,F1,D1-PM,20260607,15:39,15:44,EDT,0.599,0.027,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,G3,F5,D1-PM,20260607,15:17,15:21,EDT,0.691,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,D6,F6,D1-PM,20260607,16:15,16:20,EDT,0.421,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,A6,F15,D1-PM,20260607,13:56,14:02,EDT,0.477,0,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,H4,F16,D1-PM,20260607,16:52,16:57,EDT,0.489,0.064,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,H8,F18,D1-PM,20260607,12:39,12:44,EDT,0.463,0.032,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,B5,F7,D1-PM,20260607,13:19,13:24,EDT,0.563,0.004,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,F6,F11,D1-PM,20260607,12:54,12:59,EDT,0.512,0.045,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,F2,F12,D1-PM,20260607,14:30,14:35,EDT,0.829,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,G6,F2,D1-PM,20260607,15:49,15:54,EDT,0.544,-0.007,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,D5,F3,D1-PM,20260607,16:27,16:32,EDT,0.645,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,E2,F4,D1-PM,20260607,15:08,15:13,EDT,0.573,0.002,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,D6,F13,D1-PM,20260607,13:02,13:07,EDT,0.762,0.02,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,D7,F14,D1-PM,20260607,14:15,14:20,EDT,0.438,0.003,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,I6,F17,D1-PM,20260607,12:26,12:31,EDT,0.618,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,B4,F8,D1-PM,20260607,16:35,16:41,EDT,0.234,0.014,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,G3,F9,D1-PM,20260607,15:28,15:33,EDT,0.489,-0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Freshwater,F8,F10,D1-PM,20260607,16:02,16:07,EDT,0.231,0.001,datasheet times written in EDT,TG10-01738 AMU,RP
-Saltwater,F7,S1,D1-PM,20260607,13:00,13:05,EST-1 hr 4 min,0.566,0.001,"Instrument time 17:24:10, watch 18:20:00; datasheet times written in EDT",TG10-1087 Gru,Fausto
-Saltwater,C5,S2,D1-PM,20260607,13:31,13:36,,0.235,-0.002,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,E5,S3,D1-PM,20260607,13:50,13:55,,0.497,0.037,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,A2,S13,D1-PM,20260607,16:25,16:30,,0.798,0.003,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,I2,S14,D1-PM,20260607,17:06,17:11,,0.312,-0.006,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,C2,S16,D1-PM,20260607,17:15,17:20,,0.962,0.016,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,E6,S7,D1-PM,20260607,15:10,15:15,,0.958,0.556,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,F2,S9,D1-PM,20260607,17:27,17:32,,1.058,0.002,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,G5,S10,D1-PM,20260607,14:30,14:35,,0.766,0.012,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,E6,S4,D1-PM,20260607,14:07,14:13,,0.42,0.006,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,F5,S5,D1-PM,20260607,15:50,16:00,,0.673,0.038,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,G6,S6,D1-PM,20260607,14:45,14:50,,0.517,-0.001,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,E4,S15,D1-PM,20260607,16:56,17:01,,1.092,-0.004,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,D1,S17,D1-PM,20260607,16:43,16:48,,0.172,0.028,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,E5,S18,D1-PM,20260607,14:17,14:24,,0.421,-0.005,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,C6,S8,D1-PM,20260607,15:25,15:30,,0.466,0.011,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,F6,S11,D1-PM,20260607,14:57,15:02,,0.921,0.023,datasheet times written in EDT,TG10-1087 Gru,Fausto
-Saltwater,F4,S12,D1-PM,20260607,15:36,15:44,,0.921,0.013,datasheet times written in EDT,TG10-1087 Gru,Fausto
+Control,F5,C1,D1PM,20240610,13:54,13:59,EDT,0.766,0.17,Wavy beginning waited for straight slope,Louise,"Wright, Wegner "
+Control,F5,C2,D1PM,20240610,13:36,13:41,EDT,0.856,0.014,,Louise,"Wright, Wegner "
+Control,B7,C6,D1PM,20240610,15:44,15:49,EDT,0.553,0.005,,Louise,"Wright, Wegner "
+Control,B7,C14,D1PM,20240610,14:34,14:39,EDT,0.605,0.015,,Louise,"Wright, Wegner "
+Control,E4,C16,D1PM,20240610,14:07,14:12,EDT,0.971,0,,Louise,"Wright, Wegner "
+Control,F6,C17,D1PM,20240610,15:04,15:09,EDT,0.693,0.007,,Louise,"Wright, Wegner "
+Control,A1,C19,D1PM,20240610,14:21,14:26,EDT,0.107,0.016,,Louise,"Wright, Wegner "
+Control,D4,C10,D1PM,20240610,16:40,16:45,EDT,0.313,0.003,,Louise,"Wright, Wegner "
+Control,G3,C12,D1PM,20240610,13:25,13:31,EDT,0.102,0.043,,Louise,"Wright, Wegner "
+Control,C5,C3,D1PM,20240610,15:34,15:39,EDT,0.752,-0.002,,Louise,"Wright, Wegner "
+Control,H4,C4,D1PM,20240610,13:10,13:15,EDT,0.787,0,,Louise,"Wright, Wegner "
+Control,I3,C5,D1PM,20240610,12:58,13:03,EDT,0.27,0,,Louise,"Wright, Wegner "
+Control,B8,C13,D1PM,20240610,14:47,14:52,EDT,0.507,0.018,,Louise,"Wright, Wegner "
+Control,A4,C15,D1PM,20240610,16:10,16:15,EDT,0.478,0.039,,Louise,"Wright, Wegner "
+Control,N of G1,C18,D1PM,20240610,16:49,16:54,EDT,0.611,0.014,,Louise,"Wright, Wegner "
+Control,B3,C7,D1PM,20240610,16:30,16:35,EDT,0.527,0,,Louise,"Wright, Wegner "
+Control,W of A1,C9,D1PM,20240610,16:19,16:24,EDT,0.234,0.018,,Louise,"Wright, Wegner "
+Control,F2,C11,D1PM,20240610,15:15,15:20,EDT,0.559,0,,Louise,"Wright, Wegner "
+Freshwater,H5,F1,D1PM,20240610,13:28,13:33,EDT,0.81,0.002,,Nick,"Nick, Rodrigo, Max"
+Freshwater,G3,F5,D1PM,20240610,13:21,13:26,EDT,0.818,0.002,,Nick,"Nick, Rodrigo, Max"
+Freshwater,D6,F6,D1PM,20240610,14:22,14:29,EDT,0.478,0.017,,Nick,"Nick, Rodrigo, Max"
+Freshwater,A6,F15,D1PM,20240610,15:21,15:27,EDT,0.369,0.002,,Nick,"Nick, Rodrigo, Max"
+Freshwater,H4,F16,D1PM,20240610,13:05,13:10,EDT,0.342,0.076,,Nick,"Nick, Rodrigo, Max"
+Freshwater,H8,F18,D1PM,20240610,13:50,13:57,EDT,0.387,0.032,,Nick,"Nick, Rodrigo, Max"
+Freshwater,B5,F7,D1PM,20240610,15:30,15:36,EDT,0.283,0.002,,Nick,"Nick, Rodrigo, Max"
+Freshwater,F6,F11,D1PM,20240610,14:56,15:02,EDT,0.573,0.047,,Nick,"Nick, Rodrigo, Max"
+Freshwater,F2,F12,D1PM,20240610,15:50,15:56,EDT,0.557,0,,Nick,"Nick, Rodrigo, Max"
+Freshwater,G6,F2,D1PM,20240610,13:38,13:45,EDT,0.681,0.001,,Nick,"Nick, Rodrigo, Max"
+Freshwater,D5,F3,D1PM,20240610,14:13,14:19,EDT,0.829,-0.001,,Nick,"Nick, Rodrigo, Max"
+Freshwater,E2,F4,D1PM,20240610,15:06,15:15,EDT,0.812,0.001,,Nick,"Nick, Rodrigo, Max"
+Freshwater,D6,F13,D1PM,20240610,14:32,14:37,EDT,0.432,0.018,,Nick,"Nick, Rodrigo, Max"
+Freshwater,D7,F14,D1PM,20240610,14:41,14:51,EDT,0.231,0.003,,Nick,"Nick, Rodrigo, Max"
+Freshwater,I6,F17,D1PM,20240610,12:56,13:02,EDT,0.576,0,,Nick,"Nick, Rodrigo, Max"
+Freshwater,B4,F8,D1PM,20240610,15:38,15:45,EDT,0.154,0.015,,Nick,"Nick, Rodrigo, Max"
+Freshwater,G3,F9,D1PM,20240610,13:13,13:18,EDT,0.38,0,,Nick,"Nick, Rodrigo, Max"
+Freshwater,F8,F10,D1PM,20240610,14:00,14:06,EDT,0.176,0.004,,Nick,"Nick, Rodrigo, Max"
+Seawater,F7,S1,D1PM,20240610,13:21,13:26,EDT,0.499,0.003,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C5,S2,D1PM,20240610,15:28,15:33,EDT,0.371,-0.002,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E5,S3,D1PM,20240610,13:50,14:00,EDT,0.604,-0.001,First 8 minutes different trend vs last 2 mins,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,A2,S13,D1PM,20240610,15:13,15:19,EDT,0.49,-0.001,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,I2,S14,D1PM,20240610,14:50,14:56,EDT,0.665,-0.001,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C2,S16,D1PM,20240610,14:59,15:04,EDT,0.686,0.01,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E6,S7,D1PM,20240610,15:43,15:50,EDT,0.548,0.575,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F2,S9,D1PM,20240610,16:06,16:11,EDT,0.306,0.006,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,G5,S10,D1PM,20240610,14:34,14:40,EDT,0.243,0.009,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E6,S4,D1PM,20240610,13:30,13:36,EDT,0.47,0.005,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F5,S5,D1PM,20240610,14:21,14:26,EDT,0.888,0.012,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,G6,S6,D1PM,20240610,14:43,14:48,EDT,1.006,-0.003,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E4,S15,D1PM,20240610,15:53,15:59,EDT,0.588,-0.003,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,D1,S17,D1PM,20240610,15:06,15:11,EDT,0.114,0.03,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,E5,S18,D1PM,20240610,15:35,15:40,EDT,0.31,0.001,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,C6,S8,D1PM,20240610,13:39,13:45,EDT,0.331,0,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F6,S11,D1PM,20240610,13:03,13:13,EDT,0.539,0.01,,AM UNI,"Kendal, Radha, Joaquin"
+Seawater,F4,S12,D1PM,20240610,14:05,14:17,EDT,0.565,0.009,CO2 slope irregular,AM UNI,"Kendal, Radha, Joaquin"
 Control,F5,C1,D2-AM,20260608,7:09:00 AM,7:15,EST,0.174,-0.059,"flux done twice, but still wavy, took second flux ",Louise,"KMM, Julianna M"
 Control,F5,C2,D2-AM,20260608,7:23:55 AM,7:29,EST,0.475,0.017,,Louise,"KMM, Julianna M"
 Control,B7,C6,D2-AM,20260608,7:40:11 AM,7:46,EST,0.45,0.022,,Louise,"KMM, Julianna M"
