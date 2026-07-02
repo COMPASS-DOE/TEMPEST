@@ -116,6 +116,8 @@ meta26 |>
             end_time = if_else(tc_end, gsub(":[0-9]{2}$", "", end_time), end_time)) |>
         select(-tc_start, -tc_end) ->
      meta26
+# D1-PM C12's times are missing (see #191); remove it for now
+meta26 |> filter(!is.na(start_time)) -> meta26
 
 # meta2125 has a different format; rework it to match others
 meta2125 %>%
@@ -132,7 +134,7 @@ meta2125 %>%
     meta2125
 
 meta22 %>%
-    bind_rows(meta23, meta24, meta2125) %>%
+    bind_rows(meta23, meta24, meta2125, meta26) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
     # we will get time zone information from treeflux-processing-info.csv
