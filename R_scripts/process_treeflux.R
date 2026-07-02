@@ -99,6 +99,7 @@ meta26 |>
             collection_date = collection_date_YYYYMMDD,
             start_time = start_time_24hr_EST,
             end_time = end_time_24hr_EST,
+            dead_band, obs_length,
             -licor_timezone,
             -flux_CO2_ppms, -flux_CH4_ppbs,
             -instrument, -personnel) %>%
