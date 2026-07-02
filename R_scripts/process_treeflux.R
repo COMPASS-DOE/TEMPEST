@@ -110,6 +110,8 @@ meta26 |>
             # some people entered "AM" and "PM"; remove
             start_time = trimws(gsub(" [AP]M", "", start_time)),
             end_time = trimws(gsub(" [AP]M", "", end_time)),
+            # "seawater" or "saltwater" -- why can we not standardize?
+            plot = gsub("Saltwater", "Seawater", plot),
             # inconsistent use of HH:MM and HH:MM:SS;
             # identify and drop the latter
             tc_start = grepl(":[0-9]{2}:", start_time),
@@ -118,7 +120,7 @@ meta26 |>
             end_time = if_else(tc_end, gsub(":[0-9]{2}$", "", end_time), end_time)) |>
         select(-tc_start, -tc_end) ->
      meta26
-# D1-PM C12's times are missing (see #191); remove it for now
+# D1-PM C12's times are missing (see #191); remove that entry
 meta26 |> filter(!is.na(start_time)) -> meta26
 
 # meta2125 has a different format; rework it to match others
