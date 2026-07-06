@@ -77,11 +77,11 @@ Freshwater,H5,F1,D2-AM,20260608,9:49:20 AM,9:54:20 AM,EST,0,0,0.546,0.02,,01738_
 Freshwater,G3,F5,D2-AM,20260608,10:18:20 AM,10:23:20 AM,EST,0,0,0.435,0.002,CO2 wavy ,01738_AmericanUni,Sam W. 
 Freshwater,D6,F6,D2-AM,20260608,7:36:00 AM,7:38:00 AM,EST,0,0,0.249,0,2min flux,01738_AmericanUni,Sam W. 
 Freshwater,A6,F15,D2-AM,20260608,8:19:00 AM,8:24:00 AM,EST,0,0,0.446,-0.001,,01738_AmericanUni,Sam W. 
-Freshwater,H4,F16,D2-AM,20260608,9:34:40 AM,9:39:40 AM,EST,0,0,0.454,0.064,,01738_AmericanUni,Sam W. 
+Freshwater,H4,F16,D2-AM,20260608,9:34:40 AM,9:39:40 AM,EST,30,0,0.454,0.064,,01738_AmericanUni,Sam W. 
 Freshwater,H8,F18,D2-AM,20260608,7:04:00 AM,7:06:00 AM,EST,0,0,0.466,0.034,2min flux,01738_AmericanUni,Sam W. 
 Freshwater,B5,F7,D2-AM,20260608,8:05:00 AM,8:10:00 AM,EST,0,0,0.417,0.004,,01738_AmericanUni,Sam W. 
 Freshwater,F6,F11,D2-AM,20260608,7:20:20 AM,7:22:20 AM,EST,0,0,0.441,0.044,2min flux,01738_AmericanUni,Sam W. 
-Freshwater,F2,F12,D2-AM,20260608,10:42:20 AM,10:47:20 AM,EST,0,0,0.539,0.001,,01738_AmericanUni,Sam W. 
+Freshwater,F2,F12,D2-AM,20260608,10:42:20 AM,10:47:20 AM,EST,30,0,0.539,0.001,,01738_AmericanUni,Sam W. 
 Freshwater,G6,F2,D2-AM,20260608,9:07:00 AM,9:12:00 AM,EST,0,0,0.457,0,,01738_AmericanUni,Sam W. 
 Freshwater,D5,F3,D2-AM,20260608,8:43:40 AM,8:48:40 AM,EST,0,0,0.464,0,,01738_AmericanUni,Sam W. 
 Freshwater,E2,F4,D2-AM,20260608,10:33:20 AM,10:38:20 AM,EST,0,0,0.435,0.001,,01738_AmericanUni,Sam W. 
@@ -94,20 +94,20 @@ Freshwater,F8,F10,D2-AM,20260608,7:27:00 AM,7:29:00 AM,EST,0,0,0.189,0.001,2min 
 Saltwater,F7,S1,D2-AM,20260608,11:00:00 AM,11:05:00 AM,EST,0,0,0.438,0.007,"Locking lid was not great, needed to check chambers for cracks and prep the lid again",1087,Fausto
 Saltwater,C5,S2,D2-AM,20260608,11:12:40 AM,11:17:40 AM,EST,0,0,0.289,0.005,looks like there was a bubble then continued ,1087,Fausto
 Saltwater,E5,S3,D2-AM,20260608,9:48:20 AM,9:53:20 AM,EST,0,0,0.422,0.001,,1087,Fausto
-Saltwater,A2,S13,D2-AM,20260608,7:12:30 AM,7:17:30 AM,EST,0,0,0.623,0.004,,1087,Fausto
+Saltwater,A2,S13,D2-AM,20260608,7:12:30 AM,7:17:30 AM,EST,30,0,0.623,0.004,,1087,Fausto
 Saltwater,I2,S14,D2-AM,20260608,8:01:00 AM,8:06:00 AM,EST,0,0,0.483,0,"needed to redo because of leacky chamber, took second measurement",1087,Fausto
 Saltwater,C2,S16,D2-AM,20260608,7:23:00 AM,7:27:00 AM,EST,0,0,0.835,0.02,,1087,Fausto
 Saltwater,E6,S7,D2-AM,20260608,10:23:20 AM,10:28:20 AM,EST,0,0,0.914,0.548,,1087,Fausto
 Saltwater,F2,S9,D2-AM,20260608,7:42:00 AM,7:47:00 AM,EST,0,0,0.919,0.005,,1087,Fausto
 Saltwater,G5,S10,D2-AM,20260608,8:55:50 AM,9:00:50 AM,EST,0,0,0.492,-0.002,,1087,Fausto
-Saltwater,E6,S4,D2-AM,20260608,10:45:50 AM,10:55:50 AM,EST,0,0,0.335,0.007,check start and end times in processing,1087,Fausto
+Saltwater,E6,S4,D2-AM,20260608,10:45:50 AM,10:55:50 AM,EST,30,0,0.335,0.007,check start and end times in processing,1087,Fausto
 Saltwater,F5,S5,D2-AM,20260608,8:28:20 AM,8:33:20 AM,EST,0,0,0.702,0.026,,1087,Fausto
 Saltwater,G6,S6,D2-AM,20260608,9:06:40 AM,9:11:40 AM,EST,0,0,0.413,-0.002,,1087,Fausto
 Saltwater,E4,S15,D2-AM,20260608,8:19:10 AM,8:19:10 AM,EST,0,0,0.804,-0.001,CH4 took 50s to stabilize ,1087,Fausto
 Saltwater,D1,S17,D2-AM,20260608,7:32:30 AM,7:37:30 AM,EST,0,0,0.172,0.032,,1087,Fausto
 Saltwater,E5,S18,D2-AM,20260608,9:57:30 AM,10:02:30 AM,EST,0,0,0.492,0.001,,1087,Fausto
 Saltwater,C6,S8,D2-AM,20260608,10:34:10 AM,10:39:10 AM,EST,0,0,0.342,0.01,,1087,Fausto
-Saltwater,F6,S11,D2-AM,20260608,9:35:55 AM,9:40:55 AM,EST,0,0,0.73,0.021,,1087,Fausto
+Saltwater,F6,S11,D2-AM,20260608,9:35:55 AM,9:40:55 AM,EST,60,0,0.73,0.021,,1087,Fausto
 Saltwater,F4,S12,D2-AM,20260608,8:43:20 AM,8:47:20 AM,EST,0,0,0.715,0.013,,1087,Fausto
 Control,F5,C1,D2-PM,20260608,14:45:00,14:50:00,EST,0,0,0.424,0.14,,Louise,"RP, Julianna"
 Control,F5,C2,D2-PM,20260608,14:36:20,14:41:20,EST,0,0,0.668,0.011,"weird 6ppb drop in the middle, redid and used second measurement",Louise,"RP, Julianna"
