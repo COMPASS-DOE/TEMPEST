@@ -330,4 +330,4 @@ TreeFlux_B_20250912.data,2025-09-12,(none),Freshwater,EDT,0,EDT,
 TreeFlux_B_20250912.data,2025-09-12,(none),Seawater,EDT,0,EDT,
 TG10-01286-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Control,EST,1,EST,
 TG10-01738-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Freshwater,EST,1,EST,
-TG10-01087-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Seawater,EST,0,EST,
+TG10-01087-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Seawater,EDT,4,EST,Large discrepancy between metadata and machine times
