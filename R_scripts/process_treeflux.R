@@ -76,7 +76,7 @@ meta23 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_meta
 meta24 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
 meta26 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata26.csv"),
-                   col_types = "ccccccccddccc")
+                   col_types = "ccccccccddddc")
 meta2125 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
                      col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
@@ -85,8 +85,8 @@ meta24 %>%
     select(-grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
            collection_date = collection_date_YYYYMMDD,
            start_time = start_time_24hr_EDT, end_time = end_time_24hr_EDT,
-           -licor_timezone, -flux_CO2_ppms, -flux_CH4_ppbs,
-           -instrument, -personnel) %>%
+           flux_CO2_ppms, flux_CH4_ppbs,
+           -licor_timezone, -instrument, -personnel) %>%
     # make the date string into mm/dd/yyyy
     mutate(collection_date = paste(substr(collection_date, 5, 6),
                                    substr(collection_date, 7, 8),
@@ -99,9 +99,9 @@ meta26 |>
             collection_date = collection_date_YYYYMMDD,
             start_time = start_time_24hr_EST,
             end_time = end_time_24hr_EST,
+            flux_CO2_ppms, flux_CH4_ppbs,
             dead_band, obs_length,
             -licor_timezone,
-            -flux_CO2_ppms, -flux_CH4_ppbs,
             -instrument, -personnel) %>%
      # make the date string into mm/dd/yyyy
      mutate(collection_date = paste(substr(collection_date, 5, 6),
@@ -127,6 +127,7 @@ meta26 |> filter(!is.na(start_time)) -> meta26
 meta2125 %>%
     select(plot = Plot, ID, collection_date = Date,
            start_time = `Start Time`, end_time = `End Time`,
+           flux_CO2_ppms = `CO2 (ppm/s)`, flux_CH4_ppbs = `CH4 (ppb/s)`,
            -`Tubing length (cm)`, dead_band, obs_length) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
@@ -160,7 +161,7 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccdcc")
+                 col_types = "cDcccdclc")
 
 # ---- Main loop ----
 
@@ -180,6 +181,24 @@ for(i in lines_to_process) {
     MD_TIME_ADD <- tfpi$Metadata_time_add[i]
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
+
+    # ---- Filter metadata for this day, timepoint, plot ----
+    md %>%
+        filter(date(start_timestamp) == DATE,
+               timepoint == TIMEPOINT,
+               plot == PLOT) ->
+        md_filtered
+    message("\t", nrow(md_filtered), " rows of metadata")
+    stopifnot(nrow(md_filtered) > 0)
+
+    # Check whether we're using metadata fluxes
+    if(tfpi$Use_datasheet_fluxes[i]) {
+        message("\tThis row as marked as USE_DATASHEET_FLUXES")
+        md_file <- file.path(OUTPUT_DIR_ROOT, paste0("datasheet_", i, ".parquet"))
+        message("\tWriting ", basename(md_file))
+        write_parquet(md_filtered, md_file)
+        next
+    }
 
     # Check no valid data
     if(is.na(INS_TZ) || is.na(FILE)) {
@@ -219,16 +238,6 @@ for(i in lines_to_process) {
         ylim(300, 1000) +
         ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT),
                 subtitle = NOTES)
-
-    # ---- Filter metadata for the same day ----
-    md %>%
-        filter(date(start_timestamp) == DATE,
-               timepoint == TIMEPOINT,
-               plot == PLOT) ->
-        md_filtered
-    message("\t", nrow(md_filtered), " rows of metadata")
-
-    stopifnot(nrow(md_filtered) > 0)
 
     # ---- Metadata time zone conversion, if needed ----
     if(MD_TZ != "EST") {
@@ -315,8 +324,8 @@ for(i in lines_to_process) {
     # Detail plot
     matches <- tree_data_filtered[!is.na(tree_data_filtered$match),]
     if(any(matches$CO2 > 1200)) {
-        message("\tDropping data rows with CO2 > 1200")
-        matches <- matches[matches$CO2 <= 1200,]
+        message("\tDropping data rows with CO2 > 1200 or < 0")
+        matches <- matches[matches$CO2 <= 1200 & matches$CO2 >= 0,]
     }
     p1_detail <- p1 + xlim(range(matches$TIMESTAMP, na.rm = TRUE))
     print(p1_detail)

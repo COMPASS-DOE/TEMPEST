@@ -62,7 +62,7 @@ bind_rows(results_list) %>%
 # if the results are fully processed or not
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccdcc")
+                 col_types = "cDcccdclc")
 # Print a warning if number of results tables ≠ tfpi
 # This might be OK, but important to flag for the user
 if(length(results_list) != nrow(tfpi)) {
