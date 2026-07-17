@@ -191,7 +191,7 @@ fluxes %>%
 # All data plots
 fn <- file.path(OUTPUT_DIR, "tempest_CO2_fluxes_all.pdf")
 ggplot(fluxes_plot, aes(yday(Date), CO2_rob_flux.estimate, color = Plot)) +
-    geom_jitter() +
+    geom_jitter(na.rm = TRUE) +
     facet_grid(Year ~ .) +
     xlab("Day of year") +
     ylab("Robust linear model flux (µmol/m2/s)") +
@@ -201,7 +201,7 @@ ggsave(fn, width = 12, height = 8)
 
 fn <- file.path(OUTPUT_DIR, "tempest_CH4_fluxes_all.pdf")
 ggplot(fluxes_plot, aes(yday(Date), CH4_rob_flux.estimate, color = Plot)) +
-    geom_jitter() +
+    geom_jitter(na.rm = TRUE) +
     facet_grid(Year ~ .) +
     xlab("Day of year") +
     ylab("Robust linear model flux (nmol/m2/s)") +
@@ -216,7 +216,7 @@ for(yr in unique(fluxes_plot$Year)) {
 
     fn <- file.path(OUTPUT_DIR, paste0("tempest_CO2_fluxes_", yr, ".pdf"))
     ggplot(fluxes_plot_yr, aes(1, CO2_rob_flux.estimate, color = z_CO2)) +
-        geom_jitter() +
+        geom_jitter(na.rm = TRUE) +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CO2), size = 2, na.rm = TRUE) +
         facet_grid(Timepoint ~ Plot) +
@@ -229,7 +229,7 @@ for(yr in unique(fluxes_plot$Year)) {
 
     fn <- file.path(OUTPUT_DIR, paste0("tempest_CH4_fluxes_", yr, ".pdf"))
     ggplot(fluxes_plot_yr, aes(1, CH4_rob_flux.estimate, color = z_CH4)) +
-        geom_jitter() +
+        geom_jitter(na.rm = TRUE) +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CH4), size = 2, na.rm = TRUE) +
         facet_grid(Timepoint ~ Plot) +
