@@ -16,6 +16,7 @@ theme_set(theme_bw())
 library(lubridate)
 library(readr)
 library(arrow)
+library(fluxfinder)
 
 now <- function() format(Sys.time(), "%a %b %d %X %Y")
 
@@ -74,6 +75,8 @@ meta23 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_meta
                    col_types = "ccccccddcc")
 meta24 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata24.csv"),
                    col_types = "ccccccccddddccc")
+meta26 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata26.csv"),
+                   col_types = "ccccccccddddc")
 meta2125 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
                      col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
@@ -82,18 +85,49 @@ meta24 %>%
     select(-grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
            collection_date = collection_date_YYYYMMDD,
            start_time = start_time_24hr_EDT, end_time = end_time_24hr_EDT,
-           -licor_timezone, -flux_CO2_ppms, -flux_CH4_ppbs,
-           -instrument, -personnel) %>%
+           flux_CO2_ppms, flux_CH4_ppbs,
+           -licor_timezone, -instrument, -personnel) %>%
     # make the date string into mm/dd/yyyy
     mutate(collection_date = paste(substr(collection_date, 5, 6),
                                    substr(collection_date, 7, 8),
                                    substr(collection_date, 1, 4), sep = "/")) ->
     meta24
 
+# Sigh. In 2026 we changed format yet again
+meta26 |>
+     select(plot, -grid_cell, ID = Sapflux_ID, timepoint = Timepoint,
+            collection_date = collection_date_YYYYMMDD,
+            start_time = start_time_24hr_EST,
+            end_time = end_time_24hr_EST,
+            flux_CO2_ppms, flux_CH4_ppbs,
+            dead_band, obs_length,
+            -licor_timezone,
+            -instrument, -personnel) %>%
+     # make the date string into mm/dd/yyyy
+     mutate(collection_date = paste(substr(collection_date, 5, 6),
+                                    substr(collection_date, 7, 8),
+                                    substr(collection_date, 1, 4), sep = "/"),
+            # some people entered "AM" and "PM"; remove
+            start_time = trimws(gsub(" [AP]M", "", start_time)),
+            end_time = trimws(gsub(" [AP]M", "", end_time)),
+            # "seawater" or "saltwater" -- why can we not standardize?
+            plot = gsub("Saltwater", "Seawater", plot),
+            # inconsistent use of HH:MM and HH:MM:SS;
+            # identify and drop the latter
+            tc_start = grepl(":[0-9]{2}:", start_time),
+            start_time = if_else(tc_start, gsub(":[0-9]{2}$", "", start_time), start_time),
+            tc_end = grepl(":[0-9]{2}:", end_time),
+            end_time = if_else(tc_end, gsub(":[0-9]{2}$", "", end_time), end_time)) |>
+        select(-tc_start, -tc_end) ->
+     meta26
+# D1-PM C12's times are missing (see #191); remove that entry
+meta26 |> filter(!is.na(start_time)) -> meta26
+
 # meta2125 has a different format; rework it to match others
 meta2125 %>%
     select(plot = Plot, ID, collection_date = Date,
            start_time = `Start Time`, end_time = `End Time`,
+           flux_CO2_ppms = `CO2 (ppm/s)`, flux_CH4_ppbs = `CH4 (ppb/s)`,
            -`Tubing length (cm)`, dead_band, obs_length) %>%
     filter(!is.na(start_time)) %>%
     # change period to colons in the time columns and remove seconds
@@ -105,7 +139,7 @@ meta2125 %>%
     meta2125
 
 meta22 %>%
-    bind_rows(meta23, meta24, meta2125) %>%
+    bind_rows(meta23, meta24, meta2125, meta26) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
     # we will get time zone information from treeflux-processing-info.csv
@@ -127,7 +161,7 @@ if(any(is.na(md$end_timestamp))) {
 # simplifies things and provides a documentary record of decisions, etc.
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccdcc")
+                 col_types = "cDcccdclc")
 
 # ---- Main loop ----
 
@@ -147,6 +181,26 @@ for(i in lines_to_process) {
     MD_TIME_ADD <- tfpi$Metadata_time_add[i]
     INS_TZ <- tfpi$Instrument_tz[i]
     NOTES <- tfpi$Notes[i]
+
+    # ---- Filter metadata for this day, timepoint, plot ----
+    md %>%
+        filter(date(start_timestamp) == DATE,
+               timepoint == TIMEPOINT,
+               plot == PLOT) ->
+        md_filtered
+    message("\t", nrow(md_filtered), " rows of metadata")
+    stopifnot(nrow(md_filtered) > 0)
+
+    # Check whether we're using metadata fluxes
+    # Check whether we're falling back to metadata (data sheet) fluxes
+    # This is needed when Licor files go missing; see issue #196
+    if(tfpi$Use_datasheet_fluxes[i]) {
+        message("\tThis row as marked as USE_DATASHEET_FLUXES")
+        md_file <- file.path(TEMP_OUTPUT_DIR, paste0(i, "_datasheet.parquet"))
+        message("\tWriting ", basename(md_file))
+        write_parquet(md_filtered, md_file)
+        next
+    }
 
     # Check no valid data
     if(is.na(INS_TZ) || is.na(FILE)) {
@@ -186,16 +240,6 @@ for(i in lines_to_process) {
         ylim(300, 1000) +
         ggtitle(paste(I_STR, PLOT, DATE, TIMEPOINT),
                 subtitle = NOTES)
-
-    # ---- Filter metadata for the same day ----
-    md %>%
-        filter(date(start_timestamp) == DATE,
-               timepoint == TIMEPOINT,
-               plot == PLOT) ->
-        md_filtered
-    message("\t", nrow(md_filtered), " rows of metadata")
-
-    stopifnot(nrow(md_filtered) > 0)
 
     # ---- Metadata time zone conversion, if needed ----
     if(MD_TZ != "EST") {
@@ -282,8 +326,8 @@ for(i in lines_to_process) {
     # Detail plot
     matches <- tree_data_filtered[!is.na(tree_data_filtered$match),]
     if(any(matches$CO2 > 1200)) {
-        message("\tDropping data rows with CO2 > 1200")
-        matches <- matches[matches$CO2 <= 1200,]
+        message("\tDropping data rows with CO2 > 1200 or < 0")
+        matches <- matches[matches$CO2 <= 1200 & matches$CO2 >= 0,]
     }
     p1_detail <- p1 + xlim(range(matches$TIMESTAMP, na.rm = TRUE))
     print(p1_detail)

@@ -1,330 +1,363 @@
-File,Date,Timepoint,Plot,Metadata_tz,Metadata_time_add,Instrument_tz,Notes
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-20,Pre-Treatment,Freshwater,EST,0,EDT,Kind of a mess; duplicate data removed; adjusted metadata times +10 min (per scanned data sheet there was a large gap)
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-21,Pre-Treatment,Freshwater,EST,0,EDT,"Missing data for F1, F2, F17 at end"
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T0,Freshwater,EST,0,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T1,Freshwater,EST,0,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T2,Freshwater,EST,0,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T3,Freshwater,EST,0,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,EST,0,EST,Adjusted metadata times +3 min
-TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,0,EST,F12 data missing
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,0,EST,Adjusted metadata times +2 min (and C4 more)
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,0,EST,Adjusted metadata times +2 min; no C6 data
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,0,EST,C13 had wrong time and erasure mark; no C9 data; metadata times +2
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,0,EST,Adjusted metadata times +2 min
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,0,EST,Adjusted metadata times +2 min
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,0,EST,Adjusted metadata times +2 min
-TG10-01229-2022-06-19T000000_thelma.data,2022-06-24,Post-Treatment,Control,EST,0,EST,Adjusted metadata times +2 min
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-20,Pre-Treatment,Seawater,EST,0,EST,Poor quality; S7 time changed from PST to EST
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-21,Pre-Treatment,Seawater,EST,0,EST,Adjusted metadata times +1 min
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T0,Seawater,EST,0,EST,Adjusted metadata times +1 min; S12 start corrected 1 hour
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T1,Seawater,EST,0,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T2,Seawater,EST,0,EST,Adjusted metadata times +1 min; S12 time corrected
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T3,Seawater,EST,0,EST,
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-23,Post-Treatment,Seawater,EST,0,EST,Adjusted metadata times +1 min
-TG10-01028-2022-06-19T000000_Nick.data,2022-06-24,Post-Treatment,Seawater,EST,0,EST,Adjusted metadata times +1 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-04,T0,Control,EDT,0,EDT,Adjusted metadata times +4 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-05,T1,Control,EDT,0,EDT,Adjusted metadata times +3-4 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-06,T2,Control,EDT,0,EDT,Adjusted metadata times +4-5 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-07,T3A,Control,EDT,0,EDT,Adjusted metadata times +4 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-07,T3B,Control,EDT,0,EDT,Adjusted metadata times +4 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-08,T4,Control,EDT,0,EDT,Adjusted metadata times +4 min
-TG10-01286-2023-06-04T050000_Louise.data,2023-06-09,T5,Control,EDT,0,EDT,Adjusted metadata times +4 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-04,T0,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-05,T1,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-06,T2,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-07,T3A,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-07,T3B,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-08,T4,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01448-2023-06-04T050000_Mike.data,2023-06-09,T5,Freshwater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-04,T0,Seawater,EDT,0,EDT,Adjusted metadata times +2 min; S5 corrected to +1hr later
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-05,T1,Seawater,EDT,0,EDT,
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-06,T2,Seawater,EDT,0,EDT,
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-07,T3A,Seawater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-07,T3B,Seawater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-08,T4,Seawater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01028-2023-06-04T050000_Nick.data,2023-06-09,T5,Seawater,EDT,0,EDT,Adjusted metadata times +2 min
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-10,D1PM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-11,D2AM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-11,D2PM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-12,D3AM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-12,D3PM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-13,D4_AM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-13,D4_PM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-14,D5_AM,Control,EDT,0,EST,
-TG10-01286-2024-06-08T120000_Louise.data,2024-06-14,D5_PM,Control,EDT,0,EST,
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-10,D1PM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-11,D2AM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min (F16 +4)
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-11,D2PM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-12,D3AM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-12,D3PM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_AM,Freshwater,EDT,0,EST,
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_PM,Freshwater,EDT,0,EST,
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_AM,Freshwater,EDT,0,EST,Adjusted metadata times +2 min
-TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_PM,Freshwater,EDT,0,EST,"Adjusted metadata times +2 min; F10 7810 data missing (checked data sheets, all looks ok)"
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-10,D1PM,Seawater,EDT,0,EST,Duplicate data removed; adjusted metadata times +1 min
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2AM,Seawater,EDT,1,EST,
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2PM,Seawater,EDT,1,EST,
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-12,D3AM,Seawater,EDT,0,EST,Adjusted metadata times +1 min
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-12,D3PM,Seawater,EDT,0,EST,Adjusted metadata times +1 min; no Licor data for S4
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-13,D4_AM,Seawater,EDT,0,EST,
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-13,D4_PM,Seawater,EDT,0,EST,
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-14,D5_AM,Seawater,EDT,0,EST,
-TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-14,D5_PM,Seawater,EDT,1,EST,
-TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Control,EDT,1,EDT,
-TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Seawater,EDT,1,EDT,
-TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Control,EDT,1,EDT,
-TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Freshwater,EDT,1.5,EDT,
-TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Seawater,EDT,1,EDT,
-TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Control,EST,1,EST,No Licor data for C2 or C17
-TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Freshwater,EST,1,EST,
-TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Seawater,EST,1,EST,
-TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Control,EST,1,EST,
-TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Freshwater,EST,1,EST,
-TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Seawater,EST,1,EST,No Licor data for S1
-TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Control,EST,1,EST,
-TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Freshwater,EST,1,EST,
-TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Seawater,EST,1,EST,
-TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Control,EST,0,EST,
-TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Freshwater,EST,0,EST,
-TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Seawater,EST,0,EST,
-TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Control,EST,1,EST,
-TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Freshwater,EST,1,EST,
-TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Seawater,EST,1,EST,
-TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Control,EST,1,EST,
-TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Freshwater,EST,1,EST,
-TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Seawater,EST,1,EST,
-TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Control,EST,1,EST,
-TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Freshwater,EST,1,EST,
-TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Seawater,EST,1,EST,
-TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Control,EST,0,EST,C12 has bad start time and no Licor data
-TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Freshwater,EST,0,EST,
-TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Seawater,EST,0,EST,
-TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Control,EST,1,EST,
-TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Freshwater,EST,1,EST,
-TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Seawater,EST,1,EST,
-TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Control,EDT,0,EDT,
-TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Control,EDT,1,EDT,
-TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Seawater,EDT,1,EDT,
-TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Control,EDT,1,EDT,
-TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Seawater,EDT,1,EDT,
-TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Control,EDT,0,EDT,
-TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-06-29T000000.data,2022-06-29,(none),Control,EDT,0,EDT,
-TG10-01286-2022-06-30T000000.data,2022-06-30,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Control,EDT,0,EDT,
-TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Control,EDT,0,EDT,
-TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Seawater,EDT,0,EDT,
-TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Control,EDT,0,EDT,
-TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Freshwater,EDT,0,EDT,
-TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Seawater,EDT,1,EDT,
-,2022-07-19,(none),Control,EDT,1,EDT,Generally poor quality; C4 and C5 removed
-,2022-07-19,(none),Freshwater,EDT,0,EDT,No Licor data
-,2022-07-19,(none),Seawater,EDT,0,EDT,No Licor data
-TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Control,EDT,0,EDT,
-TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Seawater,EDT,1,EDT,
-TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Control,EDT,0,EDT,
-TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Control,EDT,1,EDT,
-TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Seawater,EDT,1,EDT,
-TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Control,EDT,0,EDT,
-TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Control,EDT,0,EDT,
-TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Control,EDT,0,EDT,
-TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Control,EDT,0,EDT,
-TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Freshwater,EDT,0,EDT,No Licor data for F15
-TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Control,EDT,1,EDT,
-TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Seawater,EDT,1,EDT,
-TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Control,EDT,0,EDT,
-TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Control,EDT,0,EDT,
-TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Control,EDT,0.5,EDT,
-TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Freshwater,EDT,0.5,EDT,
-TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Seawater,EDT,0.5,EDT,
-TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Control,EDT,0,EDT,
-TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Control,EDT,0,EDT,
-TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Control,EDT,0,EDT,
-TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Seawater,EDT,0,EDT,
-TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Control,EST,0,EST,
-TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Freshwater,EST,0,EST,
-TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Seawater,EST,0,EST,
-TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Control,EST,0,EST,
-TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Freshwater,EST,0,EST,
-TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Seawater,EST,0,EST,
-TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Control,EST,0,EST,
-TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Freshwater,EST,0,EST,
-TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Seawater,EST,0,EST,
-TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Control,EST,0,EST,
-TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Freshwater,EST,0,EST,
-TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Seawater,EST,0,EST,
-TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Control,EST,0,EST,
-TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Freshwater,EST,0,EST,
-TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Seawater,EST,0,EST,
-TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Control,EST,0,EST,
-TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Freshwater,EST,0,EST,
-TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Seawater,EST,0,EST,
-,2023-02-09,(none),Control,EST,0,EST,Missing Licor data file -- come back with EP
-,2023-02-09,(none),Freshwater,EST,0,EST,Missing Licor data file -- come back with EP
-,2023-02-09,(none),Seawater,EST,0,EST,Missing Licor data file -- come back with EP
-TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Control,EST,1,EST,
-TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Freshwater,EST,1,EST,
-TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Seawater,EST,1,EST,
-TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Control,EST,0,EST,
-TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Freshwater,EST,0,EST,
-TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Seawater,EST,0,EST,
-,2023-03-30,(none),Control,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2023-03-30,(none),Freshwater,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2023-03-30,(none),Seawater,EDT,0,EDT,Missing Licor data file -- come back with EP
-TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Control,EDT,1,EDT,
-TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Seawater,EDT,0,EDT,
-TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Control,EDT,0,EDT,C4 has high CO2 ppm but flux looks OK
-TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Seawater,EDT,0,EDT,
-TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Control,EDT,0,EDT,
-TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Freshwater,EDT,1,EDT,
-TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Seawater,EDT,1,EDT,
-TG10-01286-2023-07-17T000000.data,2023-07-18,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Control,EDT,0,EDT,Unmatched traces in middle (?)
-TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Seawater,EDT,0,EDT,
-TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Control,EDT,0,EDT,
-TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Freshwater,EDT,0,EDT,
-TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Seawater,EDT,0,EDT,
-,2023-09-05,(none),Control,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2023-09-05,(none),Freshwater,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2023-09-05,(none),Seawater,EDT,0,EDT,Missing Licor data file -- come back with EP
-TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Control,EDT,0,EDT,
-TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Seawater,EDT,0,EDT,
-TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Control,EDT,0,EDT,
-TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Seawater,EDT,0,EDT,
-TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Control,EDT,0,EDT,
-TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Freshwater,EDT,0,EDT,
-TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Seawater,EDT,0,EDT,
-TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Control,EST,0,EST,
-TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Freshwater,EST,0,EST,
-TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Seawater,EST,0,EST,
-TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Control,EST,0,EST,
-TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Freshwater,EST,0,EST,
-TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Seawater,EST,0,EST,
-,2023-12-22,(none),Control,EST,0,EST,Missing Licor data file -- come back with EP
-,2023-12-22,(none),Freshwater,EST,0,EST,Missing Licor data file -- come back with EP
-,2023-12-22,(none),Seawater,EST,0,EST,Missing Licor data file -- come back with EP
-TreeFlux_A_20240103.data,2024-01-03,(none),Control,EST,0,EST,
-TreeFlux_A_20240103.data,2024-01-03,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20240103.data,2024-01-03,(none),Seawater,EST,0,EST,
-TreeFlux_B_20240126.data,2024-01-26,(none),Control,EST,0,EST,
-TreeFlux_B_20240126.data,2024-01-26,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20240126.data,2024-01-26,(none),Seawater,EST,0,EST,
-TreeFlux_A_20240207.data,2024-02-07,(none),Control,EST,0,EST,
-TreeFlux_A_20240207.data,2024-02-07,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20240207.data,2024-02-07,(none),Seawater,EST,0,EST,
-TreeFlux_B_20240221.data,2024-02-21,(none),Control,EST,0,EST,
-TreeFlux_B_20240221.data,2024-02-21,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20240221.data,2024-02-21,(none),Seawater,EST,0,EST,
-TreeFlux_A_20240313.data,2024-03-13,(none),Control,EDT,0,EDT,
-TreeFlux_A_20240313.data,2024-03-13,(none),Freshwater,EDT,0,EDT,
-TreeFlux_A_20240313.data,2024-03-13,(none),Seawater,EDT,0,EDT,
-TreeFlux_B_20240326.data,2024-03-26,(none),Control,EDT,0,EDT,
-TreeFlux_B_20240326.data,2024-03-26,(none),Freshwater,EDT,0,EDT,
-TreeFlux_B_20240326.data,2024-03-26,(none),Seawater,EDT,0,EDT,
-TreeFlux_A_20240703.data,2024-07-03,(none),Control,EST,0,EST,
-TreeFlux_A_20240703.data,2024-07-03,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20240703.data,2024-07-03,(none),Seawater,EST,0,EST,
-TreeFlux_A_20240709.data,2024-07-09,(none),Control,EST,.5,EST,
-TreeFlux_A_20240709.data,2024-07-09,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20240709.data,2024-07-09,(none),Seawater,EST,0,EST,S17 very high CO2
-,2024-09-04,(none),Control,EST,0,EST,TreeFlux_A_20240904.data exists but seemingly no data
-,2024-09-04,(none),Freshwater,EST,0,EST,TreeFlux_A_20240904.data exists but seemingly no data
-,2024-09-04,(none),Seawater,EST,0,EST,TreeFlux_A_20240904.data exists but seemingly no data
-TreeFlux_B_20240909.data,2024-09-09,(none),Control,EST,0,EST,
-TreeFlux_B_20240909.data,2024-09-09,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20240909.data,2024-09-09,(none),Seawater,EST,0,EST,
-TreeFlux_A_20241001.data,2024-10-01,(none),Control,EST,0,EST,
-TreeFlux_A_20241001.data,2024-10-01,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20241001.data,2024-10-01,(none),Seawater,EST,0,EST,
-TreeFlux_B_20241003.data,2024-10-03,(none),Control,EST,0,EST,
-TreeFlux_B_20241003.data,2024-10-03,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20241003.data,2024-10-03,(none),Seawater,EST,0,EST,
-TreeFlux_A_20241104.data,2024-11-04,(none),Control,EST,0,EST,
-TreeFlux_A_20241104.data,2024-11-04,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20241104.data,2024-11-04,(none),Seawater,EST,0,EST,
-TreeFlux_B_20241105.data,2024-11-05,(none),Control,EST,0,EST,
-TreeFlux_B_20241105.data,2024-11-05,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20241105.data,2024-11-05,(none),Seawater,EST,0,EST,
-TreeFlux_A_20241202.data,2024-12-02,(none),Control,EST,0,EST,
-TreeFlux_A_20241202.data,2024-12-02,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20241202.data,2024-12-02,(none),Seawater,EST,0,EST,
-TreeFlux_B_20241203.data,2024-12-03,(none),Control,EST,0,EST,
-TreeFlux_B_20241203.data,2024-12-03,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20241203.data,2024-12-03,(none),Seawater,EST,0,EST,
-TreeFlux_A_20250127.data,2025-01-27,(none),Control,EST,0,EST,
-TreeFlux_A_20250127.data,2025-01-27,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20250127.data,2025-01-27,(none),Seawater,EST,0,EST,
-TreeFlux_B_20250128.data,2025-01-28,(none),Control,EST,0,EST,
-TreeFlux_B_20250128.data,2025-01-28,(none),Freshwater,EST,0,EST,
-TreeFlux_B_20250128.data,2025-01-28,(none),Seawater,EST,0,EST,
-TreeFlux_A_20250310.data,2025-03-10,(none),Control,EST,0,EST,
-TreeFlux_A_20250310.data,2025-03-10,(none),Freshwater,EST,0,EST,
-TreeFlux_A_20250310.data,2025-03-10,(none),Seawater,EST,0,EST,
-TreeFlux_B_20250319.data,2025-03-19,(none),Control,EDT,0,EDT,
-TreeFlux_B_20250319.data,2025-03-19,(none),Freshwater,EDT,0,EDT,
-TreeFlux_B_20250319.data,2025-03-19,(none),Seawater,EDT,0,EDT,
-TreeFlux_A_20250403.data,2025-04-03,(none),Control,EDT,0,EDT,
-TreeFlux_A_20250403.data,2025-04-03,(none),Freshwater,EDT,0,EDT,
-TreeFlux_A_20250403.data,2025-04-03,(none),Seawater,EDT,0,EDT,
-TreeFlux_B_20250408.data,2025-04-08,(none),Control,EDT,0,EDT,
-TreeFlux_B_20250408.data,2025-04-08,(none),Freshwater,EDT,0,EDT,Unmatched traces in middle (?)
-TreeFlux_B_20250408.data,2025-04-08,(none),Seawater,EDT,0,EDT,
-TreeFlux_A_20250519.data,2025-05-16,(none),Control,EDT,0,EDT,
-TreeFlux_A_20250519.data,2025-05-16,(none),Freshwater,EDT,0,EDT,
-TreeFlux_A_20250519.data,2025-05-16,(none),Seawater,EDT,0,EDT,
-TreeFlux_B_20250519.data,2025-05-19,(none),Control,EDT,0,EDT,
-TreeFlux_B_20250519.data,2025-05-19,(none),Freshwater,EDT,0,EDT,
-TreeFlux_B_20250519.data,2025-05-19,(none),Seawater,EDT,0,EDT,
-,2025-06-20,(none),Control,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2025-06-20,(none),Freshwater,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2025-06-20,(none),Seawater,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2025-06-23,(none),Control,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2025-06-23,(none),Freshwater,EDT,0,EDT,Missing Licor data file -- come back with EP
-,2025-06-23,(none),Seawater,EDT,0,EDT,Missing Licor data file -- come back with EP
-TreeFlux_A_20250708.data,2025-07-08,(none),Control,EDT,0,EDT,
-TreeFlux_A_20250708.data,2025-07-08,(none),Freshwater,EDT,0,EDT,
-TreeFlux_A_20250708.data,2025-07-08,(none),Seawater,EDT,0,EDT,
-TreeFlux_B_20250709.data,2025-07-09,(none),Control,EDT,0,EDT,
-TreeFlux_B_20250709.data,2025-07-09,(none),Freshwater,EDT,0,EDT,
-TreeFlux_B_20250709.data,2025-07-09,(none),Seawater,EDT,0,EDT,
-TreeFlux_A_20250910.data,2025-09-10,(none),Control,EDT,0,EDT,
-TreeFlux_A_20250910.data,2025-09-10,(none),Freshwater,EDT,0,EDT,Unmatched traces in middle (?)
-TreeFlux_A_20250910.data,2025-09-10,(none),Seawater,EDT,0,EDT,
-TreeFlux_B_20250912.data,2025-09-12,(none),Control,EDT,0,EDT,
-TreeFlux_B_20250912.data,2025-09-12,(none),Freshwater,EDT,0,EDT,
-TreeFlux_B_20250912.data,2025-09-12,(none),Seawater,EDT,0,EDT,
+File,Date,Timepoint,Plot,Metadata_tz,Metadata_time_add,Instrument_tz,Use_datasheet_fluxes,Notes
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-20,Pre-Treatment,Freshwater,EST,0,EDT,FALSE,Kind of a mess; duplicate data removed; adjusted metadata times +10 min (per scanned data sheet there was a large gap)
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-21,Pre-Treatment,Freshwater,EST,0,EDT,FALSE,"Missing data for F1, F2, F17 at end"
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T0,Freshwater,EST,0,EST,FALSE,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T1,Freshwater,EST,0,EST,FALSE,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T2,Freshwater,EST,0,EST,FALSE,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-22,T3,Freshwater,EST,0,EST,FALSE,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-23,Post-Treatment,Freshwater,EST,0,EST,FALSE,Adjusted metadata times +3 min
+TG10-01286-2022-06-19T000000_Louise.data,2022-06-24,Post-Treatment,Freshwater,EST,0,EST,FALSE,F12 data missing
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-21,Pre-Treatment,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min (and C4 more)
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T0,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min; no C6 data
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T1,Control,EST,0,EST,FALSE,C13 had wrong time and erasure mark; no C9 data; metadata times +2
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T2,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-22,T3,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-23,Post-Treatment,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01229-2022-06-19T000000_thelma.data,2022-06-24,Post-Treatment,Control,EST,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-20,Pre-Treatment,Seawater,EST,0,EST,FALSE,Poor quality; S7 time changed from PST to EST
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-21,Pre-Treatment,Seawater,EST,0,EST,FALSE,Adjusted metadata times +1 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T0,Seawater,EST,0,EST,FALSE,Adjusted metadata times +1 min; S12 start corrected 1 hour
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T1,Seawater,EST,0,EST,FALSE,
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T2,Seawater,EST,0,EST,FALSE,Adjusted metadata times +1 min; S12 time corrected
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-22,T3,Seawater,EST,0,EST,FALSE,
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-23,Post-Treatment,Seawater,EST,0,EST,FALSE,Adjusted metadata times +1 min
+TG10-01028-2022-06-19T000000_Nick.data,2022-06-24,Post-Treatment,Seawater,EST,0,EST,FALSE,Adjusted metadata times +1 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-04,T0,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-05,T1,Control,EDT,0,EDT,FALSE,Adjusted metadata times +3-4 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-06,T2,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4-5 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-07,T3A,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-07,T3B,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-08,T4,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4 min
+TG10-01286-2023-06-04T050000_Louise.data,2023-06-09,T5,Control,EDT,0,EDT,FALSE,Adjusted metadata times +4 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-04,T0,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-05,T1,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-06,T2,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-07,T3A,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-07,T3B,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-08,T4,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01448-2023-06-04T050000_Mike.data,2023-06-09,T5,Freshwater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-04,T0,Seawater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min; S5 corrected to +1hr later
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-05,T1,Seawater,EDT,0,EDT,FALSE,
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-06,T2,Seawater,EDT,0,EDT,FALSE,
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-07,T3A,Seawater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-07,T3B,Seawater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-08,T4,Seawater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01028-2023-06-04T050000_Nick.data,2023-06-09,T5,Seawater,EDT,0,EDT,FALSE,Adjusted metadata times +2 min
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-10,D1PM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-11,D2AM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-11,D2PM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-12,D3AM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-12,D3PM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-13,D4_AM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-13,D4_PM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-14,D5_AM,Control,EDT,0,EST,FALSE,
+TG10-01286-2024-06-08T120000_Louise.data,2024-06-14,D5_PM,Control,EDT,0,EST,FALSE,
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-10,D1PM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-11,D2AM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min (F16 +4)
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-11,D2PM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-12,D3AM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-12,D3PM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_AM,Freshwater,EDT,0,EST,FALSE,
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-13,D4_PM,Freshwater,EDT,0,EST,FALSE,
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_AM,Freshwater,EDT,0,EST,FALSE,Adjusted metadata times +2 min
+TG10-01028-2024-06-08T120000_Nick.data,2024-06-14,D5_PM,Freshwater,EDT,0,EST,FALSE,"Adjusted metadata times +2 min; F10 7810 data missing (checked data sheets, all looks ok)"
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-10,D1PM,Seawater,EDT,0,EST,FALSE,Duplicate data removed; adjusted metadata times +1 min
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2AM,Seawater,EDT,1,EST,FALSE,
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-11,D2PM,Seawater,EDT,1,EST,FALSE,
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-12,D3AM,Seawater,EDT,0,EST,FALSE,Adjusted metadata times +1 min
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-12,D3PM,Seawater,EDT,0,EST,FALSE,Adjusted metadata times +1 min; no Licor data for S4
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-13,D4_AM,Seawater,EDT,0,EST,FALSE,
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-13,D4_PM,Seawater,EDT,0,EST,FALSE,
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-14,D5_AM,Seawater,EDT,0,EST,FALSE,
+TG10-01738-2024-06-08T120000_AMUNI.data,2024-06-14,D5_PM,Seawater,EDT,1,EST,FALSE,
+TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2021-10-08T080000.data,2021-10-08,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Freshwater,EDT,1.5,EDT,FALSE,
+TG10-01286-2021-11-01T080000.data,2021-11-01,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Control,EST,1,EST,FALSE,No Licor data for C2 or C17
+TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01087-2021-11-16T000000.data,2021-11-16,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2021-11-30T080000.data,2021-11-30,(none),Seawater,EST,1,EST,FALSE,No Licor data for S1
+TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2021-12-14T080000.data,2021-12-14,(none),Seawater,EST,1,EST,FALSE,
+TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Control,EST,0,EST,FALSE,
+TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01229-2021-12-27T000000.data,2021-12-27,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2022-01-13T080000.data,2022-01-13,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2022-01-25T080000.data,2022-01-25,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2022-02-09T080000.data,2022-02-09,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Control,EST,0,EST,FALSE,C12 has bad start time and no Licor data
+TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2022-02-22T000000.data,2022-02-22,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2022-03-08T000000.data,2022-03-08,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-03-21T000000.data,2022-03-21,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-04-19T000000.data,2022-04-19,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-05-12T000000.data,2022-05-12,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-05-17T000000.data,2022-05-17,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-06-29T000000.data,2022-06-29,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-06-30T000000.data,2022-06-30,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-07T000000.data,2022-07-07,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-08T000000.data,2022-07-08,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Control,EDT,0,EDT,FALSE,
+TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01229-2022-07-18T000000.data,2022-07-18,(none),Seawater,EDT,1,EDT,FALSE,
+,2022-07-19,(none),Control,EDT,1,EDT,FALSE,Generally poor quality; C4 and C5 removed
+,2022-07-19,(none),Freshwater,EDT,0,EDT,FALSE,No Licor data
+,2022-07-19,(none),Seawater,EDT,0,EDT,FALSE,No Licor data
+TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-26T000000.data,2022-07-26,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-07-27T000000.data,2022-07-27,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-02T000000.data,2022-08-02,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-03T000000.data,2022-08-03,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-08T000000.data,2022-08-08,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-11T000000.data,2022-08-11,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Freshwater,EDT,0,EDT,FALSE,No Licor data for F15
+TG10-01286-2022-08-15T000000.data,2022-08-15,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-17T000000.data,2022-08-17,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-08-25T000000.data,2022-08-25,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-09-09T000000.data,2022-09-09,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Control,EDT,0.5,EDT,FALSE,
+TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Freshwater,EDT,0.5,EDT,FALSE,
+TG10-01286-2022-09-16T000000.data,2022-09-16,(none),Seawater,EDT,0.5,EDT,FALSE,
+TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2022-09-20T000000.data,2022-09-20,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-07T000000.data,2022-10-07,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2022-10-26T000000.data,2022-10-26,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2022-11-08T000000.data,2022-11-08,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2022-11-21T000000.data,2022-11-21,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2022-12-12T000000.data,2022-12-12,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2022-12-27T000000.data,2022-12-27,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2023-01-09T000000.data,2023-01-09,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2023-01-24T000000.data,2023-01-24,(none),Seawater,EST,0,EST,FALSE,
+,2023-02-09,(none),Control,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+,2023-02-09,(none),Freshwater,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+,2023-02-09,(none),Seawater,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Control,EST,1,EST,FALSE,
+TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Freshwater,EST,1,EST,FALSE,
+TG10-01286-2023-02-21T000000.data,2023-02-21,(none),Seawater,EST,1,EST,FALSE,
+TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2023-03-06T000000.data,2023-03-06,(none),Seawater,EST,0,EST,FALSE,
+,2023-03-30,(none),Control,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2023-03-30,(none),Freshwater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2023-03-30,(none),Seawater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Control,EDT,1,EDT,FALSE,
+TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-04-25T000000.data,2023-04-25,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Control,EDT,0,EDT,FALSE,C4 has high CO2 ppm but flux looks OK
+TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-07-05T000000.data,2023-07-05,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Freshwater,EDT,1,EDT,FALSE,
+TG10-01286-2023-07-17T000000.data,2023-07-17,(none),Seawater,EDT,1,EDT,FALSE,
+TG10-01286-2023-07-17T000000.data,2023-07-18,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Control,EDT,0,EDT,FALSE,Unmatched traces in middle (?)
+TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-08-02T000000.data,2023-08-02,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Control,EDT,0,EDT,FALSE,
+TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01229-2023-08-16T000000.data,2023-08-16,(none),Seawater,EDT,0,EDT,FALSE,
+,2023-09-05,(none),Control,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2023-09-05,(none),Freshwater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2023-09-05,(none),Seawater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-09-18T000000.data,2023-09-18,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-03T000000.data,2023-10-03,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Control,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Freshwater,EDT,0,EDT,FALSE,
+TG10-01286-2023-10-31T080000.data,2023-10-31,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2023-11-27T080000.data,2023-11-27,(none),Seawater,EST,0,EST,FALSE,
+TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Control,EST,0,EST,FALSE,
+TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Freshwater,EST,0,EST,FALSE,
+TG10-01286-2023-12-06T080000.data,2023-12-06,(none),Seawater,EST,0,EST,FALSE,
+,2023-12-22,(none),Control,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+,2023-12-22,(none),Freshwater,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+,2023-12-22,(none),Seawater,EST,0,EST,FALSE,Missing Licor data file -- come back with EP
+TreeFlux_A_20240103.data,2024-01-03,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20240103.data,2024-01-03,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20240103.data,2024-01-03,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20240126.data,2024-01-26,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20240126.data,2024-01-26,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20240126.data,2024-01-26,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20240207.data,2024-02-07,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20240207.data,2024-02-07,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20240207.data,2024-02-07,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20240221.data,2024-02-21,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20240221.data,2024-02-21,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20240221.data,2024-02-21,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20240313.data,2024-03-13,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_A_20240313.data,2024-03-13,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_A_20240313.data,2024-03-13,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_B_20240326.data,2024-03-26,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20240326.data,2024-03-26,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_B_20240326.data,2024-03-26,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_A_20240703.data,2024-07-03,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20240703.data,2024-07-03,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20240703.data,2024-07-03,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20240709.data,2024-07-09,(none),Control,EST,.5,EST,FALSE,
+TreeFlux_A_20240709.data,2024-07-09,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20240709.data,2024-07-09,(none),Seawater,EST,0,EST,FALSE,S17 very high CO2
+,2024-09-04,(none),Control,EST,0,EST,FALSE,TreeFlux_A_20240904.data exists but seemingly no data
+,2024-09-04,(none),Freshwater,EST,0,EST,FALSE,TreeFlux_A_20240904.data exists but seemingly no data
+,2024-09-04,(none),Seawater,EST,0,EST,FALSE,TreeFlux_A_20240904.data exists but seemingly no data
+TreeFlux_B_20240909.data,2024-09-09,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20240909.data,2024-09-09,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20240909.data,2024-09-09,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20241001.data,2024-10-01,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20241001.data,2024-10-01,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20241001.data,2024-10-01,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20241003.data,2024-10-03,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20241003.data,2024-10-03,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20241003.data,2024-10-03,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20241104.data,2024-11-04,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20241104.data,2024-11-04,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20241104.data,2024-11-04,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20241105.data,2024-11-05,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20241105.data,2024-11-05,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20241105.data,2024-11-05,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20241202.data,2024-12-02,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20241202.data,2024-12-02,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20241202.data,2024-12-02,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20241203.data,2024-12-03,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20241203.data,2024-12-03,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20241203.data,2024-12-03,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20250127.data,2025-01-27,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20250127.data,2025-01-27,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20250127.data,2025-01-27,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20250128.data,2025-01-28,(none),Control,EST,0,EST,FALSE,
+TreeFlux_B_20250128.data,2025-01-28,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_B_20250128.data,2025-01-28,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_A_20250310.data,2025-03-10,(none),Control,EST,0,EST,FALSE,
+TreeFlux_A_20250310.data,2025-03-10,(none),Freshwater,EST,0,EST,FALSE,
+TreeFlux_A_20250310.data,2025-03-10,(none),Seawater,EST,0,EST,FALSE,
+TreeFlux_B_20250319.data,2025-03-19,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20250319.data,2025-03-19,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250319.data,2025-03-19,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250403.data,2025-04-03,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_A_20250403.data,2025-04-03,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250403.data,2025-04-03,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250408.data,2025-04-08,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20250408.data,2025-04-08,(none),Freshwater,EDT,0,EDT,FALSE,Unmatched traces in middle (?)
+TreeFlux_B_20250408.data,2025-04-08,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250519.data,2025-05-16,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_A_20250519.data,2025-05-16,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250519.data,2025-05-16,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250519.data,2025-05-19,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20250519.data,2025-05-19,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250519.data,2025-05-19,(none),Seawater,EDT,0,EDT,FALSE,
+,2025-06-20,(none),Control,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2025-06-20,(none),Freshwater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2025-06-20,(none),Seawater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2025-06-23,(none),Control,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2025-06-23,(none),Freshwater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+,2025-06-23,(none),Seawater,EDT,0,EDT,FALSE,Missing Licor data file -- come back with EP
+TreeFlux_A_20250708.data,2025-07-08,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_A_20250708.data,2025-07-08,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250708.data,2025-07-08,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250709.data,2025-07-09,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20250709.data,2025-07-09,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250709.data,2025-07-09,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_A_20250910.data,2025-09-10,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_A_20250910.data,2025-09-10,(none),Freshwater,EDT,0,EDT,FALSE,Unmatched traces in middle (?)
+TreeFlux_A_20250910.data,2025-09-10,(none),Seawater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250912.data,2025-09-12,(none),Control,EDT,0,EDT,FALSE,
+TreeFlux_B_20250912.data,2025-09-12,(none),Freshwater,EDT,0,EDT,FALSE,
+TreeFlux_B_20250912.data,2025-09-12,(none),Seawater,EDT,0,EDT,FALSE,
+TG10-01286-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-07-2026-06-08.data,2026-06-07,D1-PM,Seawater,EDT,4,EST,FALSE,Large discrepancy between metadata and machine times
+TG10-01286-2026-06-07-2026-06-08.data,2026-06-08,D2-AM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-07-2026-06-08.data,2026-06-08,D2-AM,Freshwater,EST,0,EST,FALSE,
+TG10-01087-2026-06-07-2026-06-08.data,2026-06-08,D2-AM,Seawater,EST,0,EST,FALSE,
+TG10-01286-2026-06-07-2026-06-08.data,2026-06-08,D2-PM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-07-2026-06-08.data,2026-06-08,D2-PM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-07-2026-06-08.data,2026-06-08,D2-PM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-09T050000.data,2026-06-09,D3-AM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-09T050000.data,2026-06-09,D3-AM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-09T050000.data,2026-06-09,D3-AM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-09T050000.data,2026-06-09,D3-PM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-09T050000.data,2026-06-09,D3-PM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-09T050000.data,2026-06-09,D3-PM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-10T050000.data,2026-06-10,D4-AM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-10T050000.data,2026-06-10,D4-AM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-10T050000.data,2026-06-10,D4-AM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-10T050000.data,2026-06-10,D4-PM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-10T050000.data,2026-06-10,D4-PM,Freshwater,EST,1,EST,FALSE,
+TG10-01087-2026-06-10T050000.data,2026-06-10,D4-PM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-11T050000 (1).data,2026-06-11,D5-AM,Control,EST,1,EST,FALSE,
+,2026-06-11,D5-AM,Freshwater,EST,1,EST,TRUE,No LI7810 data available; see #196
+TG10-01087-2026-06-11T050000 (1).data,2026-06-11,D5-AM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-11T050000 (1).data,2026-06-11,D5-PM,Control,EST,1,EST,FALSE,
+,2026-06-11,D5-PM,Freshwater,EST,1,EST,TRUE,No LI7810 data available; see #196
+TG10-01087-2026-06-11T050000 (1).data,2026-06-11,D5-PM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-12T050000.data,2026-06-12,D6-AM,Control,EST,1,EST,FALSE,
+TG10-01738-2026-06-12T050000.data,2026-06-12,D6-AM,Freshwater,EST,-9,EST,FALSE,See #198
+TG10-01087-2026-06-12T050000.data,2026-06-12,D6-AM,Seawater,EST,1,EST,FALSE,
+TG10-01286-2026-06-12T050000.data,2026-06-12,D6-PM,Control,EST,1,EST,FALSE,
+TG10-01087-2026-06-12T050000.data,2026-06-12,D6-PM,Freshwater,EST,-22,EST,FALSE,See #201
+TG10-01087-2026-06-12T050000.data,2026-06-12,D6-PM,Seawater,EST,1,EST,FALSE,

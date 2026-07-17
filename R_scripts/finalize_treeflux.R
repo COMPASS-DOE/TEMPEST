@@ -47,7 +47,21 @@ files <- list.files(INPUT_DIR, pattern = "\\.RDS$",
                     full.names = TRUE, recursive = TRUE)
 message("I see ", length(files), " data files. Reading...")
 results_list <- lapply(files, readRDS)
+results_numbers <- gsub(".RDS", "", basename(files), fixed = TRUE)
 
+datasheet_files <- list.files(INPUT_DIR, pattern = "datasheet\\.parquet$",
+                    full.names = TRUE, recursive = TRUE)
+message("I see ", length(datasheet_files), " datasheet files (in place of using Licor data). Reading...")
+datasheet_data_list <- lapply(datasheet_files, read_parquet)
+datasheet_numbers <- gsub("_datasheet.parquet", "", basename(datasheet_files), fixed = TRUE)
+names(datasheet_data_list) <- datasheet_numbers
+
+message("Checking for overlaps...")
+overlap_numbers <- intersect(results_numbers, datasheet_numbers)
+if(length(overlap_numbers) > 0) {
+    stop("There are overlap files (both Licor and datasheet) in ",
+         INPUT_DIR, ": ", paste(overlap_numbers, collapse = ", "))
+}
 
 # OK, we've got the input files, now what?
 
@@ -62,7 +76,7 @@ bind_rows(results_list) %>%
 # if the results are fully processed or not
 message("Reading processing info file...")
 tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
-                 col_types = "cDcccdcc")
+                 col_types = "cDcccdclc")
 # Print a warning if number of results tables ≠ tfpi
 # This might be OK, but important to flag for the user
 if(length(results_list) != nrow(tfpi)) {
@@ -76,6 +90,29 @@ write_csv(results, conc_fn)
 conc_fn_pqt <- gsub("csv", "parquet", conc_fn)
 message("\tWriting ", basename(conc_fn_pqt))
 arrow::write_parquet(results, conc_fn_pqt)
+
+
+# Backup fluxes from datasheets
+message("Processing any datasheet backup fluxes...")
+datasheet_fluxes_list <- list()
+for(i in names(datasheet_data_list)) {
+    message("\tReading ", i)
+    datasheet_data_list[[i]] |>
+        select(Plot = plot, ID, timepoint, start_timestamp,
+               flux_CH4_ppbs, flux_CO2_ppms) |>
+        left_join(chamber_metadata, by = c("Plot", "ID")) |>
+        mutate(Date = as.Date(start_timestamp),
+               Year = year(start_timestamp)) |>
+        # normalize for area and volume etc.
+        # TODO
+        select(Year, Date, Timepoint = timepoint, Plot,
+               Species, ID,
+               CH4_lin_flux.estimate = flux_CH4_ppbs,
+               CO2_lin_flux.estimate = flux_CO2_ppms) ->
+        datasheet_fluxes_list[[i]]
+}
+datasheet_fluxes <- bind_rows(datasheet_fluxes_list)
+
 
 # ---- Flux calculation ----
 library(fluxfinder)
@@ -98,7 +135,7 @@ results %>%
                                  # TODO -- this accounts only for chamber volume; see
                                  # https://github.com/COMPASS-DOE/TEMPEST/issues/167
                                  volume = .x$volume[1])) %>%
-    select(Year, Date, Plot, Timepoint, Species, ID,
+    select(Year, Date, Timepoint, Plot, Species, ID,
            CO2_lin_flux.estimate = lin_flux.estimate,
            CO2_lin_r.squared = lin_r.squared,
            CO2_rob_flux.estimate = rob_flux.estimate) ->
@@ -116,7 +153,7 @@ results %>%
                                  # TODO -- this accounts only for chamber volume; see
                                  # https://github.com/COMPASS-DOE/TEMPEST/issues/167
                                  volume = .x$volume[1])) %>%
-    select(Year, Date, Plot, Timepoint, Species, ID,
+    select(Year, Date, Timepoint, Plot, Species, ID,
            CH4_lin_flux.estimate = lin_flux.estimate,
            CH4_lin_r.squared = lin_r.squared,
            CH4_rob_flux.estimate = rob_flux.estimate) ->
@@ -124,7 +161,10 @@ results %>%
 
 fluxes_CO2 %>%
     left_join(fluxes_CH4, by = c("Year", "Date", "Plot", "Timepoint", "Species", "ID")) %>%
-    arrange(Year, Date, Plot, Timepoint, ID) ->
+    arrange(Year, Date, Plot, Timepoint, ID) |>
+    # add the data sheet fluxes
+    bind_rows(datasheet_fluxes) |>
+    arrange(Year, Date, Timepoint, ID)->
     fluxes
 
 message("Writing flux data")
@@ -151,7 +191,7 @@ fluxes %>%
 # All data plots
 fn <- file.path(OUTPUT_DIR, "tempest_CO2_fluxes_all.pdf")
 ggplot(fluxes_plot, aes(yday(Date), CO2_rob_flux.estimate, color = Plot)) +
-    geom_jitter() +
+    geom_jitter(na.rm = TRUE) +
     facet_grid(Year ~ .) +
     xlab("Day of year") +
     ylab("Robust linear model flux (µmol/m2/s)") +
@@ -161,7 +201,7 @@ ggsave(fn, width = 12, height = 8)
 
 fn <- file.path(OUTPUT_DIR, "tempest_CH4_fluxes_all.pdf")
 ggplot(fluxes_plot, aes(yday(Date), CH4_rob_flux.estimate, color = Plot)) +
-    geom_jitter() +
+    geom_jitter(na.rm = TRUE) +
     facet_grid(Year ~ .) +
     xlab("Day of year") +
     ylab("Robust linear model flux (nmol/m2/s)") +
@@ -176,7 +216,7 @@ for(yr in unique(fluxes_plot$Year)) {
 
     fn <- file.path(OUTPUT_DIR, paste0("tempest_CO2_fluxes_", yr, ".pdf"))
     ggplot(fluxes_plot_yr, aes(1, CO2_rob_flux.estimate, color = z_CO2)) +
-        geom_jitter() +
+        geom_jitter(na.rm = TRUE) +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CO2), size = 2, na.rm = TRUE) +
         facet_grid(Timepoint ~ Plot) +
@@ -189,7 +229,7 @@ for(yr in unique(fluxes_plot$Year)) {
 
     fn <- file.path(OUTPUT_DIR, paste0("tempest_CH4_fluxes_", yr, ".pdf"))
     ggplot(fluxes_plot_yr, aes(1, CH4_rob_flux.estimate, color = z_CH4)) +
-        geom_jitter() +
+        geom_jitter(na.rm = TRUE) +
         scale_color_distiller(type = "div") +
         geom_text(aes(label = lab_CH4), size = 2, na.rm = TRUE) +
         facet_grid(Timepoint ~ Plot) +
