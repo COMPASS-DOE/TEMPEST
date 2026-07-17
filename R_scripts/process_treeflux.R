@@ -192,9 +192,11 @@ for(i in lines_to_process) {
     stopifnot(nrow(md_filtered) > 0)
 
     # Check whether we're using metadata fluxes
+    # Check whether we're falling back to metadata (data sheet) fluxes
+    # This is needed when Licor files go missing; see issue #196
     if(tfpi$Use_datasheet_fluxes[i]) {
         message("\tThis row as marked as USE_DATASHEET_FLUXES")
-        md_file <- file.path(OUTPUT_DIR_ROOT, paste0("datasheet_", i, ".parquet"))
+        md_file <- file.path(TEMP_OUTPUT_DIR, paste0(i, "_datasheet.parquet"))
         message("\tWriting ", basename(md_file))
         write_parquet(md_filtered, md_file)
         next
