@@ -26,8 +26,8 @@ premade_outputs <- list.files(TEMP_OUTPUT_DIR, pattern = "\\.RDS", full.names = 
 if(length(premade_outputs) > 0 && SKIP_SAVED_DATA) {
     message("There are ", length(premade_outputs), " file(s) in 'temporary_outputs/' ",
     "that will be used instead of computing data")
-    okay <- askYesNo("Is this what you want?")
-    if(!okay) stop("Stopping")
+    #okay <- askYesNo("Is this what you want?")
+#    if(!okay) stop("Stopping")
 }
 
 # ---- Initialization ----
@@ -77,7 +77,7 @@ meta24 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_meta
                    col_types = "ccccccccddddccc")
 meta26 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata26.csv"),
                    col_types = "ccccccccddddc")
-meta2125 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-25.csv"),
+meta2126 <- read_csv(file.path(DATA_DIR_ROOT, "metadata_excel_files/tree_flux_metadata21-26.csv"),
                      col_types = "ccccccdddd___dc", na = c("N/A", "n/a"))
 
 # meta24 has a different format; rework it to match others
@@ -124,7 +124,7 @@ meta26 |>
 meta26 |> filter(!is.na(start_time)) -> meta26
 
 # meta2125 has a different format; rework it to match others
-meta2125 %>%
+meta2126 %>%
     select(plot = Plot, ID, collection_date = Date,
            start_time = `Start Time`, end_time = `End Time`,
            flux_CO2_ppms = `CO2 (ppm/s)`, flux_CH4_ppbs = `CH4 (ppb/s)`,
@@ -136,10 +136,10 @@ meta2125 %>%
            start_time = gsub(":[0-9]{2}$", "", start_time),
            end_time = gsub(".", ":", end_time, fixed = TRUE),
            end_time = gsub(":[0-9]{2}$", "", end_time)) ->
-    meta2125
+    meta2126
 
 meta22 %>%
-    bind_rows(meta23, meta24, meta2125, meta26) %>%
+    bind_rows(meta23, meta24, meta2126, meta26) %>%
     mutate(start_timestamp = mdy_hm(paste(collection_date, start_time), tz = "EST"),
            end_timestamp = mdy_hm(paste(collection_date, end_time), tz = "EST")) %>%
     # we will get time zone information from treeflux-processing-info.csv
@@ -166,9 +166,9 @@ tfpi <- read_csv(file.path(DATA_DIR_ROOT, "treeflux-processing-info.csv"),
 # ---- Main loop ----
 
 # If you want to process a single line, use
-#lines_to_process <- 11
+lines_to_process <- 365
 # To process the entire file, use
-lines_to_process <- seq_len(nrow(tfpi))
+#lines_to_process <- seq_len(nrow(tfpi))
 
 for(i in lines_to_process) {
 
