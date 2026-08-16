@@ -7,5 +7,5 @@ some correction made (see https://github.com/COMPASS-DOE/TEMPEST/issues/141),
 concatenated into a single CSV file, and `dead_band` and `obs_length`
 columns added.
 
-`tree_flux_metadata21-25.csv` is Evan Phillips's metadata sheet, i.e. the 
+`tree_flux_metadata21-26.csv` is Evan Phillips's metadata sheet, i.e. the 
 year-round measurements made _not_ during flood treatments.
