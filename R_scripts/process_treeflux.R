@@ -26,8 +26,8 @@ premade_outputs <- list.files(TEMP_OUTPUT_DIR, pattern = "\\.RDS", full.names = 
 if(length(premade_outputs) > 0 && SKIP_SAVED_DATA) {
     message("There are ", length(premade_outputs), " file(s) in 'temporary_outputs/' ",
     "that will be used instead of computing data")
-    #okay <- askYesNo("Is this what you want?")
-#    if(!okay) stop("Stopping")
+    okay <- askYesNo("Is this what you want?")
+    if(!okay) stop("Stopping")
 }
 
 # ---- Initialization ----
