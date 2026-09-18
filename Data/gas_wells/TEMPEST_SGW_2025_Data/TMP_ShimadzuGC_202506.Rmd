@@ -1,0 +1,1905 @@
+---
+title: "TEMPEST: Soil Gas Well"
+author: "June 2025 Samples"
+date: "`r Sys.Date()`"
+output:  
+  pdf_document:
+    toc: true
+    toc_depth: 1
+    number_sections: true
+output_dir: "To Be Reviewed/PDF"
+---
+
+\newpage
+
+##Run Information
+```{r run information, include=TRUE}
+cat("Run Information: Brenden Blakley") #lets you know what section you're in
+#set the run date & user name
+sample_year <- "2025"
+sample_month <- "June"
+user <- "Brenden Blakley"
+#identify the files you want to read in
+#read in as a list to accommodate multiple runs in a month (.txt file(s))
+
+GHG_files <- c("Raw Data/20260827_TMP2025_June.txt", "Raw Data/20260827_TMP2025_June_Sept.txt" )
+
+#Metadata file path
+Metadata_path = "Metadata/TEMPEST_SGAS_202506_ALL_WORKING.csv"
+
+
+# Define the file path for QAQC log file - NO Need to change just check year
+log_path <- "GCReW_CH4_QAQC_Log.csv"
+check_log_path <- "GCReW_Check_QAQC_Log.csv"
+
+
+# Define final path for data be sure to change year and month and run number
+final_path <- "Processed Data/TMP2025_April.csv"
+
+##Standard Type ("Actual" or "Half")
+ #LTREB, SMARTX, and GENX PW Samples use "Half", others should use "Actual"
+Standard_Type <- "Actual"
+
+#Did Some Samples require manual area retrieval? 
+##List Samples and their areas for each analyte ("CH4", "CO2", or "N2O")
+Manual_Areas <- data.frame(
+  Sample = c("NA"),
+  Area = c("NA"),
+  Analyte = c("NA")
+)
+
+#Gas in Water Calculations
+#Are All Samples Gas in Water? ("YES" or "NO")
+GIW <- "NO"
+#Are some samples Gas in Water? 
+##List Sample IDs
+GIW_Samples <- c()
+
+# "TempC" column value in Celsius (equilibration temperature) and volume of gas (in liters) in syringe (not changing currently)
+TempC = 25 #Equilibration Temperature (Celsius)
+
+volume_g = 0.015 #volume of gas (in liters) in syringe when equilibrized
+volume_w = 0.015 #volume of water (in liters) in syringe when equilibrized (should be equal to volume_g)
+
+#record any notes about the run or anything other info here:
+run_notes <- ""
+
+#Collection_Dates = "Raw Data/Sample_Collection_Dates_2024.csv"
+
+cat(run_notes)
+```
+
+
+##Set Up
+
+```{r setup, include=FALSE}
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  dplyr,
+  purrr,
+  fuzzyjoin,
+  ggplot2,
+  ggpubr,
+  stringr,
+  here,
+  data.table,
+  tidyverse,
+  lubridate)
+
+##Low & High Standard Curve Cutoffs
+low_std_crv_cutoff_ch4 <- 100
+low_std_crv_cutoff_N2O <- 50.2
+r2_cutoff <- 0.990
+
+##Gas In Water Calculation
+R <- 0.08206
+CTK <- 273.15
+
+##Detection Limits
+#adl_cutoff <- 10000
+#bdl_cutoff <- 1
+
+##Check Standard Concentration
+chks_flag = 60
+blks_flag = 60
+if(Standard_Type == "Actual"){
+level_ch4 <- 500 #ppm
+level_co2 <- 25000 #ppm
+level_n2o <- 250} else {
+level_ch4 <- 1000 #ppm
+level_co2 <- 50000 #ppm
+level_n2o <- 500 #ppm
+}
+
+##CH4 Retention Time Cutoffs
+CH4_Low <- 1.98
+CH4_High <- 2.08
+
+##CO2 Retention Times Cutoffs
+CO2_Low <- 2.62
+CO2_High <- 2.72
+
+##N2O Retention Times Cutoffs
+N2O_Low <- 2.84
+N2O_High <- 2.94
+
+##Standard Concentrations (ppm)
+CH4_LowTri <- 10
+CO2_LowTri <- 2000
+N2O_LowTri <- 5.05
+
+CH4_MidTri <- 100
+CO2_MidTri <- 20000
+N2O_MidTri <- 50.2
+
+CH4_HighTri <- 1000
+CO2_HighTri <- 50000
+N2O_HighTri <- 500
+
+CH4_10K <- 10000
+CO2_10K <- 0
+N2O_10K <- 0
+
+```
+
+
+##Read in metadata and create similar sample IDs for matching to samples 
+```{r pull in metadata for later, include=FALSE}
+
+Raw_Metadata <- read.csv(Metadata_path)
+
+Clean_Metadata <- Raw_Metadata %>%
+  dplyr::select(-Machine,
+                -User,
+                -Run_Date,
+                -Dilution_Factor,
+                -STD_Conc,
+                -CO2_Area,
+                -CH4_Area) %>% 
+  filter(Sample_Type == "Unknown") %>%
+  mutate(Sample_Name = paste(Sample_Year, Sample_Month, Sample_ID, sep = "_")) %>%
+  select(-Sample_ID)
+  
+
+
+```
+
+##Read In Data Files
+```{r}
+
+#Read in Nov Data
+raw_list <- map(GHG_files, read.delim, header = FALSE, row.names = NULL, sep = ",", quote = "", col.names = paste0("V", 1:21))
+
+
+# Combining Files
+DataFile <- bind_rows(raw_list)
+
+
+```
+
+#Get Location of Each Sample in Main Data Frame
+```{r}
+Numbers <- c(which(DataFile$V1 == "[Header]"), (length(DataFile$V1)+1))
+```
+
+#Turn Each Sample into it's own Data Frame
+```{r}
+n_dfs <- (length(Numbers)-1)
+
+df_list <- replicate(n_dfs, data.frame(), simplify = FALSE)
+
+for(i in 1:n_dfs) {
+  df_loop1 <- as.data.frame(DataFile[(Numbers[i]):(Numbers[i+1] - 1),])
+  df_list[[i]] <- df_loop1
+}
+```
+
+
+#Get Only Area Tables and Retrieve Info
+```{r}
+
+Sample_Data <- data.frame(Sample_Name = c(NA), Area1 = c(NA), RTime1 = c(NA), Area2 = c(NA), RTime2 = c(NA), Area3 = c(NA), RTime3 = c(NA), NumPeakFID = c(NA), NumPeakECD = c(NA), Run_Date = c(as.Date(NA)))
+
+for(j in 1:(length(Numbers)-1)) {
+  
+#FID
+  df_loop2 <- df_list[[j]] #get only 1 sameple
+  peak_start <- which(df_loop2$V1 == "[Peak Table(Ch1)]") #find where peak data starts
+  peak_end <- which(df_loop2$V1 == "[Peak Table(Ch2)]") #find where peak data ends
+  sample <- df_loop2[which(df_loop2$V1 == "Sample Name"),]$V2 #get sample name
+  df_peaks <- df_loop2[peak_start:(peak_end-1),] #subset data to get only peak info
+  num_peaks <- df_peaks[which(df_peaks$V1 == "# of Peaks"),]$V2 #get number of found peaks (should be 2, possibly 1 if blank/low)
+  table_start <- which(df_peaks$V1 == "Peak#") #find where table headers start
+  area_col <- which(df_peaks[table_start,] == "Area") #get column of area
+  rtime_col <- which(df_peaks[table_start,] == "R.Time") #get column of retention time
+  if(num_peaks == 0) {peak1_area <- NA #get peak 1 info if present (should be CH4)
+                      peak1_rtime <- NA} else { 
+         peak1_area <- df_peaks[which(df_peaks$V1 == 1), area_col]
+         peak1_rtime <- df_peaks[which(df_peaks$V1 == 1), rtime_col]}
+  if(num_peaks <= 1) {peak2_area <- NA #get peak 2 info if present (should be CO2)
+                      peak2_rtime <- NA} else { 
+         peak2_area <- df_peaks[which(df_peaks$V1 == 2), area_col]
+         peak2_rtime <- df_peaks[which(df_peaks$V1 == 2), rtime_col]}
+  
+#ECD
+  ECD_peak_start <- which(df_loop2$V1 == "[Peak Table(Ch2)]") #Find ECD Peak Data start
+  ECD_peak_end <- nrow(df_loop2) #get peak data end
+  df_ecd_peaks <- df_loop2[ECD_peak_start:ECD_peak_end,] #get only ecd peak info
+  ecd_num_peaks <- df_ecd_peaks[which(df_ecd_peaks$V1 == "# of Peaks"),]$V2  #get number of found peaks (should be 1, possibly 0 if blank)
+  ecd_table_start <- which(df_ecd_peaks$V1 == "Peak#") #find ecd table headers
+  ecd_area_col <- which(df_ecd_peaks[table_start,] == "Area") #get column of area
+  ecd_rtime_col <- which(df_ecd_peaks[table_start,] == "R.Time") #get column of retention time
+  if(ecd_num_peaks == 0) {peak3_area <- NA #get peak info if present
+                         peak3_rtime <- NA } else {
+                           peak3_area <-df_ecd_peaks[which(df_ecd_peaks$V1 == 1), ecd_area_col]
+                           peak3_rtime <- df_ecd_peaks[which(df_ecd_peaks$V1 == 1), ecd_rtime_col]}
+  
+   sample_run_date <- as.Date(df_loop2$V2[which(df_loop2$V1 == "Acquired")[1]], format = "%m/%d/%Y %H:%M") #get the date sample was ran
+##Assign Values
+  Sample_Data[j,]$Sample_Name <- sample
+  Sample_Data[j,]$Area1 <- peak1_area
+  Sample_Data[j,]$RTime1 <- peak1_rtime
+  Sample_Data[j,]$Area2 <- peak2_area
+  Sample_Data[j,]$RTime2 <- peak2_rtime
+  Sample_Data[j,]$Area3 <- peak3_area
+  Sample_Data[j,]$RTime3 <- peak3_rtime
+  Sample_Data[j,]$NumPeakFID <- num_peaks
+  Sample_Data[j,]$NumPeakECD <- ecd_num_peaks
+  Sample_Data[j,]$Run_Date <- sample_run_date
+}
+
+```
+
+
+##QAQC Peak Count and Retention Time
+```{r}
+#Flag which samples have the wrong amount of peaks FID should have 2, ECD 1
+PeakFlags <- Sample_Data %>% mutate(FID_Peak_Flag = ifelse(NumPeakFID == 0, "Incorrect - No Peaks", ifelse(NumPeakFID == 1, "Incorrect - One Peak", ifelse(NumPeakFID == 2, "Correct", "Incorrect - Too Many Peaks")))) %>% mutate(ECD_Peak_Flag = ifelse(NumPeakECD == 0, "Incorrect - No Peaks", ifelse(NumPeakECD == 1, "Correct", "Incorrect - Too Many Peaks")))
+
+#Flag any retention times that are out of range for compound
+RTimeFlags <- PeakFlags %>% mutate(CH4_RTime_Flag = ifelse(RTime1 >= CH4_Low & RTime1 <= CH4_High, "Correct - CH4 RTime", "Incorrect - Wrong RTime")) %>% mutate(CO2_RTime_Flag = ifelse(RTime2 >= CO2_Low & RTime2 <= CO2_High, "Correct - CO2 RTime", "Incorrect - Wrong RTime")) %>% mutate(N2O_RTime_Flag = ifelse(RTime3 >= N2O_Low & RTime3 <= N2O_High, "Correct - N2O RTime", "Incorrect - Wrong RTime" ))
+
+#Display Flags
+paste0("If there are too many peaks there is likely a problem with the sample or run and the chromatogram should be checked, if there are too few they may be low/blanks, verify that concentration is low or get area manually")
+Flagged_FID_Peaks <- ifelse(RTimeFlags$FID_Peak_Flag %ilike% "Incorrect",paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$NumPeakFID), NA)
+Flagged_FID_Peaks2 <- na.omit(Flagged_FID_Peaks)
+paste("FID:",Flagged_FID_Peaks2)
+
+Flagged_ECD_Peaks <- ifelse(RTimeFlags$ECD_Peak_Flag %ilike% "Incorrect",paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$NumPeakECD), NA)
+Flagged_ECD_Peaks2 <- na.omit(Flagged_ECD_Peaks)
+paste("ECD:", Flagged_ECD_Peaks2)
+
+paste0("If RTime is wrong check that correct number of peaks were found, if not a peak may have been mislabeled, if peak number is correct then there may be a problem with the run, get area manually")
+CH4_Flagged_RTimes <- ifelse(RTimeFlags$CH4_RTime_Flag %ilike% "Incorrect", paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$RTime1), NA)
+CH4_Flagged_RTimes2 <- na.omit(CH4_Flagged_RTimes)
+paste("CH4: ", CH4_Flagged_RTimes2)
+
+CO2_Flagged_RTimes <- ifelse(RTimeFlags$CO2_RTime_Flag %ilike% "Incorrect", paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$RTime2), NA)
+CO2_Flagged_RTimes2 <- na.omit(CO2_Flagged_RTimes)
+paste("CO2: ", CO2_Flagged_RTimes2)
+
+N2O_Flagged_RTimes <- ifelse(RTimeFlags$N2O_RTime_Flag %ilike% "Incorrect", paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$RTime3), NA)
+N2O_Flagged_RTimes2 <- na.omit(N2O_Flagged_RTimes)
+paste("N2O: ", N2O_Flagged_RTimes2)
+
+Flagged_Data <- RTimeFlags
+
+
+
+
+```
+
+##Format Data
+```{r}
+#Assign 0 to Blanks without peaks
+Data_Zero <- Flagged_Data %>% mutate(Area1 =  ifelse(is.na(Area1) & Sample_Name %ilike% "Blank|0ppm", 0, Area1),
+                                     Area2 = ifelse(is.na(Area2) & Sample_Name %ilike% "Blank|0ppm|10K", 0, Area2),
+                                     Area3 = ifelse(is.na(Area3) & Sample_Name %ilike% "Blank|0ppm|10K", 0, Area3))
+
+#Rename Columns
+Data_RNM <- Data_Zero %>% rename(Sample_ID = Sample_Name,
+                                    CH4_Area = Area1,
+                                    CO2_Area = Area2,
+                                    N2O_Area = Area3)
+
+#Get Only Relevant Columns
+Data_Sum <- Data_RNM %>% dplyr::select(Sample_ID,
+                                       Run_Date,
+                                       CH4_Area,
+                                       CH4_RTime_Flag,
+                                       CO2_Area,
+                                       CO2_RTime_Flag,
+                                       N2O_Area,
+                                       N2O_RTime_Flag,
+                                       FID_Peak_Flag,
+                                       ECD_Peak_Flag)
+```
+
+##Add Standard Concentrations
+```{r}
+
+#Assign Source Standard Concentrations
+Data_Stds <- Data_Sum %>% 
+  mutate(CH4_STD = ifelse(Sample_ID %ilike% "HighTri", CH4_HighTri, 
+                               ifelse(Sample_ID %ilike% "MidTri", CH4_MidTri, 
+                                      ifelse(Sample_ID %ilike% "LowTri", CH4_LowTri, 
+                                             ifelse(Sample_ID %ilike% "10K", CH4_10K, ifelse(Sample_ID %ilike% "0ppm", 0, NA)))))) %>% 
+  mutate(CO2_STD = ifelse(Sample_ID %ilike% "HighTri", CO2_HighTri, 
+                               ifelse(Sample_ID %ilike% "MidTri", CO2_MidTri, 
+                                      ifelse(Sample_ID %ilike% "LowTri", CO2_LowTri, 
+                                             ifelse(Sample_ID %ilike% "10K", CO2_10K, ifelse(Sample_ID %ilike% "0ppm", 0, NA)))))) %>% 
+  mutate(N2O_STD = ifelse(Sample_ID %ilike% "HighTri", N2O_HighTri, 
+                               ifelse(Sample_ID %ilike% "MidTri", N2O_MidTri, 
+                                      ifelse(Sample_ID %ilike% "LowTri", N2O_LowTri, 
+                                             ifelse(Sample_ID %ilike% "10K", N2O_10K, ifelse(Sample_ID %ilike% "0ppm", 0, NA)))))) %>%
+  mutate(mL_STD = ifelse(Sample_ID %ilike% "Tri|10K", sub(".*_([0-9]+)mL.*", "\\1", Sample_ID), NA)) %>% #Get mL of source standard
+  mutate(mL_STD = as.numeric(mL_STD), #Convert Values
+         CH4_STD = as.numeric(CH4_STD),
+         CO2_STD = as.numeric(CO2_STD),
+         N2O_STD = as.numeric(N2O_STD)) %>% 
+  mutate(Conc_CH4 = round(CH4_STD * mL_STD / 24, digits = 4), #Calculate Concentrations of Standards
+         Conc_CO2 = round(CO2_STD * mL_STD / 24, digits = 4),
+         Conc_N2O = round(N2O_STD * mL_STD / 24, digits = 4),) %>%
+  mutate(Conc_CH4 = ifelse(Sample_ID %ilike% "0ppm", 0, Conc_CH4),
+         Conc_CO2 = ifelse(Sample_ID %ilike% "0ppm", 0, Conc_CO2),
+         Conc_N2O = ifelse(Sample_ID %ilike% "0ppm", 0, Conc_N2O),)
+
+```
+
+##Finalize Data
+```{r}
+raw <-Data_Stds %>% mutate(Standard = Standard_Type) %>%
+  mutate(Conc_CH4 = ifelse(Standard == "Half", Conc_CH4 * 2, Conc_CH4), #Adjust standard concentrations for dilutions if necessary
+  Conc_CO2 = ifelse(Standard == "Half", Conc_CO2 * 2, Conc_CO2),
+   Conc_N2O = ifelse(Standard == "Half", Conc_N2O * 2, Conc_N2O)) %>% 
+  mutate(Type = ifelse(Sample_ID %ilike% "Std|0ppm" & !(Sample_ID %ilike% "Chk|Check"), "Standard", 
+                       ifelse(Sample_ID %ilike% "Lab", "Lab air", 
+                              ifelse(Sample_ID %ilike% "Blank", "Blank", 
+                                     ifelse(Sample_ID %ilike% "Chk|Check", "ChkStd", "Sample") )))) %>% #Add Type
+  mutate(CH4_Area = as.numeric(CH4_Area),
+         Conc_CH4 = as.numeric(Conc_CH4),
+         CO2_Area = as.numeric(CO2_Area),
+         Conc_CO2 = as.numeric(Conc_CO2),
+         N2O_Area = as.numeric(N2O_Area),
+         Conc_N2O = as.numeric(Conc_N2O)
+   ) %>% #Ensure Numbers are numeric
+  dplyr::select(Sample_ID,
+                Type,
+                Run_Date,
+                CH4_Area,
+                Conc_CH4,
+                CH4_RTime_Flag,
+                CO2_Area,
+                Conc_CO2,
+                CO2_RTime_Flag,
+                N2O_Area,
+                Conc_N2O,
+                N2O_RTime_Flag,
+                FID_Peak_Flag,
+                ECD_Peak_Flag) #Select Wanted Columns
+  
+```
+
+# Assess standard curves CH4
+```{r , echo=FALSE}
+
+stds_ch4 <-  raw %>%
+  filter(str_detect(Type, "Standard"))
+
+#Correct data class
+stds_ch4[, "Conc_CH4"] <- as.numeric(stds_ch4[, "Conc_CH4"])
+
+#Separate Into Low and High
+
+mnmx_stds <- stds_ch4 %>% filter(Conc_CH4 > 0) %>% group_by(Run_Date) %>% mutate(Min = min(Conc_CH4), Max = max(Conc_CH4)) %>% dplyr::select(Run_Date, Min, Max) %>% unique()
+
+low_stds_ch4 <- stds_ch4  %>%
+  filter(!Conc_CH4 > low_std_crv_cutoff_ch4)
+
+low_std_crv_area_cutoff_CH4 <- low_stds_ch4$CH4_Area[which(low_stds_ch4$Conc_CH4 == max(low_stds_ch4$Conc_CH4))]
+
+low_stds_ch4$Conc_CH4 <- as.numeric(low_stds_ch4$Conc_CH4)
+
+
+high_stds_ch4 <- stds_ch4
+
+high_stds_ch4$Conc_CH4 <- as.numeric(high_stds_ch4$Conc_CH4)
+
+MidTri_12mL_area <- stds_ch4 %>% filter(Sample_ID %ilike% "12mL" & Sample_ID %ilike% "MidTri") %>% dplyr::select(Sample_ID, CH4_Area, CO2_Area, N2O_Area, Run_Date) %>% rename(MidTri_12mL_CH4_Area = CH4_Area,
+                                                   MidTri_12mL_CO2_Area = CO2_Area,                                                                                           MidTri_12mL_N2O_Area = N2O_Area)
+
+#High Curve for CH4
+CH4_Curve <- ggplot(high_stds_ch4, aes(Conc_CH4, CH4_Area, color = Run_Date)) + geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE) + labs(title = "High CH4 Std Curve")
+CH4_Curve
+
+ # Convert 'run date' to a factor for grouping
+    high_stds_ch4_grouped <- high_stds_ch4 %>%
+      mutate(Run_Date = as.factor(Run_Date))
+
+    
+  split_data <- high_stds_ch4_grouped %>%
+      group_by(Run_Date) %>%
+      group_split()
+  
+#run regression and get coefficients by Run
+ 
+Slope_CH4_raw_list <- map(split_data, ~ .x %>% mutate(Curve = "High",
+                                        R2 = summary(lm(CH4_Area ~ Conc_CH4, data = .))$adj.r.squared , 
+                                        Slope = coef(lm(CH4_Area ~ Conc_CH4, data = .))[2],
+                                        Intercept = coef(lm(CH4_Area ~ Conc_CH4, data = .))[1]))
+
+ Slope_CH4_raw <- bind_rows(Slope_CH4_raw_list)
+  
+ Slope_CH4_High <- Slope_CH4_raw %>% dplyr::select(Run_Date, Curve, R2, Slope, Intercept) %>% distinct()
+
+
+                              
+#low Curve for CH4
+CH4_Curve <- ggplot(low_stds_ch4, aes(Conc_CH4, CH4_Area, color = Run_Date)) + geom_point(size =
+                                                                          4) +
+  geom_smooth(method = "lm", se = FALSE) + labs(title = "Low CH4 Std Curve")
+CH4_Curve
+
+low_CH4_lm <- lm(low_stds_ch4$CH4_Area ~ low_stds_ch4$Conc_CH4)
+low_cf <- coef(low_CH4_lm)
+
+ # Convert 'run date' to a factor for grouping
+    low_stds_ch4_grouped <- low_stds_ch4 %>%
+      mutate(Run_Date = as.factor(Run_Date))
+
+  
+  split_data_l <- low_stds_ch4_grouped %>%
+      group_by(Run_Date) %>%
+      group_split()
+  
+  
+#run regression and get coefficients by Run
+ 
+Slope_CH4_raw_list_l <- map(split_data_l, ~ .x %>% mutate(Curve = "Low",
+                                        R2 = summary(lm(CH4_Area ~ Conc_CH4, data = .))$adj.r.squared , 
+                                        Slope = coef(lm(CH4_Area ~ Conc_CH4, data = .))[2],
+                                        Intercept = coef(lm(CH4_Area ~ Conc_CH4, data = .))[1]))
+
+ Slope_CH4_raw_l <- bind_rows(Slope_CH4_raw_list_l)
+  
+ Slope_CH4_Low <- Slope_CH4_raw_l %>% dplyr::select(Run_Date, Curve, R2, Slope, Intercept) %>% distinct()
+
+ Slope_CH4 <- rbind(Slope_CH4_High, Slope_CH4_Low)
+ 
+ #format dates
+ mnmx_stds <- mnmx_stds %>% mutate(Run_Date = paste0(Run_Date))
+ 
+ Slope_CH4 <- Slope_CH4 %>% mutate(Run_Date = paste0(Run_Date)) %>% mutate(Analyte = "CH4")
+ 
+ Slope_CH4_m <- left_join(Slope_CH4, mnmx_stds, by = join_by(Run_Date))
+
+#add new standard curve data to log
+log <- read.csv(log_path)
+head(log)
+log <- rbind(log, Slope_CH4)
+
+#remove possible duplicates from multiple QAQC attempts 
+
+log_CH4 <- log %>% distinct(.keep_all = TRUE)
+
+plot_log <- log_CH4 %>% mutate(Run_Date = parse_date_time(Run_Date, c("mdy","ymd") )) %>%
+  filter(Run_Date >= today() - months(12)) %>% filter(Analyte == "CH4")
+
+Slopes_chk <- ggplot(plot_log, aes(x = Run_Date, y = Slope, col = Curve)) +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+Slopes_chk
+
+
+#check r2
+
+ifelse(Slope_CH4_High$R2 < r2_cutoff, paste0("High_R2 is Bad","-", Slope_CH4_High$Run_Date), paste0("High_R2 is Good","-", Slope_CH4_High$Run_Date))
+
+ifelse(Slope_CH4_Low$R2 < r2_cutoff, paste0("Low_R2 is Bad","-", Slope_CH4_Low$Run_Date), paste0("Low_R2 is Good","-", Slope_CH4_Low$Run_Date))
+
+High_R2_Flags <- Slope_CH4_High %>% mutate(CH4_High_Flag = ifelse(R2 < r2_cutoff,"High_CH4_R2 is Bad", "")) %>% dplyr::select(CH4_High_Flag, Run_Date)
+
+
+Low_R2_Flags <- Slope_CH4_Low %>% mutate(CH4_Low_Flag = ifelse(R2 < r2_cutoff,"Low_CH4_R2 is Bad", "")) %>% dplyr::select(CH4_Low_Flag, Run_Date)
+
+Flags_df <- full_join(High_R2_Flags, Low_R2_Flags, by = join_by(Run_Date))
+
+```
+
+# Assess standard curves CO2
+```{r , echo=FALSE}
+
+stds_CO2 <-  raw %>%
+  filter(str_detect(Type, "Standard"))
+
+#Correct data class
+stds_CO2[, "Conc_CO2"] <- as.numeric(stds_CO2[, "Conc_CO2"])
+
+#Separate Into Low and High
+
+mnmx_stds <- stds_CO2 %>% filter(Conc_CO2 > 0) %>% group_by(Run_Date) %>% mutate(Min = min(Conc_CO2), Max = max(Conc_CO2)) %>% dplyr::select(Run_Date, Min, Max) %>% unique()
+
+
+high_stds_CO2 <- stds_CO2
+
+high_stds_CO2$Conc_CO2 <- as.numeric(high_stds_CO2$Conc_CO2)
+
+#High Curve for CO2
+CO2_Curve <- ggplot(high_stds_CO2, aes(Conc_CO2, CO2_Area, color = Run_Date)) + geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE) + labs(title = "CO2 Std Curve")
+CO2_Curve
+
+ # Convert 'run date' to a factor for grouping
+    high_stds_CO2_grouped <- high_stds_CO2 %>%
+      mutate(Run_Date = as.factor(Run_Date))
+
+    
+  split_data <- high_stds_CO2_grouped %>%
+      group_by(Run_Date) %>%
+      group_split()
+  
+#run regression and get coefficients by Run
+ 
+Slope_CO2_raw_list <- map(split_data, ~ .x %>% mutate(Curve = "Full",
+                                        R2 = summary(lm(CO2_Area ~ Conc_CO2, data = .))$adj.r.squared , 
+                                        Slope = coef(lm(CO2_Area ~ Conc_CO2, data = .))[2],
+                                        Intercept = coef(lm(CO2_Area ~ Conc_CO2, data = .))[1]))
+
+ Slope_CO2_raw <- bind_rows(Slope_CO2_raw_list)
+ 
+  mnmx_stds <- mnmx_stds %>% mutate(Run_Date = paste0(Run_Date))
+  
+ Slope_CO2 <- Slope_CO2_raw %>% dplyr::select(Run_Date, Curve, R2, Slope, Intercept) %>% distinct() %>% mutate(Run_Date = paste0(Run_Date)) %>% mutate(Analyte = "CO2")
+ 
+ Slope_CO2_m <- left_join(Slope_CO2, mnmx_stds, by = join_by(Run_Date)) %>% mutate(Run_Date = ymd(Run_Date))
+
+#add new standard curve data to log
+log <- log_CH4
+head(log)
+log <- rbind(log, Slope_CO2)
+
+#remove possible duplicates from multiple QAQC attempts 
+
+log_CO2 <- log %>% distinct(.keep_all = TRUE)
+
+plot_log <- log_CO2 %>% mutate(Run_Date = parse_date_time(Run_Date, c("mdy","ymd"))) %>%
+  filter(Run_Date >= today() - months(12)) %>% filter(Analyte == "CO2")
+
+Slopes_chk <- ggplot(plot_log, aes(x = Run_Date, y = Slope, col = Curve)) +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+Slopes_chk
+
+#write.csv(unique_log, log_path, row.names = FALSE)
+
+#check r2
+
+ifelse(Slope_CO2$R2 < r2_cutoff, paste0("CO2_R2 is Bad","-", Slope_CO2$Run_Date), paste0("CO2_R2 is Good","-", Slope_CO2$Run_Date))
+
+R2_Flags_CO2 <- Slope_CO2 %>% mutate(CO2_Flag = ifelse(R2 < r2_cutoff,"CO2_R2 is Bad", "")) %>% dplyr::select(CO2_Flag, Run_Date)
+
+Flags_df <- full_join(R2_Flags_CO2, Flags_df, by = join_by(Run_Date))
+
+```
+# Assess standard curves N2O
+```{r , echo=FALSE}
+
+stds_N2O <-  raw %>%
+  filter(str_detect(Type, "Standard"))
+
+#Correct data class
+stds_N2O[, "Conc_N2O"] <- as.numeric(stds_N2O[, "Conc_N2O"])
+
+#Separate Into Low and High
+
+mnmx_stds <- stds_N2O %>% filter(Conc_N2O > 0) %>% group_by(Run_Date) %>% mutate(Min = min(Conc_N2O), Max = max(Conc_N2O)) %>% dplyr::select(Run_Date, Min, Max) %>% unique()
+
+low_stds_N2O <- stds_N2O  %>%
+  filter(!Conc_N2O > low_std_crv_cutoff_N2O)
+
+low_std_crv_area_cutoff_N2O <- low_stds_N2O$N2O_Area[which(low_stds_N2O$Conc_N2O == max(low_stds_N2O$Conc_N2O))]
+
+low_stds_N2O$Conc_N2O <- as.numeric(low_stds_N2O$Conc_N2O)
+
+
+high_stds_N2O <- stds_N2O
+
+high_stds_N2O$Conc_N2O <- as.numeric(high_stds_N2O$Conc_N2O)
+
+#High Curve for N2O
+N2O_Curve <- ggplot(high_stds_N2O, aes(Conc_N2O, N2O_Area, color = Run_Date)) + geom_point(size = 4) +
+  geom_smooth(method = "lm", se = FALSE) + labs(title = "High N2O Std Curve")
+N2O_Curve
+
+ # Convert 'run date' to a factor for grouping
+    high_stds_N2O_grouped <- high_stds_N2O %>%
+      mutate(Run_Date = as.factor(Run_Date))
+
+    
+  split_data <- high_stds_N2O_grouped %>%
+      group_by(Run_Date) %>%
+      group_split()
+  
+#run regression and get coefficients by Run
+ 
+Slope_N2O_raw_list <- map(split_data, ~ .x %>% mutate(Curve = "High",
+                                        R2 = summary(lm(N2O_Area ~ Conc_N2O, data = .))$adj.r.squared , 
+                                        Slope = coef(lm(N2O_Area ~ Conc_N2O, data = .))[2],
+                                        Intercept = coef(lm(N2O_Area ~ Conc_N2O, data = .))[1]))
+
+ Slope_N2O_raw <- bind_rows(Slope_N2O_raw_list)
+  
+ Slope_N2O_High <- Slope_N2O_raw %>% dplyr::select(Run_Date, Curve, R2, Slope, Intercept) %>% distinct()
+
+
+                              
+#low Curve for N2O
+N2O_Curve <- ggplot(low_stds_N2O, aes(Conc_N2O, N2O_Area, color = Run_Date)) + geom_point(size =
+                                                                          4) +
+  geom_smooth(method = "lm", se = FALSE) + labs(title = "Low N2O Std Curve")
+N2O_Curve
+
+low_N2O_lm <- lm(low_stds_N2O$N2O_Area ~ low_stds_N2O$Conc_N2O)
+low_cf <- coef(low_N2O_lm)
+
+ # Convert 'run date' to a factor for grouping
+    low_stds_N2O_grouped <- low_stds_N2O %>%
+      mutate(Run_Date = as.factor(Run_Date))
+
+  
+  split_data_l <- low_stds_N2O_grouped %>%
+      group_by(Run_Date) %>%
+      group_split()
+  
+  
+#run regression and get coefficients by Run
+ 
+Slope_N2O_raw_list_l <- map(split_data_l, ~ .x %>% mutate(Curve = "Low",
+                                        R2 = summary(lm(N2O_Area ~ Conc_N2O, data = .))$adj.r.squared , 
+                                        Slope = coef(lm(N2O_Area ~ Conc_N2O, data = .))[2],
+                                        Intercept = coef(lm(N2O_Area ~ Conc_N2O, data = .))[1]))
+
+ Slope_N2O_raw_l <- bind_rows(Slope_N2O_raw_list_l)
+  
+ Slope_N2O_Low <- Slope_N2O_raw_l %>% dplyr::select(Run_Date, Curve, R2, Slope, Intercept) %>% distinct()
+ 
+ Slope_N2O <- rbind(Slope_N2O_High, Slope_N2O_Low)
+ 
+ #format dates
+ mnmx_stds <- mnmx_stds %>% mutate(Run_Date = paste0(Run_Date))
+ 
+ Slope_N2O <- Slope_N2O %>% mutate(Run_Date = paste0(Run_Date)) %>% mutate(Analyte = "N2O")
+ 
+ Slope_N2O_m <- left_join(Slope_N2O, mnmx_stds, by = join_by(Run_Date))
+
+#add new standard curve data to log
+log <- log_CO2
+head(log)
+log <- rbind(log, Slope_N2O)
+
+#remove possible duplicates from multiple QAQC attempts 
+
+unique_log <- log %>% distinct(.keep_all = TRUE)
+
+plot_log <- unique_log %>% mutate(Run_Date = parse_date_time(Run_Date, c("mdy","ymd") )) %>%
+  filter(Run_Date >= today() - months(12)) %>% filter(Analyte == "N2O")
+
+Slopes_chk <- ggplot(plot_log, aes(x = Run_Date, y = Slope, col = Curve)) +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+Slopes_chk
+
+#check r2
+
+ifelse(Slope_N2O_High$R2 < r2_cutoff, paste0("High_R2 is Bad","-", Slope_N2O_High$Run_Date), paste0("High_R2 is Good","-", Slope_N2O_High$Run_Date))
+
+ifelse(Slope_N2O_Low$R2 < r2_cutoff, paste0("Low_R2 is Bad","-", Slope_N2O_Low$Run_Date), paste0("Low_R2 is Good","-", Slope_N2O_Low$Run_Date))
+
+High_R2_Flags_N2O <- Slope_N2O_High %>% mutate(N2O_High_Flag = ifelse(R2 < r2_cutoff,"N2O_R2 is Bad", "")) %>% mutate(Analyte = "N2O") %>% dplyr::select(N2O_High_Flag, Run_Date)
+
+
+Low_R2_Flags_N2O <- Slope_N2O_Low %>% mutate(N2O_Low_Flag = ifelse(R2 < r2_cutoff,"N2O_R2 is Bad", "")) %>% mutate(Analyte = "N2O") %>% dplyr::select(N2O_Low_Flag, Run_Date)
+
+N2O_Flags_df <- full_join(High_R2_Flags_N2O, Low_R2_Flags_N2O, by = join_by(Run_Date))
+
+Flags_curves <- full_join(N2O_Flags_df, Flags_df, by = join_by(Run_Date))
+
+Flags_df <- Flags_curves %>% mutate(Flag = paste0(CH4_High_Flag, CH4_Low_Flag, CO2_Flag, N2O_High_Flag, N2O_Low_Flag)) %>% dplyr::select(Flag, Run_Date)
+
+```
+
+#Plot Check Areas over Time
+```{r ,echo = FALSE}
+
+old_check_log <- read.csv(check_log_path) %>% mutate(Run_Date = ymd(Run_Date))
+
+MT_areas <- stds_ch4 %>% filter(Sample_ID %ilike% "12mL" & Sample_ID %ilike% "MidTri") %>% dplyr::select(CH4_Area, CO2_Area, N2O_Area, Run_Date) %>% rename(MidTri_12mL_CH4_Area = CH4_Area,
+                                                   MidTri_12mL_CO2_Area = CO2_Area,                                                                                           MidTri_12mL_N2O_Area = N2O_Area) %>% mutate(Run_Date = ymd(Run_Date))
+
+new_log <- rbind(old_check_log, MT_areas) %>% mutate(Run_Date = ymd(Run_Date))
+
+ch4_area_plot <- ggplot(new_log, aes(x = Run_Date, y = MidTri_12mL_CH4_Area)) +
+  labs(title = "CH4 12mL Mid Tri Area") +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+ch4_area_plot
+
+co2_area_plot <- ggplot(new_log, aes(x = Run_Date, y = MidTri_12mL_CO2_Area)) +
+  labs(title = "CO2 12mL Mid Tri Area") +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+co2_area_plot
+
+n2o_area_plot <- ggplot(new_log, aes(x = Run_Date, y = MidTri_12mL_N2O_Area)) +
+  labs(title = "N2O 12mL Mid Tri Area") +
+  geom_point(size = 4) +
+ # ylim() +
+  theme_bw()
+
+n2o_area_plot
+
+
+
+```
+
+
+
+
+## Now calculate the CH4 in ppm  
+```{r Calculate Concetration, echo=FALSE}
+#head(raw)
+
+#pull out Samples
+manual_ch4 <- Manual_Areas %>%
+  filter(Analyte == "CH4") %>%
+  select(Sample_ID = Sample, Manual_CH4_Area = Area) %>%
+  mutate(Manual_CH4_Area = as.numeric(Manual_CH4_Area))
+
+Samples_1 <- raw %>%  
+  filter(str_detect(Type, "Sample")) %>%
+  left_join(manual_ch4, by = "Sample_ID") %>%
+  mutate(CH4_Area = coalesce(Manual_CH4_Area, CH4_Area)) %>%
+  mutate(Curve = ifelse(CH4_Area >= low_std_crv_area_cutoff_CH4, "High", "Low")) %>%
+  select(-Manual_CH4_Area)
+
+#head(Samples)
+
+
+Slope_CH4_m <-Slope_CH4_m %>% mutate(Run_Date = ymd(Run_Date))
+
+Samples_2 <- left_join(Samples_1, Slope_CH4_m, by = c("Run_Date", "Curve"))
+
+#Calculate CH4 concentrations in ppm
+Samples_CH4 <- Samples_2 %>% 
+  mutate(CH4_Conc_ppm = (CH4_Area - Intercept) / Slope)
+
+##########make flags for any dilutions needed 
+
+
+Samples_CH4$CH4_Flag <- ifelse(Samples_CH4$CH4_Conc_ppm > Samples_CH4$Max, "ADL", ifelse(Samples_CH4$CH4_Conc_ppm < Samples_CH4$Min, "BDL", "Within Range")) 
+
+Samples_CH4 <- Samples_CH4 %>% dplyr::select(-R2, 
+                                            -Slope,
+                                            -Intercept,
+                                            -Analyte,
+                                            -Min,
+                                            -Max,
+                                            -Curve)
+
+#head(Samples)
+
+```
+
+
+
+## Now calculate the CO2 in ppm  
+```{r Calculate Concetration, echo=FALSE}
+#head(raw)
+manual_CO2 <- Manual_Areas %>%
+  filter(Analyte == "CO2") %>%
+  select(Sample_ID = Sample, Manual_CO2_Area = Area) %>%
+  mutate(Manual_CO2_Area = as.numeric(Manual_CO2_Area))
+
+Samples_2 <- full_join(Samples_CH4, Slope_CO2_m, by = join_by(Run_Date)) %>% 
+  left_join(manual_CO2, by = "Sample_ID") %>%
+  mutate(CO2_Area = coalesce(Manual_CO2_Area, CO2_Area))%>%
+  select(-Manual_CO2_Area)
+
+#Calculate CO2 concentrations in ppm
+Samples <- Samples_2 %>% 
+  mutate(CO2_Conc_ppm = (CO2_Area - Intercept) / Slope)
+
+##########make flags for any dilutions needed 
+
+
+Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm > Samples$Max, "ADL", ifelse(Samples$CO2_Conc_ppm < Samples$Min, "BDL", "Within Range"))
+  
+Samples_CO2 <- Samples %>% dplyr::select(-R2, 
+                                            -Slope,
+                                            -Intercept,
+                                            -Analyte,
+                                            -Min,
+                                            -Max,
+                                            -Curve)
+
+#head(Samples)
+
+```
+
+## Now calculate the N2O in ppm  
+```{r Calculate Concetration, echo=FALSE}
+#head(raw)
+
+
+manual_N2O <- Manual_Areas %>%
+  filter(Analyte == "N2O") %>%
+  select(Sample_ID = Sample, Manual_N2O_Area = Area) %>%
+  mutate(Manual_N2O_Area = as.numeric(Manual_N2O_Area))
+
+Slope_N2O_m <-Slope_N2O_m %>% mutate(Run_Date = ymd(Run_Date))
+
+Samples_2 <- Samples_CO2 %>% mutate(Curve = ifelse(N2O_Area >= low_std_crv_area_cutoff_N2O, "High", "Low")) %>% left_join(Slope_N2O_m, by = c("Run_Date", "Curve")) %>% 
+  left_join(manual_N2O, by = "Sample_ID") %>%
+  mutate(N2O_Area = coalesce(Manual_N2O_Area, N2O_Area))%>%
+  select(-Manual_N2O_Area)
+
+#Calculate N2O concentrations in ppm
+Samples_N2O <- Samples_2 %>% 
+  mutate(N2O_Conc_ppm = (N2O_Area - Intercept) / Slope)
+
+##########make flags for any dilutions needed 
+
+Samples_N2O$N2O_Flag <- ifelse(Samples_N2O$N2O_Conc_ppm > Samples_N2O$Max, "ADL", ifelse(Samples_N2O$N2O_Conc_ppm < Samples_N2O$Min, "BDL", "Within Range")) 
+
+Samples <- Samples_N2O %>% dplyr::select(-R2, 
+                                             -Slope,
+                                             -Intercept,
+                                             -Analyte,
+                                             -Min,
+                                             -Max,
+                                             -Curve)
+
+#head(Samples)
+
+```
+
+# Aanlayze the CH4 Check Standards 
+```{r Asses CH4 Check Standards, echo=FALSE}
+
+chks_1 <-  raw %>%
+  filter(str_detect(Type, "ChkStd")) %>%
+  mutate(Curve = "High")
+
+#head(chks)
+
+chks_2 <- merge(chks_1, Slope_CH4)
+
+
+chks <- chks_2 %>% 
+  mutate(CH4_Conc_ppm = (CH4_Area - Intercept) / Slope)
+
+#calculate percent difference of check standards
+chks$Ch4_diff <- ((chks$CH4_Conc_ppm - level_ch4) / ((chks$CH4_Conc_ppm + level_ch4) /
+                                                       2)) * 100
+chks$CH4_diff_flag <-  ifelse(abs(chks$Ch4_diff) < 10, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+CH4_chks_percent <- (sum(chks$CH4_diff_flag == "YES") / nrow(chks)) * 100
+
+#report out if flags indicate need for rerun
+
+if (CH4_chks_percent >= chks_flag) {
+  message(">60% of CH4 Check Standards are within range of expected concentration - PROCEED")
+} else {
+  message("<60% of CH4 Check Standards are within range of expected concentration - REASSESS")
+}
+
+#now plot the Ch4 concentrations and the CO2 concentrations vs. the expected concentration
+#then also make the color the percent difference between the expected and observed concentration
+
+ch4_chk <-  ggplot(data = chks, aes(x = Run_Date, y = CH4_Conc_ppm, fill =
+                                      CH4_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c("NO, rerun" = "darkgrey", "YES" = "darkgreen")) +
+  theme_classic() + labs(x = " ", y = "Concentration (ppm)", title =
+                           "Check Stds: CH4") +
+  theme(legend.position = "bottom") +  geom_hline(
+    yintercept = level_ch4,
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  ) +
+  guides(fill = guide_legend(title = "% Difference <10%"))
+
+
+ch4_chk
+
+#Add Check Standard Flags
+
+flag_chk <- ifelse(CH4_chks_percent >= chks_flag,
+                "",
+               "; CH4 Check Standards out Of Range")
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_chk))
+
+```
+
+# Aanlayze the CO2 Check Standards 
+```{r Asses CO2 Check Standards, echo=FALSE}
+
+chks_1 <-  raw %>%
+  filter(str_detect(Type, "ChkStd")) %>%
+  mutate(Curve = "Full")
+
+#head(chks)
+
+chks_2 <- merge(chks_1, Slope_CO2)
+
+
+chks <- chks_2 %>% 
+  mutate(CO2_Conc_ppm = (CO2_Area - Intercept) / Slope)
+
+#calculate percent difference of check standards
+chks$CO2_diff <- ((chks$CO2_Conc_ppm - level_co2) / ((chks$CO2_Conc_ppm + level_co2) /
+                                                       2)) * 100
+chks$CO2_diff_flag <-  ifelse(abs(chks$CO2_diff) < 10, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+CO2_chks_percent <- (sum(chks$CO2_diff_flag == "YES") / nrow(chks)) * 100
+
+#report out if flags indicate need for rerun
+
+if (CO2_chks_percent >= chks_flag) {
+  message(">60% of CO2 Check Standards are within range of expected concentration - PROCEED")
+} else {
+  message("<60% of CO2 Check Standards are within range of expected concentration - REASSESS")
+}
+
+#now plot the CO2 concentrations and the CO2 concentrations vs. the expected concentration
+#then also make the color the percent difference between the expected and observed concentration
+
+CO2_chk <-  ggplot(data = chks, aes(x = Run_Date, y = CO2_Conc_ppm, fill =
+                                      CO2_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c("NO, rerun" = "darkgrey", "YES" = "darkgreen")) +
+  theme_classic() + labs(x = " ", y = "Concentration (ppm)", title =
+                           "Check Stds: CO2") +
+  theme(legend.position = "bottom") +  geom_hline(
+    yintercept = level_co2,
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  ) +
+  guides(fill = guide_legend(title = "% Difference <10%"))
+
+
+CO2_chk
+
+#Add Check Standard Flags
+
+flag_chk <- ifelse(CO2_chks_percent >= chks_flag,
+                "",
+               "; CO2 Check Standards out Of Range")
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_chk))
+
+```
+
+
+# Aanlayze the N2O Check Standards 
+```{r Asses N2O Check Standards, echo=FALSE}
+
+chks_1 <-  raw %>%
+  filter(str_detect(Type, "ChkStd")) %>%
+  mutate(Curve = "High")
+
+#head(chks)
+
+chks_2 <- merge(chks_1, Slope_N2O)
+
+
+chks <- chks_2 %>% 
+  mutate(N2O_Conc_ppm = (N2O_Area - Intercept) / Slope)
+
+#calculate percent difference of check standards
+chks$N2O_diff <- ((chks$N2O_Conc_ppm - level_n2o) / ((chks$N2O_Conc_ppm + level_n2o) /
+                                                       2)) * 100
+chks$N2O_diff_flag <-  ifelse(abs(chks$N2O_diff) < 10, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+N2O_chks_percent <- (sum(chks$N2O_diff_flag == "YES") / nrow(chks)) * 100
+
+#report out if flags indicate need for rerun
+
+if (N2O_chks_percent >= chks_flag) {
+  message(">60% of N2O Check Standards are within range of expected concentration - PROCEED")
+} else {
+  message("<60% of N2O Check Standards are within range of expected concentration - REASSESS")
+}
+
+#now plot the N2O concentrations and the N2O concentrations vs. the expected concentration
+#then also make the color the percent difference between the expected and observed concentration
+
+N2O_chk <-  ggplot(data = chks, aes(x = Run_Date, y = N2O_Conc_ppm, fill =
+                                      N2O_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c("NO, rerun" = "darkgrey", "YES" = "darkgreen")) +
+  theme_classic() + labs(x = " ", y = "Concentration (ppm)", title =
+                           "Check Stds: N2O") +
+  theme(legend.position = "bottom") +  geom_hline(
+    yintercept = level_n2o,
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  ) +
+  guides(fill = guide_legend(title = "% Difference <10%"))
+
+
+N2O_chk
+
+#Add Check Standard Flags
+
+flag_chk <- ifelse(N2O_chks_percent >= chks_flag,
+                "",
+               "; N2O Check Standards out Of Range")
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_chk))
+
+```
+
+# Analyze the CH4 Blanks 
+```{r Analyze CH4 Blanks, echo=FALSE}
+cat("Assess CH4 Blanks")
+
+CH4_blks <-  raw %>%
+  filter(str_detect(Type, "Blank"))
+
+
+#Pull out samples from df_all to calc quantile
+ samples_blanks <- raw %>%
+  filter(str_detect(Type, c("Sample")))
+
+#Calculating the lowest 25% of sample concentrations to compare to the blank concentrations
+
+blk_flag_CH4 <- quantile(samples_blanks$CH4_Area, prob = c(.25))   #this gives you the lower 25% quartile of the data
+CH4_blks$CH4_diff_flag <-  ifelse(CH4_blks$CH4_Area <= blk_flag_CH4, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+CH4_blks_percent <- (sum(CH4_blks$CH4_diff_flag == "YES") / nrow(CH4_blks)) *
+  100
+
+#report out if flags indicate need for rerun
+if (CH4_blks_percent >= blks_flag) {
+  message(">60% of CH4 Blanks are below the lower 25% quartile of samples - PROCEED")
+} else {
+  message("<60% of CH4 Blanks are lower 25% quartile of samples - REASSESS")
+}
+
+#plotting the blanks compared to the lower 25% of conc (what the flag is)
+CH4_blks_plot <-  ggplot(data = CH4_blks, aes(x = Run_Date, y = CH4_Area, fill =
+                                                CH4_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c(
+    "YES" = "deepskyblue3",
+    "NO, rerun" = "darkred"
+  )) +
+  theme_classic() + labs(x = " ", y = "CH4 Area", title = "CH4 Blanks") +
+  theme(legend.position = "bottom") +
+  geom_hline(
+    yintercept = as.numeric(blk_flag_CH4),
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  )  +
+  guides(fill = guide_legend(title = "Blank Conc <25% Quartile Samples"))
+
+print(CH4_blks_plot)
+
+
+#find average of run blanks for flagging samples later
+# Compute averages
+blk_avg_CH4 <- mean(CH4_blks$CH4_Area, na.rm = TRUE)
+
+
+# Create a data frame
+blank_avgs <- data.frame(Test = c("CH4"),
+                         Blank_Mean_Area = c(blk_avg_CH4))
+
+# Pretty print
+knitr::kable(blank_avgs, caption = "Mean Area of Blanks", digits = 4)
+
+
+#write out a flag if more than 60% of the blanks are above the lower 25% quantile of samples
+flag_blks <-  ifelse(CH4_blks_percent >= blks_flag,
+                 "",
+                 '; Blanks out of Range')
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_blks))
+
+
+
+
+```
+
+# Analyze the CO2 Blanks 
+```{r Analyze CO2 Blanks, echo=FALSE}
+cat("Assess CO2 Blanks")
+
+CO2_blks <-  raw %>%
+  filter(str_detect(Type, "Blank"))
+
+
+#Pull out samples from df_all to calc quantile
+ samples_blanks <- raw %>%
+  filter(str_detect(Type, c("Sample")))
+
+#Calculating the lowest 25% of sample concentrations to compare to the blank concentrations
+
+blk_flag_CO2 <- quantile(samples_blanks$CO2_Area, prob = c(.25))   #this gives you the lower 25% quartile of the data
+CO2_blks$CO2_diff_flag <-  ifelse(CO2_blks$CO2_Area <= blk_flag_CO2, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+CO2_blks_percent <- (sum(CO2_blks$CO2_diff_flag == "YES") / nrow(CO2_blks)) *
+  100
+
+#report out if flags indicate need for rerun
+if (CO2_blks_percent >= blks_flag) {
+  message(">60% of CO2 Blanks are below the lower 25% quartile of samples - PROCEED")
+} else {
+  message("<60% of CO2 Blanks are lower 25% quartile of samples - REASSESS")
+}
+
+#plotting the blanks compared to the lower 25% of conc (what the flag is)
+CO2_blks_plot <-  ggplot(data = CO2_blks, aes(x = Run_Date, y = CO2_Area, fill =
+                                                CO2_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c(
+    "YES" = "deepskyblue3",
+    "NO, rerun" = "darkred"
+  )) +
+  theme_classic() + labs(x = " ", y = "CO2 Area", title = "CO2 Blanks") +
+  theme(legend.position = "bottom") +
+  geom_hline(
+    yintercept = as.numeric(blk_flag_CO2),
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  )  +
+  guides(fill = guide_legend(title = "Blank Conc <25% Quartile Samples"))
+
+print(CO2_blks_plot)
+
+
+#find average of run blanks for flagging samples later
+# Compute averages
+blk_avg_CO2 <- mean(CO2_blks$CO2_Area, na.rm = TRUE)
+
+
+# Create a data frame
+blank_avgs <- data.frame(Test = c("CO2"),
+                         Blank_Mean_Area = c(blk_avg_CO2))
+
+# Pretty print
+knitr::kable(blank_avgs, caption = "Mean Area of Blanks", digits = 4)
+
+
+#write out a flag if more than 60% of the blanks are above the lower 25% quantile of samples
+flag_blks <-  ifelse(CO2_blks_percent >= blks_flag,
+                 "",
+                 '; Blanks out of Range')
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_blks))
+
+
+
+
+```
+
+# Analyze the N2O Blanks 
+```{r Analyze N2O Blanks, echo=FALSE}
+cat("Assess N2O Blanks")
+
+N2O_blks <-  raw %>%
+  filter(str_detect(Type, "Blank"))
+
+
+#Pull out samples from df_all to calc quantile
+ samples_blanks <- raw %>%
+  filter(str_detect(Type, c("Sample")))
+
+#Calculating the lowest 25% of sample concentrations to compare to the blank concentrations
+
+blk_flag_N2O <- quantile(samples_blanks$N2O_Area, prob = c(.25))   #this gives you the lower 25% quartile of the data
+N2O_blks$N2O_diff_flag <-  ifelse(N2O_blks$N2O_Area <= blk_flag_N2O, 'YES', 'NO, rerun')
+
+#calculate the percent of check standards that are within the range based on the flag
+N2O_blks_percent <- (sum(N2O_blks$N2O_diff_flag == "YES") / nrow(N2O_blks)) *
+  100
+
+#report out if flags indicate need for rerun
+if (N2O_blks_percent >= blks_flag) {
+  message(">60% of N2O Blanks are below the lower 25% quartile of samples - PROCEED")
+} else {
+  message("<60% of N2O Blanks are lower 25% quartile of samples - REASSESS")
+}
+
+#plotting the blanks compared to the lower 25% of conc (what the flag is)
+N2O_blks_plot <-  ggplot(data = N2O_blks, aes(x = Run_Date, y = N2O_Area, fill =
+                                                N2O_diff_flag)) +
+  geom_bar(stat = 'identity',
+    position = position_dodge2(preserve = "single")) +
+  scale_fill_manual(values = c(
+    "YES" = "deepskyblue3",
+    "NO, rerun" = "darkred"
+  )) +
+  theme_classic() + labs(x = " ", y = "N2O Area", title = "N2O Blanks") +
+  theme(legend.position = "bottom") +
+  geom_hline(
+    yintercept = as.numeric(blk_flag_N2O),
+    linetype = "dashed",
+    color = "black",
+    linewidth = 1
+  )  +
+  guides(fill = guide_legend(title = "Blank Conc <25% Quartile Samples"))
+
+print(N2O_blks_plot)
+
+
+#find average of run blanks for flagging samples later
+# Compute averages
+blk_avg_N2O <- mean(N2O_blks$N2O_Area, na.rm = TRUE)
+
+
+# Create a data frame
+blank_avgs <- data.frame(Test = c("N2O"),
+                         Blank_Mean_Area = c(blk_avg_N2O))
+
+# Pretty print
+knitr::kable(blank_avgs, caption = "Mean Area of Blanks", digits = 4)
+
+
+#write out a flag if more than 60% of the blanks are above the lower 25% quantile of samples
+flag_blks <-  ifelse(N2O_blks_percent >= blks_flag,
+                 "",
+                 '; Blanks out of Range')
+
+Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_blks))
+
+
+
+
+```
+
+# Check Range - CH4
+```{r, echo=FALSE}
+
+#check results
+#head(Samples)
+
+#quick first look at the samples
+ch4_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_ppm, fill =
+                                             CH4_Flag)) +
+  geom_bar(stat = 'identity') +
+  scale_fill_manual(values = c("Within Range" = "darkgreen",
+                    "ADL" = "darkred",
+                    "BDL" = "darkblue")) +
+  theme_classic() + labs(x = " ", y = "CH4 (ppm)", title = "CH4: Green = Within Range") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "bottom")
+
+
+ch4_samples
+
+
+
+```
+
+# Check Range - CO2
+```{r, echo=FALSE}
+
+#check results
+#head(Samples)
+
+#quick first look at the samples
+CO2_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_ppm, fill =
+                                             CO2_Flag)) +
+  geom_bar(stat = 'identity') +
+  scale_fill_manual(values = c("Within Range" = "darkgreen",
+                    "ADL" = "darkred",
+                    "BDL" = "darkblue")) +
+  theme_classic() + labs(x = " ", y = "CO2 (ppm)", title = "CO2: Green = Within Range") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "bottom")
+
+CO2_samples
+
+
+
+```
+
+# Check Range - N2O
+```{r, echo=FALSE}
+
+#check results
+#head(Samples)
+
+#quick first look at the samples
+N2O_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = N2O_Conc_ppm, fill =
+                                             N2O_Flag)) +
+  geom_bar(stat = 'identity') +
+  scale_fill_manual(values = c("Within Range" = "darkgreen",
+                    "ADL" = "darkred",
+                    "BDL" = "darkblue")) +
+  theme_classic() + labs(x = " ", y = "N2O (ppm)", title = "N2O: Green = Within Range") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "bottom")
+
+
+N2O_samples
+
+
+
+
+```
+
+
+# Calculate gas in water - CH4
+```{r, echo=FALSE}
+
+# Convert ppm CH4 to total uM CH4 in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol CH4 = ppm CH4*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate CH4 uM from ppm
+
+#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+Samples <- Samples %>% mutate(CH4_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+ch4_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (uM)", title = "CH4 Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+ch4_samples1
+
+```
+
+# Calculate gas in water - CO2
+```{r, echo=FALSE}
+
+# Convert ppm CO2 to total uM CO2 in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol CO2 = ppm CO2*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate CO2 uM from ppm
+
+#Samples$CO2_Conc_uM <- (Samples$CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#Samples$CO2_Conc_uM <- (Samples$CO2_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+Samples <- Samples %>% mutate(CO2_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+CO2_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (uM)", title = "CO2 Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+CO2_samples1
+
+```
+
+# Calculate gas in water - N2O
+```{r, echo=FALSE}
+
+# Convert ppm N2O to total uM N2O in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol N2O = ppm N2O*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate N2O uM from ppm
+
+#Samples$N2O_Conc_uM <- (Samples$N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#Samples$N2O_Conc_uM <- (Samples$N2O_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+Samples <- Samples %>% mutate(N2O_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+N2O_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = N2O_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "N2O (uM)", title = "N2O Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+N2O_samples1
+
+```
+
+# Merge samples with Metadata & check all samples are present 
+```{r check sample ids with metadata, echo=FALSE}
+
+cat("Merge Samples with Metadata")
+
+#check to see if all samples are present in the metadata
+all_present <- all(Clean_Metadata$Sample_Name %in% Samples$Sample_ID)
+
+if (all_present) {
+  message("All sample IDs are present in data")
+} else {
+  message("Some sample IDs are missing from data.")
+  
+  # Optional: Which ones are missing?
+  missing_ids <- setdiff(Clean_Metadata$Sample_Name, Samples$Sample_ID)
+  print(missing_ids)
+}
+
+
+
+#merge metadata with sample run data
+merged_data <- Clean_Metadata %>% rename(Sample_ID = Sample_Name) %>% left_join(Samples, by = join_by(Sample_ID))
+
+#might want to include a flag or something to see that all the samples are included?
+
+#add flags
+
+merged_2 <- merge(merged_data, Flags_df)
+merged_data <-merged_2 %>% mutate(Run_Flags = Flag)
+
+
+
+df_all_clean <- merged_data
+
+```
+
+## Organize Data  
+```{r, echo=FALSE}
+#check results
+  head(Samples)
+ 
+  #pull out what we need
+  df_all_clean_cols <- df_all_clean %>%
+    select(
+      Sample1,
+      Sample_Year,
+      Sample_Month,
+      Sample_Day,
+      Sample_Time,
+      Time_Zone,
+      G_W,
+      Sample_Plot,
+      Sample_Grid,
+      Sample_Depth,
+      Field_Notes,
+      Lab_Notes,
+      CH4_Conc_ppm,
+      CH4_Conc_uM,
+      CH4_Flag,
+      CO2_Conc_ppm,
+      CO2_Conc_uM,
+      CO2_Flag,
+      N2O_Conc_ppm,
+      N2O_Conc_uM,
+      N2O_Flag,
+      Run_Flags,
+      Run_Date
+    )
+ 
+  final_data_labeled <- df_all_clean_cols %>%
+    mutate(
+      Run_notes = run_notes, #new column with notes about the run
+      Analysis_rundate = Run_Date)
+ 
+  #rename columns
+  org_labeled_fin_data <- final_data_labeled %>%
+    rename(
+      CH4_Conc_Flag = CH4_Flag,
+      QAQC_Flags = Run_Flags,
+      CO2_Conc_Flag = CO2_Flag,
+      N2O_Conc_Flag = N2O_Flag,
+      
+    )
+ 
+  #Order Columns for Final Data Frame
+  All_Clean_Data <- org_labeled_fin_data %>%
+    select(
+     Sample1,
+     Sample_Year,
+     Sample_Month,
+     Sample_Day,
+     Sample_Time,
+     Time_Zone,
+     G_W,
+     Sample_Plot,
+     Sample_Grid,
+     Sample_Depth,
+     Field_Notes,
+     Lab_Notes,
+     CH4_Conc_ppm,
+     CH4_Conc_uM,
+     CH4_Conc_Flag,
+     CO2_Conc_ppm,
+     CO2_Conc_uM,
+     CO2_Conc_Flag,
+     N2O_Conc_ppm,
+     N2O_Conc_uM,
+     N2O_Conc_Flag,
+     QAQC_Flags,
+     Analysis_rundate,
+     Run_notes
+    )
+  head(All_Clean_Data)
+
+```
+
+
+
+## Visualize Data CH4
+```{r Visualize Data CH4, fig.height=10, echo=FALSE}
+cat("Visualize Data CH4")
+
+### Ammonia 
+CH4_forplot <- All_Clean_Data
+
+#group the data for plotting
+CH4_forplot <- CH4_forplot %>%
+  group_by(Sample_Depth) %>%
+  mutate(row_num = factor(row_number())) %>%  # create row_num as factor per group
+  ungroup() %>%
+  mutate(Depth1 = ifelse(Sample_Depth == "ATM", "Atmospheric", paste0(Sample_Depth, " cm"))) %>% mutate(Depth = factor(Depth1, levels = c("Atmospheric", "10 cm", "20 cm", "35 cm", "50 cm")))
+
+#create plot
+viz_CH4_plot <- ggplot(data = CH4_forplot, aes(
+  x = as.factor(Sample_Grid),
+  y = CH4_Conc_ppm,
+  fill = as.factor(Sample_Plot)
+)) +
+  geom_col(stat = "identity", 
+           position = position_dodge2(padding = 0.1, 
+                                      width = 0.5, 
+                                      preserve =  "single" )) +
+  facet_grid(Depth ~ Sample_Plot, 
+             scales = "free_y") +
+  scale_fill_manual(
+    breaks = c(
+       "Control", "Saltwater", "Freshwater"),
+    values = c("Control" = "springgreen2", "Freshwater" = "cyan2",
+                                      "Saltwater" = "violetred2"),
+    name = "Plot:"
+  ) +
+  theme_classic() +
+  labs(
+    x = " ",
+    y = "CH4 Conc (ppm)",
+    title = "TEMPEST: Soil Gas Well CH4"
+  ) +
+  theme(legend.position = "right") +
+  scale_x_discrete(drop = TRUE, limits = rev) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8),
+      legend.key = element_rect("black"),
+    legend.position = "none"
+    ) + 
+  coord_flip()
+print(viz_CH4_plot)
+
+```
+
+## Visualize Data CO2
+```{r Visualize Data CO2, fig.height=10, echo=FALSE}
+cat("Visualize Data CO2")
+
+### Ammonia 
+CO2_forplot <- All_Clean_Data
+
+#group the data for plotting
+CO2_forplot <- CO2_forplot %>%
+  group_by(Sample_Depth) %>%
+  mutate(row_num = factor(row_number())) %>%  # create row_num as factor per group
+  ungroup() %>%
+  mutate(Depth1 = ifelse(Sample_Depth == "ATM", "Atmospheric", paste0(Sample_Depth, " cm"))) %>% mutate(Depth = factor(Depth1, levels = c("Atmospheric", "10 cm", "20 cm", "35 cm", "50 cm")))
+
+#create plot
+viz_CO2_plot <- ggplot(data = CO2_forplot, aes(
+  x = as.factor(Sample_Grid),
+  y = CO2_Conc_ppm,
+  fill = as.factor(Sample_Plot)
+)) +
+  geom_col(stat = "identity", 
+           position = position_dodge2(padding = 0.1, 
+                                      width = 0.5, 
+                                      preserve =  "single" )) +
+  facet_grid(Depth ~ Sample_Plot, 
+             scales = "free_y") +
+  scale_fill_manual(
+    breaks = c(
+       "Control", "Saltwater", "Freshwater"),
+    values = c("Control" = "springgreen2", "Freshwater" = "cyan2",
+                                      "Saltwater" = "violetred2"),
+    name = "Plot:"
+  ) +
+  theme_classic() +
+  labs(
+    x = " ",
+    y = "CO2 Conc (ppm)",
+    title = "TEMPEST: Soil Gas Well CO2"
+  ) +
+  theme(legend.position = "right") +
+  scale_x_discrete(drop = TRUE, limits = rev) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8),
+      legend.key = element_rect("black"),
+    legend.position = "none"
+    ) + 
+  coord_flip()
+print(viz_CO2_plot)
+
+```
+\newpage
+
+## Visualize Data N2O
+```{r Visualize Data N2O, fig.height=10, echo=FALSE}
+cat("Visualize Data N2O")
+
+### Ammonia 
+N2O_forplot <- All_Clean_Data
+
+#group the data for plotting
+N2O_forplot <- N2O_forplot %>%
+  group_by(Sample_Depth) %>%
+  mutate(row_num = factor(row_number())) %>%  # create row_num as factor per group
+  ungroup() %>%
+  mutate(Depth1 = ifelse(Sample_Depth == "ATM", "Atmospheric", paste0(Sample_Depth, " cm"))) %>% mutate(Depth = factor(Depth1, levels = c("Atmospheric", "10 cm", "20 cm", "35 cm", "50 cm")))
+
+#create plot
+viz_N2O_plot <- ggplot(data = N2O_forplot, aes(
+  x = as.factor(Sample_Grid),
+  y = N2O_Conc_ppm,
+  fill = as.factor(Sample_Plot)
+)) +
+  geom_col(stat = "identity", 
+           position = position_dodge2(padding = 0.1, 
+                                      width = 0.5, 
+                                      preserve =  "single" )) +
+  facet_grid(Depth ~ Sample_Plot, 
+             scales = "free_y") +
+  scale_fill_manual(
+    breaks = c(
+       "Control", "Saltwater", "Freshwater"),
+    values = c("Control" = "springgreen2", "Freshwater" = "cyan2",
+                                      "Saltwater" = "violetred2"),
+    name = "Plot:"
+  ) +
+  theme_classic() +
+  labs(
+    x = " ",
+    y = "N2O Conc (ppm)",
+    title = "TEMPEST: Soil Gas Well N2O"
+  ) +
+  theme(legend.position = "right") +
+  scale_x_discrete(drop = TRUE, limits = rev) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8),
+      legend.key = element_rect("black"),
+    legend.position = "none"
+    ) + 
+  coord_flip()
+print(viz_N2O_plot)
+
+```
+\newpage
+
+#Visualize Data CH4 by Replicate
+```{r, echo=FALSE}
+#ensure points are in correct order
+
+CH4_forplot_1 <- CH4_forplot %>% filter(Sample_Depth != "ATM") %>% mutate(Depth_cm = as.numeric(Sample_Depth))
+
+#make plot
+viz_CH4_plot_2 <- ggplot(data = CH4_forplot_1, aes(x = CH4_Conc_ppm, y = as.numeric(Depth_cm), color = Sample_Grid)) +
+  geom_point(size = 3) +
+  geom_path(linewidth = 1) +
+  facet_grid(Sample_Plot ~ ., scales = "fixed") +
+  labs(
+    x = "CH4 Conc (ppm)",
+    y = "Depth (cm)",
+    title = "TEMPEST: Soil Gas Well CH4 by Replicate",
+    color = "Sample Grid:"
+  ) +
+  scale_color_manual(
+    values = c(
+      "C3" = "#FFD500",
+      "C6" = "#00D0FF",
+      "F4" = "#FF0075",
+      "H3" = "#80d280",
+      "H6" = "#ff6040"
+    )) +
+  scale_y_reverse(breaks = c(10, 20, 35, 50), limits = c(55, 5)) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8
+    )
+  )
+
+viz_CH4_plot_2
+```
+
+#Visualize Data CO2 by Replicate
+```{r, echo=FALSE}
+#ensure points are in correct order
+
+CO2_forplot_1 <- CO2_forplot %>% filter(Sample_Depth != "ATM") %>% mutate(Depth_cm = as.numeric(Sample_Depth))
+
+#make plot
+viz_CO2_plot_2 <- ggplot(data = CO2_forplot_1, aes(x = CO2_Conc_ppm, y = as.numeric(Depth_cm), color = Sample_Grid)) +
+  geom_point(size = 3) +
+  geom_path(linewidth = 1) +
+  facet_grid(Sample_Plot ~ ., scales = "fixed") +
+  labs(
+    x = "CO2 Conc (ppm)",
+    y = "Depth (cm)",
+    title = "TEMPEST: Soil Gas Well CO2 by Replicate",
+    color = "Sample Grid:"
+  ) +
+  scale_color_manual(
+    values = c(
+      "C3" = "#FFD500",
+      "C6" = "#00D0FF",
+      "F4" = "#FF0075",
+      "H3" = "#80d280",
+      "H6" = "#ff6040"
+    )) +
+  scale_y_reverse(breaks = c(10, 20, 35, 50), limits = c(55, 5)) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8
+    )
+  )
+
+viz_CO2_plot_2
+```
+
+#Visualize Data N2O by Replicate
+```{r, echo=FALSE}
+#ensure points are in correct order
+
+N2O_forplot_1 <- N2O_forplot %>% filter(Sample_Depth != "ATM") %>% mutate(Depth_cm = as.numeric(Sample_Depth))
+
+#make plot
+viz_N2O_plot_2 <- ggplot(data = N2O_forplot_1, aes(x = N2O_Conc_ppm, y = as.numeric(Depth_cm), color = Sample_Grid)) +
+  geom_point(size = 3) +
+  geom_path(linewidth = 1) +
+  facet_grid(Sample_Plot ~ ., scales = "fixed") +
+  labs(
+    x = "N2O Conc (ppm)",
+    y = "Depth (cm)",
+    title = "TEMPEST: Soil Gas Well N2O by Replicate",
+    color = "Sample Grid:"
+  ) +
+  scale_color_manual(
+    values = c(
+      "C3" = "#FFD500",
+      "C6" = "#00D0FF",
+      "F4" = "#FF0075",
+      "H3" = "#80d280",
+      "H6" = "#ff6040"
+    )) +
+  scale_y_reverse(breaks = c(10, 20, 35, 50), limits = c(55, 5)) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      linewidth = 0.8
+    )
+  )
+
+viz_N2O_plot_2
+```
+
+
+
+##Export Data
+```{r, echo=FALSE}
+#Write Data
+write.csv(All_Clean_Data, final_path, row.names = FALSE)
+
+#Write Logs
+write.csv(unique_log, log_path, row.names = FALSE)
+
+write.csv(new_log, check_log_path, row.names = FALSE)
+#end
+```
+
+#end
