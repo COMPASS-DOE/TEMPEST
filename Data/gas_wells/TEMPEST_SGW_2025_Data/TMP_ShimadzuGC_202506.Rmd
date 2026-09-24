@@ -29,12 +29,12 @@ Metadata_path = "Metadata/TEMPEST_SGAS_202506_ALL_WORKING.csv"
 
 
 # Define the file path for QAQC log file - NO Need to change just check year
-log_path <- "GCReW_CH4_QAQC_Log.csv"
-check_log_path <- "GCReW_Check_QAQC_Log.csv"
+log_path <- "GC_QAQC_Log.csv"
+check_log_path <- "GC_Check_QAQC_Log.csv"
 
 
 # Define final path for data be sure to change year and month and run number
-final_path <- "Processed Data/TMP2025_April.csv"
+final_path <- "Processed Data/TMP2025_June.csv"
 
 ##Standard Type ("Actual" or "Half")
  #LTREB, SMARTX, and GENX PW Samples use "Half", others should use "Actual"
@@ -62,7 +62,7 @@ volume_g = 0.015 #volume of gas (in liters) in syringe when equilibrized
 volume_w = 0.015 #volume of water (in liters) in syringe when equilibrized (should be equal to volume_g)
 
 #record any notes about the run or anything other info here:
-run_notes <- ""
+run_notes <- " Run 8/31 - Blank8 -> CheckStd, Run 9/02 - Blank1,2,4,5,11 -> ChkStd -- Corrected"
 
 #Collection_Dates = "Raw Data/Sample_Collection_Dates_2024.csv"
 
@@ -87,6 +87,11 @@ pacman::p_load(
   tidyverse,
   lubridate)
 
+#add figure alignment for pdf output
+knitr::opts_chunk$set(
+  fig.align = 'left',
+  echo = FALSE
+)
 ##Low & High Standard Curve Cutoffs
 low_std_crv_cutoff_ch4 <- 100
 low_std_crv_cutoff_N2O <- 50.2
@@ -228,8 +233,8 @@ for(j in 1:(length(Numbers)-1)) {
   df_ecd_peaks <- df_loop2[ECD_peak_start:ECD_peak_end,] #get only ecd peak info
   ecd_num_peaks <- df_ecd_peaks[which(df_ecd_peaks$V1 == "# of Peaks"),]$V2  #get number of found peaks (should be 1, possibly 0 if blank)
   ecd_table_start <- which(df_ecd_peaks$V1 == "Peak#") #find ecd table headers
-  ecd_area_col <- which(df_ecd_peaks[table_start,] == "Area") #get column of area
-  ecd_rtime_col <- which(df_ecd_peaks[table_start,] == "R.Time") #get column of retention time
+  ecd_area_col <- which(df_ecd_peaks[ecd_table_start,] == "Area") #get column of area
+  ecd_rtime_col <- which(df_ecd_peaks[ecd_table_start,] == "R.Time") #get column of retention time
   if(ecd_num_peaks == 0) {peak3_area <- NA #get peak info if present
                          peak3_rtime <- NA } else {
                            peak3_area <-df_ecd_peaks[which(df_ecd_peaks$V1 == 1), ecd_area_col]
@@ -261,7 +266,7 @@ PeakFlags <- Sample_Data %>% mutate(FID_Peak_Flag = ifelse(NumPeakFID == 0, "Inc
 RTimeFlags <- PeakFlags %>% mutate(CH4_RTime_Flag = ifelse(RTime1 >= CH4_Low & RTime1 <= CH4_High, "Correct - CH4 RTime", "Incorrect - Wrong RTime")) %>% mutate(CO2_RTime_Flag = ifelse(RTime2 >= CO2_Low & RTime2 <= CO2_High, "Correct - CO2 RTime", "Incorrect - Wrong RTime")) %>% mutate(N2O_RTime_Flag = ifelse(RTime3 >= N2O_Low & RTime3 <= N2O_High, "Correct - N2O RTime", "Incorrect - Wrong RTime" ))
 
 #Display Flags
-paste0("If there are too many peaks there is likely a problem with the sample or run and the chromatogram should be checked, if there are too few they may be low/blanks, verify that concentration is low or get area manually")
+paste0("If there are too many peaks there it's possible there is a problem with the sample or run and the chromatogram should be checked, if there are too few they may be low/blanks, verify that concentration is low or get area manually")
 Flagged_FID_Peaks <- ifelse(RTimeFlags$FID_Peak_Flag %ilike% "Incorrect",paste0(RTimeFlags$Sample_Name, "; ", RTimeFlags$NumPeakFID), NA)
 Flagged_FID_Peaks2 <- na.omit(Flagged_FID_Peaks)
 paste("FID:",Flagged_FID_Peaks2)
@@ -758,7 +763,7 @@ n2o_area_plot
 
 
 ## Now calculate the CH4 in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration CH4, echo=FALSE}
 #head(raw)
 
 #pull out Samples
@@ -771,7 +776,7 @@ Samples_1 <- raw %>%
   filter(str_detect(Type, "Sample")) %>%
   left_join(manual_ch4, by = "Sample_ID") %>%
   mutate(CH4_Area = coalesce(Manual_CH4_Area, CH4_Area)) %>%
-  mutate(Curve = ifelse(CH4_Area >= low_std_crv_area_cutoff_CH4, "High", "Low")) %>%
+  mutate(Curve = ifelse(CH4_Area >= mean(low_std_crv_area_cutoff_CH4), "High", "Low")) %>%
   select(-Manual_CH4_Area)
 
 #head(Samples)
@@ -803,9 +808,8 @@ Samples_CH4 <- Samples_CH4 %>% dplyr::select(-R2,
 ```
 
 
-
 ## Now calculate the CO2 in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration CO2, echo=FALSE}
 #head(raw)
 manual_CO2 <- Manual_Areas %>%
   filter(Analyte == "CO2") %>%
@@ -839,7 +843,7 @@ Samples_CO2 <- Samples %>% dplyr::select(-R2,
 ```
 
 ## Now calculate the N2O in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration N2O, echo=FALSE}
 #head(raw)
 
 
@@ -850,7 +854,7 @@ manual_N2O <- Manual_Areas %>%
 
 Slope_N2O_m <-Slope_N2O_m %>% mutate(Run_Date = ymd(Run_Date))
 
-Samples_2 <- Samples_CO2 %>% mutate(Curve = ifelse(N2O_Area >= low_std_crv_area_cutoff_N2O, "High", "Low")) %>% left_join(Slope_N2O_m, by = c("Run_Date", "Curve")) %>% 
+Samples_2 <- Samples_CO2 %>% mutate(Curve = ifelse(N2O_Area >= mean(low_std_crv_area_cutoff_N2O), "High", "Low")) %>% left_join(Slope_N2O_m, by = c("Run_Date", "Curve")) %>% 
   left_join(manual_N2O, by = "Sample_ID") %>%
   mutate(N2O_Area = coalesce(Manual_N2O_Area, N2O_Area))%>%
   select(-Manual_N2O_Area)
@@ -1067,7 +1071,10 @@ Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_chk))
 cat("Assess CH4 Blanks")
 
 CH4_blks <-  raw %>%
-  filter(str_detect(Type, "Blank"))
+  filter(str_detect(Type, "Blank")) %>%
+  filter(!(Sample_ID %in% c("Blank8") & Run_Date == "2026-08-31")) %>%
+  filter(!(Sample_ID %in% c("Blank1", "Blank2", "Blank4", "Blank5", "Blank11") & Run_Date == "2026-09-02"))
+  
 
 
 #Pull out samples from df_all to calc quantile
@@ -1142,7 +1149,9 @@ Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_blks))
 cat("Assess CO2 Blanks")
 
 CO2_blks <-  raw %>%
-  filter(str_detect(Type, "Blank"))
+  filter(str_detect(Type, "Blank")) %>%
+  filter(!(Sample_ID %in% c("Blank8") & Run_Date == "2026-08-31")) %>%
+  filter(!(Sample_ID %in% c("Blank1", "Blank2", "Blank4", "Blank5", "Blank11") & Run_Date == "2026-09-02"))
 
 
 #Pull out samples from df_all to calc quantile
@@ -1217,7 +1226,9 @@ Flags_df <- Flags_df %>% mutate(Flag = paste0(Flag, flag_blks))
 cat("Assess N2O Blanks")
 
 N2O_blks <-  raw %>%
-  filter(str_detect(Type, "Blank"))
+  filter(str_detect(Type, "Blank"))%>%
+  filter(!(Sample_ID %in% c("Blank8") & Run_Date == "2026-08-31")) %>%
+  filter(!(Sample_ID %in% c("Blank1", "Blank2", "Blank4", "Blank5", "Blank11") & Run_Date == "2026-09-02"))
 
 
 #Pull out samples from df_all to calc quantile

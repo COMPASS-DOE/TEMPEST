@@ -29,8 +29,8 @@ Metadata_path = "Metadata/"
 
 
 # Define the file path for QAQC log file - NO Need to change just check year
-log_path <- "GCReW_CH4_QAQC_Log.csv"
-check_log_path <- "GCReW_Check_QAQC_Log.csv"
+log_path <- "GC_CH4_QAQC_Log.csv"
+check_log_path <- "GC_Check_QAQC_Log.csv"
 
 
 # Define final path for data be sure to change year and month and run number
@@ -86,6 +86,12 @@ pacman::p_load(
   data.table,
   tidyverse,
   lubridate)
+
+#add figure alignment for pdf output
+knitr::opts_chunk$set(
+  fig.align = 'left',
+  echo = FALSE
+)
 
 ##Low & High Standard Curve Cutoffs
 low_std_crv_cutoff_ch4 <- 100
@@ -228,8 +234,8 @@ for(j in 1:(length(Numbers)-1)) {
   df_ecd_peaks <- df_loop2[ECD_peak_start:ECD_peak_end,] #get only ecd peak info
   ecd_num_peaks <- df_ecd_peaks[which(df_ecd_peaks$V1 == "# of Peaks"),]$V2  #get number of found peaks (should be 1, possibly 0 if blank)
   ecd_table_start <- which(df_ecd_peaks$V1 == "Peak#") #find ecd table headers
-  ecd_area_col <- which(df_ecd_peaks[table_start,] == "Area") #get column of area
-  ecd_rtime_col <- which(df_ecd_peaks[table_start,] == "R.Time") #get column of retention time
+  ecd_area_col <- which(df_ecd_peaks[ecd_table_start,] == "Area") #get column of area
+  ecd_rtime_col <- which(df_ecd_peaks[ecd_table_start,] == "R.Time") #get column of retention time
   if(ecd_num_peaks == 0) {peak3_area <- NA #get peak info if present
                          peak3_rtime <- NA } else {
                            peak3_area <-df_ecd_peaks[which(df_ecd_peaks$V1 == 1), ecd_area_col]
@@ -758,7 +764,7 @@ n2o_area_plot
 
 
 ## Now calculate the CH4 in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration CH4, echo=FALSE}
 #head(raw)
 
 #pull out Samples
@@ -805,7 +811,7 @@ Samples_CH4 <- Samples_CH4 %>% dplyr::select(-R2,
 
 
 ## Now calculate the CO2 in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration CO2, echo=FALSE}
 #head(raw)
 manual_CO2 <- Manual_Areas %>%
   filter(Analyte == "CO2") %>%
@@ -839,7 +845,7 @@ Samples_CO2 <- Samples %>% dplyr::select(-R2,
 ```
 
 ## Now calculate the N2O in ppm  
-```{r Calculate Concetration, echo=FALSE}
+```{r Calculate Concetration N2O, echo=FALSE}
 #head(raw)
 
 
