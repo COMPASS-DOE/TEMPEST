@@ -1,0 +1,76 @@
+﻿Machine,User,Run_Date,Sample_Type,Type1,Sample ID,Dilution_Factor,STD_Conc,CO2_Area,CH4_Area,Lab_Notes
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_5ppm001,,5,26967,3503,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_5ppm,,5,21327,3714,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_25ppm001,,25,29222,14311,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_25ppm,,25,29114,13828,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_50ppm001,,50,15929,25758,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_50ppm,,50,15931,26348,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_100ppm,,100,15503,50721,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_100ppm,,100,15988,50154,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_250ppm001,,250,15301,127282,
+Varian GC,,20230105,STD_CH4,STDs,CH4_STD_250ppm,,250,17183,126817,
+Varian GC,,20230105,STD_CO2,STDs,CO2_STD_125ppm,,125,34560,735,
+Varian GC,,20230104,Unknown,Sample,Control_C3_10cm,,,631418,469,
+Varian GC,,20230104,Unknown,Sample,Control_C3_20cm,,,891692,225,
+Varian GC,,20230104,Unknown,Sample,Control_C3_35cm,,,1217519,0,No assigned peak for CH4
+Varian GC,,20230104,Unknown,Sample,Control_C3_50cm,,,1958093,0,No assigned peak for CH4
+Varian GC,,20230104,Unknown,Sample,Control_C6_10cm,,,718293,613,
+Varian GC,,20230105,Unknown,Sample,Control_C6_20cm,,,2005323,323,
+Varian GC,,20230105,Unknown,Sample,Control_C6_35cm,,,1720779,261,
+Varian GC,,20230105,Unknown,Sample,Control_C6_50cm,,,1990956,252,
+Varian GC,,20230105,Unknown,Sample,Control_F4_10cm,,,1251297,482,
+Varian GC,,20230105,Unknown,Sample,Control_F4_20cm,,,2531959,315,
+Varian GC,,20230105,Unknown,Sample,Control_F4_35cm,,,1320956,531,
+Varian GC,,20230105,Unknown,Sample,Control_F4_50cm,,,1995462,310,
+Varian GC,,20230105,Unknown,Sample,Control_F4_ATM,,,62823,774,
+Varian GC,,20230105,Unknown,Sample,Control_H3_10cm,,,520153,366,
+Varian GC,,20230105,Unknown,Sample,Control_H3_20cm,,,1245447,215,
+Varian GC,,20230105,Unknown,Sample,Control_H3_35cm,,,1606261,202,
+Varian GC,,20230105,Unknown,Sample,Control_H3_50cm,,,1809922,615,
+Varian GC,,20230105,Unknown,Sample,Control_H6_10cm,,,225646,468,
+Varian GC,,20230105,Unknown,Sample,Control_H6_20cm,,,1027454,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,Control_H6_35cm,,,1867967,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,Control_H6_50cm,,,1844555,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_C3_10cm,,,712873,386,
+Varian GC,,20230105,Unknown,Sample,FW_C3_20cm,,,1722376,205,
+Varian GC,,20230105,Unknown,Sample,FW_C3_35cm,,,1680735,241,
+Varian GC,,20230105,Unknown,Sample,FW_C3_50cm,,,3217005,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_C6_10cm,,,2242927,290,
+Varian GC,,20230105,Unknown,Sample,FW_C6_20cm,,,2369958,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_C6_35cm,,,2795676,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_C6_50cm,,,4108871,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_F4_10cm,,,774053,483,
+Varian GC,,20230105,Unknown,Sample,FW_F4_20cm,,,1677778,211,
+Varian GC,,20230105,Unknown,Sample,FW_F4_35cm,,,1845200,208,
+Varian GC,,20230105,Unknown,Sample,FW_F4_50cm,,,3511911,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_F4_ATM,,,55656,700,
+Varian GC,,20230105,Unknown,Sample,FW_H3_10cm,,,1122956,455,
+Varian GC,,20230105,Unknown,Sample,FW_H3_20cm,,,2162993,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_H3_35cm,,,2634703,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_H3_50cm,,,3016472,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_H6_10cm,,,1303480,435,
+Varian GC,,20230105,Unknown,Sample,FW_H6_20cm,,,1696147,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,FW_H6_35cm,,,2034380,211,
+Varian GC,,20230105,Unknown,Sample,FW_H6_50cm,,,3573516,0,No assigned peak for CH4
+Varian GC,,20230104,Blank,Blank,N2_Blank001,,,37073,1178,
+Varian GC,,20230104,Blank,Blank,N2_Blank,,,46300,1032,
+Varian GC,,20230105,Unknown,Sample,SW_C3_10cm,,,366721,491,
+Varian GC,,20230105,Unknown,Sample,SW_C3_20cm,,,1441938,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C3_35cm,,,1866722,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C3_50cm,,,2921450,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C6_10cm,,,1756959,344,
+Varian GC,,20230105,Unknown,Sample,SW_C6_20cm,,,3473873,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C6_35cm,,,3108695,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C6_50cm,,,2240629,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_F4_10cm,,,1784161,410,
+Varian GC,,20230105,Unknown,Sample,SW_F4_20cm,,,2979275,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_F4_35cm,,,2310050,257,
+Varian GC,,20230105,Unknown,Sample,SW_F4_50cm,,,4367465,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H3_10cm,,,428904,441,
+Varian GC,,20230105,Unknown,Sample,SW_H3_20cm,,,1492116,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H3_35cm,,,1915092,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H3_50cm,,,2192011,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H6_10cm,,,2336637,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H6_20cm,,,2905731,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H6_35cm,,,4598735,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H6_50cm,,,4190669,0,No assigned peak for CH4
