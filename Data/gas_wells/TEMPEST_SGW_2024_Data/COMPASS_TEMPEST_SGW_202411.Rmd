@@ -255,7 +255,7 @@ Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
                     ((((Samples$CH4_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
 Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
                     ((Samples$CO2_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
+                    ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  )) ##This should be 44.01! 
 
 #quick first look at the samples 
 ch4_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_umol, fill=G_W)) +
