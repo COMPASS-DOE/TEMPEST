@@ -58,16 +58,17 @@ all_data <- files %>%
 
 
 
-all_data1 <- all_data %>% 
-  mutate(CH4_uM = )
-
-
-Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
-                    ((Samples$CH4_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples$CH4_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
-Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
-                    ((Samples$CO2_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  )) ##This should be 44.01! 
+# all_data1 <- all_data %>% 
+#   mutate(CH4_uM = as.numeric(CH4_ppm) * 0.02 / (0.082 * 298), 
+#          CO2_uM = as.numeric(CO2_ppm) * 0.02 / (0.082 * 298))
+# 
+# 
+# Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
+#                     ((Samples$CH4_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+#                     ((((Samples$CH4_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
+# Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
+#                     ((Samples$CO2_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+#                     ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  )) ##This should be 44.01! 
 
 ```
 
@@ -75,40 +76,36 @@ Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
 ```{r}
 ##Calculate mean of CO2 data for each Plot
 ##Make columns 18 to 21 numeric
-all_data <- all_data %>%
-  mutate(across(18:21, ~as.numeric(as.character(.))))
+all_data1 <- all_data %>%
+  mutate(across(7:10, ~as.numeric(as.character(.)))) %>% 
+  mutate(CH4_ppm = ifelse(CH4_ppm < 0, 0, CH4_ppm))
 
-C_mean_CO2 = mean(subset(all_data, Sample_Plot == "Control")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
-F_mean_CO2 = mean(subset(all_data, Sample_Plot == "Freshwater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
-S_mean_CO2 = mean(subset(all_data, Sample_Plot == "Seawater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
-GCW_TR_mean_CO2 = mean(subset(all_data, Sample_Plot == "Transition")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+C_mean_CO2 = mean(subset(all_data1, Plot == "Control")$CO2_ppm, na.rm = TRUE)
+F_mean_CO2 = mean(subset(all_data1, Plot == "Freshwater")$CO2_ppm, na.rm = TRUE)
+S_mean_CO2 = mean(subset(all_data1, Plot == "Seawater")$CO2_ppm, na.rm = TRUE)
 
 ##Flag data that is more than 100x the mean 
-all_data <- all_data %>% 
+all_data1 <- all_data1 %>% 
   mutate(qaqc_flag = NA) %>% 
   mutate(qaqc_flag = case_when(
-    is.na(qaqc_flag) & Sample_Plot == "Control" & CO2_Conc_ppm_dilcorr >= 10*C_mean_CO2 ~ "CO2 unusually high, not real value",
-    is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CO2_Conc_ppm_dilcorr >= 10*F_mean_CO2 ~ "CO2 unusually high, not real value",
-    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CO2_Conc_ppm_dilcorr >= 10*S_mean_CO2 ~ "CO2 unusually high, not real value",
-    is.na(qaqc_flag) & Sample_Plot == "Transition" & CO2_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CO2 ~ "CO2 unusually high, not real value",
-    TRUE ~ qaqc_flag    # NA if no match
+    Plot == "Control" & CO2_ppm >= 10*C_mean_CO2 ~ "CO2 more than ten times higher than the plot mean, not real value",
+    Plot == "Freshwater" & CO2_ppm >= 10*F_mean_CO2 ~ "CO2 more than ten times higher than the plot mean, not real value",
+    Plot == "Seawater" & CO2_ppm >= 10*S_mean_CO2 ~ "CO2 more than ten times higher than the plot mean, not real value"
   ))
 
 ##Calculate mean of CH4 data for each Site
-C_mean_CH4 = mean(subset(all_data, Sample_Plot = "Control")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
-F_mean_CH4 = mean(subset(all_data, Sample_Plot == "Freshwater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
-S_mean_CH4 = mean(subset(all_data, Sample_Plot == "Seawater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
-GCW_TR_mean_CH4 = mean(subset(all_data, Sample_Plot == "Transition")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+C_mean_CH4 = mean(subset(all_data1, Plot == "Control")$CH4_ppm, na.rm = TRUE)
+F_mean_CH4 = mean(subset(all_data1, Plot == "Freshwater")$CH4_ppm, na.rm = TRUE)
+S_mean_CH4 = mean(subset(all_data1, Plot == "Seawater")$CH4_ppm, na.rm = TRUE)
 
 ##Flag data that is more than 100x the mean 
-all_data <- all_data %>% 
+all_data1 <- all_data1 %>% 
   mutate(qaqc_flag = case_when(
-    Sample_Plot == "Control" & CH4_Conc_ppm_dilcorr >= 10*C_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CH4_Conc_ppm_dilcorr >= 10*F_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CH4_Conc_ppm_dilcorr >= 10*S_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    is.na(qaqc_flag) & Sample_Plot == "Transition" & CH4_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
-    TRUE ~ qaqc_flag    # NA if no match
-  ))
+    Plot == "Control" & CH4_ppm >= 10*C_mean_CH4 ~ paste0(qaqc_flag, " CH4 more than ten times higher than the plot mean, not real value"),
+    Plot == "Freshwater" & CH4_ppm >= 10*F_mean_CH4 ~ paste0(qaqc_flag, " CH4 more than ten times higher than the plot mean,, not real value"),
+    Plot == "Seawater" & CH4_ppm >= 10*S_mean_CH4 ~ paste0(qaqc_flag, " CH4 more than ten times higher than the plot mean,, not real value")
+  )) %>% 
+  mutate(qaqc_flag = gsub("NA ", "", qaqc_flag))
 
 ```
 
@@ -116,11 +113,7 @@ all_data <- all_data %>%
 ## Write the 2021 file out to the folder 
 ```{r, echo=FALSE}
 
-##Remove Synoptic Data
-final_data <- all_data %>% 
-    filter(Sample_Plot != "Transition")
-
-write.csv(final_data, "COMPASS_TEMPEST_SGAS_2023.csv")
+write.csv(all_data1, "COMPASS_TEMPEST_SGAS_2021.csv")
 
 ```
 
