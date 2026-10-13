@@ -1,0 +1,126 @@
+---
+title: "COMPASS_TEMPEST_Collate_SGAS_2021_Data"
+author: "Stephanie J. Wilson and Zoe Read"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(stringr)
+library(readxl)
+library(tidyr)
+library(tibble)
+library(readr)
+```
+
+#Read in all the files in the raw data folder 
+```{r}
+files <- list.files(path = "2021 Raw Data", full.names = TRUE)
+
+# 3. Read and combine all CSVs
+all_data <- files %>%
+    lapply(function(file) {
+    df <- read_excel(file, col_types = "text", range = cell_limits(c(6, 1), c(NA, 10)))
+    return(df)
+  }) %>%
+  bind_rows() %>% 
+  rename(Collection_Date = `Collection Date`, 
+         Run_Date = `Run Date`, 
+         Grid_Square = `Grid Square`, 
+         Sample_ID = `Sample ID`, 
+         CH4_Area = `CH4 Peak Area`, 
+         CO2_Area = `CO2 Peak Area`, 
+         CH4_ppm = `CH4 (ppm)`, 
+         CO2_ppm = `CO2 (ppm)`) %>% 
+  mutate(Collection_Date = as.Date(as.numeric(Collection_Date), origin = "1899-12-30")) %>% 
+  mutate(Run_Date = as.Date(as.numeric(Run_Date), origin = "1899-12-30")) 
+
+```
+
+
+##Calculate umol/L from ppm
+```{r}
+
+# Convert ppm CH4 to total umol CH4 in the sample headspace
+# use Ideal Gas Law:  
+#   hdsp umol CH4 = ppm CH4*(PV/RT) 
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#set the volume used for the sample
+# volume = 0.02 L vial
+# TempC <-  25 #I am assuming 25C not sure how we want to handle this
+
+
+
+all_data1 <- all_data %>% 
+  mutate(CH4_uM = )
+
+
+Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
+                    ((Samples$CH4_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+                    ((((Samples$CH4_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
+Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
+                    ((Samples$CO2_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+                    ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  )) ##This should be 44.01! 
+
+```
+
+
+```{r}
+##Calculate mean of CO2 data for each Plot
+##Make columns 18 to 21 numeric
+all_data <- all_data %>%
+  mutate(across(18:21, ~as.numeric(as.character(.))))
+
+C_mean_CO2 = mean(subset(all_data, Sample_Plot == "Control")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+F_mean_CO2 = mean(subset(all_data, Sample_Plot == "Freshwater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+S_mean_CO2 = mean(subset(all_data, Sample_Plot == "Seawater")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+GCW_TR_mean_CO2 = mean(subset(all_data, Sample_Plot == "Transition")$CO2_Conc_ppm_dilcorr, na.rm = TRUE)
+
+##Flag data that is more than 100x the mean 
+all_data <- all_data %>% 
+  mutate(qaqc_flag = NA) %>% 
+  mutate(qaqc_flag = case_when(
+    is.na(qaqc_flag) & Sample_Plot == "Control" & CO2_Conc_ppm_dilcorr >= 10*C_mean_CO2 ~ "CO2 unusually high, not real value",
+    is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CO2_Conc_ppm_dilcorr >= 10*F_mean_CO2 ~ "CO2 unusually high, not real value",
+    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CO2_Conc_ppm_dilcorr >= 10*S_mean_CO2 ~ "CO2 unusually high, not real value",
+    is.na(qaqc_flag) & Sample_Plot == "Transition" & CO2_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CO2 ~ "CO2 unusually high, not real value",
+    TRUE ~ qaqc_flag    # NA if no match
+  ))
+
+##Calculate mean of CH4 data for each Site
+C_mean_CH4 = mean(subset(all_data, Sample_Plot = "Control")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+F_mean_CH4 = mean(subset(all_data, Sample_Plot == "Freshwater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+S_mean_CH4 = mean(subset(all_data, Sample_Plot == "Seawater")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+GCW_TR_mean_CH4 = mean(subset(all_data, Sample_Plot == "Transition")$CH4_Conc_ppm_dilcorr, na.rm = TRUE)
+
+##Flag data that is more than 100x the mean 
+all_data <- all_data %>% 
+  mutate(qaqc_flag = case_when(
+    Sample_Plot == "Control" & CH4_Conc_ppm_dilcorr >= 10*C_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
+    is.na(qaqc_flag) & Sample_Plot == "Freshwater" & CH4_Conc_ppm_dilcorr >= 10*F_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
+    is.na(qaqc_flag) & Sample_Plot == "Seawater" & CH4_Conc_ppm_dilcorr >= 10*S_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
+    is.na(qaqc_flag) & Sample_Plot == "Transition" & CH4_Conc_ppm_dilcorr >= 10*GCW_TR_mean_CH4 ~ paste0(qaqc_flag, " CH4 unusually high, not real value"),
+    TRUE ~ qaqc_flag    # NA if no match
+  ))
+
+```
+
+
+## Write the 2021 file out to the folder 
+```{r, echo=FALSE}
+
+##Remove Synoptic Data
+final_data <- all_data %>% 
+    filter(Sample_Plot != "Transition")
+
+write.csv(final_data, "COMPASS_TEMPEST_SGAS_2023.csv")
+
+```
+
