@@ -54,24 +54,24 @@ Varian GC,,20230105,Unknown,Sample,FW_H6_35cm,,,860703,738,
 Varian GC,,20230105,Unknown,Sample,FW_H6_50cm,,,1352820,800,
 Varian GC,,20230105,Blank,Blank,N2_Blank001,,,43287,1154,
 Varian GC,,20230105,Blank,Blank,N2_Blank,,,35531,957,
-Varian GC,,20230105,Unknown,STDs,SW_C3_10cm,,,1058588,527,
-Varian GC,,20230105,Unknown,STDs,SW_C3_20cm,,,1692383,256,
-Varian GC,,20230105,Unknown,STDs,SW_C3_35cm,,,2402082,225,
-Varian GC,,20230105,Unknown,STDs,SW_C3_50cm,,,3661161,0,No assigned peak for CH4
-Varian GC,,20230105,Unknown,STDs,SW_C6_10cm,,,1035460,994,
-Varian GC,,20230105,Unknown,STDs,SW_C6_20cm,,,2136228,841,
-Varian GC,,20230105,Unknown,STDs,SW_C6_35cm,,,1501142,1169,
-Varian GC,,20230105,Unknown,STDs,SW_C6_50cm,,,1499768,2935,
-Varian GC,,20230105,Unknown,STDs,SW_F4_10cm,,,1757271,8081,
-Varian GC,,20230105,Unknown,STDs,SW_F4_20cm,,,3094423,0,No assigned peak for CH4
-Varian GC,,20230105,Unknown,STDs,SW_F4_35cm,,,4933543,0,No assigned peak for CH4
-Varian GC,,20230105,Unknown,STDs,SW_F4_50cm,,,2406842,1690,
-Varian GC,,20230106,Unknown,STDs,SW_F4_ATM,,,50702,1100,"Sample ID within file is ""Manual Sample"""
-Varian GC,,20230105,Unknown,STDs,SW_H3_10cm,,,2297486,525,
-Varian GC,,20230105,Unknown,STDs,SW_H3_20cm,,,2131345,1504,
-Varian GC,,20230105,Unknown,STDs,SW_H3_35cm,,,2417312,0,No assigned peak for CH4
-Varian GC,,20230105,Unknown,STDs,SW_H3_50cm,,,2589531,0,No assigned peak for CH4
-Varian GC,,20230105,Unknown,STDs,SW_H6_10cm,,,1858241,8591,
-Varian GC,,20230105,Unknown,STDs,SW_H6_20cm,,,3622326,283,
-Varian GC,,20230105,Unknown,STDs,SW_H6_35cm,,,4341062,529,
-Varian GC,,20230105,Unknown,STDs,SW_H6_50cm,,,2021799,2288,
+Varian GC,,20230105,Unknown,Sample,SW_C3_10cm,,,1058588,527,
+Varian GC,,20230105,Unknown,Sample,SW_C3_20cm,,,1692383,256,
+Varian GC,,20230105,Unknown,Sample,SW_C3_35cm,,,2402082,225,
+Varian GC,,20230105,Unknown,Sample,SW_C3_50cm,,,3661161,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_C6_10cm,,,1035460,994,
+Varian GC,,20230105,Unknown,Sample,SW_C6_20cm,,,2136228,841,
+Varian GC,,20230105,Unknown,Sample,SW_C6_35cm,,,1501142,1169,
+Varian GC,,20230105,Unknown,Sample,SW_C6_50cm,,,1499768,2935,
+Varian GC,,20230105,Unknown,Sample,SW_F4_10cm,,,1757271,8081,
+Varian GC,,20230105,Unknown,Sample,SW_F4_20cm,,,3094423,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_F4_35cm,,,4933543,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_F4_50cm,,,2406842,1690,
+Varian GC,,20230106,Unknown,Sample,SW_F4_ATM,,,50702,1100,"Sample ID within file is ""Manual Sample"""
+Varian GC,,20230105,Unknown,Sample,SW_H3_10cm,,,2297486,525,
+Varian GC,,20230105,Unknown,Sample,SW_H3_20cm,,,2131345,1504,
+Varian GC,,20230105,Unknown,Sample,SW_H3_35cm,,,2417312,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H3_50cm,,,2589531,0,No assigned peak for CH4
+Varian GC,,20230105,Unknown,Sample,SW_H6_10cm,,,1858241,8591,
+Varian GC,,20230105,Unknown,Sample,SW_H6_20cm,,,3622326,283,
+Varian GC,,20230105,Unknown,Sample,SW_H6_35cm,,,4341062,529,
+Varian GC,,20230105,Unknown,Sample,SW_H6_50cm,,,2021799,2288,

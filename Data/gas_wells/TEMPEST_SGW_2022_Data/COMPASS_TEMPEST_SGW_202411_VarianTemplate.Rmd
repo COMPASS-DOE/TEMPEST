@@ -12,19 +12,21 @@ library(ggplot2)
 library(ggpubr)
 library(stringr)
 library(ggpmisc)
+library(purrr)
+library(readr)
 ```
 
 ## Read in first data file and assess standard curves 
-    ## Standard curve run with this run had standards that were not prepared properly (over pressurized)
-    ## We have brought in the curve run most recently to this run that was prepared correctly for analysis
 ```{r , echo=FALSE}
 #Read in June Data 
-raw <- read.csv("2024 Raw Data/TEMPEST_SGW_MM_202411_entered_wMWcurve.csv") 
-head(raw)
+files = list.files(path = "2022 Raw Data", full.names = TRUE)
+
+raw <- map_df(files, ~ read_csv(.x, col_types = cols(.default = "c")) %>% 
+       mutate(filename = basename(.x))) %>% 
+       mutate(across(c(STD_Conc, CO2_Area, CH4_Area), as.numeric))
 
 #pull out methane standards
 stds_ch4 <-  raw %>%  
-  filter(str_detect(User, "Wegner")) %>% 
   filter(str_detect(Sample_Type, "STD_CH4"))
 #head(stds_ch4)
 
@@ -71,7 +73,6 @@ Slope_CH4_high$Intercept <- cf[1]
 
 #pull out co2 standards
 stds_co2 <-  raw %>%  
-  filter(str_detect(User, "Wegner")) %>% 
   filter(str_detect(Sample_Type, "STD_CO2"))
 #head(stds_co2)
 
@@ -99,9 +100,9 @@ Slopes <- rbind(Slope_CH4_low, Slope_CH4_high, Slope_CO2)
 #head(Slopes)
 
 #needs changed each time #####
-Slopes$Run_Date <- c(202411.5, 202411.5, 202411.5)
+Slopes$Run_Date <- c(20230105)
 
-log <- read.csv("2024 Raw Data/COMPASS_TEMPEST_Varian_QAQC_2024.csv")
+log <- read.csv("COMPASS_TEMPEST_Varian_QAQC_2023.csv")
 head(log)
 log <- log[ ,-c(1)]
 log <- rbind(log, Slopes)
@@ -109,21 +110,19 @@ log <- rbind(log, Slopes)
 Slopes_chk <- ggplot(log, aes(Run_Date, Slope, col=Curve)) + geom_point(size=4) + geom_line() + theme_bw()
 Slopes_chk
 
-write.csv(log, "2024 Raw Data/COMPASS_TEMPEST_Varian_QAQC_2024.csv")
+# write.csv(log, "COMPASS_TEMPEST_Varian_QAQC_2023.csv.csv")
 ```
 
 ## Now calculate the CH4 & CO2 concentrations in ppm  
 ```{r}
 #head(raw)
 
-#pull out methane standards
+#pull out samples
 Samples <-  raw %>%  
-  filter(!str_detect(Sample_Type, "STD_CH4")) %>%  
-  filter(!str_detect(Sample_Type, "STD_CO2")) %>%  
-  filter(!str_detect(Sample_Type, "Blank")) %>%  
-  filter(!str_detect(Sample_Type, "Chk_STD")) %>%  
-   filter(!str_detect(Sample_Type, "CHKSTD")) %>%
-  filter(!str_detect(Sample_Type, "NA"))
+  filter(
+    is.na(Sample_Type) |
+    !str_detect(Sample_Type, "STD_CH4|STD_CO2|Blank|Chk_STD|CHKSTD")
+  )
 #head(Samples)
 
 #Now flag any areas that are above the 100ppm area for CH4
@@ -149,10 +148,9 @@ Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >50000, "Needs Dilution", "Withi
 ```
 
 ## Check the Check Standards 
-```{r, echo=FALSE}
+```{#r, echo=FALSE}
 
 chks <-  raw %>%  
- # filter(str_detect(User, "Wegner")) %>% 
   filter(!str_detect(Sample_Type, "STD_CH4")) %>%  
   filter(!str_detect(Sample_Type, "STD_CO2")) %>%  
   filter(!str_detect(Sample_Type, "Blank")) %>%  
@@ -206,23 +204,23 @@ ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
 ## Dilution correct samples 
 ```{r}
 
-#multiply the concentration by the dilution factor
-Samples$CH4_Conc_ppm_dilcorr <- (Samples$CH4_Conc_ppm * Samples$Dilution_Factor)
-
-Samples$CO2_Conc_ppm_dilcorr <- (Samples$CO2_Conc_ppm * Samples$Dilution_Factor)
+# #multiply the concentration by the dilution factor
+# Samples$CH4_Conc_ppm_dilcorr <- (Samples$CH4_Conc_ppm * Samples$Dilution_Factor)
+# 
+# Samples$CO2_Conc_ppm_dilcorr <- (Samples$CO2_Conc_ppm * Samples$Dilution_Factor)
 
 #check results
 #head(Samples)
 
 #quick first look at the samples 
-ch4_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_Flag)) +
+ch4_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CH4_Conc_ppm, fill=CH4_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c("darkgreen","red"))+
         theme_classic() + labs(x= " ", y="CH4 (ppm)", title="CH4: Green = Within Range") + 
         theme(legend.position="none") 
 
 
-co2_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_Flag)) +
+co2_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CO2_Conc_ppm, fill=CO2_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c( "darkgreen", "red"))+
         theme_classic() + labs(x= " ", y="CO2 (ppm)", title="CO2: Green = Within Range") + 
@@ -235,7 +233,7 @@ ggarrange(ch4_samples, co2_samples, nrow=1, ncol=2)
 
 
 ## If samples are water calculate gas in water  
-```{r, echo=FALSE}
+```{#r, echo=FALSE}
 
 # Convert ppm CH4 to total umol CH4 in the sample headspace
 # use Ideal Gas Law:  
@@ -281,13 +279,13 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 ## Write out processed data & slopes  
 ```{r}
 #check results
-#head(Samples)
+colnames(Samples)
 
-#pull out what we need 
-Samples1 <- Samples[ ,c(1:3,6:16,20, 24:30)]
-#head(Samples1)
-
-write.csv(Samples1, "2024 Processed Data/COMPASS_TEMPEST_SGW_202411_Processed.csv")
+Samples1 <- Samples %>% 
+  mutate(CH4_Conc_ppm = ifelse(CH4_Conc_ppm < 0, 0, CH4_Conc_ppm)) %>% 
+  mutate(CO2_Conc_ppm = ifelse(CO2_Conc_ppm < 0, 0, CO2_Conc_ppm))
+  
+write.csv(Samples1, "COMPASS_TEMPEST_SGW_2022_Processed.csv")
 
 ```
 
