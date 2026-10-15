@@ -1,7 +1,7 @@
 ---
-title: "COMPASS_TEMPEST_SGW_2024: November"
-author: "Stephanie J. Wilson"
-date: '2025-02-11'
+title: "COMPASS_TEMPEST_SGW_2022"
+author: "Stephanie J. Wilson and Zoe Read"
+date: Sys.date
 output: pdf_document
 ---
 ##Set Up
@@ -16,14 +16,22 @@ library(purrr)
 library(readr)
 ```
 
-## Read in first data file and assess standard curves 
+## Read in first data file  
 ```{r , echo=FALSE}
-#Read in June Data 
+#Read in 2022 Data 
 files = list.files(path = "2022 Raw Data", full.names = TRUE)
 
 raw <- map_df(files, ~ read_csv(.x, col_types = cols(.default = "c")) %>% 
        mutate(filename = basename(.x))) %>% 
-       mutate(across(c(STD_Conc, CO2_Area, CH4_Area), as.numeric))
+       mutate(across(c(STD_Conc, CO2_Area, CH4_Area), as.numeric)) %>% 
+       mutate(Sample_Type = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm", "Check", Sample_Type)) %>% 
+       mutate(`Sample ID` = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220621_entered.csv", "CO2_STD_125ppm_check1", `Sample ID`)) %>% 
+       mutate(`Sample ID` = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220622_T0_entered.csv", "CO2_STD_125ppm_check2", `Sample ID`)) 
+
+```
+
+## Assess standard curves 
+```{r , echo=FALSE}
 
 #pull out methane standards
 stds_ch4 <-  raw %>%  
@@ -121,16 +129,16 @@ Slopes_chk
 Samples <-  raw %>%  
   filter(
     is.na(Sample_Type) |
-    !str_detect(Sample_Type, "STD_CH4|STD_CO2|Blank|Chk_STD|CHKSTD")
+    !str_detect(Sample_Type, "STD_CH4|STD_CO2|Blank|Chk_STD|CHKSTD|Check")
   )
 #head(Samples)
 
 #Now flag any areas that are above the 100ppm area for CH4
-Samples$CH4_Curve <- ifelse(Samples$CH4_Area >71000, "High", "Low")
+Samples$CH4_Curve <- ifelse(Samples$CH4_Area >50721, "High", "Low")
 #head(Samples)
 
 #Calculate CH4 concentrations in ppm
-Samples$CH4_Conc_ppm <- ifelse(Samples$CH4_Area >71000, (Samples$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (Samples$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+Samples$CH4_Conc_ppm <- ifelse(Samples$CH4_Area >50721, (Samples$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (Samples$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
 
 #Calculate CO2 concentrations in ppm 
 Samples$CO2_Conc_ppm <- ((Samples$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope) 
@@ -141,26 +149,22 @@ Samples$CO2_Conc_ppm <- ((Samples$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
 #highest CH4 standard = 10000
 #highest CO2 standard = 50000
 
-Samples$CH4_Flag <- ifelse(Samples$CH4_Conc_ppm >10000, "Needs Dilution", "Within Range")
-Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >50000, "Needs Dilution", "Within Range")
+Samples$CH4_Flag <- ifelse(Samples$CH4_Conc_ppm >250, "Needs Dilution", "Within Range")
+Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >5000, "Needs Dilution", "Within Range")
 #head(Samples)
 
 ```
 
 ## Check the Check Standards 
-```{#r, echo=FALSE}
+```{r, echo=FALSE}
 
 chks <-  raw %>%  
-  filter(!str_detect(Sample_Type, "STD_CH4")) %>%  
-  filter(!str_detect(Sample_Type, "STD_CO2")) %>%  
-  filter(!str_detect(Sample_Type, "Blank")) %>%  
-  filter(!str_detect(Sample_Type, "Unknown")) %>%  
-  filter(!str_detect(Sample_Type, "NA"))
+  filter(str_detect(Sample_Type, "Check")) 
 #head(chks)
 
 #Calculate CH4 concentrations in ppm
-chks$CH4_Conc_ppm <- ifelse(chks$CH4_Area >71000, 
-                      (chks$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (chks$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+# chks$CH4_Conc_ppm <- ifelse(chks$CH4_Area >71000, 
+#                       (chks$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (chks$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
 
 #Calculate CO2 concentrations in ppm 
 chks$CO2_Conc_ppm <- ((chks$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
@@ -168,12 +172,12 @@ chks$CO2_Conc_ppm <- ((chks$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
 
 
 #change this if check standard concentrations are different 
-level_ch4 <- 5      #ppm
-level_co2 <- 1000   #ppm
+# level_ch4 <- 5      #ppm
+level_co2 <- 125   #ppm
 
 #calculate percent difference of check standards 
-chks$Ch4_diff <- ((chks$CH4_Conc_ppm - level_ch4)/((chks$CH4_Conc_ppm + level_ch4)/2)) * 100
-chks$CH4_diff_flag <-  ifelse( chks$Ch4_diff >-10 & chks$Ch4_diff <10 , 'YES', 'NO, rerun')
+# chks$Ch4_diff <- ((chks$CH4_Conc_ppm - level_ch4)/((chks$CH4_Conc_ppm + level_ch4)/2)) * 100
+# chks$CH4_diff_flag <-  ifelse( chks$Ch4_diff >-10 & chks$Ch4_diff <10 , 'YES', 'NO, rerun')
 
 chks$CO2_diff <- ((chks$CO2_Conc_ppm - level_co2)/((chks$CO2_Conc_ppm + level_co2)/2)) * 100
 chks$CO2_diff_flag <-  ifelse(chks$CO2_diff >-10 & chks$CO2_diff <10 , 'YES', 'NO, rerun')
@@ -181,22 +185,24 @@ chks$CO2_diff_flag <-  ifelse(chks$CO2_diff >-10 & chks$CO2_diff <10 , 'YES', 'N
 #now plot the Ch4 concentrations and the CO2 concentrations vs. the expected concentration 
 #then also make the color the percent difference between the expected and observed concentration 
 
-ch4_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_diff_flag)) +
-       geom_bar(stat = 'identity') + 
-        scale_fill_manual(values=c( "darkgrey",  "darkgreen"))+
-        theme_classic() + labs(x= " ", y="CH4  (ppm)", title="Check Stds: CH4") + 
-        theme(legend.position="bottom") +  geom_hline(yintercept=level_ch4, linetype="dashed", 
-                color = "black", size=1)
+# ch4_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_diff_flag)) +
+       # geom_bar(stat = 'identity') + 
+       #  scale_fill_manual(values=c( "darkgrey",  "darkgreen"))+
+       #  theme_classic() + labs(x= " ", y="CH4  (ppm)", title="Check Stds: CH4") + 
+       #  theme(legend.position="bottom") +  geom_hline(yintercept=level_ch4, linetype="dashed", 
+       #          color = "black", size=1)
 
 
-co2_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_diff_flag)) +
+co2_chk <-  ggplot(data = chks, aes(x = `Sample ID`, y = CO2_Conc_ppm, fill=CO2_diff_flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c( "darkgrey",  "darkgreen"))+
         theme_classic() + labs(x= " ", y="CO2  (ppm)", title="Check Stds: CO2") + 
         theme(legend.position="bottom") +  geom_hline(yintercept=level_co2, linetype="dashed", 
                 color = "black", size=1)
 
-ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
+co2_chk
+
+# ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
 
 
 ```
@@ -216,17 +222,29 @@ ggarrange(ch4_chk, co2_chk, nrow=1, ncol=2)
 ch4_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CH4_Conc_ppm, fill=CH4_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c("darkgreen","red"))+
-        theme_classic() + labs(x= " ", y="CH4 (ppm)", title="CH4: Green = Within Range") + 
-        theme(legend.position="none") 
+        theme_classic() + 
+        labs(x= " ", y="CH4 (ppm)", title="CH4: Green = Within Range") + 
+        theme(axis.text.x = element_blank())
+        # theme(legend.position="none") 
 
 
 co2_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CO2_Conc_ppm, fill=CO2_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c( "darkgreen", "red"))+
-        theme_classic() + labs(x= " ", y="CO2 (ppm)", title="CO2: Green = Within Range") + 
-        theme(legend.position="none") 
+        theme_classic() + 
+        labs(x= " ", y="CO2 (ppm)", title="CO2: Green = Within Range") + 
+        theme(axis.text.x = element_blank())
+        # theme(legend.position="none") 
 
 ggarrange(ch4_samples, co2_samples, nrow=1, ncol=2)
+
+##Percentage of samples that need dilution 
+Samples %>%
+  summarise('Percent CO2 Samples Needing Dilution' = mean(CO2_Flag == "Needs Dilution", na.rm = TRUE) * 100) 
+
+Samples%>%
+  summarise('Percent CH4 Samples Needing Dilution' = mean(CH4_Flag == "Needs Dilution", na.rm = TRUE) * 100)
+
 
 
 ```
