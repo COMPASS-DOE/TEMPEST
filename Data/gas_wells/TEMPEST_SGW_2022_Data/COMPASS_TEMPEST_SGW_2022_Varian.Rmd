@@ -240,10 +240,10 @@ ggarrange(ch4_samples, co2_samples, nrow=1, ncol=2)
 
 ##Percentage of samples that need dilution 
 Samples %>%
-  summarise('Percent CO2 Samples Needing Dilution' = mean(CO2_Flag == "Needs Dilution", na.rm = TRUE) * 100) 
+  summarise('Percent CO2 Samples Needing Dilution' = mean(CO2_Flag == "adl", na.rm = TRUE) * 100) 
 
 Samples%>%
-  summarise('Percent CH4 Samples Needing Dilution' = mean(CH4_Flag == "Needs Dilution", na.rm = TRUE) * 100)
+  summarise('Percent CH4 Samples Needing Dilution' = mean(CH4_Flag == "adl", na.rm = TRUE) * 100)
 
 
 
