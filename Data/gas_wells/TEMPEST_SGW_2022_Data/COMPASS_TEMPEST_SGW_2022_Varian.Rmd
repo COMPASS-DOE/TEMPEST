@@ -149,8 +149,8 @@ Samples$CO2_Conc_ppm <- ((Samples$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
 #highest CH4 standard = 10000
 #highest CO2 standard = 50000
 
-Samples$CH4_Flag <- ifelse(Samples$CH4_Conc_ppm >250, "Needs Dilution", "Within Range")
-Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >5000, "Needs Dilution", "Within Range")
+Samples$CH4_Flag <- ifelse(Samples$CH4_Conc_ppm >250, "adl", "Within Range")
+Samples$CO2_Flag <- ifelse(Samples$CO2_Conc_ppm >50000, "adl", "Within Range") ##Assuming the CO2 standard curve is linear above the top std curve
 #head(Samples)
 
 ```
