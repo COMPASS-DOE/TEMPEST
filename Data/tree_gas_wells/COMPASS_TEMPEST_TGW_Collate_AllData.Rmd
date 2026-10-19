@@ -1,10 +1,9 @@
 ---
 title: "COMPASS_TEMPEST_TGW_Collate_AllData"
-author: "Stephanie J. Wilson"
+author: "Stephanie J. Wilson and Zoe Read"
 date: "2025-09-02"
 output: pdf_document
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -32,6 +31,7 @@ dat24 <- read.csv("TEMPEST_TGW_2024/COMPASS_TEMPEST_TGW_2024_AllData.csv", colCl
 alldat <- bind_rows(dat22, dat23, dat24)
 
 ```
+
 ##Add in metadata
 ```{r, include = FALSE}
 
@@ -45,7 +45,6 @@ alldat1 <- alldat %>%
     left_join(metadata, by = c("Sapflux_Tree_ID" = "Sapflux_ID"))
 
 ```
-
 
 ## Clean up any columns that need it
 ```{r, include=FALSE}
@@ -67,7 +66,6 @@ final_dat <- alldat1 %>%
 
 
 ```
-
 
 ## Make a metadata file that explains these data
 ```{r, include=FALSE}
@@ -207,8 +205,6 @@ TGAS_avg1 <- final_dat %>%
             mean_CO2 = mean(CO2_ppm, na.rm=TRUE), 
             sd_CO2 = sd(CO2_ppm, na.rm=TRUE))
 
-
-
 kable(
   TGAS_avg1[, c("Plot", 	"mean_CH4", "sd_CH4",	"mean_CO2", "sd_CO2")],  
   col.names = c("Plot", "Mean [CH4] ppm", "std dev. CH4", "Mean [CO2] ppm", "std dev. CO2"),
@@ -254,7 +250,6 @@ kable(
 
 
 ```
-
 
 ## Visualize Data by Plot   
 ```{r Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=20, fig.height=10, dpi = 300}
@@ -303,8 +298,6 @@ ggarrange(viz_ch4_plot, viz_co2_plot, nrow=2, ncol=1)
 
 ```
 
-
-
 ## Summarized data for Site and Zone 
 ```{r Summarize and Visualize Data, echo=FALSE, warning=FALSE, message = FALSE, fig.width=22, fig.height=15, dpi = 300}
 
@@ -339,7 +332,7 @@ viz_ch4_plot_avgs <- ggplot(TGAS_avg, aes(x = Date, y = mean_ch4, color = Plot))
     panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
   # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
   theme(text = element_text(size = 28))+
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
+  scale_x_date(date_breaks = "3 months", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
   theme(axis.ticks.x = element_line(linewidth = 1))+
   theme(axis.ticks.length.x = unit(0.25, "cm")) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
@@ -366,7 +359,7 @@ viz_co2_plot_avgs <- ggplot(TGAS_avg, aes(x = Date, y = mean_co2, color = Plot))
     panel.border = element_rect(color = "black", fill = NA, linewidth = 1)) +
   # theme(axis.text.x = element_text(angle = 90, hjust = 0.5))+ 
   theme(text = element_text(size = 28))+
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
+  scale_x_date(date_breaks = "3 months", date_labels = "%b %Y", expand = expansion(mult = c(0.18, 0.05)))+
   theme(axis.ticks.x = element_line(linewidth = 1))+
   theme(axis.ticks.length.x = unit(0.25, "cm")) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
@@ -420,7 +413,7 @@ viz_ch4_spp
 
 
 ## Boxplot by Date
-```{r Boxplot by Date, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
+```{r Boxplot by Date, echo=FALSE, warning=FALSE, message = FALSE, fig.width=40, fig.height=10, dpi = 300}
 
 data_plotting <- data_plotting %>% 
   mutate(Date_boxplot = gsub("-", "", Date))
@@ -580,7 +573,7 @@ boxplot_tree_co2
 
 ```
 
-## Boxplot by Date
+## Boxplot by Plot
 ```{r Overall Boxplot, echo=FALSE, warning=FALSE, message = FALSE, fig.width=25, fig.height=10, dpi = 300}
 
 ##Summarize CO2 and CH4 by Date, Site, and Zone
