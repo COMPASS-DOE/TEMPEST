@@ -1,0 +1,281 @@
+---
+title: "ESS-DIVE TEMPEST: TGW Data - 2026-10-23 Submission Prep"
+author: "2022-2024 Samples"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+
+output_dir: "To Be Reviewed/PDF"
+header-includes:
+  - \pagenumbering{gobble}
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(stringr)
+library(readxl)
+library(tidyr)
+library(tibble)
+library(openxlsx)
+library(knitr)
+library(here)
+```
+
+## Pull in compiled data and export annual files
+```{r Pull in compiled data files, message=FALSE, include=FALSE}
+
+#write out a csv of all the data to the main folder: 
+final_data <- read.csv("../COMPASS_TEMPEST_TGW_AllData.csv")
+
+final_data_2022 <- subset(final_data, Year == "2022")
+final_data_2023 <- subset(final_data, Year == "2023")
+final_data_2024 <- subset(final_data, Year == "2024")
+# final_data_2025 <- subset(final_data, Year == "2025")
+
+##Write out annual data files
+write.csv(final_data_2022, "Data package/COMPASS_TEMPEST_TGW_2022.csv", row.names = FALSE)
+write.csv(final_data_2023, "Data package/COMPASS_TEMPEST_TGW_2023.csv", row.names = FALSE)
+write.csv(final_data_2024, "Data package/COMPASS_TEMPEST_TGW_2024.csv", row.names = FALSE)
+# write.csv(final_data_2025, "Data package/COMPASS_TEMPEST_TGW_2025.csv", row.names = FALSE)
+
+```
+
+## Make a metadata file that explains these data
+```{r, include=FALSE}
+
+#pull the column names from the all_dat1 dataframe and create a new dataframe with them
+dd <- data.frame(Column_Names = colnames(final_data))
+dd
+
+dd$Unit <- ""
+dd$Definition <- ""
+dd$Column_Long_Name <- dd$Column_Names
+dd$Data_Type <- ""
+dd$Instrument_ifapplicable <- ""
+
+
+#add information about each line: 
+dd$Definition <- c("Project name", 
+                         "Site where sample collected", 
+                         "Year of sample collection", 
+                         "Month of sample collection", 
+                         "Day of sample collection", 
+                         "Plot where sample collected (SW = Saltwater, FW = Freshwater, C = Control, Estuary (Sourcewater))", 
+                         "Grid where sample collected (Letter + Number)", 
+                         "ID of sapflux sensors on tree that sample came from", 
+                         "ID of tree (# on metal tag on tree)", 
+                         "Tree Species (LITU = Liriodendron tulipifera, ACRU = Acer rubrum, FAGR = Fagus grandifolia)", 
+                         "Height of tree gas well from ground (m)", 
+                         "Event sampling timestamp (#, AM/PM, D#, Pre/Post)", 
+                         "Time of sample collection", 
+                         "Time zone of sample collection", 
+                         "Matrix that sample was collected from (G = gas, W = water)", 
+                         "Methane (CH4) concentration", 
+                         "Methane (CH4) concentration flag (bdl=below detection limit (0), adl=above detection limit (highest   
+                         standard)", 
+                         "Carbon dioxide (CO2) concentration", 
+                         "Carbon dioxide (CO2) flag (bdl=below detection limit (0), adl=above detection limit (highest   
+                         standard)", 
+                         "Notes generated during field sample collection", 
+                         "Notes generated during sample analysis in the lab") 
+
+dd$Unit  <-      c( "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA",
+                         "NA",
+                         "NA",
+                         "m", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "ppm", 
+                         "NA", 
+                         "ppm", 
+                         "NA", 
+                         "NA", 
+                         "NA")
+
+dd$Data_Type <-        c("text", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "text", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "text", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "text",  
+                         "text", 
+                         "text") 
+
+
+dd$Instrument_ifapplicable <-  c(
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA",
+                         "NA",
+                         "NA",
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies)", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies)", 
+                         "NA", 
+                         "NA", 
+                         "NA")
+
+#write out the data dictionary associated with the data:
+write.csv(dd, "Data package/dd.csv", row.names = FALSE,  fileEncoding = "UTF-8")
+
+```
+
+## Create flmd file
+```{r create flmd}
+
+files  = list.files("Data package")
+files
+
+files = c("COMPASS_TEMPEST_TGW_2022.csv", "COMPASS_TEMPEST_TGW_2023.csv", "COMPASS_TEMPEST_TGW_2024.csv", "COMPASS_TEMPEST_TGW_2025.csv", "dd.csv")
+
+flmd <- data.frame(file_name = files)
+flmd
+
+flmd$file_description <- ""
+flmd$standard <- ""
+flmd$file_version <- ""
+flmd$data_orientation <- ""
+flmd$header_rows <- ""
+flmd$column_or_row_name_position <- ""
+flmd$notes <- ""
+
+#add information about each line:
+
+flmd$file_description <-  c("Tree gas well data taken from COMPASS TEMPEST site in 2022",
+                            "Tree gas well data taken from COMPASS TEMPEST site in 2023",
+                            "Tree gas well data taken from COMPASS TEMPEST site in 2024",
+                            "Tree gas well data taken from COMPASS TEMPEST site in 2025",
+                            "Data dictionary file for annual redox data files describing each column in the dataset")
+
+flmd$data_orientation <-  c("horizontal",
+                            "horizontal",
+                            "horizontal",
+                            "horizontal",
+                            "horizontal")
+
+flmd$header_rows <-   c("1",
+                        "1",
+                        "1",
+                        "1",
+                        "1")
+
+flmd$column_or_row_name_position <- c("1",
+                                      "1",
+                                      "1",
+                                      "1",
+                                      "1")
+
+
+#write out the flmd associated with the data:
+write.csv(flmd, "Data package/flmd.csv", row.names = FALSE)
+
+```
+
+## Create site list - can we use the site list from the sensor data publications? 
+```{r create site list}
+
+##Description, Latitude, Longitude
+
+Control <- data.frame(
+  Description = "Control Plot at the TEMPEST experimental site. The TEMPEST experiment is in a mid- to late-successional (~80 years old) temperate, deciduous coastal forest.", 
+  Latitude = "38.8747 degrees", 
+  Longitude = "-76.5519 degrees")
+
+Freshwater <- data.frame(
+  Description = "Freshwater Plot at the TEMPEST experimental site. The TEMPEST experiment is in a mid- to late-successional (~80 years old) temperate, deciduous coastal forest.", 
+  Latitude = "38.87403 degrees", 
+  Longitude = "-76.5516 degrees")
+
+Saltwater <- data.frame(
+  Description = "Saltwater Plot at the TEMPEST experimental site. The TEMPEST experiment is in a mid- to late-successional (~80 years old) temperate, deciduous coastal forest.",
+  Latitude = "38.8744 degrees", 
+  Longitude = "-76.5525 degrees")
+
+site_list = bind_rows(Control, Freshwater, Saltwater)
+
+#write out the site list associated with the data:
+write.csv(site_list, "Data package/site_list.csv", row.names = FALSE)
+
+
+```
+
+
+## Data Description - NEED TO EDIT THIS
+```{r data description}
+
+#Create a text file that has the description of the data - This ideally should match the text that is in the data READ.ME 
+
+datadescription <- "These data are measurements of tree gas well samples collected in 2022-2025 from the COMPASS Terrestrial Ecosystem Manipulation to Probe the Effects of Storm Treatments (TEMPEST) site in the Chesapeake Bay region. This manipulative, ecosystem-scale TEMPEST experiment addresses the potential for freshwater and estuarine-water disturbance events to alter tree function, species composition, and ecosystem processes in a deciduous coastal forest in MD, USA. The experiment uses a large-unit (2000 m2), un-replicated experimental design, with three 50 m × 40 m plots serving as control, freshwater, and saltwater treatments. Trees were cored and had gas wells installed at breast height. Gas samples were collected from tree gas wells semi-monthly from 2022-2025, and 1-2 times per day during flooding events. The samples were stored in exetainers then analyzed for methane and carbon dioxide on a Varian 450 Gas Chromatograph. The methane is determined with an FID and the carbon dioxide with a TCD. Analysis of each constituent is described in the data dictionary and further details, including quality assurance and quality control for all analyses can be found on the COMPASS TEMPEST page (https://github.com/COMPASS-DOE/TEMPEST)"
+
+#write to a text file 
+writeLines(datadescription, "Data package/COMPASS_TEMPEST_TGW_DataDescription.txt")
+
+```
+
+
+## Create Author List - NEED TO EDIT THIS 
+```{#r create author list}
+
+#Pull in the common synoptic authors list: 
+authors_common <- read.csv(here("Metadata/Synoptic CB/", "COMPASS_SynopticCB_common_essdive_author_list.csv"))
+
+
+#create a list of the last names you want to pull 
+names_we_want <- c("Wilson", "Read", "Stearns", "Phillips", "Chin", "Megonigal")
+
+#Subset the common list for the names that we want 
+author_list <- authors_common %>%
+  filter(last_name %in% names_we_want)
+
+#if you need to add any other authors 
+others <- data.frame(
+  first_name = c("first_name1", "first_name2"), 
+  last_name = c("last_name1", "last_name2"), 
+  orcid = c("orcid_id1", "orcid_id2"), 
+  affiliation = c("affiliation1", "affiliation2"), 
+  email = c("email1", "email2")
+)
+
+#add in the other authors 
+#author_list <- bind_rows(author_list, others)
+
+#write out the author list associated with the data:
+write.csv(author_list, "Data package/author_list.csv", row.names = FALSE)
+```
+
