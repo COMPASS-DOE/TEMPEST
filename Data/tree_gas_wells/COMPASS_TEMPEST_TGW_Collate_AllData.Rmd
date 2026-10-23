@@ -67,98 +67,11 @@ final_dat <- alldat1 %>%
 
 ```
 
-## Make a metadata file that explains these data
-```{r, include=FALSE}
-
-#create a dataframe as the metadata from the columns of alldat 
-metadat <- data.frame(Column_Names = colnames(final_dat))
-
-metadat$Description <- ""
-metadat$Units <- ""
-metadat$Instrument_ifapplicable <- ""
-
-colnames(final_dat)
-#add information about each line: 
-metadat$Description <- c("Project name", 
-                         "Site where sample collected", 
-                         "Year of sample collection", 
-                         "Month of sample collection", 
-                         "Day of sample collection", 
-                         "Plot where sample collected (SW = Saltwater, FW = Freshwater, C = Control, Estuary (Sourcewater))", 
-                         "Grid where sample collected (Letter + Number)", 
-                         "ID of sapflux sensors on tree that sample came from", 
-                         "ID of tree (# on metal tag on tree)", 
-                         "Tree Species (LITU = Liriodendron tulipifera, ACRU = Acer rubrum, FAGR = Fagus grandifolia)", 
-                         "Height of tree gas well from ground", 
-                         "Event sampling timestamp (#, AM/PM, D#, Pre/Post)", 
-                         "Time of sample collection", 
-                         "Time zone of sample collection", 
-                         "Matrix that sample was collected from (G = gas, W = water)", 
-                         "Methane (CH4) concentration", 
-                         "Methane (CH4) concentration flag (bdl=below detection limit (0), adl=above detection limit (highest   
-                         standard)", 
-                         "Carbon dioxide (CO2) concentration", 
-                         "Carbon dioxide (CO2) flag (bdl=below detection limit (0), adl=above detection limit (highest   
-                         standard)", 
-                         "Notes generated during field sample collection", 
-                         "Notes generated during sample analysis in the lab") 
-
-metadat$Units <-      c( "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA",
-                         "NA",
-                         "NA",
-                         "m", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "ppm", 
-                         "NA", 
-                         "ppm", 
-                         "NA", 
-                         "NA", 
-                         "NA")
-
-metadat$Instrument_ifapplicable <-  c(
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA",
-                         "NA",
-                         "NA",
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "Varian 450 GC (Agilent Technologies)", 
-                         "NA", 
-                         "Varian 450 GC (Agilent Technologies)", 
-                         "NA", 
-                         "NA", 
-                         "NA")
-
-
-```
-
 ## Write out collated file 
 ```{r, include=FALSE}
 
 ##Collated data
-write.csv(final_dat, "COMPASS_TEMPEST_TGW_AllData.csv")
-
-##Metadata
-write.csv(metadat, "COMPASS_TEMPEST_TGW_Metadata.csv")
+write.csv(final_dat, "COMPASS_TEMPEST_TGW_AllData.csv", row.names = FALSE)
 
 ```
 
