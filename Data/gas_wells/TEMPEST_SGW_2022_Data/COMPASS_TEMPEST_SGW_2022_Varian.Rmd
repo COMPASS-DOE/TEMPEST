@@ -4,8 +4,11 @@ author: "Stephanie J. Wilson and Zoe Read"
 date: Sys.date
 output: pdf_document
 ---
-##Set Up
 
+Link to 2021-2022 Sampling Protocol: 
+https://docs.google.com/document/d/1YyvW0XtxktHx-h2cG5YStUpkXtn8LDbx/edit
+
+##Set Up
 ```{r setup, include=FALSE}
 library(dplyr)
 library(ggplot2)
@@ -14,20 +17,28 @@ library(stringr)
 library(ggpmisc)
 library(purrr)
 library(readr)
+library(readxl)
+library(tidyr)
 ```
 
 ## Read in first data file  
 ```{r , echo=FALSE}
+
 #Read in 2022 Data 
 files = list.files(path = "2022 Raw Data", full.names = TRUE)
 
 raw <- map_df(files, ~ read_csv(.x, col_types = cols(.default = "c")) %>% 
        mutate(filename = basename(.x))) %>% 
+       rename(Sample_ID = `Sample ID`) %>% 
        mutate(across(c(STD_Conc, CO2_Area, CH4_Area), as.numeric)) %>% 
-       mutate(Sample_Type = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm", "Check", Sample_Type)) %>% 
-       mutate(`Sample ID` = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220621_entered.csv", "CO2_STD_125ppm_check1", `Sample ID`)) %>% 
-       mutate(`Sample ID` = ifelse(Run_Date == "20230105" & `Sample ID` == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220622_T0_entered.csv", "CO2_STD_125ppm_check2", `Sample ID`)) 
-
+       mutate(Sample_Type = ifelse(Run_Date == "20230105" & Sample_ID == "CO2_STD_125ppm", "Check", Sample_Type)) %>% 
+       mutate(Sample_ID = ifelse(Run_Date == "20230105" & Sample_ID == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220621_entered.csv", "CO2_STD_125ppm_check1", Sample_ID)) %>% 
+       mutate(Sample_ID = ifelse(Run_Date == "20230105" & Sample_ID == "CO2_STD_125ppm" & filename == "TEMPEST_SGAS_20220622_T0_entered.csv", "CO2_STD_125ppm_check2", Sample_ID)) %>% 
+       mutate(Collection_Date = str_extract(filename, "\\d{8}")) %>% 
+       mutate(Timepoint = str_extract(filename, "T\\d{1}")) %>% 
+       separate(col = Sample_ID, into = c("Plot", "Grid_Square", "Depth"), sep = "_", remove = FALSE) %>% 
+       mutate(Plot = gsub("Control", "C", Plot)) %>% 
+       mutate(Depth = gsub("cm", "", Depth))
 ```
 
 ## Assess standard curves 
@@ -110,7 +121,7 @@ Slopes <- rbind(Slope_CH4_low, Slope_CH4_high, Slope_CO2)
 #needs changed each time #####
 Slopes$Run_Date <- c(20230105)
 
-log <- read.csv("COMPASS_TEMPEST_Varian_QAQC_2023.csv")
+log <- read.csv("QAQC Log/COMPASS_TEMPEST_Varian_QAQC_2023.csv")
 head(log)
 log <- log[ ,-c(1)]
 log <- rbind(log, Slopes)
@@ -127,18 +138,16 @@ Slopes_chk
 
 #pull out samples
 Samples <-  raw %>%  
-  filter(
-    is.na(Sample_Type) |
-    !str_detect(Sample_Type, "STD_CH4|STD_CO2|Blank|Chk_STD|CHKSTD|Check")
-  )
+  filter(str_detect(Sample_ID, "Control|FW|SW")) %>% 
+  select(Machine, Run_Date, Sample_ID, Plot, Grid_Square, Depth, Dilution_Factor, CO2_Area, CH4_Area, Lab_Notes, Collection_Date, Timepoint)
 #head(Samples)
 
 #Now flag any areas that are above the 100ppm area for CH4
-Samples$CH4_Curve <- ifelse(Samples$CH4_Area >50721, "High", "Low")
+Samples$CH4_Curve <- ifelse(Samples$CH4_Area > 50721, "High", "Low")
 #head(Samples)
 
 #Calculate CH4 concentrations in ppm
-Samples$CH4_Conc_ppm <- ifelse(Samples$CH4_Area >50721, (Samples$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (Samples$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+Samples$CH4_Conc_ppm <- ifelse(Samples$CH4_Area > 50721, (Samples$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (Samples$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
 
 #Calculate CO2 concentrations in ppm 
 Samples$CO2_Conc_ppm <- ((Samples$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope) 
@@ -163,12 +172,11 @@ chks <-  raw %>%
 #head(chks)
 
 #Calculate CH4 concentrations in ppm
-# chks$CH4_Conc_ppm <- ifelse(chks$CH4_Area >71000, 
-#                       (chks$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope,                                       (chks$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+# chks$CH4_Conc_ppm <- ifelse(chks$CH4_Area >71000, (chks$CH4_Area-Slope_CH4_high$Intercept)/Slope_CH4_high$Slope, (chks$CH4_Area-Slope_CH4_low$Intercept)/Slope_CH4_low$Slope )
+
 
 #Calculate CO2 concentrations in ppm 
 chks$CO2_Conc_ppm <- ((chks$CO2_Area-Slope_CO2$Intercept)/Slope_CO2$Slope)
-
 
 
 #change this if check standard concentrations are different 
@@ -193,12 +201,12 @@ chks$CO2_diff_flag <-  ifelse(chks$CO2_diff >-10 & chks$CO2_diff <10 , 'YES', 'N
        #          color = "black", size=1)
 
 
-co2_chk <-  ggplot(data = chks, aes(x = `Sample ID`, y = CO2_Conc_ppm, fill=CO2_diff_flag)) +
+co2_chk <-  ggplot(data = chks, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_diff_flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c( "darkgrey",  "darkgreen"))+
         theme_classic() + labs(x= " ", y="CO2  (ppm)", title="Check Stds: CO2") + 
         theme(legend.position="bottom") +  geom_hline(yintercept=level_co2, linetype="dashed", 
-                color = "black", size=1)
+                color = "black", linewidth=1)
 
 co2_chk
 
@@ -206,8 +214,7 @@ co2_chk
 
 
 ```
-
-## Dilution correct samples 
+## First look at samples 
 ```{r}
 
 # #multiply the concentration by the dilution factor
@@ -215,11 +222,16 @@ co2_chk
 # 
 # Samples$CO2_Conc_ppm_dilcorr <- (Samples$CO2_Conc_ppm * Samples$Dilution_Factor)
 
+Samples <- Samples %>% 
+  mutate(CH4_Conc_ppm = ifelse(CH4_Conc_ppm < 0, 0, CH4_Conc_ppm)) %>% 
+  mutate(CO2_Conc_ppm = ifelse(CO2_Conc_ppm < 0, 0, CO2_Conc_ppm)) 
+
+
 #check results
 #head(Samples)
 
 #quick first look at the samples 
-ch4_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CH4_Conc_ppm, fill=CH4_Flag)) +
+ch4_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_ppm, fill=CH4_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c("darkgreen","red"))+
         theme_classic() + 
@@ -228,7 +240,7 @@ ch4_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CH4_Conc_ppm, fi
         # theme(legend.position="none") 
 
 
-co2_samples <-  ggplot(data = Samples, aes(x = `Sample ID`, y = CO2_Conc_ppm, fill=CO2_Flag)) +
+co2_samples <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_ppm, fill=CO2_Flag)) +
        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c( "darkgreen", "red"))+
         theme_classic() + 
@@ -250,8 +262,38 @@ Samples%>%
 ```
 
 
+##Merge samples with metadata
+```{r}
+
+metadata <- read_excel("Metadata/TEMPEST_SoilGHG_Scanned_2022.xlsx") %>% 
+  rename("Grid_Square" = "Grid Square", 
+         "Sample_Number" = "Sample ID", 
+         "Sample_Time" = "Time (24hr)", 
+         "Sample_Type" = "Sample (G/W)", 
+         "Collection_Date" = "Collection Date", 
+         "Field_Notes" = "Notes") %>% 
+  select(-c("CH4 Peak Area", "CO2 Peak Area")) %>% 
+  mutate(Sample_Time = as.numeric(Sample_Time)) %>% 
+  mutate(Collection_Date = as.character(Collection_Date)) %>% 
+  mutate(Timepoint = case_when(
+    Collection_Date == "20220620|20220621" ~ NA_character_, 
+    Collection_Date == "20220622" & Sample_Time < 1000 ~ "T0", 
+    Collection_Date == "20220622" & Sample_Time > 1000 & Sample_Time < 1400~ "T1", 
+    TRUE ~ NA_character_
+  )) %>% 
+  mutate(Plot = case_when(
+    Plot == "Control" ~ "C", 
+    Plot == "Freshwater" ~ "FW", 
+    Plot == "Seawater" ~ "SW", 
+  ))
+
+Samples_meta <- Samples %>% left_join(metadata, by = c("Plot", "Grid_Square", "Depth", "Collection_Date", "Timepoint"))
+
+```
+
+
 ## If samples are water calculate gas in water  
-```{#r, echo=FALSE}
+```{r, echo=FALSE}
 
 # Convert ppm CH4 to total umol CH4 in the sample headspace
 # use Ideal Gas Law:  
@@ -266,23 +308,26 @@ volume = 0.02
 TempC <-  25 #I am assuming 25C not sure how we want to handle this
 
 #Calculate CH4 concentrations in ppm
-Samples$CH4_Conc_umol <- ifelse(Samples$G_W == "W",
-                    ((Samples$CH4_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples$CH4_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
-Samples$CO2_Conc_umol <- ifelse(Samples$G_W == "W",
-                    ((Samples$CO2_Conc_ppm_dilcorr*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples$CO2_Conc_ppm_dilcorr/1000))/16.04)*1000000  ))
+Samples_meta$CH4_Conc_umol <- ifelse(Samples_meta$Sample_Type == "W",
+                    ((Samples_meta$CH4_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+                    ((((Samples_meta$CH4_Conc_ppm/1000))/16.04)*1000000  ))
+Samples_meta$CO2_Conc_umol <- ifelse(Samples_meta$Sample_Type == "W",
+                    ((Samples_meta$CO2_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
+                    ((((Samples_meta$CO2_Conc_ppm/1000))/16.04)*1000000  ))
+
+data_plotting <- Samples_meta %>% 
+  mutate(row_num = row_number())
 
 #quick first look at the samples 
-ch4_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_umol, fill=G_W)) +
-       geom_bar(stat = 'identity') + 
+ch4_samples1 <-  ggplot(data = data_plotting, aes(x = row_num, y = CH4_Conc_umol, fill=Sample_Type)) +
+        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c("darkgrey","darkblue"))+
         theme_classic() + labs(x= " ", y="CH4 (uM)", title="CH4: Blue = PW Sample") + 
         theme(legend.position="none") 
 
 
-co2_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_umol, fill=G_W)) +
-       geom_bar(stat = 'identity') + 
+co2_samples1 <-  ggplot(data = data_plotting, aes(x = row_num, y = CO2_Conc_umol, fill=Sample_Type)) +
+        geom_bar(stat = 'identity') + 
         scale_fill_manual(values=c("darkgrey","darkblue"))+
         #scale_fill_gradient2(low='red', mid='white', high='blue', space='Lab') + 
         theme_classic() + labs(x= " ", y="CO2 (uM)", title="CO2: Blue = PW Sample") + 
@@ -297,13 +342,9 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 ## Write out processed data & slopes  
 ```{r}
 #check results
-colnames(Samples)
+colnames(Samples_meta)
 
-Samples1 <- Samples %>% 
-  mutate(CH4_Conc_ppm = ifelse(CH4_Conc_ppm < 0, 0, CH4_Conc_ppm)) %>% 
-  mutate(CO2_Conc_ppm = ifelse(CO2_Conc_ppm < 0, 0, CO2_Conc_ppm))
-  
-write.csv(Samples1, "COMPASS_TEMPEST_SGW_2022_Processed.csv")
+write.csv(Samples_meta, "COMPASS_TEMPEST_SGAS_2022.csv")
 
 ```
 
