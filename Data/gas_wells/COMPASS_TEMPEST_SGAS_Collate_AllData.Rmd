@@ -1,6 +1,6 @@
 ---
 title: "TEMPEST: SGAS"
-author: "2023-2024 Samples"
+author: "2021-2025 Samples"
 date: "`r Sys.Date()`"
 output: 
   pdf_document:
@@ -13,7 +13,7 @@ header-includes:
 ---
 
 ##What should we be rounding the CO2 and CH4 to? Any decimal places? 
-##Already removed samples that are 10x the annual plot mean (unusually high)
+##Removes samples that are 10x the annual plot mean (unusually high)
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -28,7 +28,17 @@ library(knitr)
 ```
 
 ##Grab 2022 and 2023 All Data Files
-```{r Pull in 2022-2024 data files, message=FALSE, include=FALSE}
+```{r Pull in 2021-2024 data files, message=FALSE, include=FALSE}
+
+#read in 2023 SGAS Data:
+dat21 <- read.csv("TEMPEST_SGW_2021_Data/COMPASS_TEMPEST_SGAS_2021.csv", colClasses = "character")
+# head(dat21)
+colnames(dat21)
+
+#read in 2023 SGAS Data:
+dat22 <- read.csv("TEMPEST_SGW_2022_Data/COMPASS_TEMPEST_SGAS_2022.csv", colClasses = "character")
+# head(dat22)
+colnames(dat22)
 
 #read in 2023 SGAS Data:
 dat23 <- read.csv("TEMPEST_SGW_2023_Data/COMPASS_TEMPEST_SGAS_2023.csv", colClasses = "character")
@@ -40,7 +50,12 @@ dat24 <- read.csv("TEMPEST_SGW_2024_Data/COMPASS_TEMPEST_SGAS_2024.csv", colClas
 # head(dat24)
 colnames(dat24)
 
-all_dat <- bind_rows(dat23, dat24)
+#read in 2024 SGAS Data:
+dat25 <- read.csv("TEMPEST_SGW_2025_Data/COMPASS_TEMPEST_SGAS_2025.csv", colClasses = "character")
+# head(dat25)
+colnames(dat25)
+
+all_dat <- bind_rows(dat21, dat22, dat23, dat24, dat25)
 
 ##Clean data
 all_dat1 <- all_dat %>% 
