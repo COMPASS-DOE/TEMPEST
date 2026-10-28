@@ -1,174 +1,174 @@
-"","Machine","Run_Date","Sample_ID","Plot","Grid_Square","Depth","Dilution_Factor","CO2_Area","CH4_Area","Lab_Notes","Collection_Date","Timepoint","CH4_Curve","CH4_Conc_ppm","CO2_Conc_ppm","CH4_Flag","CO2_Flag","Sample_Number","Sample_Time","Sample_Type","Field_Notes","Personnel","CH4_Conc_umol","CO2_Conc_umol"
-"1","Varian GC","20230104","Control_C3_10cm","C","C3","10",NA,631418,469,NA,"20220621",NA,"Low",0,4296.13008653518,"Within Range","Within Range",64,1502,"G",NA,NA,0,267838.534073265
-"2","Varian GC","20230104","Control_C3_20cm","C","C3","20",NA,891692,225,NA,"20220621",NA,"Low",0,6117.51638771155,"Within Range","Within Range",65,1503,"G",NA,NA,0,381391.295991992
-"3","Varian GC","20230104","Control_C3_35cm","C","C3","35",NA,1217519,0,"No assigned peak for CH4","20220621",NA,"Low",0,8397.63977442476,"Within Range","Within Range",66,1505,"G",NA,NA,0,523543.626834461
-"4","Varian GC","20230104","Control_C3_50cm","C","C3","50",NA,1958093,0,"No assigned peak for CH4","20220621",NA,"Low",0,13580.1448982842,"Within Range","Within Range",67,1506,"G",NA,NA,0,846642.450017718
-"5","Varian GC","20230104","Control_C6_10cm","C","C6","10",NA,718293,613,NA,"20220621",NA,"Low",0,4904.07761458138,"Within Range","Within Range",68,1510,"G",NA,NA,0,305740.499662181
-"6","Varian GC","20230105","Control_C6_20cm","C","C6","20",NA,2005323,323,NA,"20220621",NA,"Low",0,13910.6584148266,"Within Range","Within Range",69,1510,"G",NA,NA,0,867248.030849539
-"7","Varian GC","20230105","Control_C6_35cm","C","C6","35",NA,1720779,261,NA,"20220621",NA,"Low",0,11919.431693441,"Within Range","Within Range",70,1511,"G",NA,NA,0,743106.714054922
-"8","Varian GC","20230105","Control_C6_50cm","C","C6","50",NA,1990956,252,NA,"20220621",NA,"Low",0,13810.1187643467,"Within Range","Within Range",71,1517,"G",NA,NA,0,860979.972839571
-"9","Varian GC","20230105","Control_F4_10cm","C","F4","10",NA,1251297,482,NA,"20220621",NA,"Low",0,8634.01677128628,"Within Range","Within Range",72,1514,"G",NA,NA,0,538280.34733705
-"10","Varian GC","20230105","Control_F4_20cm","C","F4","20",NA,2531959,315,NA,"20220621",NA,"Low",0,17596.0345803534,"Within Range","Within Range",73,1515,"G","Distracted by Slack; 95% sure sample was taken right",NA,0,1097009.63717914
-"11","Varian GC","20230105","Control_F4_35cm","C","F4","35",NA,1320956,531,NA,"20220621",NA,"Low",0,9121.48746891126,"Within Range","Within Range",74,1519,"G",NA,NA,0,568671.28858549
-"12","Varian GC","20230105","Control_F4_50cm","C","F4","50",NA,1995462,310,NA,"20220621",NA,"Low",0,13841.6515592978,"Within Range","Within Range",75,1520,"G",NA,NA,0,862945.857811584
-"13","Varian GC","20230105","Control_F4_ATM","C","F4","ATM",NA,62823,774,NA,"20220621",NA,"Low",0,317.126636642451,"Within Range","Within Range",76,1522,"G",NA,NA,0,19770.9873218485
-"14","Varian GC","20230105","Control_H3_10cm","C","H3","10",NA,520153,366,NA,"20220621",NA,"Low",0,3517.50238342081,"Within Range","Within Range",77,1523,"G",NA,NA,0,219295.659814265
-"15","Varian GC","20230105","Control_H3_20cm","C","H3","20",NA,1245447,215,NA,"20220621",NA,"Low",0,8593.07872191568,"Within Range","Within Range",78,1524,"G",NA,NA,0,535728.099870055
-"16","Varian GC","20230105","Control_H3_35cm","C","H3","35",NA,1606261,202,NA,"20220621",NA,"Low",0,11118.0396356937,"Within Range","Within Range",79,1525,"G",NA,NA,0,693144.615691625
-"17","Varian GC","20230105","Control_H3_50cm","C","H3","50",NA,1809922,615,NA,"20220621",NA,"Low",0,12543.2505883201,"Within Range","Within Range",80,1526,"G",NA,NA,0,781998.166354118
-"18","Varian GC","20230105","Control_H6_10cm","C","H6","10",NA,225646,468,NA,"20220621",NA,"Low",0,1456.55501487631,"Within Range","Within Range",81,1528,"G",NA,NA,0,90807.669256628
-"19","Varian GC","20230105","Control_H6_20cm","C","H6","20",NA,1027454,0,"No assigned peak for CH4","20220621",NA,"Low",0,7067.57304730992,"Within Range","Within Range",82,1530,"G",NA,NA,0,440621.761054234
-"20","Varian GC","20230105","Control_H6_35cm","C","H6","35",NA,1867967,0,"No assigned peak for CH4","20220621",NA,"Low",0,12949.4470115194,"Within Range","Within Range",83,1531,"G",NA,NA,0,807322.132887742
-"21","Varian GC","20230105","Control_H6_50cm","C","H6","50",NA,1844555,0,"No assigned peak for CH4","20220621",NA,"Low",0,12785.6108385511,"Within Range","Within Range",84,1532,"G",NA,NA,0,797107.907640345
-"22","Varian GC","20230105","FW_C3_10cm","FW","C3","10",NA,712873,386,NA,"20220621",NA,"Low",0,4866.14868678845,"Within Range","Within Range",106,1410,"G",NA,NA,0,303375.853291051
-"23","Varian GC","20230105","FW_C3_20cm","FW","C3","20",NA,1722376,205,NA,"20220621",NA,"Low",0,11930.6074310213,"Within Range","Within Range",107,1414,"G",NA,NA,0,743803.455799331
-"24","Varian GC","20230105","FW_C3_35cm","FW","C3","35",NA,1680735,241,NA,"20220621",NA,"Low",0,11639.2054970314,"Within Range","Within Range",108,1416,"G",NA,NA,0,725636.25293213
-"25","Varian GC","20230105","FW_C3_50cm","FW","C3","50",NA,3217005,0,"No assigned peak for CH4","20220621",NA,"Low",0,22389.9571391786,"Within Range","Within Range",109,1418,"G",NA,NA,0,1395882.61466201
-"26","Varian GC","20230105","FW_C6_10cm","FW","C6","10",NA,2242927,290,NA,"20220621",NA,"Low",0,15573.4010272455,"Within Range","Within Range",110,1428,"G",NA,NA,0,970910.288481638
-"27","Varian GC","20230105","FW_C6_20cm","FW","C6","20",NA,2369958,0,"No assigned peak for CH4","20220621",NA,"Low",0,16462.3585229029,"Within Range","Within Range",111,1430,"G",NA,NA,0,1026331.57873459
-"28","Varian GC","20230105","FW_C6_35cm","FW","C6","35",NA,2795676,0,"No assigned peak for CH4","20220621",NA,"Low",0,19441.5148480226,"Within Range","Within Range",112,1432,"G",NA,NA,0,1212064.51670964
-"29","Varian GC","20230105","FW_C6_50cm","FW","C6","50",NA,4108871,0,"No assigned peak for CH4","20220621",NA,"Low",0,28631.1971972903,"Within Range","Within Range",113,1434,"G",NA,NA,0,1784987.35643954
-"30","Varian GC","20230105","FW_F4_10cm","FW","F4","10",NA,774053,483,NA,"20220621",NA,"Low",0,5294.28370567613,"Within Range","Within Range",114,1436,"G",NA,NA,0,330067.562698013
-"31","Varian GC","20230105","FW_F4_20cm","FW","F4","20",NA,1677778,211,NA,"20220621",NA,"Low",0,11618.512537717,"Within Range","Within Range",115,1437,"G",NA,NA,0,724346.168186848
-"32","Varian GC","20230105","FW_F4_35cm","FW","F4","35",NA,1845200,208,NA,"20220621",NA,"Low",0,12790.1245209176,"Within Range","Within Range",116,1438,"G",NA,NA,0,797389.309284142
-"33","Varian GC","20230105","FW_F4_50cm","FW","F4","50",NA,3511911,0,"No assigned peak for CH4","20220621",NA,"Low",0,24453.6966926289,"Within Range","Within Range",117,1439,"G",NA,NA,0,1524544.68158534
-"34","Varian GC","20230105","FW_F4_ATM","FW","F4","ATM",NA,55656,700,NA,"20220621",NA,"Low",0,266.972277695606,"Within Range","Within Range",118,1441,"G",NA,NA,0,16644.1569635665
-"35","Varian GC","20230105","FW_H3_10cm","FW","H3","10",NA,1122956,455,NA,"20220621",NA,"Low",0,7735.89195175272,"Within Range","Within Range",119,1443,"G",NA,NA,0,482287.528164135
-"36","Varian GC","20230105","FW_H3_20cm","FW","H3","20",NA,2162993,0,"No assigned peak for CH4","20220621",NA,"Low",0,15014.0263198286,"Within Range","Within Range",120,1444,"G","Transferred 14 mL",NA,0,936036.553605272
-"37","Varian GC","20230105","FW_H3_35cm","FW","H3","35",NA,2634703,0,"No assigned peak for CH4","20220621",NA,"Low",0,18315.0326905298,"Within Range","Within Range",121,1445,"G",NA,NA,0,1141834.95576869
-"38","Varian GC","20230105","FW_H3_50cm","FW","H3","50",NA,3016472,0,"No assigned peak for CH4","20220621",NA,"Low",0,20986.6357965404,"Within Range","Within Range",122,1446,"G",NA,NA,0,1308393.75290152
-"39","Varian GC","20230105","FW_H6_10cm","FW","H6","10",NA,1303480,435,NA,"20220621",NA,"Low",0,8999.19116962913,"Within Range","Within Range",123,1448,"G",NA,NA,0,561046.83102426
-"40","Varian GC","20230105","FW_H6_20cm","FW","H6","20",NA,1696147,0,"No assigned peak for CH4","20220621",NA,"Low",0,11747.0580127407,"Within Range","Within Range",124,1449,"G",NA,NA,0,732360.225233211
-"41","Varian GC","20230105","FW_H6_35cm","FW","H6","35",NA,2034380,211,NA,"20220621",NA,"Low",0,14113.9980559482,"Within Range","Within Range",125,1450,"G",NA,NA,0,879925.065832182
-"42","Varian GC","20230105","FW_H6_50cm","FW","H6","50",NA,3573516,0,"No assigned peak for CH4","20220621",NA,"Low",0,24884.8058433084,"Within Range","Within Range",126,1452,"G",NA,NA,0,1551421.81068008
-"43","Varian GC","20230105","SW_C3_10cm","SW","C3","10",NA,366721,491,NA,"20220621",NA,"Low",0,2443.79182085177,"Within Range","Within Range",85,1302,"G",NA,NA,0,152356.098556844
-"44","Varian GC","20230105","SW_C3_20cm","SW","C3","20",NA,1441938,0,"No assigned peak for CH4","20220621",NA,"Low",0,9968.11432172376,"Within Range","Within Range",86,1304,"G",NA,NA,0,621453.511329411
-"45","Varian GC","20230105","SW_C3_35cm","SW","C3","35",NA,1866722,0,"No assigned peak for CH4","20220621",NA,"Low",0,12940.7345548585,"Within Range","Within Range",87,1306,"G",NA,NA,0,806778.962272972
-"46","Varian GC","20230105","SW_C3_50cm","SW","C3","50",NA,2921450,0,"No assigned peak for CH4","20220621",NA,"Low",0,20321.6759115332,"Within Range","Within Range",88,1307,"G",NA,NA,0,1266937.4009684
-"47","Varian GC","20230105","SW_C6_10cm","SW","C6","10",NA,1756959,344,NA,"20220621",NA,"Low",0,12172.6177833945,"Within Range","Within Range",89,1309,"G",NA,NA,0,758891.383004643
-"48","Varian GC","20230105","SW_C6_20cm","SW","C6","20",NA,3473873,0,"No assigned peak for CH4","20220621",NA,"Low",0,24187.508398277,"Within Range","Within Range",90,1310,"G",NA,NA,0,1507949.40138884
-"49","Varian GC","20230105","SW_C6_35cm","SW","C6","35",NA,3108695,0,"No assigned peak for CH4","20220621",NA,"Low",0,21632.0083994642,"Within Range","Within Range",91,1311,"G",NA,NA,0,1348628.95258505
-"50","Varian GC","20230105","SW_C6_50cm","SW","C6","50",NA,2240629,0,"No assigned peak for CH4","20220621",NA,"Low",0,15557.3197216978,"Within Range","Within Range",92,1312,"G",NA,NA,0,969907.713322809
-"51","Varian GC","20230105","SW_F4_10cm","SW","F4","10",NA,1784161,410,NA,"20220621",NA,"Low",0,12362.9762139891,"Within Range","Within Range",93,1314,"G",NA,NA,0,770759.115585358
-"52","Varian GC","20230105","SW_F4_20cm","SW","F4","20",NA,2979275,0,"No assigned peak for CH4","20220621",NA,"Low",0,20726.3327841579,"Within Range","Within Range",94,1315,"G",NA,NA,0,1292165.385546
-"53","Varian GC","20230105","SW_F4_35cm","SW","F4","35",NA,2310050,257,NA,"20220621",NA,"Low",0,16043.1249055194,"Within Range","Within Range",95,1316,"G",NA,NA,0,1000194.8195461
-"54","Varian GC","20230105","SW_F4_50cm","SW","F4","50",NA,4367465,0,"No assigned peak for CH4","20220621",NA,"Low",0,30440.8269304423,"Within Range","Within Range",96,1317,"G",NA,NA,0,1897807.16523954
-"55","Varian GC","20230105","SW_H3_10cm","SW","H3","10",NA,428904,441,NA,"20220621",NA,"Low",0,2878.94579076828,"Within Range","Within Range",98,1321,"G",NA,NA,0,179485.39842695
-"56","Varian GC","20230105","SW_H3_20cm","SW","H3","20",NA,1492116,0,"No assigned peak for CH4","20220621",NA,"Low",0,10319.2578159661,"Within Range","Within Range",99,1323,"G",NA,NA,0,643345.250371951
-"57","Varian GC","20230105","SW_H3_35cm","SW","H3","35",NA,1915092,0,"No assigned peak for CH4","20220621",NA,"Low",0,13279.2257425603,"Within Range","Within Range",100,1324,"G",NA,NA,0,827881.904149643
-"58","Varian GC","20230105","SW_H3_50cm","SW","H3","50",NA,2192011,0,"No assigned peak for CH4","20220621",NA,"Low",0,15217.093040621,"Within Range","Within Range",101,1325,"G",NA,NA,0,948696.573604801
-"59","Varian GC","20230105","SW_H6_10cm","SW","H6","10",NA,2336637,0,"No assigned peak for CH4","20220621",NA,"Low",0,16229.1795924623,"Within Range","Within Range",102,1358,"G",NA,NA,0,1011794.23893156
-"60","Varian GC","20230105","SW_H6_20cm","SW","H6","20",NA,2905731,0,"No assigned peak for CH4","20220621",NA,"Low",0,20211.6750229765,"Within Range","Within Range",103,1359,"G",NA,NA,0,1260079.49021051
-"61","Varian GC","20230105","SW_H6_35cm","SW","H6","35",NA,4598735,0,"No assigned peak for CH4","20220621",NA,"Low",0,32059.2444822264,"Within Range","Within Range",104,1400,"G",NA,NA,0,1998706.0151014
-"62","Varian GC","20230105","SW_H6_50cm","SW","H6","50",NA,4190669,0,"No assigned peak for CH4","20220621",NA,"Low",0,29203.6160968485,"Within Range","Within Range",105,1404,"G",NA,NA,0,1820674.3202524
-"63","Varian GC","20230105","Control_C3_10cm","C","C3","10",NA,565833,438,NA,"20220622","T0","Low",0,3837.1690663693,"Within Range","Within Range",127,842,"G",NA,NA,0,239225.004137737
-"64","Varian GC","20230105","Control_C3_20cm","C","C3","20",NA,872011,245,NA,"20220622","T0","Low",0,5979.78959289742,"Within Range","Within Range",128,843,"G",NA,NA,0,372804.837462433
-"65","Varian GC","20230105","Control_C3_35cm","C","C3","35",NA,1154285,0,"No assigned peak for CH4","20220622","T0","Low",0,7955.13095153585,"Within Range","Within Range",129,844,"G","Condensation on bottom",NA,0,495955.794983532
-"66","Varian GC","20230105","Control_C3_50cm","C","C3","50",NA,1833875,0,"No assigned peak for CH4","20220622","T0","Low",0,12710.8726561105,"Within Range","Within Range",130,846,"G",NA,NA,0,792448.419957011
-"67","Varian GC","20230105","Control_C6_10cm","C","C6","10",NA,761483,592,NA,"20220622","T0","Low",0,5206.31938420803,"Within Range","Within Range",131,848,"G",NA,NA,0,324583.502756112
-"68","Varian GC","20230105","Control_C6_20cm","C","C6","20",NA,2185479,326,NA,"20220622","T0","Low",0,15171.3823844691,"Within Range","Within Range",132,850,"G",NA,NA,0,945846.782074133
-"69","Varian GC","20230105","Control_C6_35cm","C","C6","35",NA,1926713,290,NA,"20220622","T0","Low",0,13360.549002686,"Within Range","Within Range",133,851,"G",NA,NA,0,832951.932835788
-"70","Varian GC","20230105","Control_C6_50cm","C","C6","50",NA,2027476,248,NA,"20220622","T0","Low",0,14065.6841597337,"Within Range","Within Range",134,852,"G",NA,NA,0,876912.97753951
-"71","Varian GC","20230105","Control_F4_10cm","C","F4","10",NA,1171971,516,NA,"20220622","T0","Low",0,8078.89682182103,"Within Range","Within Range",135,856,"G",NA,NA,0,503671.871684603
-"72","Varian GC","20230105","Control_F4_20cm","C","F4","20",NA,2222966,248,NA,"20220622","T0","Low",0,15433.7148044273,"Within Range","Within Range",136,858,"G",NA,NA,0,962201.671098958
-"73","Varian GC","20230105","Control_F4_35cm","C","F4","35",NA,1407226,514,NA,"20220622","T0","Low",0,9725.20123287726,"Within Range","Within Range",137,900,"G",NA,NA,0,606309.30379534
-"74","Varian GC","20230105","Control_F4_50cm","C","F4","50",NA,2015171,247,NA,"20220622","T0","Low",0,13979.5742969123,"Within Range","Within Range",138,901,"G",NA,NA,0,871544.532226456
-"75","Varian GC","20230105","Control_F4_ATM","C","F4","ATM",NA,49637,898,NA,"20220622","T0","Low",0,224.851573565418,"Within Range","Within Range",139,903,"G",NA,NA,0,14018.1779030809
-"76","Varian GC","20230105","Control_H3_10cm","C","H3","10",NA,604754,420,NA,"20220622","T0","Low",0,4109.53655689116,"Within Range","Within Range",140,905,"G",NA,NA,0,256205.521003189
-"77","Varian GC","20230105","Control_H3_20cm","C","H3","20",NA,1218531,271,NA,"20220622","T0","Low",0,8404.72170706801,"Within Range","Within Range",141,907,"G",NA,NA,0,523985.14383217
-"78","Varian GC","20230105","Control_H3_35cm","C","H3","35",NA,1722182,0,"No assigned peak for CH4","20220622","T0","Low",0,11929.2498273327,"Within Range","Within Range",142,915,"G","Needle broke",NA,0,743718.817165382
-"79","Varian GC","20230105","Control_H3_50cm","C","H3","50",NA,1847411,562,NA,"20220622","T0","Low",0,12805.5970041926,"Within Range","Within Range",143,916,"G",NA,NA,0,798353.92794218
-"80","Varian GC","20230105","Control_H6_10cm","C","H6","10",NA,273973,523,NA,"20220622","T0","Low",0,1794.74529042036,"Within Range","Within Range",144,919,"G",NA,NA,0,111891.851023713
-"81","Varian GC","20230105","Control_H6_20cm","C","H6","20",NA,905955,238,NA,"20220622","T0","Low",0,6217.32825064706,"Within Range","Within Range",145,920,"G",NA,NA,0,387613.980713657
-"82","Varian GC","20230105","Control_H6_35cm","C","H6","35",NA,1765574,0,"No assigned peak for CH4","20220622","T0","Low",0,12232.9051843052,"Within Range","Within Range",146,922,"G",NA,NA,0,762649.949146208
-"83","Varian GC","20230105","Control_H6_50cm","C","H6","50",NA,1789152,0,"No assigned peak for CH4","20220622","T0","Low",0,12397.9030181616,"Within Range","Within Range",147,923,"G",NA,NA,0,772936.597142242
-"84","Varian GC","20230105","FW_C3_10cm","FW","C3","10",NA,1096700,357,NA,"20220622","T0","Low",0,7552.15358862891,"Within Range","Within Range",169,700,"G",NA,NA,0,470832.517994321
-"85","Varian GC","20230105","FW_C3_20cm","FW","C3","20",NA,1603024,0,"No assigned peak for CH4","20220622","T0","Low",0,11095.3872483753,"Within Range","Within Range",170,704,"G",NA,NA,0,691732.372093222
-"86","Varian GC","20230105","FW_C3_35cm","FW","C3","35",NA,1808315,258,NA,"20220622","T0","Low",0,12532.0048711682,"Within Range","Within Range",171,700,"G",NA,NA,0,781297.061793527
-"87","Varian GC","20230105","FW_C3_50cm","FW","C3","50",NA,3069554,0,"No assigned peak for CH4","20220622","T0","Low",0,21358.1013583678,"Within Range","Within Range",172,704,"G",NA,NA,0,1331552.45376358
-"88","Varian GC","20230105","FW_C6_10cm","FW","C6","10",NA,2201989,0,"No assigned peak for CH4","20220622","T0","Low",0,15286.9186571372,"Within Range","Within Range",173,710,"G","Est times",NA,0,953049.791592096
-"89","Varian GC","20230105","FW_C6_20cm","FW","C6","20",NA,2127156,0,"No assigned peak for CH4","20220622","T0","Low",0,14763.24052918,"Within Range","Within Range",174,726,"G","Est times",NA,0,920401.529250625
-"90","Varian GC","20230105","FW_C6_35cm","FW","C6","35",NA,1339338,760,NA,"20220622","T0","Low",0,9250.12391737797,"Within Range","Within Range",175,710,"W","Est times",NA,0,378.07784111281
-"91","Varian GC","20230105","FW_C6_50cm","FW","C6","50",NA,4168265,0,"No assigned peak for CH4","20220622","T0","Low",0,29046.8338646949,"Within Range","Within Range",176,728,"G","Est times",NA,0,1810899.86687624
-"92","Varian GC","20230105","FW_F4_10cm","FW","F4","10",NA,341674,856,NA,"20220622","T0","Low",0,2268.51398793122,"Within Range","Within Range",177,736,"W",NA,NA,0,92.7203655596389
-"93","Varian GC","20230105","FW_F4_20cm","FW","F4","20",NA,1784316,0,"No assigned peak for CH4","20220622","T0","Low",0,12364.0608973485,"Within Range","Within Range",178,738,"G",NA,NA,0,770826.739236193
-"94","Varian GC","20230105","FW_F4_35cm","FW","F4","35",NA,867930,753,NA,"20220622","T0","Low",0,5951.23092973821,"Within Range","Within Range",179,736,"W",NA,NA,0,243.243070252511
-"95","Varian GC","20230105","FW_F4_50cm","FW","F4","50",NA,1422556,840,NA,"20220622","T0","Low",0,9832.47991609968,"Within Range","Within Range",180,738,"W",NA,NA,0,401.880322109
-"96","Varian GC","20230105","FW_F4_ATM","FW","F4","ATM",NA,124964,865,NA,"20220622","T0","Low",0,751.986692358354,"Within Range","Within Range",181,750,"G",NA,NA,0,46881.9633639871
-"97","Varian GC","20230105","FW_H3_10cm","FW","H3","10",NA,417272,810,NA,"20220622","T0","Low",0,2797.5455531138,"Within Range","Within Range",182,810,"W",NA,NA,0,114.343331244347
-"98","Varian GC","20230105","FW_H3_20cm","FW","H3","20",NA,2621637,0,"No assigned peak for CH4","20220622","T0","Low",0,18223.5973823117,"Within Range","Within Range",183,809,"G",NA,NA,0,1136134.50014412
-"99","Varian GC","20230105","FW_H3_35cm","FW","H3","35",NA,2644871,0,"No assigned peak for CH4","20220622","T0","Low",0,18386.1879189059,"Within Range","Within Range",184,809,"G",NA,NA,0,1146271.06726346
-"100","Varian GC","20230105","FW_H3_50cm","FW","H3","50",NA,2099765,695,NA,"20220622","T0","Low",0,14571.5594846826,"Within Range","Within Range",185,810,"W",NA,NA,0,595.579453942852
-"101","Varian GC","20230105","FW_H6_10cm","FW","H6","10",NA,20050,302,NA,"20220622","T0","Low",0,17.8030151504194,"Within Range","Within Range",186,820,"G",NA,NA,0,1109.91366274435
-"102","Varian GC","20230105","FW_H6_20cm","FW","H6","20",NA,1645517,287,NA,"20220622","T0","Low",0,11392.7514418632,"Within Range","Within Range",187,820,"G",NA,NA,0,710271.286899205
-"103","Varian GC","20230105","FW_H6_35cm","FW","H6","35",NA,860703,738,NA,"20220622","T0","Low",0,5900.65669336192,"Within Range","Within Range",188,820,"W","Water in vial!!!",NA,0,241.175963014179
-"104","Varian GC","20230105","FW_H6_50cm","FW","H6","50",NA,1352820,800,NA,"20220622","T0","Low",0,9344.47037577358,"Within Range","Within Range",189,825,"W",NA,NA,0,381.934038675724
-"105","Varian GC","20230105","SW_C3_10cm","SW","C3","10",NA,1058588,527,NA,"20220622","T0","Low",0,7285.44744544736,"Within Range","Within Range",148,850,"G",NA,NA,0,454204.952958065
-"106","Varian GC","20230105","SW_C3_20cm","SW","C3","20",NA,1692383,256,NA,"20220622","T0","Low",0,11720.7177020004,"Within Range","Within Range",149,852,"G",NA,NA,0,730718.061221969
-"107","Varian GC","20230105","SW_C3_35cm","SW","C3","35",NA,2402082,225,NA,"20220622","T0","Low",0,16687.1608986261,"Within Range","Within Range",150,853,"G",NA,NA,0,1040346.68944053
-"108","Varian GC","20230105","SW_C3_50cm","SW","C3","50",NA,3661161,0,"No assigned peak for CH4","20220622","T0","Low",0,25498.1417983658,"Within Range","Within Range",151,854,"G",NA,NA,0,1589659.71311507
-"109","Varian GC","20230105","SW_C6_10cm","SW","C6","10",NA,1035460,994,NA,"20220622","T0","Low",0,7123.59869231179,"Within Range","Within Range",152,902,"W",NA,NA,0,291.160944285675
-"110","Varian GC","20230105","SW_C6_20cm","SW","C6","20",NA,2136228,841,NA,"20220622","T0","Low",0,14826.7259965116,"Within Range","Within Range",153,907,"G",NA,NA,0,924359.476091748
-"111","Varian GC","20230105","SW_C6_35cm","SW","C6","35",NA,1501142,1169,NA,"20220622","T0","Low",0,10382.4213772685,"Within Range","Within Range",154,917,"W","Missampled first run, sampled 2x",NA,0,424.357932380416
-"112","Varian GC","20230105","SW_C6_50cm","SW","C6","50",NA,1499768,2935,NA,"20220622","T0","Low",2.53112764005119,10372.8061841343,"Within Range","Within Range",155,925,"W","Water in sample-sorry!",NA,0.103454103131926,423.964933162834
-"113","Varian GC","20230105","SW_F4_10cm","SW","F4","10",NA,1757271,8081,NA,"20220622","T0","Low",14.2202431287263,12174.8011460276,"Within Range","Within Range",156,932,"G",NA,NA,886.548823486679,759027.502869549
-"114","Varian GC","20230105","SW_F4_20cm","SW","F4","20",NA,3094423,0,"No assigned peak for CH4","20220622","T0","Low",0,21532.1335549143,"Within Range","Within Range",157,931,"G",NA,NA,0,1342402.34132882
-"115","Varian GC","20230105","SW_F4_35cm","SW","F4","35",NA,4933543,0,"No assigned peak for CH4","20220622","T0","Low",0,34402.2165221699,"Within Range","Within Range",158,931,"G",NA,NA,0,2144776.59115773
-"116","Varian GC","20230105","SW_F4_50cm","SW","F4","50",NA,2406842,1690,NA,"20220622","T0","Low",0,16720.4711746952,"Within Range","Within Range",159,933,"W",NA,NA,0,683.411346764925
-"117","Varian GC","20230106","SW_F4_ATM","SW","F4","ATM",NA,50702,1100,"Sample ID within file is ""Manual Sample""","20220622","T0","Low",0,232.304397938013,"Within Range","Within Range",160,934,"G",NA,NA,0,14482.8178265594
-"118","Varian GC","20230105","SW_H3_10cm","SW","H3","10",NA,2297486,525,NA,"20220622","T0","Low",0,15955.2025717942,"Within Range","Within Range",161,936,"G",NA,NA,0,994713.377293905
-"119","Varian GC","20230105","SW_H3_20cm","SW","H3","20",NA,2131345,1504,NA,"20220622","T0","Low",0,14792.5549717122,"Within Range","Within Range",162,937,"G",NA,NA,0,922229.11294964
-"120","Varian GC","20230105","SW_H3_35cm","SW","H3","35",NA,2417312,0,"No assigned peak for CH4","20220622","T0","Low",0,16793.7397861328,"Within Range","Within Range",163,938,"G",NA,NA,0,1046991.25848708
-"121","Varian GC","20230105","SW_H3_50cm","SW","H3","50",NA,2589531,0,"No assigned peak for CH4","20220622","T0","Low",0,17998.9209698173,"Within Range","Within Range",164,940,"G",NA,NA,0,1122127.24250731
-"122","Varian GC","20230105","SW_H6_10cm","SW","H6","10",NA,1858241,8591,NA,"20220622","T0","Low",15.3787057986106,12881.3848802068,"Within Range","Within Range",165,942,"G",NA,NA,958.772181958265,803078.857868257
-"123","Varian GC","20230105","SW_H6_20cm","SW","H6","20",NA,3622326,283,NA,"20220622","T0","Low",0,25226.3761321595,"Within Range","Within Range",166,943,"G",NA,NA,0,1572716.7164688
-"124","Varian GC","20230105","SW_H6_35cm","SW","H6","35",NA,4341062,529,NA,"20220622","T0","Low",0,30256.0598676163,"Within Range","Within Range",167,944,"G",NA,NA,0,1886288.02167184
-"125","Varian GC","20230105","SW_H6_50cm","SW","H6","50",NA,2021799,2288,NA,"20220622","T0","Low",1.06147009610001,14025.9567569514,"Within Range","Within Range",168,945,"W",NA,NA,0.043385183368771,573.279179562921
-"126","Varian GC","20230106","Control_C3_10cm","C","C3","10",NA,527878,484,NA,"20220622","T1","Low",0,3571.56160246146,"Within Range","Within Range",190,1212,"G",NA,NA,0,222665.935315553
-"127","Varian GC","20230106","Control_C3_20cm","C","C3","20",NA,822076,285,NA,"20220622","T1","Low",0,5630.34660224433,"Within Range","Within Range",191,1219,"G",NA,NA,0,351019.114853138
-"128","Varian GC","20230106","Control_C3_35cm","C","C3","35",NA,1165735,215,NA,"20220622","T1","Low",0,8035.2575609877,"Within Range","Within Range",192,1221,"G",NA,NA,0,500951.219512949
-"129","Varian GC","20230106","Control_C3_50cm","C","C3","50",NA,1824740,0,"No assigned peak for CH4.","20220622","T1","Low",0,12646.9463174779,"Within Range","Within Range",193,1222,"G",NA,NA,0,788462.987373935
-"130","Varian GC","20230106","Control_C6_10cm","C","C6","10",NA,657903,540,NA,"20220622","T1","Low",0,4481.47098184802,"Within Range","Within Range",194,1226,"G",NA,NA,0,279393.452733667
-"131","Varian GC","20230106","Control_C6_20cm","C","C6","20",NA,2263671,356,NA,"20220622","T1","Low",0,15718.5666505179,"Within Range","Within Range",195,1228,"G","Condensation on bottom",NA,0,979960.514371439
-"132","Varian GC","20230106","Control_C6_35cm","C","C6","35",NA,2025623,365,NA,"20220622","T1","Low",0,14052.7169451211,"Within Range","Within Range",196,1232,"G",NA,NA,0,876104.547700819
-"133","Varian GC","20230106","Control_C6_50cm","C","C6","50",NA,2156653,250,NA,"20220622","T1","Low",0,14969.6592714509,"Within Range","Within Range",197,1234,"G",NA,NA,0,933270.528145315
-"134","Varian GC","20230106","Control_F4_10cm","C","F4","10",NA,1229283,521,NA,"20220622","T1","Low",0,8479.96374242401,"Within Range","Within Range",198,1237,"G",NA,NA,0,528676.043792021
-"135","Varian GC","20230106","Control_F4_20cm","C","F4","20",NA,2394329,291,NA,"20220622","T1","Low",0,16632.9057367851,"Within Range","Within Range",199,1238,"G",NA,NA,0,1036964.19805393
-"136","Varian GC","20230106","Control_F4_35cm","C","F4","35",NA,1534580,479,NA,"20220622","T1","Low",0,10616.4190686965,"Within Range","Within Range",200,1240,"G",NA,NA,0,661871.513011003
-"137","Varian GC","20230106","Control_F4_50cm","C","F4","50",NA,2176070,281,NA,"20220622","T1","Low",0,15105.5386055754,"Within Range","Within Range",201,1241,"G",NA,NA,0,941741.808327646
-"138","Varian GC","20230106","Control_H3_10cm","C","H3","10",NA,620418,550,NA,"20220622","T1","Low",0,4219.15255780415,"Within Range","Within Range",203,1244,"G",NA,NA,0,263039.436272079
-"139","Varian GC","20230106","Control_H3_20cm","C","H3","20",NA,1312026,251,NA,"20220622","T1","Low",0,9058.99571149598,"Within Range","Within Range",204,1245,"G",NA,NA,0,564775.293734163
-"140","Varian GC","20230106","Control_H3_35cm","C","H3","35",NA,1812579,268,NA,"20220622","T1","Low",0,12561.8441604872,"Within Range","Within Range",205,1246,"G",NA,NA,0,783157.366613914
-"141","Varian GC","20230106","Control_H3_50cm","C","H3","50",NA,1707962,511,NA,"20220622","T1","Low",0,11829.738876555,"Within Range","Within Range",206,1247,"G",NA,NA,0,737514.892553303
-"142","Varian GC","20230106","Control_H6_10cm","C","H6","10",NA,246691,586,NA,"20220622","T1","Low",0,1603.82702325309,"Within Range","Within Range",207,1249,"G",NA,NA,0,99989.2159135342
-"143","Varian GC","20230106","Control_H6_20cm","C","H6","20",NA,1086991,209,NA,"20220622","T1","Low",0,7484.21042258804,"Within Range","Within Range",208,1250,"G",NA,NA,0,466596.659762347
-"144","Varian GC","20230106","Control_H6_35cm","C","H6","35",NA,1848727,0,"No assigned peak for CH4.","20220622","T1","Low",0,12814.8063158117,"Within Range","Within Range",209,1251,"G",NA,NA,0,798928.074551849
-"145","Varian GC","20230106","Control_H6_50cm","C","H6","50",NA,1897276,208,NA,"20220622","T1","Low",0,13154.5501378446,"Within Range","Within Range",210,1252,"G",NA,NA,0,820109.110838195
-"146","Varian GC","20230106","FW_C3_10cm","FW","C3","10",NA,38711,523,NA,"20220622","T1","Low",0,148.391893664033,"Within Range","Within Range",232,1029,"W",NA,NA,0,6.06518218526118
-"147","Varian GC","20230106","FW_C3_20cm","FW","C3","20",NA,736768,829,NA,"20220622","T1","Low",0,5033.36487306372,"Within Range","Within Range",233,1040,"W",NA,NA,0,205.727376383127
-"148","Varian GC","20230106","FW_C3_35cm","FW","C3","35",NA,821894,822,NA,"20220622","T1","Low",0,5629.07297404169,"Within Range","Within Range",234,1055,"W","Water in vial",NA,0,230.075594284083
-"149","Varian GC","20230106","FW_C3_50cm","FW","C3","50",NA,1411488,875,NA,"20220622","T1","Low",0,9755.02652628195,"Within Range","Within Range",235,1056,"W",NA,NA,0,398.714590420353
-"150","Varian GC","20230106","FW_C6_10cm","FW","C6","10",NA,2768565,0,"No assigned peak for CH4.","20220622","T1","Low",0,19251.7932315292,"Within Range","Within Range",236,1102,"G",NA,NA,0,1200236.48575619
-"151","Varian GC","20230106","FW_C6_20cm","FW","C6","20",NA,728419,805,NA,"20220622","T1","Low",0,4974.93892875687,"Within Range","Within Range",237,1105,"W",NA,NA,0,203.339348386333
-"152","Varian GC","20230106","FW_C6_35cm","FW","C6","35",NA,1007062,745,NA,"20220622","T1","Low",0,6924.8707049569,"Within Range","Within Range",238,1100,"W",NA,NA,0,283.038388404377
-"153","Varian GC","20230106","FW_C6_50cm","FW","C6","50",NA,1913863,833,NA,"20220622","T1","Low",0,13270.6252532139,"Within Range","Within Range",239,1105,"W",NA,NA,0,542.406717009089
-"154","Varian GC","20230106","FW_F4_10cm","FW","F4","10",NA,410995,861,NA,"20220622","T1","Low",0,2753.61937603701,"Within Range","Within Range",240,1114,"W",NA,NA,0,112.547948355872
-"155","Varian GC","20230106","FW_F4_20cm","FW","F4","20",NA,1091235,803,NA,"20220622","T1","Low",0,7513.9097527639,"Within Range","Within Range",241,1122,"W",NA,NA,0,307.114023878582
-"156","Varian GC","20230106","FW_F4_35cm","FW","F4","35",NA,879596,842,NA,"20220622","T1","Low",0,6032.86909793604,"Within Range","Within Range",242,1127,"W",NA,NA,0,246.579845268752
-"157","Varian GC","20230106","FW_F4_50cm","FW","F4","50",NA,1482399,758,NA,"20220622","T1","Low",0,10251.258666268,"Within Range","Within Range",243,1125,"W","Water in vial",NA,0,418.996953970557
-"158","Varian GC","20230106","FW_H3_10cm","FW","H3","10",NA,491252,809,NA,"20220622","T1","Low",0,3315.25442361576,"Within Range","Within Range",245,1135,"W",NA,NA,0,135.503507457404
-"159","Varian GC","20230106","FW_H3_20cm","FW","H3","20",NA,1518251,609,NA,"20220622","T1","Low",0,10502.1494262739,"Within Range","Within Range",246,1140,"G","Water in vial",NA,0,654747.470465951
-"160","Varian GC","20230106","FW_H3_35cm","FW","H3","35",NA,1166119,757,NA,"20220622","T1","Low",0,8037.94477653613,"Within Range","Within Range",247,1145,"W",NA,NA,0,328.532767262451
-"161","Varian GC","20230106","FW_H3_50cm","FW","H3","50",NA,1526736,767,NA,"20220622","T1","Low",0,10561.5270927541,"Within Range","Within Range",248,1148,"W","Water in vial",NA,0,431.678472391189
-"162","Varian GC","20230106","FW_H6_10cm","FW","H6","10",NA,31230,545,NA,"20220622","T1","Low",0,96.0401761697753,"Within Range","Within Range",249,1151,"G",NA,NA,0,5987.5421552229
-"163","Varian GC","20230106","FW_H6_20cm","FW","H6","20",NA,26844,550,NA,"20220622","T1","Low",0,65.3471360775665,"Within Range","Within Range",250,1153,"G",NA,NA,0,4074.01097740439
-"164","Varian GC","20230106","FW_H6_35cm","FW","H6","35",NA,876685,793,NA,"20220622","T1","Low",0,6012.49804465095,"Within Range","Within Range",251,1201,"W","Water in vial",NA,0,245.747224655665
-"165","Varian GC","20230106","FW_H6_50cm","FW","H6","50",NA,1367377,814,NA,"20220622","T1","Low",0,9446.33963811336,"Within Range","Within Range",252,1205,"W",NA,NA,0,386.097713792425
-"166","Varian GC","20230106","SW_C3_10cm","SW","C3","10",NA,998382,2933,NA,"20220622","T1","Low",2.5265846491889,6864.12843683096,"Within Range","Within Range",211,1255,"G",NA,"Peter",157.517746208785,427938.181847317
-"167","Varian GC","20230106","SW_C3_20cm","SW","C3","20",NA,1339994,844,NA,"20220622","T1","Low",0,9254.7145772732,"Within Range","Within Range",212,1257,"G","Vented vial on accident, sample lost","Peter",0,576977.218034489
-"168","Varian GC","20230106","SW_C3_35cm","SW","C3","35",NA,1438199,870,NA,"20220622","T1","Low",0,9941.94895991236,"Within Range","Within Range",213,1305,"W","Water in vial","Peter",0,406.354621061432
-"169","Varian GC","20230106","SW_C3_50cm","SW","C3","50",NA,3550257,206,NA,"20220622","T1","Low",0,24722.0403577852,"Within Range","Within Range",214,1307,"G",NA,"Peter",0,1541274.33652028
-"170","Varian GC","20230106","SW_C6_10cm","SW","C6","10",NA,1199577,1218,NA,"20220622","T1","Low",0,8272.08242710729,"Within Range","Within Range",215,1310,"W",NA,"Peter",0,338.102612838775
-"171","Varian GC","20230106","SW_C6_20cm","SW","C6","20",NA,1294810,933,NA,"20220622","T1","Low",0,8938.51888107476,"Within Range","Within Range",216,1317,"G",NA,"Peter",0,557264.269393688
-"172","Varian GC","20230106","SW_C6_35cm","SW","C6","35",NA,1580504,1293,NA,"20220622","T1","Low",0,10937.7932531914,"Within Range","Within Range",217,1320,"W","Water in vial","Peter",0,447.05749854182
-"173","Varian GC","20230106","SW_C6_50cm","SW","C6","50",NA,1484991,3943,NA,"20220622","T1","Low",4.82079503464593,10269.3973712199,"Within Range","Within Range",218,1325,"W",NA,"Peter",0.197039066225064,419.738332407219
+"","Machine","Run_Date","Sample_ID","Sample_Plot","Sample_Grid","Depth","Dilution_Factor","CO2_Area","CH4_Area","Notes","Collection_Date","Timepoint","CH4_Curve","CH4_Conc_ppm","CO2_Conc_ppm","CH4_Flag","CO2_Flag","Sample_Number","Sample_Time","Sample_Type","Field_Notes","Personnel","CH4_Conc_umol","CO2_Conc_umol","Sample_Depth"
+"1","Varian GC","20230104","Control_C3_10cm","C","C3","10",NA,631418,469,NA,"20220621",NA,"Low",0,4296.13008653518,"Within Range","Within Range",64,1502,"G",NA,NA,NA,NA,"10cm"
+"2","Varian GC","20230104","Control_C3_20cm","C","C3","20",NA,891692,225,NA,"20220621",NA,"Low",0,6117.51638771155,"Within Range","Within Range",65,1503,"G",NA,NA,NA,NA,"20cm"
+"3","Varian GC","20230104","Control_C3_35cm","C","C3","35",NA,1217519,0,"No assigned peak for CH4","20220621",NA,"Low",0,8397.63977442476,"Within Range","Within Range",66,1505,"G",NA,NA,NA,NA,"35cm"
+"4","Varian GC","20230104","Control_C3_50cm","C","C3","50",NA,1958093,0,"No assigned peak for CH4","20220621",NA,"Low",0,13580.1448982842,"Within Range","Within Range",67,1506,"G",NA,NA,NA,NA,"50cm"
+"5","Varian GC","20230104","Control_C6_10cm","C","C6","10",NA,718293,613,NA,"20220621",NA,"Low",0,4904.07761458138,"Within Range","Within Range",68,1510,"G",NA,NA,NA,NA,"10cm"
+"6","Varian GC","20230105","Control_C6_20cm","C","C6","20",NA,2005323,323,NA,"20220621",NA,"Low",0,13910.6584148266,"Within Range","Within Range",69,1510,"G",NA,NA,NA,NA,"20cm"
+"7","Varian GC","20230105","Control_C6_35cm","C","C6","35",NA,1720779,261,NA,"20220621",NA,"Low",0,11919.431693441,"Within Range","Within Range",70,1511,"G",NA,NA,NA,NA,"35cm"
+"8","Varian GC","20230105","Control_C6_50cm","C","C6","50",NA,1990956,252,NA,"20220621",NA,"Low",0,13810.1187643467,"Within Range","Within Range",71,1517,"G",NA,NA,NA,NA,"50cm"
+"9","Varian GC","20230105","Control_F4_10cm","C","F4","10",NA,1251297,482,NA,"20220621",NA,"Low",0,8634.01677128628,"Within Range","Within Range",72,1514,"G",NA,NA,NA,NA,"10cm"
+"10","Varian GC","20230105","Control_F4_20cm","C","F4","20",NA,2531959,315,NA,"20220621",NA,"Low",0,17596.0345803534,"Within Range","Within Range",73,1515,"G","Distracted by Slack; 95% sure sample was taken right",NA,NA,NA,"20cm"
+"11","Varian GC","20230105","Control_F4_35cm","C","F4","35",NA,1320956,531,NA,"20220621",NA,"Low",0,9121.48746891126,"Within Range","Within Range",74,1519,"G",NA,NA,NA,NA,"35cm"
+"12","Varian GC","20230105","Control_F4_50cm","C","F4","50",NA,1995462,310,NA,"20220621",NA,"Low",0,13841.6515592978,"Within Range","Within Range",75,1520,"G",NA,NA,NA,NA,"50cm"
+"13","Varian GC","20230105","Control_F4_ATM","C","F4","ATM",NA,62823,774,NA,"20220621",NA,"Low",0,317.126636642451,"Within Range","Within Range",76,1522,"G",NA,NA,NA,NA,"0cm"
+"14","Varian GC","20230105","Control_H3_10cm","C","H3","10",NA,520153,366,NA,"20220621",NA,"Low",0,3517.50238342081,"Within Range","Within Range",77,1523,"G",NA,NA,NA,NA,"10cm"
+"15","Varian GC","20230105","Control_H3_20cm","C","H3","20",NA,1245447,215,NA,"20220621",NA,"Low",0,8593.07872191568,"Within Range","Within Range",78,1524,"G",NA,NA,NA,NA,"20cm"
+"16","Varian GC","20230105","Control_H3_35cm","C","H3","35",NA,1606261,202,NA,"20220621",NA,"Low",0,11118.0396356937,"Within Range","Within Range",79,1525,"G",NA,NA,NA,NA,"35cm"
+"17","Varian GC","20230105","Control_H3_50cm","C","H3","50",NA,1809922,615,NA,"20220621",NA,"Low",0,12543.2505883201,"Within Range","Within Range",80,1526,"G",NA,NA,NA,NA,"50cm"
+"18","Varian GC","20230105","Control_H6_10cm","C","H6","10",NA,225646,468,NA,"20220621",NA,"Low",0,1456.55501487631,"Within Range","Within Range",81,1528,"G",NA,NA,NA,NA,"10cm"
+"19","Varian GC","20230105","Control_H6_20cm","C","H6","20",NA,1027454,0,"No assigned peak for CH4","20220621",NA,"Low",0,7067.57304730992,"Within Range","Within Range",82,1530,"G",NA,NA,NA,NA,"20cm"
+"20","Varian GC","20230105","Control_H6_35cm","C","H6","35",NA,1867967,0,"No assigned peak for CH4","20220621",NA,"Low",0,12949.4470115194,"Within Range","Within Range",83,1531,"G",NA,NA,NA,NA,"35cm"
+"21","Varian GC","20230105","Control_H6_50cm","C","H6","50",NA,1844555,0,"No assigned peak for CH4","20220621",NA,"Low",0,12785.6108385511,"Within Range","Within Range",84,1532,"G",NA,NA,NA,NA,"50cm"
+"22","Varian GC","20230105","FW_C3_10cm","FW","C3","10",NA,712873,386,NA,"20220621",NA,"Low",0,4866.14868678845,"Within Range","Within Range",106,1410,"G",NA,NA,NA,NA,"10cm"
+"23","Varian GC","20230105","FW_C3_20cm","FW","C3","20",NA,1722376,205,NA,"20220621",NA,"Low",0,11930.6074310213,"Within Range","Within Range",107,1414,"G",NA,NA,NA,NA,"20cm"
+"24","Varian GC","20230105","FW_C3_35cm","FW","C3","35",NA,1680735,241,NA,"20220621",NA,"Low",0,11639.2054970314,"Within Range","Within Range",108,1416,"G",NA,NA,NA,NA,"35cm"
+"25","Varian GC","20230105","FW_C3_50cm","FW","C3","50",NA,3217005,0,"No assigned peak for CH4","20220621",NA,"Low",0,22389.9571391786,"Within Range","Within Range",109,1418,"G",NA,NA,NA,NA,"50cm"
+"26","Varian GC","20230105","FW_C6_10cm","FW","C6","10",NA,2242927,290,NA,"20220621",NA,"Low",0,15573.4010272455,"Within Range","Within Range",110,1428,"G",NA,NA,NA,NA,"10cm"
+"27","Varian GC","20230105","FW_C6_20cm","FW","C6","20",NA,2369958,0,"No assigned peak for CH4","20220621",NA,"Low",0,16462.3585229029,"Within Range","Within Range",111,1430,"G",NA,NA,NA,NA,"20cm"
+"28","Varian GC","20230105","FW_C6_35cm","FW","C6","35",NA,2795676,0,"No assigned peak for CH4","20220621",NA,"Low",0,19441.5148480226,"Within Range","Within Range",112,1432,"G",NA,NA,NA,NA,"35cm"
+"29","Varian GC","20230105","FW_C6_50cm","FW","C6","50",NA,4108871,0,"No assigned peak for CH4","20220621",NA,"Low",0,28631.1971972903,"Within Range","Within Range",113,1434,"G",NA,NA,NA,NA,"50cm"
+"30","Varian GC","20230105","FW_F4_10cm","FW","F4","10",NA,774053,483,NA,"20220621",NA,"Low",0,5294.28370567613,"Within Range","Within Range",114,1436,"G",NA,NA,NA,NA,"10cm"
+"31","Varian GC","20230105","FW_F4_20cm","FW","F4","20",NA,1677778,211,NA,"20220621",NA,"Low",0,11618.512537717,"Within Range","Within Range",115,1437,"G",NA,NA,NA,NA,"20cm"
+"32","Varian GC","20230105","FW_F4_35cm","FW","F4","35",NA,1845200,208,NA,"20220621",NA,"Low",0,12790.1245209176,"Within Range","Within Range",116,1438,"G",NA,NA,NA,NA,"35cm"
+"33","Varian GC","20230105","FW_F4_50cm","FW","F4","50",NA,3511911,0,"No assigned peak for CH4","20220621",NA,"Low",0,24453.6966926289,"Within Range","Within Range",117,1439,"G",NA,NA,NA,NA,"50cm"
+"34","Varian GC","20230105","FW_F4_ATM","FW","F4","ATM",NA,55656,700,NA,"20220621",NA,"Low",0,266.972277695606,"Within Range","Within Range",118,1441,"G",NA,NA,NA,NA,"0cm"
+"35","Varian GC","20230105","FW_H3_10cm","FW","H3","10",NA,1122956,455,NA,"20220621",NA,"Low",0,7735.89195175272,"Within Range","Within Range",119,1443,"G",NA,NA,NA,NA,"10cm"
+"36","Varian GC","20230105","FW_H3_20cm","FW","H3","20",NA,2162993,0,"No assigned peak for CH4","20220621",NA,"Low",0,15014.0263198286,"Within Range","Within Range",120,1444,"G","Transferred 14 mL",NA,NA,NA,"20cm"
+"37","Varian GC","20230105","FW_H3_35cm","FW","H3","35",NA,2634703,0,"No assigned peak for CH4","20220621",NA,"Low",0,18315.0326905298,"Within Range","Within Range",121,1445,"G",NA,NA,NA,NA,"35cm"
+"38","Varian GC","20230105","FW_H3_50cm","FW","H3","50",NA,3016472,0,"No assigned peak for CH4","20220621",NA,"Low",0,20986.6357965404,"Within Range","Within Range",122,1446,"G",NA,NA,NA,NA,"50cm"
+"39","Varian GC","20230105","FW_H6_10cm","FW","H6","10",NA,1303480,435,NA,"20220621",NA,"Low",0,8999.19116962913,"Within Range","Within Range",123,1448,"G",NA,NA,NA,NA,"10cm"
+"40","Varian GC","20230105","FW_H6_20cm","FW","H6","20",NA,1696147,0,"No assigned peak for CH4","20220621",NA,"Low",0,11747.0580127407,"Within Range","Within Range",124,1449,"G",NA,NA,NA,NA,"20cm"
+"41","Varian GC","20230105","FW_H6_35cm","FW","H6","35",NA,2034380,211,NA,"20220621",NA,"Low",0,14113.9980559482,"Within Range","Within Range",125,1450,"G",NA,NA,NA,NA,"35cm"
+"42","Varian GC","20230105","FW_H6_50cm","FW","H6","50",NA,3573516,0,"No assigned peak for CH4","20220621",NA,"Low",0,24884.8058433084,"Within Range","Within Range",126,1452,"G",NA,NA,NA,NA,"50cm"
+"43","Varian GC","20230105","SW_C3_10cm","SW","C3","10",NA,366721,491,NA,"20220621",NA,"Low",0,2443.79182085177,"Within Range","Within Range",85,1302,"G",NA,NA,NA,NA,"10cm"
+"44","Varian GC","20230105","SW_C3_20cm","SW","C3","20",NA,1441938,0,"No assigned peak for CH4","20220621",NA,"Low",0,9968.11432172376,"Within Range","Within Range",86,1304,"G",NA,NA,NA,NA,"20cm"
+"45","Varian GC","20230105","SW_C3_35cm","SW","C3","35",NA,1866722,0,"No assigned peak for CH4","20220621",NA,"Low",0,12940.7345548585,"Within Range","Within Range",87,1306,"G",NA,NA,NA,NA,"35cm"
+"46","Varian GC","20230105","SW_C3_50cm","SW","C3","50",NA,2921450,0,"No assigned peak for CH4","20220621",NA,"Low",0,20321.6759115332,"Within Range","Within Range",88,1307,"G",NA,NA,NA,NA,"50cm"
+"47","Varian GC","20230105","SW_C6_10cm","SW","C6","10",NA,1756959,344,NA,"20220621",NA,"Low",0,12172.6177833945,"Within Range","Within Range",89,1309,"G",NA,NA,NA,NA,"10cm"
+"48","Varian GC","20230105","SW_C6_20cm","SW","C6","20",NA,3473873,0,"No assigned peak for CH4","20220621",NA,"Low",0,24187.508398277,"Within Range","Within Range",90,1310,"G",NA,NA,NA,NA,"20cm"
+"49","Varian GC","20230105","SW_C6_35cm","SW","C6","35",NA,3108695,0,"No assigned peak for CH4","20220621",NA,"Low",0,21632.0083994642,"Within Range","Within Range",91,1311,"G",NA,NA,NA,NA,"35cm"
+"50","Varian GC","20230105","SW_C6_50cm","SW","C6","50",NA,2240629,0,"No assigned peak for CH4","20220621",NA,"Low",0,15557.3197216978,"Within Range","Within Range",92,1312,"G",NA,NA,NA,NA,"50cm"
+"51","Varian GC","20230105","SW_F4_10cm","SW","F4","10",NA,1784161,410,NA,"20220621",NA,"Low",0,12362.9762139891,"Within Range","Within Range",93,1314,"G",NA,NA,NA,NA,"10cm"
+"52","Varian GC","20230105","SW_F4_20cm","SW","F4","20",NA,2979275,0,"No assigned peak for CH4","20220621",NA,"Low",0,20726.3327841579,"Within Range","Within Range",94,1315,"G",NA,NA,NA,NA,"20cm"
+"53","Varian GC","20230105","SW_F4_35cm","SW","F4","35",NA,2310050,257,NA,"20220621",NA,"Low",0,16043.1249055194,"Within Range","Within Range",95,1316,"G",NA,NA,NA,NA,"35cm"
+"54","Varian GC","20230105","SW_F4_50cm","SW","F4","50",NA,4367465,0,"No assigned peak for CH4","20220621",NA,"Low",0,30440.8269304423,"Within Range","Within Range",96,1317,"G",NA,NA,NA,NA,"50cm"
+"55","Varian GC","20230105","SW_H3_10cm","SW","H3","10",NA,428904,441,NA,"20220621",NA,"Low",0,2878.94579076828,"Within Range","Within Range",98,1321,"G",NA,NA,NA,NA,"10cm"
+"56","Varian GC","20230105","SW_H3_20cm","SW","H3","20",NA,1492116,0,"No assigned peak for CH4","20220621",NA,"Low",0,10319.2578159661,"Within Range","Within Range",99,1323,"G",NA,NA,NA,NA,"20cm"
+"57","Varian GC","20230105","SW_H3_35cm","SW","H3","35",NA,1915092,0,"No assigned peak for CH4","20220621",NA,"Low",0,13279.2257425603,"Within Range","Within Range",100,1324,"G",NA,NA,NA,NA,"35cm"
+"58","Varian GC","20230105","SW_H3_50cm","SW","H3","50",NA,2192011,0,"No assigned peak for CH4","20220621",NA,"Low",0,15217.093040621,"Within Range","Within Range",101,1325,"G",NA,NA,NA,NA,"50cm"
+"59","Varian GC","20230105","SW_H6_10cm","SW","H6","10",NA,2336637,0,"No assigned peak for CH4","20220621",NA,"Low",0,16229.1795924623,"Within Range","Within Range",102,1358,"G",NA,NA,NA,NA,"10cm"
+"60","Varian GC","20230105","SW_H6_20cm","SW","H6","20",NA,2905731,0,"No assigned peak for CH4","20220621",NA,"Low",0,20211.6750229765,"Within Range","Within Range",103,1359,"G",NA,NA,NA,NA,"20cm"
+"61","Varian GC","20230105","SW_H6_35cm","SW","H6","35",NA,4598735,0,"No assigned peak for CH4","20220621",NA,"Low",0,32059.2444822264,"Within Range","Within Range",104,1400,"G",NA,NA,NA,NA,"35cm"
+"62","Varian GC","20230105","SW_H6_50cm","SW","H6","50",NA,4190669,0,"No assigned peak for CH4","20220621",NA,"Low",0,29203.6160968485,"Within Range","Within Range",105,1404,"G",NA,NA,NA,NA,"50cm"
+"63","Varian GC","20230105","Control_C3_10cm","C","C3","10",NA,565833,438,NA,"20220622","T0","Low",0,3837.1690663693,"Within Range","Within Range",127,842,"G",NA,NA,NA,NA,"10cm"
+"64","Varian GC","20230105","Control_C3_20cm","C","C3","20",NA,872011,245,NA,"20220622","T0","Low",0,5979.78959289742,"Within Range","Within Range",128,843,"G",NA,NA,NA,NA,"20cm"
+"65","Varian GC","20230105","Control_C3_35cm","C","C3","35",NA,1154285,0,"No assigned peak for CH4","20220622","T0","Low",0,7955.13095153585,"Within Range","Within Range",129,844,"G","Condensation on bottom",NA,NA,NA,"35cm"
+"66","Varian GC","20230105","Control_C3_50cm","C","C3","50",NA,1833875,0,"No assigned peak for CH4","20220622","T0","Low",0,12710.8726561105,"Within Range","Within Range",130,846,"G",NA,NA,NA,NA,"50cm"
+"67","Varian GC","20230105","Control_C6_10cm","C","C6","10",NA,761483,592,NA,"20220622","T0","Low",0,5206.31938420803,"Within Range","Within Range",131,848,"G",NA,NA,NA,NA,"10cm"
+"68","Varian GC","20230105","Control_C6_20cm","C","C6","20",NA,2185479,326,NA,"20220622","T0","Low",0,15171.3823844691,"Within Range","Within Range",132,850,"G",NA,NA,NA,NA,"20cm"
+"69","Varian GC","20230105","Control_C6_35cm","C","C6","35",NA,1926713,290,NA,"20220622","T0","Low",0,13360.549002686,"Within Range","Within Range",133,851,"G",NA,NA,NA,NA,"35cm"
+"70","Varian GC","20230105","Control_C6_50cm","C","C6","50",NA,2027476,248,NA,"20220622","T0","Low",0,14065.6841597337,"Within Range","Within Range",134,852,"G",NA,NA,NA,NA,"50cm"
+"71","Varian GC","20230105","Control_F4_10cm","C","F4","10",NA,1171971,516,NA,"20220622","T0","Low",0,8078.89682182103,"Within Range","Within Range",135,856,"G",NA,NA,NA,NA,"10cm"
+"72","Varian GC","20230105","Control_F4_20cm","C","F4","20",NA,2222966,248,NA,"20220622","T0","Low",0,15433.7148044273,"Within Range","Within Range",136,858,"G",NA,NA,NA,NA,"20cm"
+"73","Varian GC","20230105","Control_F4_35cm","C","F4","35",NA,1407226,514,NA,"20220622","T0","Low",0,9725.20123287726,"Within Range","Within Range",137,900,"G",NA,NA,NA,NA,"35cm"
+"74","Varian GC","20230105","Control_F4_50cm","C","F4","50",NA,2015171,247,NA,"20220622","T0","Low",0,13979.5742969123,"Within Range","Within Range",138,901,"G",NA,NA,NA,NA,"50cm"
+"75","Varian GC","20230105","Control_F4_ATM","C","F4","ATM",NA,49637,898,NA,"20220622","T0","Low",0,224.851573565418,"Within Range","Within Range",139,903,"G",NA,NA,NA,NA,"0cm"
+"76","Varian GC","20230105","Control_H3_10cm","C","H3","10",NA,604754,420,NA,"20220622","T0","Low",0,4109.53655689116,"Within Range","Within Range",140,905,"G",NA,NA,NA,NA,"10cm"
+"77","Varian GC","20230105","Control_H3_20cm","C","H3","20",NA,1218531,271,NA,"20220622","T0","Low",0,8404.72170706801,"Within Range","Within Range",141,907,"G",NA,NA,NA,NA,"20cm"
+"78","Varian GC","20230105","Control_H3_35cm","C","H3","35",NA,1722182,0,"No assigned peak for CH4","20220622","T0","Low",0,11929.2498273327,"Within Range","Within Range",142,915,"G","Needle broke",NA,NA,NA,"35cm"
+"79","Varian GC","20230105","Control_H3_50cm","C","H3","50",NA,1847411,562,NA,"20220622","T0","Low",0,12805.5970041926,"Within Range","Within Range",143,916,"G",NA,NA,NA,NA,"50cm"
+"80","Varian GC","20230105","Control_H6_10cm","C","H6","10",NA,273973,523,NA,"20220622","T0","Low",0,1794.74529042036,"Within Range","Within Range",144,919,"G",NA,NA,NA,NA,"10cm"
+"81","Varian GC","20230105","Control_H6_20cm","C","H6","20",NA,905955,238,NA,"20220622","T0","Low",0,6217.32825064706,"Within Range","Within Range",145,920,"G",NA,NA,NA,NA,"20cm"
+"82","Varian GC","20230105","Control_H6_35cm","C","H6","35",NA,1765574,0,"No assigned peak for CH4","20220622","T0","Low",0,12232.9051843052,"Within Range","Within Range",146,922,"G",NA,NA,NA,NA,"35cm"
+"83","Varian GC","20230105","Control_H6_50cm","C","H6","50",NA,1789152,0,"No assigned peak for CH4","20220622","T0","Low",0,12397.9030181616,"Within Range","Within Range",147,923,"G",NA,NA,NA,NA,"50cm"
+"84","Varian GC","20230105","FW_C3_10cm","FW","C3","10",NA,1096700,357,NA,"20220622","T0","Low",0,7552.15358862891,"Within Range","Within Range",169,700,"G",NA,NA,NA,NA,"10cm"
+"85","Varian GC","20230105","FW_C3_20cm","FW","C3","20",NA,1603024,0,"No assigned peak for CH4","20220622","T0","Low",0,11095.3872483753,"Within Range","Within Range",170,704,"G",NA,NA,NA,NA,"20cm"
+"86","Varian GC","20230105","FW_C3_35cm","FW","C3","35",NA,1808315,258,NA,"20220622","T0","Low",0,12532.0048711682,"Within Range","Within Range",171,700,"G",NA,NA,NA,NA,"35cm"
+"87","Varian GC","20230105","FW_C3_50cm","FW","C3","50",NA,3069554,0,"No assigned peak for CH4","20220622","T0","Low",0,21358.1013583678,"Within Range","Within Range",172,704,"G",NA,NA,NA,NA,"50cm"
+"88","Varian GC","20230105","FW_C6_10cm","FW","C6","10",NA,2201989,0,"No assigned peak for CH4","20220622","T0","Low",0,15286.9186571372,"Within Range","Within Range",173,710,"G","Est times",NA,NA,NA,"10cm"
+"89","Varian GC","20230105","FW_C6_20cm","FW","C6","20",NA,2127156,0,"No assigned peak for CH4","20220622","T0","Low",0,14763.24052918,"Within Range","Within Range",174,726,"G","Est times",NA,NA,NA,"20cm"
+"90","Varian GC","20230105","FW_C6_35cm","FW","C6","35",NA,1339338,760,NA,"20220622","T0","Low",0,9250.12391737797,"Within Range","Within Range",175,710,"W","Est times",NA,0,378.07784111281,"35cm"
+"91","Varian GC","20230105","FW_C6_50cm","FW","C6","50",NA,4168265,0,"No assigned peak for CH4","20220622","T0","Low",0,29046.8338646949,"Within Range","Within Range",176,728,"G","Est times",NA,NA,NA,"50cm"
+"92","Varian GC","20230105","FW_F4_10cm","FW","F4","10",NA,341674,856,NA,"20220622","T0","Low",0,2268.51398793122,"Within Range","Within Range",177,736,"W",NA,NA,0,92.7203655596389,"10cm"
+"93","Varian GC","20230105","FW_F4_20cm","FW","F4","20",NA,1784316,0,"No assigned peak for CH4","20220622","T0","Low",0,12364.0608973485,"Within Range","Within Range",178,738,"G",NA,NA,NA,NA,"20cm"
+"94","Varian GC","20230105","FW_F4_35cm","FW","F4","35",NA,867930,753,NA,"20220622","T0","Low",0,5951.23092973821,"Within Range","Within Range",179,736,"W",NA,NA,0,243.243070252511,"35cm"
+"95","Varian GC","20230105","FW_F4_50cm","FW","F4","50",NA,1422556,840,NA,"20220622","T0","Low",0,9832.47991609968,"Within Range","Within Range",180,738,"W",NA,NA,0,401.880322109,"50cm"
+"96","Varian GC","20230105","FW_F4_ATM","FW","F4","ATM",NA,124964,865,NA,"20220622","T0","Low",0,751.986692358354,"Within Range","Within Range",181,750,"G",NA,NA,NA,NA,"0cm"
+"97","Varian GC","20230105","FW_H3_10cm","FW","H3","10",NA,417272,810,NA,"20220622","T0","Low",0,2797.5455531138,"Within Range","Within Range",182,810,"W",NA,NA,0,114.343331244347,"10cm"
+"98","Varian GC","20230105","FW_H3_20cm","FW","H3","20",NA,2621637,0,"No assigned peak for CH4","20220622","T0","Low",0,18223.5973823117,"Within Range","Within Range",183,809,"G",NA,NA,NA,NA,"20cm"
+"99","Varian GC","20230105","FW_H3_35cm","FW","H3","35",NA,2644871,0,"No assigned peak for CH4","20220622","T0","Low",0,18386.1879189059,"Within Range","Within Range",184,809,"G",NA,NA,NA,NA,"35cm"
+"100","Varian GC","20230105","FW_H3_50cm","FW","H3","50",NA,2099765,695,NA,"20220622","T0","Low",0,14571.5594846826,"Within Range","Within Range",185,810,"W",NA,NA,0,595.579453942852,"50cm"
+"101","Varian GC","20230105","FW_H6_10cm","FW","H6","10",NA,20050,302,NA,"20220622","T0","Low",0,17.8030151504194,"Within Range","Within Range",186,820,"G",NA,NA,NA,NA,"10cm"
+"102","Varian GC","20230105","FW_H6_20cm","FW","H6","20",NA,1645517,287,NA,"20220622","T0","Low",0,11392.7514418632,"Within Range","Within Range",187,820,"G",NA,NA,NA,NA,"20cm"
+"103","Varian GC","20230105","FW_H6_35cm","FW","H6","35",NA,860703,738,NA,"20220622","T0","Low",0,5900.65669336192,"Within Range","Within Range",188,820,"W","Water in vial!!!",NA,0,241.175963014179,"35cm"
+"104","Varian GC","20230105","FW_H6_50cm","FW","H6","50",NA,1352820,800,NA,"20220622","T0","Low",0,9344.47037577358,"Within Range","Within Range",189,825,"W",NA,NA,0,381.934038675724,"50cm"
+"105","Varian GC","20230105","SW_C3_10cm","SW","C3","10",NA,1058588,527,NA,"20220622","T0","Low",0,7285.44744544736,"Within Range","Within Range",148,850,"G",NA,NA,NA,NA,"10cm"
+"106","Varian GC","20230105","SW_C3_20cm","SW","C3","20",NA,1692383,256,NA,"20220622","T0","Low",0,11720.7177020004,"Within Range","Within Range",149,852,"G",NA,NA,NA,NA,"20cm"
+"107","Varian GC","20230105","SW_C3_35cm","SW","C3","35",NA,2402082,225,NA,"20220622","T0","Low",0,16687.1608986261,"Within Range","Within Range",150,853,"G",NA,NA,NA,NA,"35cm"
+"108","Varian GC","20230105","SW_C3_50cm","SW","C3","50",NA,3661161,0,"No assigned peak for CH4","20220622","T0","Low",0,25498.1417983658,"Within Range","Within Range",151,854,"G",NA,NA,NA,NA,"50cm"
+"109","Varian GC","20230105","SW_C6_10cm","SW","C6","10",NA,1035460,994,NA,"20220622","T0","Low",0,7123.59869231179,"Within Range","Within Range",152,902,"W",NA,NA,0,291.160944285675,"10cm"
+"110","Varian GC","20230105","SW_C6_20cm","SW","C6","20",NA,2136228,841,NA,"20220622","T0","Low",0,14826.7259965116,"Within Range","Within Range",153,907,"G",NA,NA,NA,NA,"20cm"
+"111","Varian GC","20230105","SW_C6_35cm","SW","C6","35",NA,1501142,1169,NA,"20220622","T0","Low",0,10382.4213772685,"Within Range","Within Range",154,917,"W","Missampled first run, sampled 2x",NA,0,424.357932380416,"35cm"
+"112","Varian GC","20230105","SW_C6_50cm","SW","C6","50",NA,1499768,2935,NA,"20220622","T0","Low",2.53112764005119,10372.8061841343,"Within Range","Within Range",155,925,"W","Water in sample-sorry!",NA,0.103454103131926,423.964933162834,"50cm"
+"113","Varian GC","20230105","SW_F4_10cm","SW","F4","10",NA,1757271,8081,NA,"20220622","T0","Low",14.2202431287263,12174.8011460276,"Within Range","Within Range",156,932,"G",NA,NA,NA,NA,"10cm"
+"114","Varian GC","20230105","SW_F4_20cm","SW","F4","20",NA,3094423,0,"No assigned peak for CH4","20220622","T0","Low",0,21532.1335549143,"Within Range","Within Range",157,931,"G",NA,NA,NA,NA,"20cm"
+"115","Varian GC","20230105","SW_F4_35cm","SW","F4","35",NA,4933543,0,"No assigned peak for CH4","20220622","T0","Low",0,34402.2165221699,"Within Range","Within Range",158,931,"G",NA,NA,NA,NA,"35cm"
+"116","Varian GC","20230105","SW_F4_50cm","SW","F4","50",NA,2406842,1690,NA,"20220622","T0","Low",0,16720.4711746952,"Within Range","Within Range",159,933,"W",NA,NA,0,683.411346764925,"50cm"
+"117","Varian GC","20230106","SW_F4_ATM","SW","F4","ATM",NA,50702,1100,"Sample ID within file is ""Manual Sample""","20220622","T0","Low",0,232.304397938013,"Within Range","Within Range",160,934,"G",NA,NA,NA,NA,"0cm"
+"118","Varian GC","20230105","SW_H3_10cm","SW","H3","10",NA,2297486,525,NA,"20220622","T0","Low",0,15955.2025717942,"Within Range","Within Range",161,936,"G",NA,NA,NA,NA,"10cm"
+"119","Varian GC","20230105","SW_H3_20cm","SW","H3","20",NA,2131345,1504,NA,"20220622","T0","Low",0,14792.5549717122,"Within Range","Within Range",162,937,"G",NA,NA,NA,NA,"20cm"
+"120","Varian GC","20230105","SW_H3_35cm","SW","H3","35",NA,2417312,0,"No assigned peak for CH4","20220622","T0","Low",0,16793.7397861328,"Within Range","Within Range",163,938,"G",NA,NA,NA,NA,"35cm"
+"121","Varian GC","20230105","SW_H3_50cm","SW","H3","50",NA,2589531,0,"No assigned peak for CH4","20220622","T0","Low",0,17998.9209698173,"Within Range","Within Range",164,940,"G",NA,NA,NA,NA,"50cm"
+"122","Varian GC","20230105","SW_H6_10cm","SW","H6","10",NA,1858241,8591,NA,"20220622","T0","Low",15.3787057986106,12881.3848802068,"Within Range","Within Range",165,942,"G",NA,NA,NA,NA,"10cm"
+"123","Varian GC","20230105","SW_H6_20cm","SW","H6","20",NA,3622326,283,NA,"20220622","T0","Low",0,25226.3761321595,"Within Range","Within Range",166,943,"G",NA,NA,NA,NA,"20cm"
+"124","Varian GC","20230105","SW_H6_35cm","SW","H6","35",NA,4341062,529,NA,"20220622","T0","Low",0,30256.0598676163,"Within Range","Within Range",167,944,"G",NA,NA,NA,NA,"35cm"
+"125","Varian GC","20230105","SW_H6_50cm","SW","H6","50",NA,2021799,2288,NA,"20220622","T0","Low",1.06147009610001,14025.9567569514,"Within Range","Within Range",168,945,"W",NA,NA,0.043385183368771,573.279179562921,"50cm"
+"126","Varian GC","20230106","Control_C3_10cm","C","C3","10",NA,527878,484,NA,"20220622","T1","Low",0,3571.56160246146,"Within Range","Within Range",190,1212,"G",NA,NA,NA,NA,"10cm"
+"127","Varian GC","20230106","Control_C3_20cm","C","C3","20",NA,822076,285,NA,"20220622","T1","Low",0,5630.34660224433,"Within Range","Within Range",191,1219,"G",NA,NA,NA,NA,"20cm"
+"128","Varian GC","20230106","Control_C3_35cm","C","C3","35",NA,1165735,215,NA,"20220622","T1","Low",0,8035.2575609877,"Within Range","Within Range",192,1221,"G",NA,NA,NA,NA,"35cm"
+"129","Varian GC","20230106","Control_C3_50cm","C","C3","50",NA,1824740,0,"No assigned peak for CH4.","20220622","T1","Low",0,12646.9463174779,"Within Range","Within Range",193,1222,"G",NA,NA,NA,NA,"50cm"
+"130","Varian GC","20230106","Control_C6_10cm","C","C6","10",NA,657903,540,NA,"20220622","T1","Low",0,4481.47098184802,"Within Range","Within Range",194,1226,"G",NA,NA,NA,NA,"10cm"
+"131","Varian GC","20230106","Control_C6_20cm","C","C6","20",NA,2263671,356,NA,"20220622","T1","Low",0,15718.5666505179,"Within Range","Within Range",195,1228,"G","Condensation on bottom",NA,NA,NA,"20cm"
+"132","Varian GC","20230106","Control_C6_35cm","C","C6","35",NA,2025623,365,NA,"20220622","T1","Low",0,14052.7169451211,"Within Range","Within Range",196,1232,"G",NA,NA,NA,NA,"35cm"
+"133","Varian GC","20230106","Control_C6_50cm","C","C6","50",NA,2156653,250,NA,"20220622","T1","Low",0,14969.6592714509,"Within Range","Within Range",197,1234,"G",NA,NA,NA,NA,"50cm"
+"134","Varian GC","20230106","Control_F4_10cm","C","F4","10",NA,1229283,521,NA,"20220622","T1","Low",0,8479.96374242401,"Within Range","Within Range",198,1237,"G",NA,NA,NA,NA,"10cm"
+"135","Varian GC","20230106","Control_F4_20cm","C","F4","20",NA,2394329,291,NA,"20220622","T1","Low",0,16632.9057367851,"Within Range","Within Range",199,1238,"G",NA,NA,NA,NA,"20cm"
+"136","Varian GC","20230106","Control_F4_35cm","C","F4","35",NA,1534580,479,NA,"20220622","T1","Low",0,10616.4190686965,"Within Range","Within Range",200,1240,"G",NA,NA,NA,NA,"35cm"
+"137","Varian GC","20230106","Control_F4_50cm","C","F4","50",NA,2176070,281,NA,"20220622","T1","Low",0,15105.5386055754,"Within Range","Within Range",201,1241,"G",NA,NA,NA,NA,"50cm"
+"138","Varian GC","20230106","Control_H3_10cm","C","H3","10",NA,620418,550,NA,"20220622","T1","Low",0,4219.15255780415,"Within Range","Within Range",203,1244,"G",NA,NA,NA,NA,"10cm"
+"139","Varian GC","20230106","Control_H3_20cm","C","H3","20",NA,1312026,251,NA,"20220622","T1","Low",0,9058.99571149598,"Within Range","Within Range",204,1245,"G",NA,NA,NA,NA,"20cm"
+"140","Varian GC","20230106","Control_H3_35cm","C","H3","35",NA,1812579,268,NA,"20220622","T1","Low",0,12561.8441604872,"Within Range","Within Range",205,1246,"G",NA,NA,NA,NA,"35cm"
+"141","Varian GC","20230106","Control_H3_50cm","C","H3","50",NA,1707962,511,NA,"20220622","T1","Low",0,11829.738876555,"Within Range","Within Range",206,1247,"G",NA,NA,NA,NA,"50cm"
+"142","Varian GC","20230106","Control_H6_10cm","C","H6","10",NA,246691,586,NA,"20220622","T1","Low",0,1603.82702325309,"Within Range","Within Range",207,1249,"G",NA,NA,NA,NA,"10cm"
+"143","Varian GC","20230106","Control_H6_20cm","C","H6","20",NA,1086991,209,NA,"20220622","T1","Low",0,7484.21042258804,"Within Range","Within Range",208,1250,"G",NA,NA,NA,NA,"20cm"
+"144","Varian GC","20230106","Control_H6_35cm","C","H6","35",NA,1848727,0,"No assigned peak for CH4.","20220622","T1","Low",0,12814.8063158117,"Within Range","Within Range",209,1251,"G",NA,NA,NA,NA,"35cm"
+"145","Varian GC","20230106","Control_H6_50cm","C","H6","50",NA,1897276,208,NA,"20220622","T1","Low",0,13154.5501378446,"Within Range","Within Range",210,1252,"G",NA,NA,NA,NA,"50cm"
+"146","Varian GC","20230106","FW_C3_10cm","FW","C3","10",NA,38711,523,NA,"20220622","T1","Low",0,148.391893664033,"Within Range","Within Range",232,1029,"W",NA,NA,0,6.06518218526118,"10cm"
+"147","Varian GC","20230106","FW_C3_20cm","FW","C3","20",NA,736768,829,NA,"20220622","T1","Low",0,5033.36487306372,"Within Range","Within Range",233,1040,"W",NA,NA,0,205.727376383127,"20cm"
+"148","Varian GC","20230106","FW_C3_35cm","FW","C3","35",NA,821894,822,NA,"20220622","T1","Low",0,5629.07297404169,"Within Range","Within Range",234,1055,"W","Water in vial",NA,0,230.075594284083,"35cm"
+"149","Varian GC","20230106","FW_C3_50cm","FW","C3","50",NA,1411488,875,NA,"20220622","T1","Low",0,9755.02652628195,"Within Range","Within Range",235,1056,"W",NA,NA,0,398.714590420353,"50cm"
+"150","Varian GC","20230106","FW_C6_10cm","FW","C6","10",NA,2768565,0,"No assigned peak for CH4.","20220622","T1","Low",0,19251.7932315292,"Within Range","Within Range",236,1102,"G",NA,NA,NA,NA,"10cm"
+"151","Varian GC","20230106","FW_C6_20cm","FW","C6","20",NA,728419,805,NA,"20220622","T1","Low",0,4974.93892875687,"Within Range","Within Range",237,1105,"W",NA,NA,0,203.339348386333,"20cm"
+"152","Varian GC","20230106","FW_C6_35cm","FW","C6","35",NA,1007062,745,NA,"20220622","T1","Low",0,6924.8707049569,"Within Range","Within Range",238,1100,"W",NA,NA,0,283.038388404377,"35cm"
+"153","Varian GC","20230106","FW_C6_50cm","FW","C6","50",NA,1913863,833,NA,"20220622","T1","Low",0,13270.6252532139,"Within Range","Within Range",239,1105,"W",NA,NA,0,542.406717009089,"50cm"
+"154","Varian GC","20230106","FW_F4_10cm","FW","F4","10",NA,410995,861,NA,"20220622","T1","Low",0,2753.61937603701,"Within Range","Within Range",240,1114,"W",NA,NA,0,112.547948355872,"10cm"
+"155","Varian GC","20230106","FW_F4_20cm","FW","F4","20",NA,1091235,803,NA,"20220622","T1","Low",0,7513.9097527639,"Within Range","Within Range",241,1122,"W",NA,NA,0,307.114023878582,"20cm"
+"156","Varian GC","20230106","FW_F4_35cm","FW","F4","35",NA,879596,842,NA,"20220622","T1","Low",0,6032.86909793604,"Within Range","Within Range",242,1127,"W",NA,NA,0,246.579845268752,"35cm"
+"157","Varian GC","20230106","FW_F4_50cm","FW","F4","50",NA,1482399,758,NA,"20220622","T1","Low",0,10251.258666268,"Within Range","Within Range",243,1125,"W","Water in vial",NA,0,418.996953970557,"50cm"
+"158","Varian GC","20230106","FW_H3_10cm","FW","H3","10",NA,491252,809,NA,"20220622","T1","Low",0,3315.25442361576,"Within Range","Within Range",245,1135,"W",NA,NA,0,135.503507457404,"10cm"
+"159","Varian GC","20230106","FW_H3_20cm","FW","H3","20",NA,1518251,609,NA,"20220622","T1","Low",0,10502.1494262739,"Within Range","Within Range",246,1140,"G","Water in vial",NA,NA,NA,"20cm"
+"160","Varian GC","20230106","FW_H3_35cm","FW","H3","35",NA,1166119,757,NA,"20220622","T1","Low",0,8037.94477653613,"Within Range","Within Range",247,1145,"W",NA,NA,0,328.532767262451,"35cm"
+"161","Varian GC","20230106","FW_H3_50cm","FW","H3","50",NA,1526736,767,NA,"20220622","T1","Low",0,10561.5270927541,"Within Range","Within Range",248,1148,"W","Water in vial",NA,0,431.678472391189,"50cm"
+"162","Varian GC","20230106","FW_H6_10cm","FW","H6","10",NA,31230,545,NA,"20220622","T1","Low",0,96.0401761697753,"Within Range","Within Range",249,1151,"G",NA,NA,NA,NA,"10cm"
+"163","Varian GC","20230106","FW_H6_20cm","FW","H6","20",NA,26844,550,NA,"20220622","T1","Low",0,65.3471360775665,"Within Range","Within Range",250,1153,"G",NA,NA,NA,NA,"20cm"
+"164","Varian GC","20230106","FW_H6_35cm","FW","H6","35",NA,876685,793,NA,"20220622","T1","Low",0,6012.49804465095,"Within Range","Within Range",251,1201,"W","Water in vial",NA,0,245.747224655665,"35cm"
+"165","Varian GC","20230106","FW_H6_50cm","FW","H6","50",NA,1367377,814,NA,"20220622","T1","Low",0,9446.33963811336,"Within Range","Within Range",252,1205,"W",NA,NA,0,386.097713792425,"50cm"
+"166","Varian GC","20230106","SW_C3_10cm","SW","C3","10",NA,998382,2933,NA,"20220622","T1","Low",2.5265846491889,6864.12843683096,"Within Range","Within Range",211,1255,"G",NA,"Peter",NA,NA,"10cm"
+"167","Varian GC","20230106","SW_C3_20cm","SW","C3","20",NA,1339994,844,NA,"20220622","T1","Low",0,9254.7145772732,"Within Range","Within Range",212,1257,"G","Vented vial on accident, sample lost","Peter",NA,NA,"20cm"
+"168","Varian GC","20230106","SW_C3_35cm","SW","C3","35",NA,1438199,870,NA,"20220622","T1","Low",0,9941.94895991236,"Within Range","Within Range",213,1305,"W","Water in vial","Peter",0,406.354621061432,"35cm"
+"169","Varian GC","20230106","SW_C3_50cm","SW","C3","50",NA,3550257,206,NA,"20220622","T1","Low",0,24722.0403577852,"Within Range","Within Range",214,1307,"G",NA,"Peter",NA,NA,"50cm"
+"170","Varian GC","20230106","SW_C6_10cm","SW","C6","10",NA,1199577,1218,NA,"20220622","T1","Low",0,8272.08242710729,"Within Range","Within Range",215,1310,"W",NA,"Peter",0,338.102612838775,"10cm"
+"171","Varian GC","20230106","SW_C6_20cm","SW","C6","20",NA,1294810,933,NA,"20220622","T1","Low",0,8938.51888107476,"Within Range","Within Range",216,1317,"G",NA,"Peter",NA,NA,"20cm"
+"172","Varian GC","20230106","SW_C6_35cm","SW","C6","35",NA,1580504,1293,NA,"20220622","T1","Low",0,10937.7932531914,"Within Range","Within Range",217,1320,"W","Water in vial","Peter",0,447.05749854182,"35cm"
+"173","Varian GC","20230106","SW_C6_50cm","SW","C6","50",NA,1484991,3943,NA,"20220622","T1","Low",4.82079503464593,10269.3973712199,"Within Range","Within Range",218,1325,"W",NA,"Peter",0.197039066225064,419.738332407219,"50cm"

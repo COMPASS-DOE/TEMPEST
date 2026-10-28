@@ -309,11 +309,11 @@ TempC <-  25 #I am assuming 25C not sure how we want to handle this
 
 #Calculate CH4 concentrations in ppm
 Samples_meta$CH4_Conc_umol <- ifelse(Samples_meta$Sample_Type == "W",
-                    ((Samples_meta$CH4_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples_meta$CH4_Conc_ppm/1000))/16.04)*1000000  ))
+                    ((Samples_meta$CH4_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)), NA)
+                    # ((((Samples_meta$CH4_Conc_ppm/1000))/16.04)*1000000  ))
 Samples_meta$CO2_Conc_umol <- ifelse(Samples_meta$Sample_Type == "W",
-                    ((Samples_meta$CO2_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)),
-                    ((((Samples_meta$CO2_Conc_ppm/1000))/16.04)*1000000  ))
+                    ((Samples_meta$CO2_Conc_ppm*((1*volume/1000)/(0.08206*(TempC+273.15))))/(volume/1000)), NA)
+                    # ((((Samples_meta$CO2_Conc_ppm/1000))/16.04)*1000000  ))
 
 data_plotting <- Samples_meta %>% 
   mutate(row_num = row_number())
@@ -344,7 +344,13 @@ ggarrange(ch4_samples1, co2_samples1, nrow=1, ncol=2)
 #check results
 colnames(Samples_meta)
 
-write.csv(Samples_meta, "COMPASS_TEMPEST_SGAS_2022.csv")
+final_data <- Samples_meta %>% 
+  mutate(Sample_Depth = ifelse(Depth == "ATM", "0cm", paste0(Depth, "cm"))) %>% 
+  rename(Notes = Lab_Notes, 
+         Sample_Plot = Plot, 
+         Sample_Grid = Grid_Square)
+
+write.csv(final_data, "COMPASS_TEMPEST_SGAS_2022.csv")
 
 ```
 

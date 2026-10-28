@@ -58,8 +58,8 @@ GIW_Samples <- c()
 # "TempC" column value in Celsius (equilibration temperature) and volume of gas (in liters) in syringe (not changing currently)
 TempC = 25 #Equilibration Temperature (Celsius)
 
-volume_g = 0.015 #volume of gas (in liters) in syringe when equilibrized
-volume_w = 0.015 #volume of water (in liters) in syringe when equilibrized (should be equal to volume_g)
+volume_g = 0.02 #volume of gas (in liters) in syringe when equilibrized
+volume_w = 0.02 #volume of water (in liters) in syringe when equilibrized (should be equal to volume_g)
 
 #record any notes about the run or anything other info here:
 run_notes <- ""
@@ -1377,121 +1377,6 @@ N2O_samples
 
 ```
 
-
-# Calculate gas in water - CH4
-```{r, echo=FALSE}
-
-# Convert ppm CH4 to total uM CH4 in the sample headspace
-# use Ideal Gas Law:
-#   hdsp umol CH4 = ppm CH4*(PV/RT)
-#      P = 1 (pressure in atm)
-#      R = 0.082 (gas constant)
-#      V = 0.015 (gas syringe volume in L)
-#      T = "TempC" column value in Kelvin (equilibration temperature)
-
-#Calculate CH4 uM from ppm
-
-#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
-
-#old equation
-#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
-
-Samples <- Samples %>% mutate(CH4_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
-
-
-#quick first look at the samples
-ch4_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CH4_Conc_uM)) +
-  geom_bar(stat = 'identity', fill = "darkblue") +
-  theme_classic() +
-  labs(x = " ", y = "CH4 (uM)", title = "CH4 Gas in Water") +
-  theme(axis.text.x = element_text(
-    angle = 90,
-    vjust = 0.5,
-    hjust = 1
-  )) +
-  theme(legend.position = "none")
-
-
-ch4_samples1
-
-```
-
-# Calculate gas in water - CO2
-```{r, echo=FALSE}
-
-# Convert ppm CO2 to total uM CO2 in the sample headspace
-# use Ideal Gas Law:
-#   hdsp umol CO2 = ppm CO2*(PV/RT)
-#      P = 1 (pressure in atm)
-#      R = 0.082 (gas constant)
-#      V = 0.015 (gas syringe volume in L)
-#      T = "TempC" column value in Kelvin (equilibration temperature)
-
-#Calculate CO2 uM from ppm
-
-#Samples$CO2_Conc_uM <- (Samples$CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
-
-#old equation
-#Samples$CO2_Conc_uM <- (Samples$CO2_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
-
-Samples <- Samples %>% mutate(CO2_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
-
-
-#quick first look at the samples
-CO2_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = CO2_Conc_uM)) +
-  geom_bar(stat = 'identity', fill = "darkblue") +
-  theme_classic() +
-  labs(x = " ", y = "CO2 (uM)", title = "CO2 Gas in Water") +
-  theme(axis.text.x = element_text(
-    angle = 90,
-    vjust = 0.5,
-    hjust = 1
-  )) +
-  theme(legend.position = "none")
-
-
-CO2_samples1
-
-```
-
-# Calculate gas in water - N2O
-```{r, echo=FALSE}
-
-# Convert ppm N2O to total uM N2O in the sample headspace
-# use Ideal Gas Law:
-#   hdsp umol N2O = ppm N2O*(PV/RT)
-#      P = 1 (pressure in atm)
-#      R = 0.082 (gas constant)
-#      V = 0.015 (gas syringe volume in L)
-#      T = "TempC" column value in Kelvin (equilibration temperature)
-
-#Calculate N2O uM from ppm
-
-#Samples$N2O_Conc_uM <- (Samples$N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
-
-#old equation
-#Samples$N2O_Conc_uM <- (Samples$N2O_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
-
-Samples <- Samples %>% mutate(N2O_Conc_uM = ifelse(GIW == "YES" | Sample_ID %in% GIW_Samples, (N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
-
-
-#quick first look at the samples
-N2O_samples1 <-  ggplot(data = Samples, aes(x = Sample_ID, y = N2O_Conc_uM)) +
-  geom_bar(stat = 'identity', fill = "darkblue") +
-  theme_classic() +
-  labs(x = " ", y = "N2O (uM)", title = "N2O Gas in Water") +
-  theme(axis.text.x = element_text(
-    angle = 90,
-    vjust = 0.5,
-    hjust = 1
-  )) +
-  theme(legend.position = "none")
-
-
-N2O_samples1
-
-```
-
 # Merge samples with Metadata & check all samples are present 
 ```{r check sample ids with metadata, echo=FALSE}
 
@@ -1528,10 +1413,126 @@ df_all_clean <- merged_data
 
 ```
 
+# Calculate gas in water - CH4
+```{r, echo=FALSE}
+
+# Convert ppm CH4 to total uM CH4 in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol CH4 = ppm CH4*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate CH4 uM from ppm
+
+#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#Samples$CH4_Conc_uM <- (Samples$CH4_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+df_all_clean <- df_all_clean %>% mutate(CH4_Conc_uM = ifelse(G_W == "W" | Sample_ID %in% GIW_Samples, (CH4_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+ch4_samples1 <-  ggplot(data = df_all_clean, aes(x = Sample_ID, y = CH4_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "CH4 (uM)", title = "CH4 Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+ch4_samples1
+
+```
+
+# Calculate gas in water - CO2
+```{r, echo=FALSE}
+
+# Convert ppm CO2 to total uM CO2 in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol CO2 = ppm CO2*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate CO2 uM from ppm
+
+#df_all_clean$CO2_Conc_uM <- (df_all_clean$CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#df_all_clean$CO2_Conc_uM <- (df_all_clean$CO2_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+df_all_clean <- df_all_clean %>% mutate(CO2_Conc_uM = ifelse(G_W == "W" | Sample_ID %in% GIW_Samples, (CO2_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+CO2_samples1 <-  ggplot(data = df_all_clean, aes(x = Sample_ID, y = CO2_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "CO2 (uM)", title = "CO2 Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+CO2_samples1
+
+```
+
+# Calculate gas in water - N2O
+```{r, echo=FALSE}
+
+# Convert ppm N2O to total uM N2O in the sample headspace
+# use Ideal Gas Law:
+#   hdsp umol N2O = ppm N2O*(PV/RT)
+#      P = 1 (pressure in atm)
+#      R = 0.082 (gas constant)
+#      V = 0.015 (gas syringe volume in L)
+#      T = "TempC" column value in Kelvin (equilibration temperature)
+
+#Calculate N2O uM from ppm
+
+#df_all_clean$N2O_Conc_uM <- (df_all_clean$N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w
+
+#old equation
+#df_all_clean$N2O_Conc_uM <- (df_all_clean$N2O_Conc_ppm_dilcorr * ((1 * volume / 1000) / (R * (TempC + CTK)))) / (volume / 1000)
+
+df_all_clean <- df_all_clean %>% mutate(N2O_Conc_uM = ifelse(G_W == "W" | Sample_ID %in% GIW_Samples, (N2O_Conc_ppm * (( 1 * volume_g )/(R * (TempC + CTK) )))/ volume_w, NA))
+
+
+#quick first look at the samples
+N2O_samples1 <-  ggplot(data = df_all_clean, aes(x = Sample_ID, y = N2O_Conc_uM)) +
+  geom_bar(stat = 'identity', fill = "darkblue") +
+  theme_classic() +
+  labs(x = " ", y = "N2O (uM)", title = "N2O Gas in Water") +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(legend.position = "none")
+
+
+N2O_samples1
+
+```
+
+
+
 ## Organize Data  
 ```{r, echo=FALSE}
 #check results
-  head(Samples)
+  head(df_all_clean)
  
   #pull out what we need
   df_all_clean_cols <- df_all_clean %>%
