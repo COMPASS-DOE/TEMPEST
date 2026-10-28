@@ -1,6 +1,6 @@
 ---
-title: "ESS-DIVE TEMPEST: TGW Data - 2026-10-23 Submission Prep"
-author: "2022-2024 Samples"
+title: "ESS-DIVE TEMPEST: SGAS Data - 2026-10-28 Submission Prep"
+author: "2021-2025 Samples"
 date: "`r Sys.Date()`"
 output: 
   pdf_document:
@@ -29,18 +29,20 @@ library(here)
 ```{r Pull in compiled data files, message=FALSE, include=FALSE}
 
 #write out a csv of all the data to the main folder: 
-final_data <- read.csv("../COMPASS_TEMPEST_TGW_AllData.csv")
+final_data <- read.csv("../COMPASS_TEMPEST_SGAS_AllData.csv")
 
+final_data_2021 <- subset(final_data, Year == "2021")
 final_data_2022 <- subset(final_data, Year == "2022")
 final_data_2023 <- subset(final_data, Year == "2023")
 final_data_2024 <- subset(final_data, Year == "2024")
-# final_data_2025 <- subset(final_data, Year == "2025")
+final_data_2025 <- subset(final_data, Year == "2025")
 
 ##Write out annual data files
-write.csv(final_data_2022, "Data package/COMPASS_TEMPEST_TGW_2022.csv", row.names = FALSE)
-write.csv(final_data_2023, "Data package/COMPASS_TEMPEST_TGW_2023.csv", row.names = FALSE)
-write.csv(final_data_2024, "Data package/COMPASS_TEMPEST_TGW_2024.csv", row.names = FALSE)
-# write.csv(final_data_2025, "Data package/COMPASS_TEMPEST_TGW_2025.csv", row.names = FALSE)
+write.csv(final_data_2021, "Data package/COMPASS_TEMPEST_SGAS_2021.csv", row.names = FALSE)
+write.csv(final_data_2022, "Data package/COMPASS_TEMPEST_SGAS_2022.csv", row.names = FALSE)
+write.csv(final_data_2023, "Data package/COMPASS_TEMPEST_SGAS_2023.csv", row.names = FALSE)
+write.csv(final_data_2024, "Data package/COMPASS_TEMPEST_SGAS_2024.csv", row.names = FALSE)
+write.csv(final_data_2025, "Data package/COMPASS_TEMPEST_SGAS_2025.csv", row.names = FALSE)
 
 ```
 
@@ -49,7 +51,7 @@ write.csv(final_data_2024, "Data package/COMPASS_TEMPEST_TGW_2024.csv", row.name
 
 #pull the column names from the all_dat1 dataframe and create a new dataframe with them
 dd <- data.frame(Column_Names = colnames(final_data))
-dd
+colnames(final_data)
 
 dd$Unit <- ""
 dd$Definition <- ""
@@ -59,48 +61,55 @@ dd$Instrument_ifapplicable <- ""
 
 
 #add information about each line: 
-dd$Definition <- c("Project name", 
+dd$Definition <- c(      "Project name", 
                          "Site where sample collected", 
                          "Year of sample collection", 
                          "Month of sample collection", 
                          "Day of sample collection", 
+                         "Local time of sample collection (America/New York)", 
+                         "Event sampling timestamp (#, AM/PM, D#, Pre/Post)", 
                          "Plot where sample collected (SW = Saltwater, FW = Freshwater, C = Control, Estuary (Sourcewater))", 
                          "Grid where sample collected (Letter + Number)", 
-                         "ID of sapflux sensors on tree that sample came from", 
-                         "ID of tree (# on metal tag on tree)", 
-                         "Tree Species (LITU = Liriodendron tulipifera, ACRU = Acer rubrum, FAGR = Fagus grandifolia)", 
-                         "Height of tree gas well from ground (m)", 
-                         "Event sampling timestamp (#, AM/PM, D#, Pre/Post)", 
-                         "Time of sample collection", 
-                         "Time zone of sample collection", 
+                         "Depth belowground that sample was collected from (cm)", 
                          "Matrix that sample was collected from (G = gas, W = water)", 
-                         "Methane (CH4) concentration", 
+                         "Sample dilution factor", 
+                         "Methane (CH4) concentration in gas samples", 
+                         "Methane (CH4) concentration in water samples", 
                          "Methane (CH4) concentration flag (bdl=below detection limit (0), adl=above detection limit (highest   
                          standard)", 
-                         "Carbon dioxide (CO2) concentration", 
+                         "Carbon dioxide (CO2) concentration in gas samples", 
+                         "Carbon dioxide (CO2) concentration in water samples", 
                          "Carbon dioxide (CO2) flag (bdl=below detection limit (0), adl=above detection limit (highest   
                          standard)", 
+                         "Nitrous oxide (N2O) concentration in gas samples", 
+                         "Nitrous oxide (N2O) concentration in water samples", 
+                         "Nitrous oxide (N2O) flag (bdl=below detection limit (0), adl=above detection limit (highest   
+                         standard)",                          
                          "Notes generated during field sample collection", 
-                         "Notes generated during sample analysis in the lab") 
+                         "Notes generated during sample analysis in the lab", 
+                         "Flags generated during data QAQC") 
 
-dd$Unit  <-      c( "NA", 
+dd$Unit  <-      c(      "NA", 
                          "NA", 
                          "NA", 
                          "NA", 
                          "NA", 
                          "NA", 
                          "NA", 
-                         "NA",
-                         "NA",
-                         "NA",
-                         "m", 
                          "NA", 
                          "NA", 
+                         "cm", 
                          "NA", 
                          "NA", 
                          "ppm", 
+                         "umol/L", 
                          "NA", 
                          "ppm", 
+                         "umol/L", 
+                         "NA", 
+                         "ppm", 
+                         "umol/L", 
+                         "NA", 
                          "NA", 
                          "NA", 
                          "NA")
@@ -108,35 +117,29 @@ dd$Unit  <-      c( "NA",
 dd$Data_Type <-        c("text", 
                          "text", 
                          "numeric", 
-                         "text", 
+                         "numeric", 
                          "numeric", 
                          "text", 
                          "text", 
-                         "text", 
-                         "numeric", 
-                         "text", 
-                         "numeric", 
-                         "text", 
-                         "numeric", 
                          "text", 
                          "text", 
                          "numeric", 
                          "text", 
                          "numeric", 
-                         "text",  
+                         "numeric", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "numeric", 
+                         "text", 
+                         "numeric", 
+                         "numeric", 
+                         "text", 
+                         "text", 
                          "text", 
                          "text") 
 
-
-dd$Instrument_ifapplicable <-  c(
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA", 
-                         "NA",
-                         "NA",
-                         "NA",
+dd$Instrument_ifapplicable <-  c("NA", 
                          "NA", 
                          "NA", 
                          "NA", 
@@ -144,9 +147,19 @@ dd$Instrument_ifapplicable <-  c(
                          "NA", 
                          "NA", 
                          "NA", 
-                         "Varian 450 GC (Agilent Technologies)", 
                          "NA", 
-                         "Varian 450 GC (Agilent Technologies)", 
+                         "cm", 
+                         "NA", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "NA", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "Varian 450 GC (Agilent Technologies) from 2021-2024, Shimadzu GC from 2025-present", 
+                         "NA", 
                          "NA", 
                          "NA", 
                          "NA")
@@ -162,7 +175,7 @@ write.csv(dd, "Data package/dd.csv", row.names = FALSE,  fileEncoding = "UTF-8")
 files  = list.files("Data package")
 files
 
-files = c("COMPASS_TEMPEST_TGW_2022.csv", "COMPASS_TEMPEST_TGW_2023.csv", "COMPASS_TEMPEST_TGW_2024.csv", "COMPASS_TEMPEST_TGW_2025.csv", "dd.csv")
+files = c("COMPASS_TEMPEST_TGW_2021.csv", "COMPASS_TEMPEST_TGW_2022.csv", "COMPASS_TEMPEST_TGW_2023.csv", "COMPASS_TEMPEST_TGW_2024.csv", "COMPASS_TEMPEST_TGW_2025.csv", "dd.csv")
 
 flmd <- data.frame(file_name = files)
 flmd
@@ -177,7 +190,8 @@ flmd$notes <- ""
 
 #add information about each line:
 
-flmd$file_description <-  c("Tree gas well data taken from COMPASS TEMPEST site in 2022",
+flmd$file_description <-  c("Tree gas well data taken from COMPASS TEMPEST site in 2021",
+                            "Tree gas well data taken from COMPASS TEMPEST site in 2022",
                             "Tree gas well data taken from COMPASS TEMPEST site in 2023",
                             "Tree gas well data taken from COMPASS TEMPEST site in 2024",
                             "Tree gas well data taken from COMPASS TEMPEST site in 2025",
@@ -187,15 +201,18 @@ flmd$data_orientation <-  c("horizontal",
                             "horizontal",
                             "horizontal",
                             "horizontal",
+                            "horizontal",
                             "horizontal")
 
 flmd$header_rows <-   c("1",
                         "1",
                         "1",
                         "1",
+                        "1",
                         "1")
 
 flmd$column_or_row_name_position <- c("1",
+                                      "1",
                                       "1",
                                       "1",
                                       "1",
@@ -241,7 +258,7 @@ write.csv(site_list, "Data package/site_list.csv", row.names = FALSE)
 
 #Create a text file that has the description of the data - This ideally should match the text that is in the data READ.ME 
 
-datadescription <- "These data are measurements of tree gas well samples collected in 2022-2025 from the COMPASS Terrestrial Ecosystem Manipulation to Probe the Effects of Storm Treatments (TEMPEST) site in the Chesapeake Bay region. This manipulative, ecosystem-scale TEMPEST experiment addresses the potential for freshwater and estuarine-water disturbance events to alter tree function, species composition, and ecosystem processes in a deciduous coastal forest in MD, USA. The experiment uses a large-unit (2000 m2), un-replicated experimental design, with three 50 m × 40 m plots serving as control, freshwater, and saltwater treatments. Trees were cored and had gas wells installed at breast height. Gas samples were collected from tree gas wells semi-monthly from 2022-2025, and 1-2 times per day during flooding events. The samples were stored in exetainers then analyzed for methane and carbon dioxide on a Varian 450 Gas Chromatograph. The methane is determined with an FID and the carbon dioxide with a TCD. Analysis of each constituent is described in the data dictionary and further details, including quality assurance and quality control for all analyses can be found on the COMPASS TEMPEST page (https://github.com/COMPASS-DOE/TEMPEST)"
+datadescription <- "These data are measurements of soil gas well samples collected in 2021-2025 from the COMPASS Terrestrial Ecosystem Manipulation to Probe the Effects of Storm Treatments (TEMPEST) site in the Chesapeake Bay region. This manipulative, ecosystem-scale TEMPEST experiment addresses the potential for freshwater and estuarine-water disturbance events to alter tree function, species composition, and ecosystem processes in a deciduous coastal forest in MD, USA. The experiment uses a large-unit (2000 m2), un-replicated experimental design, with three 50 m × 40 m plots serving as control, freshwater, and saltwater treatments. The TEMPEST Project uses soil gas well nests to measure carbon dioxide, methane, and nitrous oxide concentrations in soil air at 5-10, 15-20, 30-35, and 45-50 cm below the soil surface. Gas samples were collected from gas wells semi-monthly from 2021-2025, and 1-2 times per day during flooding events. When water samples were collected from a gas well, the water was shaken with an equal volume of air and the air was then extracted for the gas sample. The samples were stored in exetainers and analyzed for methane, carbon dioxide, and nitrous oxide on a Varian 450 Gas Chromatograph (2021-2024) or a Shimazu Gas Chromatograph (2025). The methane is determined with an FID, the carbon dioxide with a TCD, and the nitrous oxide with an ECD. Analysis of each constituent is described in the data dictionary and further details, including quality assurance and quality control for all analyses can be found on the COMPASS TEMPEST page (https://github.com/COMPASS-DOE/TEMPEST)"
 
 #write to a text file 
 writeLines(datadescription, "Data package/COMPASS_TEMPEST_TGW_DataDescription.txt")

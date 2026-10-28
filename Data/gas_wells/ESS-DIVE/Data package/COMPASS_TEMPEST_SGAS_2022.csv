@@ -1,0 +1,174 @@
+"Project","Site","Year","Month","Day","Time_Local","Event_Stamp","Plot","Grid_Square","Depth","Sample_Matrix","Dilution_Factor","CH4_uM","CH4_ppm","CH4_Flag","CO2_ppm","CO2_uM","CO2_Flag","N2O_ppm","N2O_uM","N2O_Conc_Flag","Field_Notes","Lab_Notes","QAQC_Flags"
+"COMPASS","TEMPEST",2022,6,21,"1502",NA,"Control","C3",10,"G",NA,NA,0,"Within Range",4296.13,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1503",NA,"Control","C3",20,"G",NA,NA,0,"Within Range",6117.52,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1505",NA,"Control","C3",35,"G",NA,NA,0,"Within Range",8397.64,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1506",NA,"Control","C3",50,"G",NA,NA,0,"Within Range",13580.14,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1510",NA,"Control","C6",10,"G",NA,NA,0,"Within Range",4904.08,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1510",NA,"Control","C6",20,"G",NA,NA,0,"Within Range",13910.66,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1511",NA,"Control","C6",35,"G",NA,NA,0,"Within Range",11919.43,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1517",NA,"Control","C6",50,"G",NA,NA,0,"Within Range",13810.12,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1514",NA,"Control","F4",10,"G",NA,NA,0,"Within Range",8634.02,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1515",NA,"Control","F4",20,"G",NA,NA,0,"Within Range",17596.03,NA,"Within Range",NA,NA,NA,"Distracted by Slack; 95% sure sample was taken right",NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1519",NA,"Control","F4",35,"G",NA,NA,0,"Within Range",9121.49,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1520",NA,"Control","F4",50,"G",NA,NA,0,"Within Range",13841.65,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1522",NA,"Control","F4",0,"G",NA,NA,0,"Within Range",317.13,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1523",NA,"Control","H3",10,"G",NA,NA,0,"Within Range",3517.5,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1524",NA,"Control","H3",20,"G",NA,NA,0,"Within Range",8593.08,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1525",NA,"Control","H3",35,"G",NA,NA,0,"Within Range",11118.04,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1526",NA,"Control","H3",50,"G",NA,NA,0,"Within Range",12543.25,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1528",NA,"Control","H6",10,"G",NA,NA,0,"Within Range",1456.56,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1530",NA,"Control","H6",20,"G",NA,NA,0,"Within Range",7067.57,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1531",NA,"Control","H6",35,"G",NA,NA,0,"Within Range",12949.45,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1532",NA,"Control","H6",50,"G",NA,NA,0,"Within Range",12785.61,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1410",NA,"Freshwater","C3",10,"G",NA,NA,0,"Within Range",4866.15,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1414",NA,"Freshwater","C3",20,"G",NA,NA,0,"Within Range",11930.61,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1416",NA,"Freshwater","C3",35,"G",NA,NA,0,"Within Range",11639.21,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1418",NA,"Freshwater","C3",50,"G",NA,NA,0,"Within Range",22389.96,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1428",NA,"Freshwater","C6",10,"G",NA,NA,0,"Within Range",15573.4,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1430",NA,"Freshwater","C6",20,"G",NA,NA,0,"Within Range",16462.36,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1432",NA,"Freshwater","C6",35,"G",NA,NA,0,"Within Range",19441.51,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1434",NA,"Freshwater","C6",50,"G",NA,NA,0,"Within Range",28631.2,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1436",NA,"Freshwater","F4",10,"G",NA,NA,0,"Within Range",5294.28,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1437",NA,"Freshwater","F4",20,"G",NA,NA,0,"Within Range",11618.51,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1438",NA,"Freshwater","F4",35,"G",NA,NA,0,"Within Range",12790.12,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1439",NA,"Freshwater","F4",50,"G",NA,NA,0,"Within Range",24453.7,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1441",NA,"Freshwater","F4",0,"G",NA,NA,0,"Within Range",266.97,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1443",NA,"Freshwater","H3",10,"G",NA,NA,0,"Within Range",7735.89,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1444",NA,"Freshwater","H3",20,"G",NA,NA,0,"Within Range",15014.03,NA,"Within Range",NA,NA,NA,"Transferred 14 mL","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1445",NA,"Freshwater","H3",35,"G",NA,NA,0,"Within Range",18315.03,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1446",NA,"Freshwater","H3",50,"G",NA,NA,0,"Within Range",20986.64,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1448",NA,"Freshwater","H6",10,"G",NA,NA,0,"Within Range",8999.19,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1449",NA,"Freshwater","H6",20,"G",NA,NA,0,"Within Range",11747.06,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1450",NA,"Freshwater","H6",35,"G",NA,NA,0,"Within Range",14114,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1452",NA,"Freshwater","H6",50,"G",NA,NA,0,"Within Range",24884.81,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1302",NA,"Saltwater","C3",10,"G",NA,NA,0,"Within Range",2443.79,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1304",NA,"Saltwater","C3",20,"G",NA,NA,0,"Within Range",9968.11,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1306",NA,"Saltwater","C3",35,"G",NA,NA,0,"Within Range",12940.73,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1307",NA,"Saltwater","C3",50,"G",NA,NA,0,"Within Range",20321.68,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1309",NA,"Saltwater","C6",10,"G",NA,NA,0,"Within Range",12172.62,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1310",NA,"Saltwater","C6",20,"G",NA,NA,0,"Within Range",24187.51,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1311",NA,"Saltwater","C6",35,"G",NA,NA,0,"Within Range",21632.01,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1312",NA,"Saltwater","C6",50,"G",NA,NA,0,"Within Range",15557.32,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1314",NA,"Saltwater","F4",10,"G",NA,NA,0,"Within Range",12362.98,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1315",NA,"Saltwater","F4",20,"G",NA,NA,0,"Within Range",20726.33,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1316",NA,"Saltwater","F4",35,"G",NA,NA,0,"Within Range",16043.12,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1317",NA,"Saltwater","F4",50,"G",NA,NA,0,"Within Range",30440.83,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1321",NA,"Saltwater","H3",10,"G",NA,NA,0,"Within Range",2878.95,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,21,"1323",NA,"Saltwater","H3",20,"G",NA,NA,0,"Within Range",10319.26,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1324",NA,"Saltwater","H3",35,"G",NA,NA,0,"Within Range",13279.23,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1325",NA,"Saltwater","H3",50,"G",NA,NA,0,"Within Range",15217.09,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1358",NA,"Saltwater","H6",10,"G",NA,NA,0,"Within Range",16229.18,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1359",NA,"Saltwater","H6",20,"G",NA,NA,0,"Within Range",20211.68,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1400",NA,"Saltwater","H6",35,"G",NA,NA,0,"Within Range",32059.24,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,21,"1404",NA,"Saltwater","H6",50,"G",NA,NA,0,"Within Range",29203.62,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"842","T0","Control","C3",10,"G",NA,NA,0,"Within Range",3837.17,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"843","T0","Control","C3",20,"G",NA,NA,0,"Within Range",5979.79,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"844","T0","Control","C3",35,"G",NA,NA,0,"Within Range",7955.13,NA,"Within Range",NA,NA,NA,"Condensation on bottom","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"846","T0","Control","C3",50,"G",NA,NA,0,"Within Range",12710.87,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"848","T0","Control","C6",10,"G",NA,NA,0,"Within Range",5206.32,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"850","T0","Control","C6",20,"G",NA,NA,0,"Within Range",15171.38,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"851","T0","Control","C6",35,"G",NA,NA,0,"Within Range",13360.55,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"852","T0","Control","C6",50,"G",NA,NA,0,"Within Range",14065.68,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"856","T0","Control","F4",10,"G",NA,NA,0,"Within Range",8078.9,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"858","T0","Control","F4",20,"G",NA,NA,0,"Within Range",15433.71,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"900","T0","Control","F4",35,"G",NA,NA,0,"Within Range",9725.2,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"901","T0","Control","F4",50,"G",NA,NA,0,"Within Range",13979.57,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"903","T0","Control","F4",0,"G",NA,NA,0,"Within Range",224.85,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"905","T0","Control","H3",10,"G",NA,NA,0,"Within Range",4109.54,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"907","T0","Control","H3",20,"G",NA,NA,0,"Within Range",8404.72,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"915","T0","Control","H3",35,"G",NA,NA,0,"Within Range",11929.25,NA,"Within Range",NA,NA,NA,"Needle broke","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"916","T0","Control","H3",50,"G",NA,NA,0,"Within Range",12805.6,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"919","T0","Control","H6",10,"G",NA,NA,0,"Within Range",1794.75,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"920","T0","Control","H6",20,"G",NA,NA,0,"Within Range",6217.33,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"922","T0","Control","H6",35,"G",NA,NA,0,"Within Range",12232.91,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"923","T0","Control","H6",50,"G",NA,NA,0,"Within Range",12397.9,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"700","T0","Freshwater","C3",10,"G",NA,NA,0,"Within Range",7552.15,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"704","T0","Freshwater","C3",20,"G",NA,NA,0,"Within Range",11095.39,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"700","T0","Freshwater","C3",35,"G",NA,NA,0,"Within Range",12532,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"704","T0","Freshwater","C3",50,"G",NA,NA,0,"Within Range",21358.1,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"710","T0","Freshwater","C6",10,"G",NA,NA,0,"Within Range",15286.92,NA,"Within Range",NA,NA,NA,"Est times","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"726","T0","Freshwater","C6",20,"G",NA,NA,0,"Within Range",14763.24,NA,"Within Range",NA,NA,NA,"Est times","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"710","T0","Freshwater","C6",35,"W",NA,0,0,"Within Range",9250.12,378.08,"Within Range",NA,NA,NA,"Est times",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"728","T0","Freshwater","C6",50,"G",NA,NA,0,"Within Range",29046.83,NA,"Within Range",NA,NA,NA,"Est times","No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"736","T0","Freshwater","F4",10,"W",NA,0,0,"Within Range",2268.51,92.72,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"738","T0","Freshwater","F4",20,"G",NA,NA,0,"Within Range",12364.06,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"736","T0","Freshwater","F4",35,"W",NA,0,0,"Within Range",5951.23,243.24,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"738","T0","Freshwater","F4",50,"W",NA,0,0,"Within Range",9832.48,401.88,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"750","T0","Freshwater","F4",0,"G",NA,NA,0,"Within Range",751.99,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"810","T0","Freshwater","H3",10,"W",NA,0,0,"Within Range",2797.55,114.34,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"809","T0","Freshwater","H3",20,"G",NA,NA,0,"Within Range",18223.6,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"809","T0","Freshwater","H3",35,"G",NA,NA,0,"Within Range",18386.19,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"810","T0","Freshwater","H3",50,"W",NA,0,0,"Within Range",14571.56,595.58,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"820","T0","Freshwater","H6",10,"G",NA,NA,0,"Within Range",17.8,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"820","T0","Freshwater","H6",20,"G",NA,NA,0,"Within Range",11392.75,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"820","T0","Freshwater","H6",35,"W",NA,0,0,"Within Range",5900.66,241.18,"Within Range",NA,NA,NA,"Water in vial!!!",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"825","T0","Freshwater","H6",50,"W",NA,0,0,"Within Range",9344.47,381.93,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"850","T0","Saltwater","C3",10,"G",NA,NA,0,"Within Range",7285.45,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"852","T0","Saltwater","C3",20,"G",NA,NA,0,"Within Range",11720.72,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"853","T0","Saltwater","C3",35,"G",NA,NA,0,"Within Range",16687.16,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"854","T0","Saltwater","C3",50,"G",NA,NA,0,"Within Range",25498.14,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"902","T0","Saltwater","C6",10,"W",NA,0,0,"Within Range",7123.6,291.16,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"907","T0","Saltwater","C6",20,"G",NA,NA,0,"Within Range",14826.73,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"917","T0","Saltwater","C6",35,"W",NA,0,0,"Within Range",10382.42,424.36,"Within Range",NA,NA,NA,"Missampled first run, sampled 2x",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"925","T0","Saltwater","C6",50,"W",NA,0.1,2.53,"Within Range",10372.81,423.96,"Within Range",NA,NA,NA,"Water in sample-sorry!",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"932","T0","Saltwater","F4",10,"G",NA,NA,14.22,"Within Range",12174.8,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"931","T0","Saltwater","F4",20,"G",NA,NA,0,"Within Range",21532.13,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"931","T0","Saltwater","F4",35,"G",NA,NA,0,"Within Range",34402.22,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"933","T0","Saltwater","F4",50,"W",NA,0,0,"Within Range",16720.47,683.41,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"934","T0","Saltwater","F4",0,"G",NA,NA,0,"Within Range",232.3,NA,"Within Range",NA,NA,NA,NA,"Sample ID within file is ""Manual Sample""",NA
+"COMPASS","TEMPEST",2022,6,22,"936","T0","Saltwater","H3",10,"G",NA,NA,0,"Within Range",15955.2,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"937","T0","Saltwater","H3",20,"G",NA,NA,0,"Within Range",14792.55,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"938","T0","Saltwater","H3",35,"G",NA,NA,0,"Within Range",16793.74,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"940","T0","Saltwater","H3",50,"G",NA,NA,0,"Within Range",17998.92,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4",NA
+"COMPASS","TEMPEST",2022,6,22,"942","T0","Saltwater","H6",10,"G",NA,NA,15.38,"Within Range",12881.38,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"943","T0","Saltwater","H6",20,"G",NA,NA,0,"Within Range",25226.38,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"944","T0","Saltwater","H6",35,"G",NA,NA,0,"Within Range",30256.06,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"945","T0","Saltwater","H6",50,"W",NA,0.04,1.06,"Within Range",14025.96,573.28,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1212","T1","Control","C3",10,"G",NA,NA,0,"Within Range",3571.56,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1219","T1","Control","C3",20,"G",NA,NA,0,"Within Range",5630.35,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1221","T1","Control","C3",35,"G",NA,NA,0,"Within Range",8035.26,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1222","T1","Control","C3",50,"G",NA,NA,0,"Within Range",12646.95,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4.",NA
+"COMPASS","TEMPEST",2022,6,22,"1226","T1","Control","C6",10,"G",NA,NA,0,"Within Range",4481.47,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1228","T1","Control","C6",20,"G",NA,NA,0,"Within Range",15718.57,NA,"Within Range",NA,NA,NA,"Condensation on bottom",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1232","T1","Control","C6",35,"G",NA,NA,0,"Within Range",14052.72,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1234","T1","Control","C6",50,"G",NA,NA,0,"Within Range",14969.66,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1237","T1","Control","F4",10,"G",NA,NA,0,"Within Range",8479.96,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1238","T1","Control","F4",20,"G",NA,NA,0,"Within Range",16632.91,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1240","T1","Control","F4",35,"G",NA,NA,0,"Within Range",10616.42,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1241","T1","Control","F4",50,"G",NA,NA,0,"Within Range",15105.54,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1244","T1","Control","H3",10,"G",NA,NA,0,"Within Range",4219.15,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1245","T1","Control","H3",20,"G",NA,NA,0,"Within Range",9059,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1246","T1","Control","H3",35,"G",NA,NA,0,"Within Range",12561.84,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1247","T1","Control","H3",50,"G",NA,NA,0,"Within Range",11829.74,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1249","T1","Control","H6",10,"G",NA,NA,0,"Within Range",1603.83,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1250","T1","Control","H6",20,"G",NA,NA,0,"Within Range",7484.21,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1251","T1","Control","H6",35,"G",NA,NA,0,"Within Range",12814.81,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4.",NA
+"COMPASS","TEMPEST",2022,6,22,"1252","T1","Control","H6",50,"G",NA,NA,0,"Within Range",13154.55,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1029","T1","Freshwater","C3",10,"W",NA,0,0,"Within Range",148.39,6.07,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1040","T1","Freshwater","C3",20,"W",NA,0,0,"Within Range",5033.36,205.73,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1055","T1","Freshwater","C3",35,"W",NA,0,0,"Within Range",5629.07,230.08,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1056","T1","Freshwater","C3",50,"W",NA,0,0,"Within Range",9755.03,398.71,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1102","T1","Freshwater","C6",10,"G",NA,NA,0,"Within Range",19251.79,NA,"Within Range",NA,NA,NA,NA,"No assigned peak for CH4.",NA
+"COMPASS","TEMPEST",2022,6,22,"1105","T1","Freshwater","C6",20,"W",NA,0,0,"Within Range",4974.94,203.34,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1100","T1","Freshwater","C6",35,"W",NA,0,0,"Within Range",6924.87,283.04,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1105","T1","Freshwater","C6",50,"W",NA,0,0,"Within Range",13270.63,542.41,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1114","T1","Freshwater","F4",10,"W",NA,0,0,"Within Range",2753.62,112.55,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1122","T1","Freshwater","F4",20,"W",NA,0,0,"Within Range",7513.91,307.11,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1127","T1","Freshwater","F4",35,"W",NA,0,0,"Within Range",6032.87,246.58,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1125","T1","Freshwater","F4",50,"W",NA,0,0,"Within Range",10251.26,419,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1135","T1","Freshwater","H3",10,"W",NA,0,0,"Within Range",3315.25,135.5,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1140","T1","Freshwater","H3",20,"G",NA,NA,0,"Within Range",10502.15,NA,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1145","T1","Freshwater","H3",35,"W",NA,0,0,"Within Range",8037.94,328.53,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1148","T1","Freshwater","H3",50,"W",NA,0,0,"Within Range",10561.53,431.68,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1151","T1","Freshwater","H6",10,"G",NA,NA,0,"Within Range",96.04,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1153","T1","Freshwater","H6",20,"G",NA,NA,0,"Within Range",65.35,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1201","T1","Freshwater","H6",35,"W",NA,0,0,"Within Range",6012.5,245.75,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1205","T1","Freshwater","H6",50,"W",NA,0,0,"Within Range",9446.34,386.1,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1255","T1","Saltwater","C3",10,"G",NA,NA,2.53,"Within Range",6864.13,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1257","T1","Saltwater","C3",20,"G",NA,NA,0,"Within Range",9254.71,NA,"Within Range",NA,NA,NA,"Vented vial on accident, sample lost",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1305","T1","Saltwater","C3",35,"W",NA,0,0,"Within Range",9941.95,406.35,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1307","T1","Saltwater","C3",50,"G",NA,NA,0,"Within Range",24722.04,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1310","T1","Saltwater","C6",10,"W",NA,0,0,"Within Range",8272.08,338.1,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1317","T1","Saltwater","C6",20,"G",NA,NA,0,"Within Range",8938.52,NA,"Within Range",NA,NA,NA,NA,NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1320","T1","Saltwater","C6",35,"W",NA,0,0,"Within Range",10937.79,447.06,"Within Range",NA,NA,NA,"Water in vial",NA,NA
+"COMPASS","TEMPEST",2022,6,22,"1325","T1","Saltwater","C6",50,"W",NA,0.2,4.82,"Within Range",10269.4,419.74,"Within Range",NA,NA,NA,NA,NA,NA

@@ -52,17 +52,18 @@ alldat1 <- alldat %>%
 ##Clean up data
 names(alldat1)
 final_dat <- alldat1 %>%
-    select(-X) %>% 
     dplyr::rename(Sapflux_ID = Sapflux_Tree_ID, 
-           Tree_Species = spp) %>% 
+           Tree_Species = spp, 
+           Time_Local = Time, 
+           Grid_Square = Sample_Grid) %>% 
     mutate(Plot = str_replace(Plot, "Seawater", "Saltwater")) %>%
-    mutate(Time = gsub(":", "", Time)) %>% #fix times so they're all HHMM
+    mutate(Time_Local = gsub(":", "", Time_Local)) %>% #fix times so they're all HHMM
     mutate(CH4_Flag = gsub("Within Std Curve Range", "", CH4_Flag)) %>% 
     mutate(CO2_Flag = gsub("Within Std Curve Range", "", CO2_Flag)) %>% 
     mutate(CH4_Flag = gsub("Over Std Curve Range", "adl", CH4_Flag)) %>% 
     mutate(CO2_Flag = gsub("Over Std Curve Range", "adl", CO2_Flag)) %>%     
     mutate(Project = "COMPASS", Site = "TEMPEST") %>% 
-    select("Project", "Site", "Year", "Month", "Day", "Plot", "Sample_Grid", "Sapflux_ID", "Tree_ID", "Tree_Species", "Well_Height_m", "Event_Stamp", "Time", "Time_Zone", "Sample_Matrix", "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag", "Field_Notes", "Lab_Notes")
+    select("Project", "Site", "Year", "Month", "Day", "Time_Local", "Event_Stamp", "Plot", "Grid_Square", "Sapflux_ID", "Tree_ID", "Tree_Species", "Well_Height_m", "Sample_Matrix", "CH4_ppm", "CH4_Flag", "CO2_ppm", "CO2_Flag", "Field_Notes", "Lab_Notes")
 
 
 ```

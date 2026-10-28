@@ -1,0 +1,7 @@
+"file_name","file_description","standard","file_version","data_orientation","header_rows","column_or_row_name_position","notes"
+"COMPASS_TEMPEST_TGW_2021.csv","Tree gas well data taken from COMPASS TEMPEST site in 2021","","","horizontal","1","1",""
+"COMPASS_TEMPEST_TGW_2022.csv","Tree gas well data taken from COMPASS TEMPEST site in 2022","","","horizontal","1","1",""
+"COMPASS_TEMPEST_TGW_2023.csv","Tree gas well data taken from COMPASS TEMPEST site in 2023","","","horizontal","1","1",""
+"COMPASS_TEMPEST_TGW_2024.csv","Tree gas well data taken from COMPASS TEMPEST site in 2024","","","horizontal","1","1",""
+"COMPASS_TEMPEST_TGW_2025.csv","Tree gas well data taken from COMPASS TEMPEST site in 2025","","","horizontal","1","1",""
+"dd.csv","Data dictionary file for annual redox data files describing each column in the dataset","","","horizontal","1","1",""

@@ -72,14 +72,18 @@ all_data <- all_data %>%
 ```
 
 
-## Viz? and Write the 2022 file out to the folder 
+## Write the 2025 file out to the folder 
 ```{r, echo=FALSE}
 
 final_data <- all_data %>% 
   mutate(Depth = ifelse(Sample_Depth == "ATM", "0cm", paste0(Sample_Depth, "cm"))) %>% 
-  rename(Run_Date = Analysis_rundate)
+  rename(Run_Date = Analysis_rundate, 
+         Notes = Lab_Notes) %>% 
+  select(-c(Sample1))
 
 write.csv(final_data, "COMPASS_TEMPEST_SGAS_2025.csv")
+
+colnames(final_data)
 
 ```
 

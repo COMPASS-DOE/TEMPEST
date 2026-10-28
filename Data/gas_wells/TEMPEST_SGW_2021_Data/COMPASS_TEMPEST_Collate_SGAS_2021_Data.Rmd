@@ -113,7 +113,14 @@ all_data1 <- all_data1 %>%
 ## Write the 2021 file out to the folder 
 ```{r, echo=FALSE}
 
-write.csv(all_data1, "COMPASS_TEMPEST_SGAS_2021.csv")
+colnames(all_data1)
+
+final_data <- all_data1 %>% 
+  mutate(Sample_Depth = ifelse(Depth == "ATM", "0cm", paste0(Depth, "cm"))) %>% 
+  rename(Sample_Plot = Plot, 
+         Sample_Grid = Grid_Square)
+
+write.csv(final_data, "COMPASS_TEMPEST_SGAS_2021.csv")
 
 ```
 
